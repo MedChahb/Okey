@@ -47,7 +47,6 @@ git clone git@git.unistra.fr:okaybytes/okey.git
 cd okey
 git config --local user.name "NOM PRENOM"  # utilisez votre nom sur GitLab Unistra
 git config --local user.email "ernest@etu.unistra.fr"  # utilisez votre email sur GitLab Unistra
-git config --local commit.gpgsign true  # active la signature des commits automatique
 dotnet tool restore  # install the dotnet tools
 
 ```
