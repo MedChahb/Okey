@@ -40,7 +40,7 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 
 ### Étapes d'installation
 
-Veillez à utiliser vos identifiants GitLab Unistra dans votre dépôt local pour que les commits soient bien attribués à votre compte. Configurez aussi la signature de vos commits et tags pour garantir leur authenticité (voir [cette section](#dépôt-git)).
+Veillez à utiliser vos identifiants GitLab Unistra dans votre dépôt local pour que les commits soient bien attribués à votre compte.
 
 ```sh
 git clone git@git.unistra.fr:okaybytes/okey.git
@@ -142,8 +142,3 @@ Pour suivre ce modèle, suivez les étapes suivantes :
 * Quand on arrive à une version stable (les jalons), on crée une release avec un tag correspondant et on met à jour le fichier `CHANGELOG.md` avec les changements apportés. L'intégration continue (CI) se chargera de publier la nouvelle version sur le serveur de production.
 
 Tout le développement se passe sur des branches tiers. Une fois une tâche ou fonctionnalité est complété, elle est testé, et sa merge request est fusionnée avec la branche `main`.
-
-Dernièrement, la signature de vos commits et tags est obligatoire. Voir les pages suivantes pour apprendre à comment le faire :
-
-* <https://docs.gitlab.com/ee/user/project/repository/signed_commits/>
-* <https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work>
