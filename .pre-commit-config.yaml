@@ -18,6 +18,7 @@ repos:
         exclude: '.*\.asset$'
       - id: fix-byte-order-marker
       - id: check-executables-have-shebangs
+        exclude: '(client/OkeyClient/.*)|(server/OkeyServer/.*)'
       - id: check-shebang-scripts-are-executable
       - id: check-merge-conflict
       - id: check-symlinks
