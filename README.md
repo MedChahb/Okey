@@ -18,6 +18,7 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 * [Team log](https://docs.google.com/spreadsheets/d/1Lx6XSw-6TPpPX6M-f2ByZmqWlIIDPr0a4ye2qn6C0Tg/edit?usp=sharing)
 * [Spécifications backend](https://docs.google.com/document/d/138RZhz9YMOilw_RB4Bq7qBsjzFfuHsJlgB5n1W3kzYc/edit?usp=sharing)
 * [Figma](https://www.figma.com/file/ZTVmviAU1qUqfNIfh04j1V/Untitled?type=design&node-id=0%3A1&mode=design&t=2wq9oDEamRp9MzS5-1)
+* [UML frontend](https://drive.google.com/file/d/1YIBEHZWpCWMH5IgFtIi-53_cFjVEIpYE/view?usp=sharing_eip_m&ts=65d4c787)
 
 ## Environnement de développement
 
