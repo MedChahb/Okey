@@ -112,7 +112,7 @@ Ou bien vous pouvez utiliser `venv` ou `virtuelenv` pour créer et gérer l'envi
 
 **!!Avant de passer à la suite**, téléchargez le fichier `.env` qui contient les variables d'environnement nécessaires pour le projet depuis le [**Seafile partagé**](https://seafile.unistra.fr/smart-link/2ab30c65-6f80-4575-a26b-90b170481569/) Unistra et mettez le dans le répertoire racine du projet. Assurez vous qu'il est nommé `.env` et qu'il est bien placé dans le répertoire racine du projet. Ne partagez pas ou ne diffusez pas ce fichier, il contient des informations sensibles comme des clés API. Ce fichier est utilisé dans un premier temps dans les hooks Git.
 
-Ensuite, installez les dépendances Python :
+Ensuite, installez les dépendances Python (il se peut que `pip` ne soit pas correctement aliasé dans votre installation et que vous deviez le remplacer par `pip3`) :
 
 ```sh
 pip install -r requirements.txt  # Installez les packages Python
@@ -132,7 +132,7 @@ pre-commit run -a  # Lancez les hooks git pour la toute première fois
 Si à cause des git hooks, votre commit a été refusé après que vous avez renseigné votre message de commit, pas de panique c'est pas perdu, vous pouvez le récupérer et l'éditer pour le corriger en exécutant la commande suivante :
 
 ```sh
-git commit -eF .git/COMMIT_EDITMSG
+git commit -eF "$(git rev-parse --show-toplevel)/.git/COMMIT_EDITMSG"
 ```
 
 Vous pouvez aussi désactiver les hooks Git pour un commit en exécutant la commande suivante :
@@ -181,7 +181,7 @@ Voir <https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/
 
 Le dépôt git de [ce projet](https://git.unistra.fr/okaybytes/okey) suit le modèle de branchement git "[Github Flow](https://docs.github.com/en/get-started/using-github/github-flow)" avec une obligation de merge request pour chaque modification et une issue GitLab pour chaque tâche ou problème. La branche `main` est protégé et ne peut être modifié que par des merge request validées par le CI. Les merge request doivent être validées par au moins un autre développeur avant d'être fusionnées.
 
-Les noms des branches doivent avoir la référence vers l'issue correspondante avec le format `<numéro de issue>-<titre-de-la-branche>` (par exemple `42-add-a-new-feature`). Chaque commit doit être lié à une issue avec le format `GL-<numéro de issue>: <reste du titre>` au tout début du message de commit. Normalement, si les hooks git sont bien configurés dans votre environnement de développement local, ces vérifications seront faites automatiquement à chaque commit et la référence d'issue dans le titre de chaque commit automatiquement inséré et vérifié pour vous.
+Les noms des branches doivent avoir la référence vers l'issue correspondante avec le format `<numéro de issue>-<titre-de-la-branche>` (par exemple `42-add-a-new-feature`). Chaque commit doit être lié à une issue avec le format `GL-<numéro de issue>: <reste du titre>` au tout début du message de commit (par exemple `GL-881: Fix a typo in the README`). Normalement, si les hooks git sont bien configurés dans votre environnement de développement local, ces vérifications seront faites automatiquement à chaque commit et la référence d'issue dans le titre de chaque commit automatiquement inséré et vérifié pour vous.
 
 Pour suivre ce modèle, suivez les étapes suivantes :
 
