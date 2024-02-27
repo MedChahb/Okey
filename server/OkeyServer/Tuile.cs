@@ -30,7 +30,7 @@ public class TuileNormale : Tuile
 {
     //public int Numero { get; }
     //public CouleurTuile Couleur { get; }
-
+    //
     public TuileNormale(CouleurTuile couleur, int num, bool P)
         : base(couleur, num, P) { }
 
