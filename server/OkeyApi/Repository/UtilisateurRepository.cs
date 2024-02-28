@@ -18,4 +18,9 @@ public class UtilisateurRepository : IUtilisateurRepository
     {
         return await this._context.Users.ToListAsync();
     }
+
+    public async Task<Utilisateur?> GetByUsername(string username)
+    {
+        return await this._context.Users.FirstOrDefaultAsync(s => s.UserName.Equals(username));
+    }
 }

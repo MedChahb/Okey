@@ -111,4 +111,21 @@ public class AccountController : ControllerBase
         var usersDto = users.Select(s => s.ToPublicUtilisateurDto());
         return this.Ok(usersDto);
     }
+
+    [HttpGet("/watch/{username}")]
+    public async Task<IActionResult> GetByUsername([FromRoute] string username)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.BadRequest();
+        }
+
+        var user = await this._utilisateurRepository.GetByUsername(username);
+        if (user == null)
+        {
+            return this.NotFound();
+        }
+
+        return this.Ok(user.ToPublicUtilisateurDto());
+    }
 }
