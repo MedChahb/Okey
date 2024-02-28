@@ -53,7 +53,7 @@ Cette liste indique les versions minimales recommandées ou des versions exactes
   * [csharpier](https://csharpier.com/) >= 0.27.2
   * [docfx](https://dotnet.github.io/docfx/index.html) >= 2.75.2
   * [xunit](
-  * [roslynator](
+  * [roslynator](https://josefpihrt.github.io/docs/roslynator/) >= 0.8.3
 * [Unity](https://unity.com/fr) 2022.3.19f1 LTS
 
 ### Étapes d'installation
@@ -165,6 +165,16 @@ Here is a body message going into more details about the commit.
 ...
 ```
 
+### Astuce hook Roslynator
+
+Les git hooks lancent aussi les vérifications de Roslynator. Mais ce ne sont que des vérifications et non pas des corrections automatiques. Pour corriger les erreurs signalées par Roslynator, vous pouvez exécuter la commande suivante :
+
+```sh
+dotnet roslynator fix <chemin vers le fichier .csproj ou .sln de votre projet>
+```
+
+Cette commande va essayer d'appliquer des corrections si possible sans plus de garantie.
+
 ### Documentation
 
 (EN CONSTRUCTION ...)
@@ -173,6 +183,12 @@ La documentation est générée par `docfx` et se trouve dans le répertoire `do
 
 ```sh
 dotnet docfx docs/docfx.json
+```
+
+Pour la visualiser dans votre navigateur en local, exécutez la commande suivante et ouvrez la page `localhost:8080` dans votre navigateur :
+
+```sh
+dotnet docfx docs/docfx.json --serve
 ```
 
 Voir <https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags> pour plus de détails sur la documentation XML C# dans le code qui ressemble un peu à `Doxygen` ou les `Docstring` Python mais un format different.

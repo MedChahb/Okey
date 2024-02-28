@@ -14,6 +14,7 @@ repos:
           - "--indent=2"
           - "--no-sort-keys"
           - "--no-ensure-ascii"
+        exclude: 'client/OkeyClient/ProjectSettings/Packages/com\.unity\.testtools\.codecoverage/Settings\.json'
       - id: end-of-file-fixer
         exclude: '.*\.asset$'
       - id: trailing-whitespace
@@ -54,8 +55,36 @@ repos:
         types:
           - c#
         description: CSharpier is an opinionated C# formatter inspired by Prettier.
-  - repo: local
-    hooks:
+      - id: roslynator-OkeyServer
+        name: Run Roslynator on OkeyServer C# project
+        entry: dotnet tool run roslynator analyze server/OkeyServer/OkeyServer.csproj
+        language: system
+        files: '^server/OkeyServer/'
+        types:
+          - c#
+        verbose: true
+        pass_filenames: false
+        description: Roslynator is a static analysis tool
+      - id: roslynator-OkeyApi
+        name: Run Roslynator on OkeyApi C# project
+        entry: dotnet tool run roslynator analyze server/OkeyApi/OkeyApi.csproj
+        language: system
+        files: '^server/OkeyApi/'
+        types:
+          - c#
+        verbose: true
+        pass_filenames: false
+        description: Roslynator is a static analysis tool
+      - id: roslynator-OkeyClient
+        name: Run Roslynator on OkeyClient Unity project
+        entry: dotnet tool run roslynator analyze client/OkeyClient/OkeyClient.sln
+        language: system
+        files: '^client/OkeyClient/'
+        types:
+          - c#
+        verbose: true
+        pass_filenames: false
+        description: Roslynator is a static analysis tool
       - id: gitlint
         name: gitlint
         description: Checks your git commit messages for style.
