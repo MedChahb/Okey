@@ -82,6 +82,7 @@ public class AccountController : ControllerBase
                 var roleResult = await this._utilisateurManager.AddToRoleAsync(utilisateur, "USER");
                 if (roleResult.Succeeded)
                 {
+                    // Insérer l'utilisateur dans la table achievements
                     return this.Ok(
                         new NewUtilisateurDto
                         {
