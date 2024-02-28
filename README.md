@@ -121,7 +121,7 @@ pip install -r requirements.txt  # Installez les packages Python
 Finalement, configurez les hooks Git (une fois Python est réglé) :
 
 ```sh
-pre-commit install -t pre-commit -t pre-push -t prepare-commit-msg -t commit-msg  # Installez les hooks git
+pre-commit install  # Installez les hooks git
 pre-commit run -a  # Lancez les hooks git pour la toute première fois
 ```
 
