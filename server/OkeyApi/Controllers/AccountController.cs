@@ -1,5 +1,6 @@
 namespace OkeyApi.Controllers;
 
+using Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,16 +15,19 @@ public class AccountController : ControllerBase
     private readonly UserManager<Utilisateur> _utilisateurManager;
     private readonly ITokenService _tokenService;
     private readonly SignInManager<Utilisateur> _signInManager;
+    private readonly IUtilisateurRepository _utilisateurRepository;
 
     public AccountController(
         UserManager<Utilisateur> utilisateurManager,
         ITokenService tokenService,
-        SignInManager<Utilisateur> signInManager
+        SignInManager<Utilisateur> signInManager,
+        IUtilisateurRepository utilisateurRepository
     )
     {
         this._utilisateurManager = utilisateurManager;
         this._tokenService = tokenService;
         this._signInManager = signInManager;
+        this._utilisateurRepository = utilisateurRepository;
     }
 
     [HttpPost("login")]
@@ -94,5 +98,17 @@ public class AccountController : ControllerBase
         {
             return this.StatusCode(500, e);
         }
+    }
+
+    [HttpGet("watch")]
+    public async Task<IActionResult> GetAll()
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.BadRequest();
+        }
+        var users = await this._utilisateurRepository.GetAllAsync();
+        var usersDto = users.Select(s => s.ToPublicUtilisateurDto());
+        return this.Ok(usersDto);
     }
 }
