@@ -165,9 +165,15 @@ Here is a body message going into more details about the commit.
 ...
 ```
 
-### Astuce hook Roslynator
+### Astuce Roslynator
 
-Les git hooks lancent aussi les vérifications de Roslynator. Mais ce ne sont que des vérifications et non pas des corrections automatiques. Pour corriger les erreurs signalées par Roslynator, vous pouvez exécuter la commande suivante :
+Roslynator est un analyseur et correcteurs d'erreurs du code C#. Pour lancer l'analyse :
+
+```sh
+dotnet roslynator analyze <chemin vers le fichier .csproj ou .sln de votre projet>
+```
+
+Les git hooks lancent automatiquement aussi les vérifications de Roslynator avant un commit ou push. Mais ce ne sont que des vérifications et non pas des corrections automatiques. Pour corriger les erreurs signalées par Roslynator, vous pouvez exécuter la commande suivante :
 
 ```sh
 dotnet roslynator fix <chemin vers le fichier .csproj ou .sln de votre projet>
@@ -175,9 +181,9 @@ dotnet roslynator fix <chemin vers le fichier .csproj ou .sln de votre projet>
 
 Cette commande va essayer d'appliquer des corrections si possible sans plus de garantie.
 
-### Documentation
+Veillez à bien lire les messages d'erreurs et les suggestions de corrections de Roslynator pour bien comprendre ce qui ne va pas et comment le corriger. Parfois, les suggestions de corrections ne sont pas toujours les meilleures et peuvent introduire des erreurs ou des comportements indésirables dans le code. Il est donc important de bien comprendre les erreurs et les suggestions de corrections avant de les appliquer. Cet outil est important pour maintenir un code propre, lisible et de haute qualité avec les meilleures pratiques C#.
 
-(EN CONSTRUCTION ...)
+### Documentation
 
 La documentation est générée par `docfx` et se trouve dans le répertoire `docs/`. Pour la générer, exécutez la commande suivante :
 
