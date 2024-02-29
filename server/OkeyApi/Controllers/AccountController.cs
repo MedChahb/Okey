@@ -1,5 +1,6 @@
 namespace OkeyApi.Controllers;
 
+using Data;
 using Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,18 +17,21 @@ public class AccountController : ControllerBase
     private readonly ITokenService _tokenService;
     private readonly SignInManager<Utilisateur> _signInManager;
     private readonly IUtilisateurRepository _utilisateurRepository;
+    private readonly ApplicationDBContext _dbContext;
 
     public AccountController(
         UserManager<Utilisateur> utilisateurManager,
         ITokenService tokenService,
         SignInManager<Utilisateur> signInManager,
-        IUtilisateurRepository utilisateurRepository
+        IUtilisateurRepository utilisateurRepository,
+        ApplicationDBContext dbContext
     )
     {
         this._utilisateurManager = utilisateurManager;
         this._tokenService = tokenService;
         this._signInManager = signInManager;
         this._utilisateurRepository = utilisateurRepository;
+        this._dbContext = dbContext;
     }
 
     [HttpPost("login")]
@@ -82,7 +86,21 @@ public class AccountController : ControllerBase
                 var roleResult = await this._utilisateurManager.AddToRoleAsync(utilisateur, "USER");
                 if (roleResult.Succeeded)
                 {
-                    // Insérer l'utilisateur dans la table achievements
+                    try
+                    {
+                        var achievement = new Achievements
+                        {
+                            UserId = utilisateur.Id,
+                            Utilisateur = utilisateur
+                        };
+                        this._dbContext.Achievements.Add(achievement);
+                        await this._dbContext.SaveChangesAsync();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
                     return this.Ok(
                         new NewUtilisateurDto
                         {

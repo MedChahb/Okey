@@ -1,6 +1,8 @@
-namespace OkeyApi.Models;
+namespace OkeyApi.Dtos.Achievements;
 
-public class Achievements
+using Models;
+
+public class AchievementDto
 {
     public int Id { get; set; }
 
