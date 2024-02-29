@@ -19,7 +19,7 @@ namespace Okey.Joueurs
             // ??
         }
 
-        public override string toString()
+        public override string ToString()
         {
             return String.Format("Bot de difficulté : {0}", this.difficulte);
         }

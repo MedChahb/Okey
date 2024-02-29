@@ -35,7 +35,7 @@ namespace Okey.Joueurs
         public int GetRank() { return this.Rank; }  
 
 
-        public override string toString()
+        public override string ToString()
         {
             return String.Format("Joueur : id = {0}, Name = {1}, Elo = {2}", this.id, this.Name, this.Elo);
         }

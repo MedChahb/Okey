@@ -11,15 +11,26 @@ namespace Okey.Joueurs
     { 
         protected int id;
         protected String Name;
-        protected Tuile[,] Chevalet = new Tuile[2,15];
-        protected Boolean Tour;
+        protected List<List<Tuile>> chevalet = new List<List<Tuile>>(); // 15tuile + 1case vide
+        public Boolean Tour;
         protected Boolean Gagnant;
         
 
         public Joueur(int id, String Name) {
             this.id = id; this.Name = Name; 
-            this.Gagnant = false;
-            //this.Chevalet = //fonction qui distribue les tuiles;
+            this.Gagnant = false; this.Tour = false;
+
+            //initialisation du chevalet (ready to get Tuiles)
+            for (int i = 0; i < 2; i++)
+            {
+                this.chevalet.Add(new List<Tuile>());
+
+                for (int j = 0; j < 8; j++)
+                {
+                    this.chevalet[i].Add(null);
+                }
+            }
+
         }
 
         public abstract void Gagne();
@@ -42,6 +53,27 @@ namespace Okey.Joueurs
             this.Tour = true;
         }
 
-        public abstract String toString();
+        public void AjoutToChevalet(Tuile t)
+        {
+
+        }
+
+        public List<List<Tuile>> GetChevalet() { return this.chevalet; }
+
+        public void Ajouer() { this.Tour=true; }
+        public void AjoutTuileChevalet(Tuile t)
+        {
+            for(int j = 0; j < 2;j++) { 
+                for(int i=0; i < 8; i++)
+                {
+                    if (this.chevalet[j][i] == null)
+                    {
+                        this.chevalet[j][i] = t; 
+                        return;
+                    }
+                }
+            }
+        }
+        public override abstract String ToString();
     }
 }
