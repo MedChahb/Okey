@@ -8,7 +8,7 @@ namespace Okey.Tuiles
 {
     internal class TuileNormale : Tuile
     {
-        public TuileNormale(CouleurTuile couleur, int valeur, bool dansPioche) : base(couleur, valeur, dansPioche)
+        public TuileNormale(CouleurTuile couleur, int num, bool dansPioche) : base(couleur, num, dansPioche)
         {
         }
 
@@ -19,7 +19,7 @@ namespace Okey.Tuiles
 
         public override string ToString()
         {
-            return String.Format("Tuile de couleur : {0}, numero : {1}.", this.Couleur, this.valeur);
+            return String.Format("({0}, {1}, {2})", this.num, this.Couleur, "No");
         }
     }
 }

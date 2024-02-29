@@ -20,7 +20,7 @@ namespace Okey.Tuiles
 
         public override String ToString()
         {
-            return String.Format("Joker de couleur : {0}, numero : {1}.", this.Couleur, this.valeur);
+            return String.Format("({0}, {1}, {2})", this.num, this.Couleur, "Jo");
         }
     }
 }

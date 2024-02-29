@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
+//just pour l'affichage du chevalet, apres je les remets
 public enum CouleurTuile
 {
-    Jaune, 
-    Noir, 
-    Rouge, 
-    Bleu, 
-    Multi
+    J, //Jaune
+    N, //Noir
+    R, //Rouge
+    B, //Bleu
+    M  //Mult
 }
 
 namespace Okey.Tuiles
@@ -19,14 +19,14 @@ namespace Okey.Tuiles
     public abstract class Tuile
     {
         protected CouleurTuile Couleur;
-        protected int valeur;
+        protected int num;
         protected bool defausse;
         protected bool DansPioche;
     
-        public Tuile(CouleurTuile couleur, int valeur, bool dansPioche)
+        public Tuile(CouleurTuile couleur, int num, bool dansPioche)
         {
             this.Couleur = couleur;
-            this.valeur = valeur;
+            this.num = num;
             this.defausse = false;
             this.DansPioche = dansPioche;
         }
@@ -49,7 +49,7 @@ namespace Okey.Tuiles
         }
 
         public CouleurTuile GetCouleur() {  return this.Couleur; }
-        public int GetValeur() { return this.valeur; }
+        public int GetNum() { return this.num; }
 
 
 

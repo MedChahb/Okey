@@ -8,7 +8,7 @@ namespace Okey.Tuiles
 {
     internal class Okay : Tuile
     {
-        public Okay(bool dansPioche) : base(CouleurTuile.Multi, 0, dansPioche)
+        public Okay(bool dansPioche) : base(CouleurTuile.M, 0, dansPioche)
         {
             //calculate value
         }
@@ -20,7 +20,7 @@ namespace Okey.Tuiles
 
         public override String ToString()
         {
-            return String.Format("OKay,{0} dans la pioche.", (this.DansPioche)?"" : " pas");
+            return String.Format("({0}, {1}, {2})", this.num, this.Couleur, "Ok");
         }
     }
 }
