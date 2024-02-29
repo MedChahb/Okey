@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Okey.Joueurs;
@@ -19,7 +20,7 @@ namespace Okey.Game
         private bool etat; // false : in game
         private Tuile[] Jokers = new Joker[2];
         private Tuile[] Okays = new Okay[2];
-        private Tuile[] PacketTuile = new Tuile[105];
+        private List<Tuile> PacketTuile = new List<Tuile>();
         private Tuile TuileCentre;
         public Jeu(int id, Joueur[] joueurs, Stack<Tuile> pioche)
         {
@@ -28,89 +29,127 @@ namespace Okey.Game
             this.MMR = CalculMMR();
             this.pioche = pioche;
             this.etat = false;
-            (this.PacketTuile,this.TuileCentre) = GenererTableauTuiles();
+            (this.PacketTuile,this.TuileCentre) = GenererPacketTuiles();
         }
         private double CalculMMR()
         {
             return 5.2; // donner la formule en fonction des 4 joueurs
         }
 
-        public (Tuile[],Tuile) GenererTableauTuiles()
+        private (List<Tuile>,Tuile) GenererPacketTuiles()
         {
-            Tuile[] tableauTuiles = new Tuile[106];
-
-            int index = 0;
+            List<Tuile> tableauTuiles = new List<Tuile>();
 
             // Générer 13 tuiles pour chaque numéro de 1 à 13 et chaque couleur
             for (int numero = 1; numero <= 13; numero++)
             {
                 foreach (CouleurTuile couleur in Enum.GetValues(typeof(CouleurTuile)))
                 {
-                    if (couleur != CouleurTuile.Multi) // Éviter la couleur Multi pour les tuiles normales
+                    if (couleur != CouleurTuile.M) // Éviter la couleur Multi pour les tuiles normales
                     {
                         // Créer une tuile normale
-                        Tuile tuile = new TuileNormale(couleur, numero, true); // true pour dansPioche
+                        Tuile tuile = new TuileNormale(couleur, numero, true);
+                        tableauTuiles.Add(tuile);
+
                         Tuile tuile2 = new TuileNormale(couleur, numero, true);
-
-
-                        if (index < tableauTuiles.Length)
-                        {
-                            tableauTuiles[index] = tuile;
-                            index++;
-                        }
-
-                        if (index < tableauTuiles.Length)
-                        {
-                            tableauTuiles[index] = tuile2;
-                            index++;
-                        }
+                        tableauTuiles.Add(tuile2);
                     }
                 }
             }
 
             // prendre La tuileCentre
             Random random = new Random();
-            int RandIndex = random.Next(0, 103);
-            Tuile TuileCentre = tableauTuiles[RandIndex];
+            int randIndex = random.Next(0, 103);
+            Tuile tuileCentre = tableauTuiles[randIndex];
 
-            int numOkey =  (TuileCentre.GetValeur() == 13)? 1 : TuileCentre.GetValeur() + 1;
-            CouleurTuile couleurOkey = TuileCentre.GetCouleur();
+            int numOkey = (tuileCentre.GetNum() == 13) ? 1 : tuileCentre.GetNum() + 1;
+            CouleurTuile couleurOkey = tuileCentre.GetCouleur();
 
             int ok = 0;
-            for (int i=0; i<103; i++)
+            for (int i = 0; i < 103; i++)
             {
-                if (tableauTuiles[i].GetValeur() == numOkey && tableauTuiles[i].GetCouleur() == couleurOkey)
+                if (tableauTuiles[i].GetNum() == numOkey && tableauTuiles[i].GetCouleur() == couleurOkey)
                 {
                     Okay okay = new Okay(true);
-                    tableauTuiles[i] = okay; // genere deux okay ?
+                    tableauTuiles[i] = okay; // Do you want to replace the existing Tuile with Okay?
                     this.Okays[ok] = okay;
                     ok++;
-                }     
+                }
 
             }
 
-
             Tuile joker1 = new Joker(couleurOkey, numOkey, true);
-            tableauTuiles[RandIndex] = joker1;
+            tableauTuiles[randIndex] = joker1;
             this.Jokers[0] = joker1;
 
             Tuile joker2 = new Joker(couleurOkey, numOkey, true);
-            tableauTuiles[104] = joker2;
+            tableauTuiles.Add(joker2);
             this.Jokers[1] = joker2;
 
-            return (tableauTuiles, TuileCentre);
+            return (tableauTuiles,tuileCentre);
         }
+    
 
 
         public void DistibuerTuile() //à faire
         {
+            for(int i=0; i<14; i++)
+            {
+                foreach(Joueur pl in this.joueurs)
+                {
+                    Random random = new Random();
+                    int randIndex = random.Next(0, this.PacketTuile.Count - 1); // on prend en random l'index de la tuile du packet
 
+                    Tuile toGive = this.PacketTuile[randIndex]; // on la save dans toGive
+                    
+                    this.PacketTuile.RemoveAt(randIndex); // on la supprime du packet
+                    pl.AjoutTuileChevalet(toGive); // on la donne au joueur (ajout à son chevalet)
+
+                    //faire ça 14 fois pour les 4 joueurs
+                }
+            }
+            //on donne la 15eme Tuile au joueur à jouer
+            Random randomm = new Random();
+            int randT = randomm.Next(0, this.PacketTuile.Count - 1);
+            Tuile LastTuileTogive = this.PacketTuile[randT]; 
+            this.PacketTuile.RemoveAt(randT);
+
+            this.joueurs[randT%4].AjoutTuileChevalet(LastTuileTogive);
+            this.joueurs[randT % 4].Ajouer(); // qui recoit la 15 Tuile jouera le premier
+
+            // ce qui reste dans PacketTuile -> this.Pioche ???
         }
 
-        public Tuile[] GetPacketTuile() { return this.PacketTuile; }
+        public List<Tuile> GetPacketTuile() { return this.PacketTuile; }
         public Tuile GetTuileCentre() {  return this.TuileCentre; }
         public Tuile[] GetJokers() { return this.Jokers; }
         public Tuile[] GetOkays() { return this.Okays; }
+
+        public Joueur[] GetJoueurs() { return this.joueurs; }
+
+        public void AfficheChevaletJoueur()
+        {
+            Joueur[] joueurs = this.GetJoueurs();
+
+            foreach (Joueur pl in joueurs)
+            {
+                Console.WriteLine(System.String.Format("Chevalet du {0} : ",pl));
+                for(int i = 0; i < 2; i++)
+                {
+                    for(int j = 0; j < 8; j++)
+                    {
+                        Tuile t = pl.GetChevalet()[i][j];
+                        if(t!=null)
+                            Console.Write("|"+t);
+                        else
+                            Console.Write("|(        )");
+                    }
+                    Console.Write("|\n");
+                }
+                Console.WriteLine("");
+
+            }
+        }
     }
 
 
