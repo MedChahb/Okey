@@ -15,7 +15,7 @@ namespace Okey
         {
             foreach (Joueur joueur in joueurs)
             {
-                Console.WriteLine(joueur.toString()); // should be sorted
+                Console.WriteLine(joueur); // should be sorted
             }
         }
 
