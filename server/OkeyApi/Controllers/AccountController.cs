@@ -1,7 +1,9 @@
 namespace OkeyApi.Controllers;
 
+using System.Security.Claims;
 using Data;
 using Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -131,7 +133,7 @@ public class AccountController : ControllerBase
         return this.Ok(usersDto);
     }
 
-    [HttpGet("/watch/{username}")]
+    [HttpGet("watch/{username}")]
     public async Task<IActionResult> GetByUsername([FromRoute] string username)
     {
         if (!this.ModelState.IsValid)

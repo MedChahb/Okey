@@ -8,7 +8,7 @@ using Models;
 using OkeyApi.Data;
 using Repository;
 
-[Route("okeyapi/achivements")]
+[Route("okeyapi/achievements")]
 [ApiController]
 public class AchievementsController : ControllerBase
 {
@@ -23,4 +23,7 @@ public class AchievementsController : ControllerBase
         this._context = context;
         this._achievementsRepo = achievementsRepo;
     }
+
+    // Pour accéder aux achievements: faire une verif du JWT et probablement des autorisations (role)
+    //Get by username
 }

@@ -20,7 +20,7 @@ public class ClassementController : ControllerBase
     {
         try
         {
-            var utilisateurs = await _utilisateurRepo.GetAllAsync(); // Obtenez tous les utilisateurs
+            var utilisateurs = await this._utilisateurRepo.GetAllAsync(); // Obtenez tous les utilisateurs
             var classement = new List<ClassementDto>();
             foreach (var utilisateur in utilisateurs)
             {
@@ -31,7 +31,7 @@ public class ClassementController : ControllerBase
 
             classement = classement.OrderByDescending(s => s.Elo).ToList();
 
-            for (int i = 0; i < classement.Count; i++)
+            for (var i = 0; i < classement.Count; i++)
             {
                 classement[i].Classement = i + 1;
             }
@@ -53,7 +53,7 @@ public class ClassementController : ControllerBase
     {
         try
         {
-            var utilisateurs = await _utilisateurRepo.GetAllAsync(); // Obtenez tous les utilisateurs
+            var utilisateurs = await this._utilisateurRepo.GetAllAsync(); // Obtenez tous les utilisateurs
             var classement = new List<ClassementDto>();
             foreach (var utilisateur in utilisateurs)
             {
@@ -64,7 +64,7 @@ public class ClassementController : ControllerBase
 
             classement = classement.OrderByDescending(s => s.Elo).ToList();
 
-            for (int i = 0; i < classement.Count; i++)
+            for (var i = 0; i < classement.Count; i++)
             {
                 classement[i].Classement = i + 1;
             }
@@ -91,7 +91,7 @@ public class ClassementController : ControllerBase
     {
         try
         {
-            var utilisateurs = await _utilisateurRepo.GetAllAsync(); // Obtenez tous les utilisateurs
+            var utilisateurs = await this._utilisateurRepo.GetAllAsync(); // Obtenez tous les utilisateurs
             var classement = new List<ClassementDto>();
             foreach (var utilisateur in utilisateurs)
             {
@@ -102,7 +102,7 @@ public class ClassementController : ControllerBase
 
             classement = classement.OrderByDescending(s => s.Elo).ToList();
 
-            for (int i = 0; i < classement.Count; i++)
+            for (var i = 0; i < classement.Count; i++)
             {
                 classement[i].Classement = i + 1;
             }
