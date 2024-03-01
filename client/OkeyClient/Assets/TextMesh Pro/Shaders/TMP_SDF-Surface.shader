@@ -155,3 +155,4 @@ SubShader {
 
 CustomEditor "TMPro.EditorUtilities.TMP_SDFShaderGUI"
 }
+
