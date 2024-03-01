@@ -85,4 +85,37 @@ public class ClassementController : ControllerBase
             );
         }
     }
+
+    [HttpGet("{pagination:int}")]
+    public async Task<IActionResult> GetPaginate([FromRoute] int pagination)
+    {
+        try
+        {
+            var utilisateurs = await _utilisateurRepo.GetAllAsync(); // Obtenez tous les utilisateurs
+            var classement = new List<ClassementDto>();
+            foreach (var utilisateur in utilisateurs)
+            {
+                classement.Add(
+                    new ClassementDto { Username = utilisateur.UserName, Elo = utilisateur.Elo }
+                );
+            }
+
+            classement = classement.OrderByDescending(s => s.Elo).ToList();
+
+            for (int i = 0; i < classement.Count; i++)
+            {
+                classement[i].Classement = i + 1;
+            }
+
+            return this.Ok(classement.Take(pagination));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return this.StatusCode(
+                500,
+                "Une erreur s'est produite lors de la récupération du classement."
+            );
+        }
+    }
 }
