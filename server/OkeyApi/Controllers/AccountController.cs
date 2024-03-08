@@ -147,6 +147,44 @@ public class AccountController : ControllerBase
             return this.NotFound();
         }
 
+        var userIdentity = this.User.Identity;
+        if (userIdentity != null && userIdentity.IsAuthenticated)
+        {
+            var utilisateur = this.GetCurrentUser();
+            if (utilisateur.Result.Username == username)
+            {
+                var achievements = await this._dbContext.Achievements.FirstOrDefaultAsync(e =>
+                    e.Utilisateur.UserName.Equals(utilisateur.Result.Username)
+                );
+                var list = new List<bool>();
+                list.Add(achievements.Jouer5Parties);
+                list.Add(achievements.GagnerUneFois);
+                return this.Ok(
+                    new PrivateUtilisateurDto
+                    {
+                        Username = utilisateur.Result.Username,
+                        Elo = utilisateur.Result.Elo,
+                        Achievements = list
+                    }
+                );
+            }
+        }
         return this.Ok(user.ToPublicUtilisateurDto());
+    }
+
+    private async Task<PrivateUtilisateurDto> GetCurrentUser()
+    {
+        var claims = this.HttpContext?.User?.Claims;
+        if (claims != null)
+        {
+            var username = claims.First().Value;
+            var user = await this._utilisateurRepository.GetByUsername(username);
+            if (user == null)
+            {
+                return null!;
+            }
+            return user.ToPrivateUtilisateurDto();
+        }
+        return null!;
     }
 }

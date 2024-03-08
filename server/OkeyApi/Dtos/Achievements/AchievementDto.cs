@@ -5,7 +5,6 @@ using Models;
 public class AchievementDto
 {
     public int Id { get; set; }
-
     public bool Jouer5Parties { get; set; } = false;
     public bool GagnerUneFois { get; set; } = false;
 
