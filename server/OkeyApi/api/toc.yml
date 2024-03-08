@@ -1,0 +1,96 @@
+### YamlMime:TableOfContent
+items:
+- uid: OkeyApi.Controllers
+  name: OkeyApi.Controllers
+  items:
+  - uid: OkeyApi.Controllers.AccountController
+    name: AccountController
+  - uid: OkeyApi.Controllers.AchievementsController
+    name: AchievementsController
+  - uid: OkeyApi.Controllers.ClassementController
+    name: ClassementController
+- uid: OkeyApi.Data
+  name: OkeyApi.Data
+  items:
+  - uid: OkeyApi.Data.ApplicationDBContext
+    name: ApplicationDBContext
+- uid: OkeyApi.Dtos.Achievements
+  name: OkeyApi.Dtos.Achievements
+  items:
+  - uid: OkeyApi.Dtos.Achievements.AchievementDto
+    name: AchievementDto
+  - uid: OkeyApi.Dtos.Achievements.CreateAchievementsDto
+    name: CreateAchievementsDto
+- uid: OkeyApi.Dtos.Classement
+  name: OkeyApi.Dtos.Classement
+  items:
+  - uid: OkeyApi.Dtos.Classement.ClassementDto
+    name: ClassementDto
+- uid: OkeyApi.Dtos.Compte
+  name: OkeyApi.Dtos.Compte
+  items:
+  - uid: OkeyApi.Dtos.Compte.LoginDto
+    name: LoginDto
+  - uid: OkeyApi.Dtos.Compte.NewUtilisateurDto
+    name: NewUtilisateurDto
+  - uid: OkeyApi.Dtos.Compte.PrivateUtilisateurDto
+    name: PrivateUtilisateurDto
+  - uid: OkeyApi.Dtos.Compte.PublicUtilisateurDto
+    name: PublicUtilisateurDto
+  - uid: OkeyApi.Dtos.Compte.RegisterDto
+    name: RegisterDto
+- uid: OkeyApi.Interfaces
+  name: OkeyApi.Interfaces
+  items:
+  - uid: OkeyApi.Interfaces.IAchievementsRepository
+    name: IAchievementsRepository
+  - uid: OkeyApi.Interfaces.ITokenService
+    name: ITokenService
+  - uid: OkeyApi.Interfaces.IUtilisateurRepository
+    name: IUtilisateurRepository
+- uid: OkeyApi.Mappers
+  name: OkeyApi.Mappers
+  items:
+  - uid: OkeyApi.Mappers.AchievementsMapper
+    name: AchievementsMapper
+  - uid: OkeyApi.Mappers.UtilisateurMappers
+    name: UtilisateurMappers
+- uid: OkeyApi.Migrations
+  name: OkeyApi.Migrations
+  items:
+  - uid: OkeyApi.Migrations.AchievmentsOneToOne
+    name: AchievmentsOneToOne
+  - uid: OkeyApi.Migrations.Init
+    name: Init
+  - uid: OkeyApi.Migrations.Init2
+    name: Init2
+  - uid: OkeyApi.Migrations.Init3
+    name: Init3
+  - uid: OkeyApi.Migrations.ModifyAchivements
+    name: ModifyAchivements
+  - uid: OkeyApi.Migrations.ModifyAchivements1
+    name: ModifyAchivements1
+  - uid: OkeyApi.Migrations.ModifyAchivements2
+    name: ModifyAchivements2
+  - uid: OkeyApi.Migrations.SubInit
+    name: SubInit
+- uid: OkeyApi.Models
+  name: OkeyApi.Models
+  items:
+  - uid: OkeyApi.Models.Achievements
+    name: Achievements
+  - uid: OkeyApi.Models.Utilisateur
+    name: Utilisateur
+- uid: OkeyApi.Repository
+  name: OkeyApi.Repository
+  items:
+  - uid: OkeyApi.Repository.AchievementsRepository
+    name: AchievementsRepository
+  - uid: OkeyApi.Repository.UtilisateurRepository
+    name: UtilisateurRepository
+- uid: OkeyApi.Service
+  name: OkeyApi.Service
+  items:
+  - uid: OkeyApi.Service.TokenService
+    name: TokenService
+memberLayout: SamePage

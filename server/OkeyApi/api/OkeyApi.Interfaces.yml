@@ -1,0 +1,62 @@
+### YamlMime:ManagedReference
+items:
+- uid: OkeyApi.Interfaces
+  commentId: N:OkeyApi.Interfaces
+  id: OkeyApi.Interfaces
+  children:
+  - OkeyApi.Interfaces.IAchievementsRepository
+  - OkeyApi.Interfaces.ITokenService
+  - OkeyApi.Interfaces.IUtilisateurRepository
+  langs:
+  - csharp
+  - vb
+  name: OkeyApi.Interfaces
+  nameWithType: OkeyApi.Interfaces
+  fullName: OkeyApi.Interfaces
+  type: Namespace
+  assemblies:
+  - OkeyApi
+references:
+- uid: OkeyApi.Interfaces.IAchievementsRepository
+  commentId: T:OkeyApi.Interfaces.IAchievementsRepository
+  parent: OkeyApi.Interfaces
+  href: OkeyApi.Interfaces.IAchievementsRepository.html
+  name: IAchievementsRepository
+  nameWithType: IAchievementsRepository
+  fullName: OkeyApi.Interfaces.IAchievementsRepository
+- uid: OkeyApi.Interfaces.ITokenService
+  commentId: T:OkeyApi.Interfaces.ITokenService
+  parent: OkeyApi.Interfaces
+  href: OkeyApi.Interfaces.ITokenService.html
+  name: ITokenService
+  nameWithType: ITokenService
+  fullName: OkeyApi.Interfaces.ITokenService
+- uid: OkeyApi.Interfaces.IUtilisateurRepository
+  commentId: T:OkeyApi.Interfaces.IUtilisateurRepository
+  parent: OkeyApi.Interfaces
+  href: OkeyApi.Interfaces.IUtilisateurRepository.html
+  name: IUtilisateurRepository
+  nameWithType: IUtilisateurRepository
+  fullName: OkeyApi.Interfaces.IUtilisateurRepository
+- uid: OkeyApi.Interfaces
+  commentId: N:OkeyApi.Interfaces
+  href: OkeyApi.html
+  name: OkeyApi.Interfaces
+  nameWithType: OkeyApi.Interfaces
+  fullName: OkeyApi.Interfaces
+  spec.csharp:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Interfaces
+    name: Interfaces
+    href: OkeyApi.Interfaces.html
+  spec.vb:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Interfaces
+    name: Interfaces
+    href: OkeyApi.Interfaces.html

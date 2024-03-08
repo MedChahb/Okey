@@ -1,0 +1,72 @@
+### YamlMime:ManagedReference
+items:
+- uid: OkeyApi.Migrations
+  commentId: N:OkeyApi.Migrations
+  id: OkeyApi.Migrations
+  children:
+  - OkeyApi.Migrations.AchievmentsOneToOne
+  - OkeyApi.Migrations.Init
+  - OkeyApi.Migrations.Init2
+  - OkeyApi.Migrations.Init3
+  - OkeyApi.Migrations.ModifyAchivements
+  - OkeyApi.Migrations.ModifyAchivements1
+  - OkeyApi.Migrations.ModifyAchivements2
+  - OkeyApi.Migrations.SubInit
+  langs:
+  - csharp
+  - vb
+  name: OkeyApi.Migrations
+  nameWithType: OkeyApi.Migrations
+  fullName: OkeyApi.Migrations
+  type: Namespace
+  assemblies:
+  - OkeyApi
+references:
+- uid: OkeyApi.Migrations.Init
+  commentId: T:OkeyApi.Migrations.Init
+  href: OkeyApi.Migrations.Init.html
+  name: Init
+  nameWithType: Init
+  fullName: OkeyApi.Migrations.Init
+- uid: OkeyApi.Migrations.SubInit
+  commentId: T:OkeyApi.Migrations.SubInit
+  href: OkeyApi.Migrations.SubInit.html
+  name: SubInit
+  nameWithType: SubInit
+  fullName: OkeyApi.Migrations.SubInit
+- uid: OkeyApi.Migrations.Init2
+  commentId: T:OkeyApi.Migrations.Init2
+  href: OkeyApi.Migrations.Init2.html
+  name: Init2
+  nameWithType: Init2
+  fullName: OkeyApi.Migrations.Init2
+- uid: OkeyApi.Migrations.AchievmentsOneToOne
+  commentId: T:OkeyApi.Migrations.AchievmentsOneToOne
+  href: OkeyApi.Migrations.AchievmentsOneToOne.html
+  name: AchievmentsOneToOne
+  nameWithType: AchievmentsOneToOne
+  fullName: OkeyApi.Migrations.AchievmentsOneToOne
+- uid: OkeyApi.Migrations.ModifyAchivements
+  commentId: T:OkeyApi.Migrations.ModifyAchivements
+  href: OkeyApi.Migrations.ModifyAchivements.html
+  name: ModifyAchivements
+  nameWithType: ModifyAchivements
+  fullName: OkeyApi.Migrations.ModifyAchivements
+- uid: OkeyApi.Migrations.ModifyAchivements1
+  commentId: T:OkeyApi.Migrations.ModifyAchivements1
+  href: OkeyApi.Migrations.ModifyAchivements1.html
+  name: ModifyAchivements1
+  nameWithType: ModifyAchivements1
+  fullName: OkeyApi.Migrations.ModifyAchivements1
+- uid: OkeyApi.Migrations.ModifyAchivements2
+  commentId: T:OkeyApi.Migrations.ModifyAchivements2
+  href: OkeyApi.Migrations.ModifyAchivements2.html
+  name: ModifyAchivements2
+  nameWithType: ModifyAchivements2
+  fullName: OkeyApi.Migrations.ModifyAchivements2
+- uid: OkeyApi.Migrations.Init3
+  commentId: T:OkeyApi.Migrations.Init3
+  href: OkeyApi.Migrations.Init3.html
+  name: Init3
+  nameWithType: Init3
+  fullName: OkeyApi.Migrations.Init3

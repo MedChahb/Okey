@@ -1,0 +1,30 @@
+### YamlMime:ManagedReference
+items:
+- uid: OkeyApi.Repository
+  commentId: N:OkeyApi.Repository
+  id: OkeyApi.Repository
+  children:
+  - OkeyApi.Repository.AchievementsRepository
+  - OkeyApi.Repository.UtilisateurRepository
+  langs:
+  - csharp
+  - vb
+  name: OkeyApi.Repository
+  nameWithType: OkeyApi.Repository
+  fullName: OkeyApi.Repository
+  type: Namespace
+  assemblies:
+  - OkeyApi
+references:
+- uid: OkeyApi.Repository.AchievementsRepository
+  commentId: T:OkeyApi.Repository.AchievementsRepository
+  href: OkeyApi.Repository.AchievementsRepository.html
+  name: AchievementsRepository
+  nameWithType: AchievementsRepository
+  fullName: OkeyApi.Repository.AchievementsRepository
+- uid: OkeyApi.Repository.UtilisateurRepository
+  commentId: T:OkeyApi.Repository.UtilisateurRepository
+  href: OkeyApi.Repository.UtilisateurRepository.html
+  name: UtilisateurRepository
+  nameWithType: UtilisateurRepository
+  fullName: OkeyApi.Repository.UtilisateurRepository

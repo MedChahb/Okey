@@ -1,0 +1,621 @@
+### YamlMime:ManagedReference
+items:
+- uid: OkeyApi.Repository.AchievementsRepository
+  commentId: T:OkeyApi.Repository.AchievementsRepository
+  id: AchievementsRepository
+  parent: OkeyApi.Repository
+  children:
+  - OkeyApi.Repository.AchievementsRepository.#ctor(OkeyApi.Data.ApplicationDBContext)
+  - OkeyApi.Repository.AchievementsRepository.CreateAsync(OkeyApi.Models.Achievements)
+  - OkeyApi.Repository.AchievementsRepository._context
+  langs:
+  - csharp
+  - vb
+  name: AchievementsRepository
+  nameWithType: AchievementsRepository
+  fullName: OkeyApi.Repository.AchievementsRepository
+  type: Class
+  source:
+    remote:
+      path: server/OkeyApi/Repository/AchievementsRepository.cs
+      branch: 7-ajout-de-nouveaux-end-points
+      repo: https://git.unistra.fr/okaybytes/okey.git
+    id: AchievementsRepository
+    path: Repository/AchievementsRepository.cs
+    startLine: 7
+  assemblies:
+  - OkeyApi
+  namespace: OkeyApi.Repository
+  syntax:
+    content: 'public class AchievementsRepository : IAchievementsRepository'
+    content.vb: Public Class AchievementsRepository Implements IAchievementsRepository
+  inheritance:
+  - System.Object
+  implements:
+  - OkeyApi.Interfaces.IAchievementsRepository
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: OkeyApi.Repository.AchievementsRepository._context
+  commentId: F:OkeyApi.Repository.AchievementsRepository._context
+  id: _context
+  parent: OkeyApi.Repository.AchievementsRepository
+  langs:
+  - csharp
+  - vb
+  name: _context
+  nameWithType: AchievementsRepository._context
+  fullName: OkeyApi.Repository.AchievementsRepository._context
+  type: Field
+  source:
+    remote:
+      path: server/OkeyApi/Repository/AchievementsRepository.cs
+      branch: 7-ajout-de-nouveaux-end-points
+      repo: https://git.unistra.fr/okaybytes/okey.git
+    id: _context
+    path: Repository/AchievementsRepository.cs
+    startLine: 9
+  assemblies:
+  - OkeyApi
+  namespace: OkeyApi.Repository
+  syntax:
+    content: public readonly ApplicationDBContext _context
+    return:
+      type: OkeyApi.Data.ApplicationDBContext
+    content.vb: Public ReadOnly _context As ApplicationDBContext
+- uid: OkeyApi.Repository.AchievementsRepository.#ctor(OkeyApi.Data.ApplicationDBContext)
+  commentId: M:OkeyApi.Repository.AchievementsRepository.#ctor(OkeyApi.Data.ApplicationDBContext)
+  id: '#ctor(OkeyApi.Data.ApplicationDBContext)'
+  parent: OkeyApi.Repository.AchievementsRepository
+  langs:
+  - csharp
+  - vb
+  name: AchievementsRepository(ApplicationDBContext)
+  nameWithType: AchievementsRepository.AchievementsRepository(ApplicationDBContext)
+  fullName: OkeyApi.Repository.AchievementsRepository.AchievementsRepository(OkeyApi.Data.ApplicationDBContext)
+  type: Constructor
+  source:
+    remote:
+      path: server/OkeyApi/Repository/AchievementsRepository.cs
+      branch: 7-ajout-de-nouveaux-end-points
+      repo: https://git.unistra.fr/okaybytes/okey.git
+    id: .ctor
+    path: Repository/AchievementsRepository.cs
+    startLine: 11
+  assemblies:
+  - OkeyApi
+  namespace: OkeyApi.Repository
+  syntax:
+    content: public AchievementsRepository(ApplicationDBContext context)
+    parameters:
+    - id: context
+      type: OkeyApi.Data.ApplicationDBContext
+    content.vb: Public Sub New(context As ApplicationDBContext)
+  overload: OkeyApi.Repository.AchievementsRepository.#ctor*
+  nameWithType.vb: AchievementsRepository.New(ApplicationDBContext)
+  fullName.vb: OkeyApi.Repository.AchievementsRepository.New(OkeyApi.Data.ApplicationDBContext)
+  name.vb: New(ApplicationDBContext)
+- uid: OkeyApi.Repository.AchievementsRepository.CreateAsync(OkeyApi.Models.Achievements)
+  commentId: M:OkeyApi.Repository.AchievementsRepository.CreateAsync(OkeyApi.Models.Achievements)
+  id: CreateAsync(OkeyApi.Models.Achievements)
+  parent: OkeyApi.Repository.AchievementsRepository
+  langs:
+  - csharp
+  - vb
+  name: CreateAsync(Achievements)
+  nameWithType: AchievementsRepository.CreateAsync(Achievements)
+  fullName: OkeyApi.Repository.AchievementsRepository.CreateAsync(OkeyApi.Models.Achievements)
+  type: Method
+  source:
+    remote:
+      path: server/OkeyApi/Repository/AchievementsRepository.cs
+      branch: 7-ajout-de-nouveaux-end-points
+      repo: https://git.unistra.fr/okaybytes/okey.git
+    id: CreateAsync
+    path: Repository/AchievementsRepository.cs
+    startLine: 16
+  assemblies:
+  - OkeyApi
+  namespace: OkeyApi.Repository
+  example: []
+  syntax:
+    content: public Task<Achievements?> CreateAsync(Achievements achievementsModel)
+    parameters:
+    - id: achievementsModel
+      type: OkeyApi.Models.Achievements
+    return:
+      type: System.Threading.Tasks.Task{OkeyApi.Models.Achievements}
+    content.vb: Public Function CreateAsync(achievementsModel As Achievements) As Task(Of Achievements)
+  overload: OkeyApi.Repository.AchievementsRepository.CreateAsync*
+  implements:
+  - OkeyApi.Interfaces.IAchievementsRepository.CreateAsync(OkeyApi.Models.Achievements)
+references:
+- uid: OkeyApi.Repository
+  commentId: N:OkeyApi.Repository
+  href: OkeyApi.html
+  name: OkeyApi.Repository
+  nameWithType: OkeyApi.Repository
+  fullName: OkeyApi.Repository
+  spec.csharp:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Repository
+    name: Repository
+    href: OkeyApi.Repository.html
+  spec.vb:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Repository
+    name: Repository
+    href: OkeyApi.Repository.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: OkeyApi.Interfaces.IAchievementsRepository
+  commentId: T:OkeyApi.Interfaces.IAchievementsRepository
+  parent: OkeyApi.Interfaces
+  href: OkeyApi.Interfaces.IAchievementsRepository.html
+  name: IAchievementsRepository
+  nameWithType: IAchievementsRepository
+  fullName: OkeyApi.Interfaces.IAchievementsRepository
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  name: MemberwiseClone()
+  nameWithType: object.MemberwiseClone()
+  fullName: object.MemberwiseClone()
+  nameWithType.vb: Object.MemberwiseClone()
+  fullName.vb: Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: OkeyApi.Interfaces
+  commentId: N:OkeyApi.Interfaces
+  href: OkeyApi.html
+  name: OkeyApi.Interfaces
+  nameWithType: OkeyApi.Interfaces
+  fullName: OkeyApi.Interfaces
+  spec.csharp:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Interfaces
+    name: Interfaces
+    href: OkeyApi.Interfaces.html
+  spec.vb:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Interfaces
+    name: Interfaces
+    href: OkeyApi.Interfaces.html
+- uid: OkeyApi.Data.ApplicationDBContext
+  commentId: T:OkeyApi.Data.ApplicationDBContext
+  parent: OkeyApi.Data
+  href: OkeyApi.Data.ApplicationDBContext.html
+  name: ApplicationDBContext
+  nameWithType: ApplicationDBContext
+  fullName: OkeyApi.Data.ApplicationDBContext
+- uid: OkeyApi.Data
+  commentId: N:OkeyApi.Data
+  href: OkeyApi.html
+  name: OkeyApi.Data
+  nameWithType: OkeyApi.Data
+  fullName: OkeyApi.Data
+  spec.csharp:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Data
+    name: Data
+    href: OkeyApi.Data.html
+  spec.vb:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Data
+    name: Data
+    href: OkeyApi.Data.html
+- uid: OkeyApi.Repository.AchievementsRepository.#ctor*
+  commentId: Overload:OkeyApi.Repository.AchievementsRepository.#ctor
+  href: OkeyApi.Repository.AchievementsRepository.html#OkeyApi_Repository_AchievementsRepository__ctor_OkeyApi_Data_ApplicationDBContext_
+  name: AchievementsRepository
+  nameWithType: AchievementsRepository.AchievementsRepository
+  fullName: OkeyApi.Repository.AchievementsRepository.AchievementsRepository
+  nameWithType.vb: AchievementsRepository.New
+  fullName.vb: OkeyApi.Repository.AchievementsRepository.New
+  name.vb: New
+- uid: OkeyApi.Repository.AchievementsRepository.CreateAsync*
+  commentId: Overload:OkeyApi.Repository.AchievementsRepository.CreateAsync
+  href: OkeyApi.Repository.AchievementsRepository.html#OkeyApi_Repository_AchievementsRepository_CreateAsync_OkeyApi_Models_Achievements_
+  name: CreateAsync
+  nameWithType: AchievementsRepository.CreateAsync
+  fullName: OkeyApi.Repository.AchievementsRepository.CreateAsync
+- uid: OkeyApi.Interfaces.IAchievementsRepository.CreateAsync(OkeyApi.Models.Achievements)
+  commentId: M:OkeyApi.Interfaces.IAchievementsRepository.CreateAsync(OkeyApi.Models.Achievements)
+  parent: OkeyApi.Interfaces.IAchievementsRepository
+  href: OkeyApi.Interfaces.IAchievementsRepository.html#OkeyApi_Interfaces_IAchievementsRepository_CreateAsync_OkeyApi_Models_Achievements_
+  name: CreateAsync(Achievements)
+  nameWithType: IAchievementsRepository.CreateAsync(Achievements)
+  fullName: OkeyApi.Interfaces.IAchievementsRepository.CreateAsync(OkeyApi.Models.Achievements)
+  spec.csharp:
+  - uid: OkeyApi.Interfaces.IAchievementsRepository.CreateAsync(OkeyApi.Models.Achievements)
+    name: CreateAsync
+    href: OkeyApi.Interfaces.IAchievementsRepository.html#OkeyApi_Interfaces_IAchievementsRepository_CreateAsync_OkeyApi_Models_Achievements_
+  - name: (
+  - uid: OkeyApi.Models.Achievements
+    name: Achievements
+    href: OkeyApi.Models.Achievements.html
+  - name: )
+  spec.vb:
+  - uid: OkeyApi.Interfaces.IAchievementsRepository.CreateAsync(OkeyApi.Models.Achievements)
+    name: CreateAsync
+    href: OkeyApi.Interfaces.IAchievementsRepository.html#OkeyApi_Interfaces_IAchievementsRepository_CreateAsync_OkeyApi_Models_Achievements_
+  - name: (
+  - uid: OkeyApi.Models.Achievements
+    name: Achievements
+    href: OkeyApi.Models.Achievements.html
+  - name: )
+- uid: OkeyApi.Models.Achievements
+  commentId: T:OkeyApi.Models.Achievements
+  parent: OkeyApi.Models
+  href: OkeyApi.Models.Achievements.html
+  name: Achievements
+  nameWithType: Achievements
+  fullName: OkeyApi.Models.Achievements
+- uid: System.Threading.Tasks.Task{OkeyApi.Models.Achievements}
+  commentId: T:System.Threading.Tasks.Task{OkeyApi.Models.Achievements}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  href: https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1
+  name: Task<Achievements>
+  nameWithType: Task<Achievements>
+  fullName: System.Threading.Tasks.Task<OkeyApi.Models.Achievements>
+  nameWithType.vb: Task(Of Achievements)
+  fullName.vb: System.Threading.Tasks.Task(Of OkeyApi.Models.Achievements)
+  name.vb: Task(Of Achievements)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1
+  - name: <
+  - uid: OkeyApi.Models.Achievements
+    name: Achievements
+    href: OkeyApi.Models.Achievements.html
+  - name: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: OkeyApi.Models.Achievements
+    name: Achievements
+    href: OkeyApi.Models.Achievements.html
+  - name: )
+- uid: OkeyApi.Models
+  commentId: N:OkeyApi.Models
+  href: OkeyApi.html
+  name: OkeyApi.Models
+  nameWithType: OkeyApi.Models
+  fullName: OkeyApi.Models
+  spec.csharp:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Models
+    name: Models
+    href: OkeyApi.Models.html
+  spec.vb:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Models
+    name: Models
+    href: OkeyApi.Models.html
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1
+  - name: <
+  - name: TResult
+  - name: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TResult
+  - name: )
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+  spec.csharp:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Threading
+    name: Threading
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading
+  - name: .
+  - uid: System.Threading.Tasks
+    name: Tasks
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.tasks
+  spec.vb:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Threading
+    name: Threading
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading
+  - name: .
+  - uid: System.Threading.Tasks
+    name: Tasks
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.threading.tasks

@@ -1,0 +1,54 @@
+### YamlMime:ManagedReference
+items:
+- uid: OkeyApi.Mappers
+  commentId: N:OkeyApi.Mappers
+  id: OkeyApi.Mappers
+  children:
+  - OkeyApi.Mappers.AchievementsMapper
+  - OkeyApi.Mappers.UtilisateurMappers
+  langs:
+  - csharp
+  - vb
+  name: OkeyApi.Mappers
+  nameWithType: OkeyApi.Mappers
+  fullName: OkeyApi.Mappers
+  type: Namespace
+  assemblies:
+  - OkeyApi
+references:
+- uid: OkeyApi.Mappers.AchievementsMapper
+  commentId: T:OkeyApi.Mappers.AchievementsMapper
+  parent: OkeyApi.Mappers
+  href: OkeyApi.Mappers.AchievementsMapper.html
+  name: AchievementsMapper
+  nameWithType: AchievementsMapper
+  fullName: OkeyApi.Mappers.AchievementsMapper
+- uid: OkeyApi.Mappers.UtilisateurMappers
+  commentId: T:OkeyApi.Mappers.UtilisateurMappers
+  parent: OkeyApi.Mappers
+  href: OkeyApi.Mappers.UtilisateurMappers.html
+  name: UtilisateurMappers
+  nameWithType: UtilisateurMappers
+  fullName: OkeyApi.Mappers.UtilisateurMappers
+- uid: OkeyApi.Mappers
+  commentId: N:OkeyApi.Mappers
+  href: OkeyApi.html
+  name: OkeyApi.Mappers
+  nameWithType: OkeyApi.Mappers
+  fullName: OkeyApi.Mappers
+  spec.csharp:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Mappers
+    name: Mappers
+    href: OkeyApi.Mappers.html
+  spec.vb:
+  - uid: OkeyApi
+    name: OkeyApi
+    href: OkeyApi.html
+  - name: .
+  - uid: OkeyApi.Mappers
+    name: Mappers
+    href: OkeyApi.Mappers.html

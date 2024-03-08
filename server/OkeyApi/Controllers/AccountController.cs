@@ -11,6 +11,13 @@ using OkeyApi.Dtos.Compte;
 using OkeyApi.Interfaces;
 using OkeyApi.Models;
 
+/*
+ * <summary>
+ * Classe Controller de la gestion des comptes utilisateurs
+ * Contient toute la logique des end-points de la forme: /compte/*
+ * </summary>
+ */
+
 [Route("okeyapi/compte")]
 [ApiController]
 public class AccountController : ControllerBase
@@ -21,6 +28,15 @@ public class AccountController : ControllerBase
     private readonly IUtilisateurRepository _utilisateurRepository;
     private readonly ApplicationDBContext _dbContext;
 
+    /// <summary>
+    /// Constructeur de la classe Account Controller
+    /// </summary>
+    /// <param name="utilisateurManager">Issu de l'API ASP.NET permettant de gérer la gestion des "Users".</param>
+    /// <param name="tokenService">Service de notre API permettant de gérer les JWT Tokens.</param>
+    /// <param name="signInManager">Issu de l'API ASP.NET permettant de gérer les l'inscription des "Users".</param>
+    /// <param name="utilisateurRepository">Issu de notre API fournissant des fonctions de recherche d'utilisateurs efficaces.</param>
+    /// <param name="dbContext">Issu de notre API permet l'écriture/lecture en Base de Donnée</param>
+    /// <remarks>Le constructeur est directement pris en charge par l'API, aucun appel n'est nécessaire.</remarks>
     public AccountController(
         UserManager<Utilisateur> utilisateurManager,
         ITokenService tokenService,
@@ -36,6 +52,11 @@ public class AccountController : ControllerBase
         this._dbContext = dbContext;
     }
 
+    /// <summary>
+    /// Route POST de l'API supportant la connexion utilisateur
+    /// </summary>
+    /// <param name="loginDto">Dto de Login contenant deux string: Username et Password. Nom d'utilisateur et Mot de Passe</param>
+    /// <returns>Retourne le contrat représentant l'action de la méthode, géré par le framework.</returns>
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
@@ -68,6 +89,11 @@ public class AccountController : ControllerBase
         );
     }
 
+    /// <summary>
+    /// Route POST de l'API supportant l'inscription d'utilisateur
+    /// </summary>
+    /// <param name="registerDto">Dto de Register contenant deux string: Username et Password. Nom d'utilisateur et Mot de Passe</param>
+    /// <returns>Retourne le contrat représentant l'action de la méthode, géré par le framework.</returns>
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
@@ -121,6 +147,11 @@ public class AccountController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Route GET de l'API permettant de recevoir la liste des utilisateurs inscrits avec Username et Elo Score
+    /// </summary>
+    /// <returns>Retourne le contrat représentant l'action de la méthode, géré par le framework.</returns>
+
     [HttpGet("watch")]
     public async Task<IActionResult> GetAll()
     {
@@ -132,6 +163,13 @@ public class AccountController : ControllerBase
         var usersDto = users.Select(s => s.ToPublicUtilisateurDto());
         return this.Ok(usersDto);
     }
+
+    /// <summary>
+    /// Route GET de l'API permettant de voir le profil d'un utilisateur
+    /// </summary>
+    /// <param name="username">Nom d'utilisateur</param>
+    /// <returns>Retourne le contrat représentant l'action de la méthode, géré par le framework.</returns>
+    /// <remarks>Si l'utilisateur met son token JWT (donc si il est connecté et sa session est valide), il peut observer ses propres achievements en regardant sont profil.</remarks>>
 
     [HttpGet("watch/{username}")]
     public async Task<IActionResult> GetByUsername([FromRoute] string username)
@@ -172,6 +210,10 @@ public class AccountController : ControllerBase
         return this.Ok(user.ToPublicUtilisateurDto());
     }
 
+    /// <summary>
+    /// Fonction qui reécupère les donnée de l'utilisateur en fonction du JWT dans le header de requête http.
+    /// </summary>
+    /// <returns>Retourne le contrat représentant l'action de la méthode, géré par le framework.</returns>
     private async Task<PrivateUtilisateurDto> GetCurrentUser()
     {
         var claims = this.HttpContext?.User?.Claims;

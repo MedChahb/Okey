@@ -1,0 +1,23 @@
+### YamlMime:ManagedReference
+items:
+- uid: OkeyApi.Dtos.Classement
+  commentId: N:OkeyApi.Dtos.Classement
+  id: OkeyApi.Dtos.Classement
+  children:
+  - OkeyApi.Dtos.Classement.ClassementDto
+  langs:
+  - csharp
+  - vb
+  name: OkeyApi.Dtos.Classement
+  nameWithType: OkeyApi.Dtos.Classement
+  fullName: OkeyApi.Dtos.Classement
+  type: Namespace
+  assemblies:
+  - OkeyApi
+references:
+- uid: OkeyApi.Dtos.Classement.ClassementDto
+  commentId: T:OkeyApi.Dtos.Classement.ClassementDto
+  href: OkeyApi.Dtos.Classement.ClassementDto.html
+  name: ClassementDto
+  nameWithType: ClassementDto
+  fullName: OkeyApi.Dtos.Classement.ClassementDto
