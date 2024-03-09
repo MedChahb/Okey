@@ -23,10 +23,15 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: ClassementController
     path: Controllers/ClassementController.cs
-    startLine: 6
+    startLine: 11
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
+  summary: >-
+    Classe Controller de la gestion du classement utilisateur
+
+    Contient toute la logique des end-points de la forme: /classement/*
+  example: []
   syntax:
     content: >-
       [Route("okeyapi/classement")]
@@ -251,15 +256,18 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: .ctor
     path: Controllers/ClassementController.cs
-    startLine: 12
+    startLine: 21
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
+  summary: Constructeur de la classe ClassementController
+  example: []
   syntax:
     content: public ClassementController(IUtilisateurRepository utilisateurRepository)
     parameters:
     - id: utilisateurRepository
       type: OkeyApi.Interfaces.IUtilisateurRepository
+      description: Issu de notre API fournissant des fonctions de recherche d'utilisateurs efficaces.
     content.vb: Public Sub New(utilisateurRepository As IUtilisateurRepository)
   overload: OkeyApi.Controllers.ClassementController.#ctor*
   nameWithType.vb: ClassementController.New(IUtilisateurRepository)
@@ -283,10 +291,13 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GetAll
     path: Controllers/ClassementController.cs
-    startLine: 17
+    startLine: 31
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
+  summary: Route GET de l'API permettant d'obtenir le classement général
+  remarks: "Le JSON obtenu contient: le nom d'utilisateur, son elo ainsi que son classement. Le classement est deéjà trié."
+  example: []
   syntax:
     content: >-
       [HttpGet]
@@ -294,6 +305,7 @@ items:
       public Task<IActionResult> GetAll()
     return:
       type: System.Threading.Tasks.Task{Microsoft.AspNetCore.Mvc.IActionResult}
+      description: Retourne le contrat représentant l'action de la méthode, géré par le framework.
     content.vb: >-
       <HttpGet>
 
@@ -321,10 +333,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GetById
     path: Controllers/ClassementController.cs
-    startLine: 50
+    startLine: 68
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
+  summary: Route GET de l'API permettant d'obtenir le classement d'un utilisateur identifié par son nom d'utilisateur
+  example: []
   syntax:
     content: >-
       [HttpGet("{username}")]
@@ -333,12 +347,14 @@ items:
     parameters:
     - id: username
       type: System.String
+      description: Nom d'utilisateur du joueur recherché
       attributes:
       - type: Microsoft.AspNetCore.Mvc.FromRouteAttribute
         ctor: Microsoft.AspNetCore.Mvc.FromRouteAttribute.#ctor
         arguments: []
     return:
       type: System.Threading.Tasks.Task{Microsoft.AspNetCore.Mvc.IActionResult}
+      description: Retourne le contrat représentant l'action de la méthode, géré par le framework.
     content.vb: >-
       <HttpGet("{username}")>
 
@@ -371,10 +387,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GetPaginate
     path: Controllers/ClassementController.cs
-    startLine: 88
+    startLine: 110
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
+  summary: Route GET de l'API permettant d'obtenir le top n (n un entier naturel supérieur à 0) général.
+  example: []
   syntax:
     content: >-
       [HttpGet("{pagination:int}")]
@@ -383,12 +401,14 @@ items:
     parameters:
     - id: pagination
       type: System.Int32
+      description: Entier supérieur à 0
       attributes:
       - type: Microsoft.AspNetCore.Mvc.FromRouteAttribute
         ctor: Microsoft.AspNetCore.Mvc.FromRouteAttribute.#ctor
         arguments: []
     return:
       type: System.Threading.Tasks.Task{Microsoft.AspNetCore.Mvc.IActionResult}
+      description: Retourne le contrat représentant l'action de la méthode, géré par le framework.
     content.vb: >-
       <HttpGet("{pagination:int}")>
 

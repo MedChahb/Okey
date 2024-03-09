@@ -20,10 +20,15 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: AchievementsController
     path: Controllers/AchievementsController.cs
-    startLine: 10
+    startLine: 13
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
+  summary: >-
+    Classe Controller de la table Achievements
+
+    Aucune route mise en place, set-up en cas d'ajout de end-points
+  example: []
   syntax:
     content: >-
       [Route("okeyapi/achievements")]
@@ -248,17 +253,21 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: .ctor
     path: Controllers/AchievementsController.cs
-    startLine: 17
+    startLine: 24
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
+  summary: Constructeur de la classe AchievementsController
+  example: []
   syntax:
     content: public AchievementsController(ApplicationDBContext context, IAchievementsRepository achievementsRepo)
     parameters:
     - id: context
       type: OkeyApi.Data.ApplicationDBContext
+      description: Issu de notre API permet l'écriture/lecture en Base de Donnée
     - id: achievementsRepo
       type: OkeyApi.Interfaces.IAchievementsRepository
+      description: Issu de notre API fournissant des fonctions de recherche des achievements efficaces.
     content.vb: Public Sub New(context As ApplicationDBContext, achievementsRepo As IAchievementsRepository)
   overload: OkeyApi.Controllers.AchievementsController.#ctor*
   nameWithType.vb: AchievementsController.New(ApplicationDBContext, IAchievementsRepository)

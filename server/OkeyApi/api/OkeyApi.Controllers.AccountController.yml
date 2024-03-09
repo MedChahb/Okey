@@ -24,10 +24,15 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: AccountController
     path: Controllers/AccountController.cs
-    startLine: 20
+    startLine: 18
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
+  summary: >-
+    Classe Controller de la gestion des comptes utilisateurs
+
+    Contient toute la logique des end-points de la forme: /compte/*
+  example: []
   syntax:
     content: >-
       [Route("okeyapi/compte")]
@@ -252,7 +257,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: .ctor
     path: Controllers/AccountController.cs
-    startLine: 39
+    startLine: 37
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
@@ -300,7 +305,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Login
     path: Controllers/AccountController.cs
-    startLine: 58
+    startLine: 57
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
@@ -402,7 +407,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GetAll
     path: Controllers/AccountController.cs
-    startLine: 151
+    startLine: 152
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
@@ -445,7 +450,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GetByUsername
     path: Controllers/AccountController.cs
-    startLine: 169
+    startLine: 171
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers

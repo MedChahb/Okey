@@ -11,12 +11,10 @@ using OkeyApi.Dtos.Compte;
 using OkeyApi.Interfaces;
 using OkeyApi.Models;
 
-/*
- * <summary>
- * Classe Controller de la gestion des comptes utilisateurs
- * Contient toute la logique des end-points de la forme: /compte/*
- * </summary>
- */
+///<summary>
+/// Classe Controller de la gestion des comptes utilisateurs
+/// Contient toute la logique des end-points de la forme: /compte/*
+/// </summary>
 
 [Route("okeyapi/compte")]
 [ApiController]

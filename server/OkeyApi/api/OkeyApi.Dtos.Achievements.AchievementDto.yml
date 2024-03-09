@@ -24,10 +24,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: AchievementDto
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 4
+    startLine: 6
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
+  summary: Dto du modèle Achievement
+  example: []
   syntax:
     content: public class AchievementDto
     content.vb: Public Class AchievementDto
@@ -59,7 +61,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Id
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 6
+    startLine: 8
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
@@ -88,7 +90,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Jouer5Parties
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 7
+    startLine: 9
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
@@ -117,7 +119,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GagnerUneFois
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 8
+    startLine: 10
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
@@ -146,7 +148,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: UserId
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 10
+    startLine: 12
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
@@ -175,7 +177,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Utilisateur
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 11
+    startLine: 13
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements

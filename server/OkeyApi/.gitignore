@@ -528,6 +528,7 @@ FodyWeavers.xsd
 # .NET Core build folders
 bin/
 obj/
+## Dossier de migrations ##
 Migrations/
 
 # Common node modules locations

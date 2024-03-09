@@ -22,10 +22,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: ApplicationDBContext
     path: Data/ApplicationDBContext.cs
-    startLine: 8
+    startLine: 11
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Data
+  summary: Classe permettant l'insertion des Modèles en Base de Donnée
+  example: []
   syntax:
     content: 'public class ApplicationDBContext : IdentityDbContext<Utilisateur>, IInfrastructure<IServiceProvider>, IDbContextDependencies, IDbSetCache, IDbContextPoolable, IResettableService, IDisposable, IAsyncDisposable'
     content.vb: Public Class ApplicationDBContext Inherits IdentityDbContext(Of Utilisateur) Implements IInfrastructure(Of IServiceProvider), IDbContextDependencies, IDbSetCache, IDbContextPoolable, IResettableService, IDisposable, IAsyncDisposable
@@ -126,15 +128,18 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: .ctor
     path: Data/ApplicationDBContext.cs
-    startLine: 8
+    startLine: 11
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Data
+  summary: Classe permettant l'insertion des Modèles en Base de Donnée
+  example: []
   syntax:
     content: public ApplicationDBContext(DbContextOptions dbContextOptions)
     parameters:
     - id: dbContextOptions
       type: Microsoft.EntityFrameworkCore.DbContextOptions
+      description: Paramètre propre au framework.
     content.vb: Public Sub New(dbContextOptions As DbContextOptions)
   overload: OkeyApi.Data.ApplicationDBContext.#ctor*
   nameWithType.vb: ApplicationDBContext.New(DbContextOptions)
@@ -158,7 +163,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Achievements
     path: Data/ApplicationDBContext.cs
-    startLine: 11
+    startLine: 14
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Data
@@ -187,7 +192,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: OnModelCreating
     path: Data/ApplicationDBContext.cs
-    startLine: 13
+    startLine: 16
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Data
