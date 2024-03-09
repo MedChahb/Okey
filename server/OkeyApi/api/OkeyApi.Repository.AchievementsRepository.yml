@@ -22,10 +22,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: AchievementsRepository
     path: Repository/AchievementsRepository.cs
-    startLine: 7
+    startLine: 9
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Repository
+  summary: Classe Repository des Achievements, permet l'implémentation d'écriture en Base de Donnée
+  example: []
   syntax:
     content: 'public class AchievementsRepository : IAchievementsRepository'
     content.vb: Public Class AchievementsRepository Implements IAchievementsRepository
@@ -59,10 +61,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: _context
     path: Repository/AchievementsRepository.cs
-    startLine: 9
+    startLine: 14
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Repository
+  summary: Contexte de la base de donnée
+  example: []
   syntax:
     content: public readonly ApplicationDBContext _context
     return:
@@ -86,15 +90,18 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: .ctor
     path: Repository/AchievementsRepository.cs
-    startLine: 11
+    startLine: 20
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Repository
+  summary: Constructeur de la classe
+  example: []
   syntax:
     content: public AchievementsRepository(ApplicationDBContext context)
     parameters:
     - id: context
       type: OkeyApi.Data.ApplicationDBContext
+      description: Contexte Base de Donnée
     content.vb: Public Sub New(context As ApplicationDBContext)
   overload: OkeyApi.Repository.AchievementsRepository.#ctor*
   nameWithType.vb: AchievementsRepository.New(ApplicationDBContext)
@@ -118,18 +125,21 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: CreateAsync
     path: Repository/AchievementsRepository.cs
-    startLine: 16
+    startLine: 30
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Repository
+  summary: Création asynchrone d'une ligne dans la table Achievement en Base de donnée
   example: []
   syntax:
     content: public Task<Achievements?> CreateAsync(Achievements achievementsModel)
     parameters:
     - id: achievementsModel
       type: OkeyApi.Models.Achievements
+      description: Modèle de l'Achievement à insérer
     return:
       type: System.Threading.Tasks.Task{OkeyApi.Models.Achievements}
+      description: Contrat permettant la validation des actions à faire, propre au système
     content.vb: Public Function CreateAsync(achievementsModel As Achievements) As Task(Of Achievements)
   overload: OkeyApi.Repository.AchievementsRepository.CreateAsync*
   implements:

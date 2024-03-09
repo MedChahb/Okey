@@ -21,10 +21,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: TokenService
     path: Service/TokenService.cs
-    startLine: 11
+    startLine: 14
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Service
+  summary: Classe Service Token, Service implémentant les JWT
+  example: []
   syntax:
     content: 'public class TokenService : ITokenService'
     content.vb: Public Class TokenService Implements ITokenService
@@ -58,15 +60,18 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: .ctor
     path: Service/TokenService.cs
-    startLine: 16
+    startLine: 30
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Service
+  summary: Constructeur de la classe
+  example: []
   syntax:
     content: public TokenService(IConfiguration config)
     parameters:
     - id: config
       type: Microsoft.Extensions.Configuration.IConfiguration
+      description: Configuration de l'API
     content.vb: Public Sub New(config As IConfiguration)
   overload: OkeyApi.Service.TokenService.#ctor*
   nameWithType.vb: TokenService.New(IConfiguration)
@@ -90,18 +95,21 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: CreateToken
     path: Service/TokenService.cs
-    startLine: 22
+    startLine: 41
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Service
+  summary: Création d'un Token pour un utilisateur
   example: []
   syntax:
     content: public string CreateToken(Utilisateur user)
     parameters:
     - id: user
       type: OkeyApi.Models.Utilisateur
+      description: Utilisateur associé au Token
     return:
       type: System.String
+      description: Token sous forme de chaîne de caractère
     content.vb: Public Function CreateToken(user As Utilisateur) As String
   overload: OkeyApi.Service.TokenService.CreateToken*
   implements:

@@ -21,10 +21,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: AchievementsMapper
     path: Mappers/AchievementsMapper.cs
-    startLine: 6
+    startLine: 9
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Mappers
+  summary: Classe Mapper pour faire passer un Dto de Achievement vers un Modèle Achievement
+  example: []
   syntax:
     content: public static class AchievementsMapper
     content.vb: Public Module AchievementsMapper
@@ -57,17 +59,21 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: ToAchievementDto
     path: Mappers/AchievementsMapper.cs
-    startLine: 8
+    startLine: 16
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Mappers
+  summary: Faire passer un modèle Achievement à un Dto Achievement
+  example: []
   syntax:
     content: public static AchievementDto ToAchievementDto(this Achievements achievementsModel)
     parameters:
     - id: achievementsModel
       type: OkeyApi.Models.Achievements
+      description: Modèle Achievement, remplis ou non.
     return:
       type: OkeyApi.Dtos.Achievements.AchievementDto
+      description: Le Dto attendu (AchievementDto)
     content.vb: Public Shared Function ToAchievementDto(achievementsModel As Achievements) As AchievementDto
   overload: OkeyApi.Mappers.AchievementsMapper.ToAchievementDto*
 - uid: OkeyApi.Mappers.AchievementsMapper.ToAchievementFromCreate(OkeyApi.Dtos.Achievements.CreateAchievementsDto,OkeyApi.Models.Utilisateur)
@@ -89,19 +95,24 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: ToAchievementFromCreate
     path: Mappers/AchievementsMapper.cs
-    startLine: 20
+    startLine: 34
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Mappers
+  summary: Faire passer un CreateAchievementDto pour une insertion en Base de Donnée
+  example: []
   syntax:
     content: public static Achievements ToAchievementFromCreate(this CreateAchievementsDto createAchievementsDto, Utilisateur utilisateur)
     parameters:
     - id: createAchievementsDto
       type: OkeyApi.Dtos.Achievements.CreateAchievementsDto
+      description: Dto de création d'achievement
     - id: utilisateur
       type: OkeyApi.Models.Utilisateur
+      description: Utilisateur associé
     return:
       type: OkeyApi.Models.Achievements
+      description: Modele Achievement complet prêt pour l'insertion.
     content.vb: Public Shared Function ToAchievementFromCreate(createAchievementsDto As CreateAchievementsDto, utilisateur As Utilisateur) As Achievements
   overload: OkeyApi.Mappers.AchievementsMapper.ToAchievementFromCreate*
 references:

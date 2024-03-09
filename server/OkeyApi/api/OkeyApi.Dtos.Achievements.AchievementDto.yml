@@ -24,7 +24,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: AchievementDto
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 6
+    startLine: 7
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
@@ -61,10 +61,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Id
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 8
+    startLine: 12
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
+  summary: Id de l'Achievement
+  example: []
   syntax:
     content: public int Id { get; set; }
     parameters: []
@@ -90,10 +92,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Jouer5Parties
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 9
+    startLine: 17
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
+  summary: Attribut qui repésente l'achievement "Jouer 5 parties"
+  example: []
   syntax:
     content: public bool Jouer5Parties { get; set; }
     parameters: []
@@ -119,10 +123,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GagnerUneFois
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 10
+    startLine: 22
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
+  summary: Attribut qui repreésente l'achievement "Gagner une fois"
+  example: []
   syntax:
     content: public bool GagnerUneFois { get; set; }
     parameters: []
@@ -148,10 +154,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: UserId
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 12
+    startLine: 27
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
+  summary: Attribut permettant de stocker le userId en foreign key dans la base de donnée
+  example: []
   syntax:
     content: public string UserId { get; set; }
     parameters: []
@@ -177,10 +185,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Utilisateur
     path: Dtos/Achievements/AchievementDto.cs
-    startLine: 13
+    startLine: 32
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
+  summary: Attribut repreésentant le joueur associé (propre au framework)
+  example: []
   syntax:
     content: public Utilisateur Utilisateur { get; set; }
     parameters: []

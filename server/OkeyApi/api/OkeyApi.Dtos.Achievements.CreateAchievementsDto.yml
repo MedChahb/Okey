@@ -22,10 +22,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: CreateAchievementsDto
     path: Dtos/Achievements/CreateAchievementsDto.cs
-    startLine: 4
+    startLine: 7
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
+  summary: Dto propre à la l'insertion d'un achievement en Base de donneée
+  example: []
   syntax:
     content: public class CreateAchievementsDto
     content.vb: Public Class CreateAchievementsDto
@@ -59,10 +61,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Id
     path: Dtos/Achievements/CreateAchievementsDto.cs
-    startLine: 6
+    startLine: 12
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
+  summary: Id de l'achievement
+  example: []
   syntax:
     content: public int Id { get; set; }
     parameters: []
@@ -88,10 +92,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: UserId
     path: Dtos/Achievements/CreateAchievementsDto.cs
-    startLine: 7
+    startLine: 17
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
+  summary: UserId associé aux achievements
+  example: []
   syntax:
     content: public string UserId { get; set; }
     parameters: []
@@ -117,10 +123,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Utilisateur
     path: Dtos/Achievements/CreateAchievementsDto.cs
-    startLine: 8
+    startLine: 22
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Achievements
+  summary: Attribut propre au framework
+  example: []
   syntax:
     content: public Utilisateur Utilisateur { get; set; }
     parameters: []

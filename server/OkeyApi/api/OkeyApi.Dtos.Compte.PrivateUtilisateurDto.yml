@@ -22,10 +22,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: PrivateUtilisateurDto
     path: Dtos/Compte/PrivateUtilisateurDto.cs
-    startLine: 2
+    startLine: 5
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Compte
+  summary: Dto pour un utilisateur connecté pouvant accéder a ses données
+  example: []
   syntax:
     content: public class PrivateUtilisateurDto
     content.vb: Public Class PrivateUtilisateurDto
@@ -57,10 +59,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Username
     path: Dtos/Compte/PrivateUtilisateurDto.cs
-    startLine: 4
+    startLine: 10
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Compte
+  summary: Nom d'utilisateur
+  example: []
   syntax:
     content: public string? Username { get; set; }
     parameters: []
@@ -86,10 +90,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Elo
     path: Dtos/Compte/PrivateUtilisateurDto.cs
-    startLine: 5
+    startLine: 15
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Compte
+  summary: Elo Score
+  example: []
   syntax:
     content: public int Elo { get; set; }
     parameters: []
@@ -115,10 +121,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Achievements
     path: Dtos/Compte/PrivateUtilisateurDto.cs
-    startLine: 6
+    startLine: 20
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Compte
+  summary: Liste des achievements de l'utilisateur
+  example: []
   syntax:
     content: public List<bool> Achievements { get; set; }
     parameters: []

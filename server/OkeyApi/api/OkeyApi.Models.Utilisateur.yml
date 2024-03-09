@@ -20,10 +20,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Utilisateur
     path: Models/Utilisateur.cs
-    startLine: 4
+    startLine: 7
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Models
+  summary: Classe modèle utilisateur
+  example: []
   syntax:
     content: 'public class Utilisateur : IdentityUser'
     content.vb: Public Class Utilisateur Inherits IdentityUser
@@ -75,10 +77,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Elo
     path: Models/Utilisateur.cs
-    startLine: 6
+    startLine: 12
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Models
+  summary: Permet de représenter l'Elo Score du joueur
+  example: []
   syntax:
     content: public int Elo { get; set; }
     parameters: []

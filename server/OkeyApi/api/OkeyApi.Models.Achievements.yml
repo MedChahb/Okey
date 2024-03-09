@@ -24,10 +24,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Achievements
     path: Models/Achievements.cs
-    startLine: 2
+    startLine: 4
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Models
+  summary: Classe modèle des Achievements
+  example: []
   syntax:
     content: public class Achievements
     content.vb: Public Class Achievements
@@ -61,10 +63,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Id
     path: Models/Achievements.cs
-    startLine: 4
+    startLine: 9
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Models
+  summary: Id de l'Achievement
+  example: []
   syntax:
     content: public int Id { get; set; }
     parameters: []
@@ -90,10 +94,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Jouer5Parties
     path: Models/Achievements.cs
-    startLine: 6
+    startLine: 14
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Models
+  summary: Attribut qui repésente l'achievement "Jouer 5 parties"
+  example: []
   syntax:
     content: public bool Jouer5Parties { get; set; }
     parameters: []
@@ -119,10 +125,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GagnerUneFois
     path: Models/Achievements.cs
-    startLine: 7
+    startLine: 19
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Models
+  summary: Attribut qui repreésente l'achievement "Gagner une fois"
+  example: []
   syntax:
     content: public bool GagnerUneFois { get; set; }
     parameters: []
@@ -148,10 +156,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: UserId
     path: Models/Achievements.cs
-    startLine: 9
+    startLine: 24
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Models
+  summary: Attribut permettant de stocker le userId en foreign key dans la base de donnée
+  example: []
   syntax:
     content: public string UserId { get; set; }
     parameters: []
@@ -177,10 +187,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Utilisateur
     path: Models/Achievements.cs
-    startLine: 10
+    startLine: 29
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Models
+  summary: Attribut repreésentant le joueur associé (propre au framework)
+  example: []
   syntax:
     content: public Utilisateur Utilisateur { get; set; }
     parameters: []

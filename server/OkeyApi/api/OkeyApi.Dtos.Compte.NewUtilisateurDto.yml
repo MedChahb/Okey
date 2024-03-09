@@ -21,10 +21,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: NewUtilisateurDto
     path: Dtos/Compte/NewUtilisateurDto.cs
-    startLine: 2
+    startLine: 5
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Compte
+  summary: Dto d'un utilisateur inscrit/connecté
+  example: []
   syntax:
     content: public class NewUtilisateurDto
     content.vb: Public Class NewUtilisateurDto
@@ -56,10 +58,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: UserName
     path: Dtos/Compte/NewUtilisateurDto.cs
-    startLine: 4
+    startLine: 10
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Compte
+  summary: Nom d'utilisateur
+  example: []
   syntax:
     content: public string? UserName { get; set; }
     parameters: []
@@ -85,10 +89,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Token
     path: Dtos/Compte/NewUtilisateurDto.cs
-    startLine: 5
+    startLine: 15
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Compte
+  summary: Token JWT à garder pour soi
+  example: []
   syntax:
     content: public string? Token { get; set; }
     parameters: []

@@ -21,10 +21,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: RegisterDto
     path: Dtos/Compte/RegisterDto.cs
-    startLine: 4
+    startLine: 7
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Compte
+  summary: Dto pour l'inscription utilisateur
+  example: []
   syntax:
     content: public class RegisterDto
     content.vb: Public Class RegisterDto
@@ -56,10 +58,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Username
     path: Dtos/Compte/RegisterDto.cs
-    startLine: 6
+    startLine: 12
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Compte
+  summary: Nom d'utilisateur
+  example: []
   syntax:
     content: >-
       [Required]
@@ -95,10 +99,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: Password
     path: Dtos/Compte/RegisterDto.cs
-    startLine: 9
+    startLine: 18
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Dtos.Compte
+  summary: Mot de passe
+  example: []
   syntax:
     content: >-
       [Required]

@@ -21,10 +21,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: IUtilisateurRepository
     path: Interfaces/IUtilisateurRepository.cs
-    startLine: 4
+    startLine: 7
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Interfaces
+  summary: Interface permettant la conception de méthodes propres aux Utilisateurs en Base de Donneées
+  example: []
   syntax:
     content: public interface IUtilisateurRepository
     content.vb: Public Interface IUtilisateurRepository
@@ -46,14 +48,17 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GetAllAsync
     path: Interfaces/IUtilisateurRepository.cs
-    startLine: 6
+    startLine: 13
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Interfaces
+  summary: Methode asynchrone qui permet la récupération de tout les utilisateurs
+  example: []
   syntax:
     content: Task<List<Utilisateur>> GetAllAsync()
     return:
       type: System.Threading.Tasks.Task{System.Collections.Generic.List{OkeyApi.Models.Utilisateur}}
+      description: Contrat permettant de notifier le systeme de l'execution de la fonction
     content.vb: Function GetAllAsync() As Task(Of List(Of Utilisateur))
   overload: OkeyApi.Interfaces.IUtilisateurRepository.GetAllAsync*
 - uid: OkeyApi.Interfaces.IUtilisateurRepository.GetByUsername(System.String)
@@ -74,17 +79,21 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GetByUsername
     path: Interfaces/IUtilisateurRepository.cs
-    startLine: 7
+    startLine: 20
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Interfaces
+  summary: Methode asynchrone qui permet la récupération d'un utilisateur
+  example: []
   syntax:
     content: Task<Utilisateur?> GetByUsername(string username)
     parameters:
     - id: username
       type: System.String
+      description: Nom d'utilisateur de l'utilisateur intéressé
     return:
       type: System.Threading.Tasks.Task{OkeyApi.Models.Utilisateur}
+      description: Contrat permettant de notifier le systeme de l'execution de la fonction
     content.vb: Function GetByUsername(username As String) As Task(Of Utilisateur)
   overload: OkeyApi.Interfaces.IUtilisateurRepository.GetByUsername*
   nameWithType.vb: IUtilisateurRepository.GetByUsername(String)

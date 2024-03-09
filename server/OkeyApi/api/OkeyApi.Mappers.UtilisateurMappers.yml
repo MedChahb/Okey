@@ -21,10 +21,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: UtilisateurMappers
     path: Mappers/UtilisateurMappers.cs
-    startLine: 5
+    startLine: 7
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Mappers
+  summary: Classe Mapper pour faire passer un Dto de Utilisateur vers un Modèle Utilisateur
+  example: []
   syntax:
     content: public static class UtilisateurMappers
     content.vb: Public Module UtilisateurMappers
@@ -57,17 +59,21 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: ToPublicUtilisateurDto
     path: Mappers/UtilisateurMappers.cs
-    startLine: 7
+    startLine: 14
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Mappers
+  summary: Methode qui rend un permet d'obtenir les données à afficher publiquement
+  example: []
   syntax:
     content: public static PublicUtilisateurDto ToPublicUtilisateurDto(this Utilisateur userModel)
     parameters:
     - id: userModel
       type: OkeyApi.Models.Utilisateur
+      description: Modèle utilisateur utilisé pour l'implémentation des méthodes
     return:
       type: OkeyApi.Dtos.Compte.PublicUtilisateurDto
+      description: Dto d'un profil public
     content.vb: Public Shared Function ToPublicUtilisateurDto(userModel As Utilisateur) As PublicUtilisateurDto
   overload: OkeyApi.Mappers.UtilisateurMappers.ToPublicUtilisateurDto*
 - uid: OkeyApi.Mappers.UtilisateurMappers.ToPrivateUtilisateurDto(OkeyApi.Models.Utilisateur)
@@ -89,17 +95,21 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: ToPrivateUtilisateurDto
     path: Mappers/UtilisateurMappers.cs
-    startLine: 12
+    startLine: 23
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Mappers
+  summary: Methode qui rend un permet d'obtenir les données privée à afficher
+  example: []
   syntax:
     content: public static PrivateUtilisateurDto ToPrivateUtilisateurDto(this Utilisateur userModel)
     parameters:
     - id: userModel
       type: OkeyApi.Models.Utilisateur
+      description: Modèle utilisateur utilisé pour l'implémentation des méthodes
     return:
       type: OkeyApi.Dtos.Compte.PrivateUtilisateurDto
+      description: Dto d'un profil privé
     content.vb: Public Shared Function ToPrivateUtilisateurDto(userModel As Utilisateur) As PrivateUtilisateurDto
   overload: OkeyApi.Mappers.UtilisateurMappers.ToPrivateUtilisateurDto*
 references:

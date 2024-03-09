@@ -333,7 +333,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GetById
     path: Controllers/ClassementController.cs
-    startLine: 68
+    startLine: 69
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers
@@ -387,7 +387,7 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: GetPaginate
     path: Controllers/ClassementController.cs
-    startLine: 110
+    startLine: 112
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Controllers

@@ -20,10 +20,12 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: ITokenService
     path: Interfaces/ITokenService.cs
-    startLine: 4
+    startLine: 7
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Interfaces
+  summary: Interface permettant la conception de méthodes propres aux token
+  example: []
   syntax:
     content: public interface ITokenService
     content.vb: Public Interface ITokenService
@@ -45,17 +47,21 @@ items:
       repo: https://git.unistra.fr/okaybytes/okey.git
     id: CreateToken
     path: Interfaces/ITokenService.cs
-    startLine: 6
+    startLine: 14
   assemblies:
   - OkeyApi
   namespace: OkeyApi.Interfaces
+  summary: Méthode permettant la création asynchrone d'un token
+  example: []
   syntax:
     content: string CreateToken(Utilisateur utilisateur)
     parameters:
     - id: utilisateur
       type: OkeyApi.Models.Utilisateur
+      description: Modèle qui va etre inscrit en Base de Donnée
     return:
       type: System.String
+      description: Token sous forme de chaîne de caractères
     content.vb: Function CreateToken(utilisateur As Utilisateur) As String
   overload: OkeyApi.Interfaces.ITokenService.CreateToken*
 references:
