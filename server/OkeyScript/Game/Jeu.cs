@@ -22,6 +22,9 @@ namespace Okey.Game
         private Tuile[] Okays = new Okay[2];
         private List<Tuile> PacketTuile = new List<Tuile>();
         private Tuile TuileCentre;
+        private bool JeterTuileAppelee = false;
+
+
         public Jeu(int id, Joueur[] joueurs, Stack<Tuile> pioche)
         {
             this.id = id;
@@ -150,8 +153,51 @@ namespace Okey.Game
 
             }
         }
-    }
 
+        public void JeterTuile(Tuile tuile)
+        {
+            //jeter une tuile
 
-    
+            JeterTuileAppelee = true;
+        }
+
+        public void FinTour(Joueur joueur)
+        {
+            if ( /*(Timer == 0) ||*/
+                JeterTuileAppelee == true
+            )
+            {
+                ChangerTour(joueur);
+            }
+        }
+
+        public void ChangerTour(Joueur joueurActuel)
+        {
+            // Le joueur actuel n'a plus le tour
+            joueurActuel.EstPlusTour();
+
+            // Trouver l'index du joueur actuel dans la liste
+            int indexJoueurActuel = Array.IndexOf(joueurs, joueurActuel);
+
+            // Choisir le joueur suivant
+            int indexJoueurSuivant = (indexJoueurActuel + 1) % joueurs.Length;
+            Joueur joueurSuivant = joueurs[indexJoueurSuivant];
+
+            // Le joueur suivant a maintenant le tour
+            joueurSuivant.EstTour();
+
+            // Après avoir changé le tour, signalez le changement aux joueurs
+            SignalChangementTour(joueurSuivant);
+        }
+
+        public void SignalChangementTour(Joueur joueurTour)
+        {
+            foreach (var joueur in joueurs)
+            {
+                // Envoie un message au joueur indiquant si c'est son tour
+                joueur.EnvoyerMessageTour(joueur == joueurTour);
+            }
+        } 
+
+    } 
 }
