@@ -44,6 +44,26 @@ namespace Okey
             Console.WriteLine(j.GetPacketTuile().Count); // 105 tuiles apres la distribution
             j.DistibuerTuile(); // on commence
 
+            //le joueur pioche
+            if (j.getJoueurActuel().CountTuileDansChevalet() == 14)
+            {
+                //acces a piocher true
+                // reset le timer
+                // if(timer ==0){
+                //     piocherTuile(random);
+                // }
+            }
+            //le joueur jette
+            if (j.getJoueurActuel().CountTuileDansChevalet() == 15)
+            {
+                //acces a jeter true
+                // reset le timer
+                // if(timer ==0){
+                //     jeterTuile(random);
+                //FinTour();
+                // }
+            }
+
             Console.WriteLine(j.getJoueurActuel());
             j.AfficheChevaletJoueur();
             Console.WriteLine(j.GetPacketTuile().Count); // 48 tuiles avant la disibution
