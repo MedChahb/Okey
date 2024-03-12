@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Okey.Game;
 using Okey.Joueurs;
 using Okey.Tuiles;
-using Okey.Game;
 
 namespace Okey
 {
@@ -13,7 +13,13 @@ namespace Okey
     {
         public static void Main(string[] args)
         {
-            Joueur[] Joueurs = { new Humain(1, "mohammed", 800), new Humain(2, "Emin", 100), new Bot(100), new Bot(50) };
+            Joueur[] Joueurs =
+            {
+                new Humain(1, "mohammed", 800),
+                new Humain(2, "Emin", 100),
+                new Bot(100),
+                new Bot(50)
+            };
             Jeu j = new Jeu(1, Joueurs, new Stack<Tuile>());
 
             /*Console.WriteLine("la tuile du centre : " + j.GetTuileCentre());
@@ -32,11 +38,34 @@ namespace Okey
             }*/
             //105 tuile dans le packet(avec joker et okay) + la Tuile au centre -> (pas de redondance)
 
-            
 
-            j.AfficheChevaletJoueur(); Console.WriteLine(j.GetPacketTuile().Count); // 105 tuiles apres la distribution
+
+            j.AfficheChevaletJoueur();
+            Console.WriteLine(j.GetPacketTuile().Count); // 105 tuiles apres la distribution
             j.DistibuerTuile();
-            j.AfficheChevaletJoueur(); Console.WriteLine(j.GetPacketTuile().Count); // 48 tuiles avant la disibution
+
+            //le joueur pioche
+            if (j.getJoueurActuel().CountTuileDansChevalet() == 14)
+            {
+                //acces a piocher true
+                // reset le timer
+                // if(timer ==0){
+                //     piocherTuile(random);
+                // }
+            }
+            //le joueur jette
+            if (j.getJoueurActuel().CountTuileDansChevalet() == 15)
+            {
+                //acces a jeter true
+                // reset le timer
+                // if(timer ==0){
+                //     jeterTuile(random);
+                FinTour();
+                // }
+            }
+
+            j.AfficheChevaletJoueur();
+            Console.WriteLine(j.GetPacketTuile().Count); // 48 tuiles avant la disibution
             // jouuer qui a 15tuile est bien c'est tour à jouer
         }
     }
