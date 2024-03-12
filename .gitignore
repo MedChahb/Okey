@@ -1517,4 +1517,4 @@ FodyWeavers.xsd
 !/.config/dotnet-tools.json
 **/.docker/
 .python-version
-!client/OkeyClient/**/*.meta
+*.orig
