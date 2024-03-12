@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
 using Okey.Joueurs;
 using Okey.Tuiles;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -18,13 +17,15 @@ namespace Okey.Game
         private double MMR;
         private Stack<Tuile> pioche = new Stack<Tuile>();
 
-        //Timer timer = new Timer(45000); // L'intervalle est en millisecondes, donc 45 secondes = 45000 millisecondes
-
+        //Timer timer;
         private bool etat; // false : in game
         private Tuile[] Jokers = new Joker[2];
         private Tuile[] Okays = new Okay[2];
         private List<Tuile> PacketTuile = new List<Tuile>();
         private Tuile TuileCentre;
+        private bool JeterTuileAppelee = false;
+        private Joueur JoueurActuel;
+        private Tuile TuileJete;
 
         public Jeu(int id, Joueur[] joueurs, Stack<Tuile> pioche)
         {
@@ -123,6 +124,78 @@ namespace Okey.Game
             this.joueurs[randT % 4].Ajouer(); // qui recoit la 15 Tuile jouera le premier
 
             // ce qui reste dans PacketTuile -> this.Pioche ???
+            //this.pioche = this.PacketTuile;
+
+            this.JoueurActuel = this.joueurs[randT % 4];
+        }
+
+        public void AfficheChevaletJoueur()
+        {
+            Joueur[] joueurs = this.GetJoueurs();
+
+            foreach (Joueur pl in joueurs)
+            {
+                Console.WriteLine(System.String.Format("Chevalet du {0} : ", pl));
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        Tuile t = pl.GetChevalet()[i][j];
+                        if (t != null)
+                            Console.Write("|" + t);
+                        else
+                            Console.Write("|(        )");
+                    }
+                    Console.Write("|\n");
+                }
+                Console.WriteLine("");
+            }
+        }
+
+        public void JeterTuile(Tuile tuile)
+        {
+            //jeter une tuile
+
+            JeterTuileAppelee = true;
+        }
+
+        public void FinTour(Joueur joueur)
+        {
+            if ( /*(Timer == 0) ||*/
+                JeterTuileAppelee == true
+            )
+            {
+                ChangerTour();
+            }
+        }
+
+        public void ChangerTour()
+        {
+            // Le joueur actuel n'a plus le tour
+            JoueurActuel.EstPlusTour();
+
+            // Trouver l'index du joueur actuel dans la liste
+            int indexJoueurActuel = Array.IndexOf(joueurs, JoueurActuel);
+
+            // Choisir le joueur suivant
+            int indexJoueurSuivant = (indexJoueurActuel + 1) % joueurs.Length;
+            Joueur joueurSuivant = joueurs[indexJoueurSuivant];
+
+            // Le joueur suivant a maintenant le tour
+            joueurSuivant.EstTour();
+            this.JoueurActuel = joueurSuivant;
+
+            // Après avoir changé le tour, signalez le changement aux joueurs
+            SignalChangementTour(joueurSuivant);
+        }
+
+        public void SignalChangementTour(Joueur joueurTour)
+        {
+            foreach (var joueur in joueurs)
+            {
+                // Envoie un message au joueur indiquant si c'est son tour
+                joueur.EnvoyerMessageTour(joueur == joueurTour);
+            }
         }
 
         public List<Tuile> GetPacketTuile()
@@ -150,74 +223,14 @@ namespace Okey.Game
             return this.joueurs;
         }
 
-        public void AfficheChevaletJoueur()
+        public void SetTuileJete(Tuile t)
         {
-            Joueur[] joueurs = this.GetJoueurs();
-
-            foreach (Joueur pl in joueurs)
-            {
-                Console.WriteLine(System.String.Format("Chevalet du {0} : ", pl));
-                for (int i = 0; i < 2; i++)
-                {
-                    for (int j = 0; j < 8; j++)
-                    {
-                        Tuile t = pl.GetChevalet()[i][j];
-                        if (t != null)
-                            Console.Write("|" + t);
-                        else
-                            Console.Write("|(        )");
-                    }
-                    Console.Write("|\n");
-                }
-                Console.WriteLine("");
-            }
+            this.TuileJete = t;
         }
 
-        private bool JeterTuileAppelee = false;
-
-        public void JeterTuile(Tuile tuile)
+        public Joueur getJoueurActuel()
         {
-            //jeter une tuile
-
-            JeterTuileAppelee = true;
-        }
-
-        public void FinTour(Joueur joueur)
-        {
-            if ( /*(Timer == 0) ||*/
-                JeterTuileAppelee == true
-            )
-            {
-                ChangerTour(joueur);
-            }
-        }
-
-        public void ChangerTour(Joueur joueurActuel)
-        {
-            // Le joueur actuel n'a plus le tour
-            joueurActuel.EstPlusTour();
-
-            // Trouver l'index du joueur actuel dans la liste
-            int indexJoueurActuel = Array.IndexOf(joueurs, joueurActuel);
-
-            // Choisir le joueur suivant
-            int indexJoueurSuivant = (indexJoueurActuel + 1) % joueurs.Length;
-            Joueur joueurSuivant = joueurs[indexJoueurSuivant];
-
-            // Le joueur suivant a maintenant le tour
-            joueurSuivant.EstTour();
-
-            // Après avoir changé le tour, signalez le changement aux joueurs
-            SignalChangementTour(joueurSuivant);
-        }
-
-        public void SignalChangementTour(Joueur joueurTour)
-        {
-            foreach (var joueur in joueurs)
-            {
-                // Envoie un message au joueur indiquant si c'est son tour
-                joueur.EnvoyerMessageTour(joueur == joueurTour);
-            }
+            return this.JoueurActuel;
         }
     }
 }

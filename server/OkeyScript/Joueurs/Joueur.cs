@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Okey.Tuiles;
+using Okey.Game;
 
 namespace Okey.Joueurs
 {
@@ -14,6 +15,7 @@ namespace Okey.Joueurs
         protected List<List<Tuile>> chevalet = new List<List<Tuile>>(); // 15tuile + 1case vide
         public Boolean Tour;
         protected Boolean Gagnant;
+        protected Stack<Tuile> defausse = new Stack<Tuile>();
 
         public Joueur(int id, String Name)
         {
@@ -44,8 +46,6 @@ namespace Okey.Joueurs
 
         public void Piocher() { }
 
-        public void JeterTuile(Tuile T) { }
-
         public void PassTour()
         {
             this.Tour = false;
@@ -73,6 +73,19 @@ namespace Okey.Joueurs
             this.Tour = true;
         }
 
+        //returns a boolean if exists and the index of the list where it does [0-1]
+        private (bool, int) FindTuileInChevalet(Tuile t)
+        {
+            for (int i = 0; i < this.chevalet.Count; i++)
+            {
+                if (this.chevalet[i].Contains(t))
+                {
+                    return (true, i);
+                }
+            }
+            return (false, -1);
+        }
+
         public void AjoutTuileChevalet(Tuile t)
         {
             for (int j = 0; j < 2; j++)
@@ -88,6 +101,40 @@ namespace Okey.Joueurs
             }
         }
 
+        public void JeterTuile(Tuile t, Jeu j) // a discuter les parametres
+        {
+            //bloquer la pioche (condition lors de l'appel en Jeu.cs)
+            //gerer le timer 
+            (bool exist, int ListIndex) = FindTuileInChevalet(t);
+            if (exist && this.Tour)
+            {
+                this.chevalet[ListIndex].Remove(t); // elever la tuile du chevalet
+                j.SetTuileJete(t);                  // set dans Jeu (prochain joueur peut l'a pioché )
+                t.SetDefause();                     // devient defausse
+                this.defausse.Push(t);              // la poser dans la defausse
+                this.EstPlusTour();                 // plus son tour
+            }
+            else
+            {
+                Console.WriteLine("error in JeterTuile. (Tuile pas dans le chevalet)");
+            }
+        }
+
+        public int CountTuileDansChevalet()
+        {
+            int res = 0;
+            for(int j =0; j<2; j++)
+            {
+                for (int i = 0; i< 8; i++)
+                {
+                    if (this.chevalet[j][i]!= null)
+                    {
+                        res++;
+                    }
+                }
+            }
+            return res;
+        }
         public void EnvoyerMessage(string message)
         {
             // Utilisez ici votre mécanisme réel de communication avec le client Unity (WebSocket, HTTP, etc.)
