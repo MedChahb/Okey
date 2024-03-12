@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Okey.Tuiles;
 using Okey.Game;
+using Okey.Tuiles;
 
 namespace Okey.Joueurs
 {
@@ -15,6 +15,9 @@ namespace Okey.Joueurs
         protected List<List<Tuile>> chevalet = new List<List<Tuile>>(); // 15tuile + 1case vide
         public Boolean Tour;
         protected Boolean Gagnant;
+
+        protected bool peut_piocher = false;
+        protected bool peut_jeter = false;
         protected Stack<Tuile> defausse = new Stack<Tuile>();
 
         public Joueur(int id, String Name)
@@ -104,15 +107,15 @@ namespace Okey.Joueurs
         public void JeterTuile(Tuile t, Jeu j) // a discuter les parametres
         {
             //bloquer la pioche (condition lors de l'appel en Jeu.cs)
-            //gerer le timer 
+            //gerer le timer
             (bool exist, int ListIndex) = FindTuileInChevalet(t);
             if (exist && this.Tour)
             {
                 this.chevalet[ListIndex].Remove(t); // elever la tuile du chevalet
-                j.SetTuileJete(t);                  // set dans Jeu (prochain joueur peut l'a pioché )
-                t.SetDefause();                     // devient defausse
-                this.defausse.Push(t);              // la poser dans la defausse
-                this.EstPlusTour();                 // plus son tour
+                j.SetTuileJete(t); // set dans Jeu (prochain joueur peut l'a pioché )
+                t.SetDefause(); // devient defausse
+                this.defausse.Push(t); // la poser dans la defausse
+                this.EstPlusTour(); // plus son tour
             }
             else
             {
@@ -120,14 +123,22 @@ namespace Okey.Joueurs
             }
         }
 
+        // public void PiocherTuile(Stack<Tuile> PileAPiochee){
+        //     if(PileAPiochee.Count == 0){
+        //         Console.WriteLine("La pile est vide,impossible a piocher");
+        //     }
+        //     Tuile tuileAPiochee = PileAPiochee.Pop();
+        //     this.AjoutTuileChevalet(tuileAPiochee);
+        // }
+
         public int CountTuileDansChevalet()
         {
             int res = 0;
-            for(int j =0; j<2; j++)
+            for (int j = 0; j < 2; j++)
             {
-                for (int i = 0; i< 8; i++)
+                for (int i = 0; i < 8; i++)
                 {
-                    if (this.chevalet[j][i]!= null)
+                    if (this.chevalet[j][i] != null)
                     {
                         res++;
                     }
@@ -135,6 +146,7 @@ namespace Okey.Joueurs
             }
             return res;
         }
+
         public void EnvoyerMessage(string message)
         {
             // Utilisez ici votre mécanisme réel de communication avec le client Unity (WebSocket, HTTP, etc.)
