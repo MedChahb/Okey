@@ -47,11 +47,17 @@ namespace Okey
             //le joueur pioche
             if (j.getJoueurActuel().CountTuileDansChevalet() == 14)
             {
-                //acces a piocher true
+                //if(defausse[i-1 est vide])
+                //acces a piocher centre true
+                //piocher true
                 // reset le timer
+
                 // if(timer ==0){
                 //     piocherTuile(random);
                 // }
+                Console.WriteLine("Choisis de piocher entre defausse et centre:");
+                string TuilePiochee = Console.ReadLine();
+                Console.WriteLine(TuilePiochee);
             }
             //le joueur jette
             if (j.getJoueurActuel().CountTuileDansChevalet() == 15)
@@ -60,7 +66,7 @@ namespace Okey
                 // reset le timer
                 // if(timer ==0){
                 //     jeterTuile(random);
-                //FinTour();
+                //ChangerTour();
                 // }
             }
 
