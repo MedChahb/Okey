@@ -35,9 +35,15 @@ namespace Okey
             
 
             j.AfficheChevaletJoueur(); Console.WriteLine(j.GetPacketTuile().Count); // 105 tuiles apres la distribution
-            j.DistibuerTuile();
+            j.DistibuerTuile(); // on commence
+
+            Console.WriteLine(j.getJoueurActuel());
             j.AfficheChevaletJoueur(); Console.WriteLine(j.GetPacketTuile().Count); // 48 tuiles avant la disibution
-            // jouuer qui a 15tuile est bien c'est tour à jouer
+            // jouer qui a 15tuile est bien c'est tour à jouer
+
+
+
+            // ajouter une classe Joueur pour les defausse + ordonance des tours
         }
     }
 }
