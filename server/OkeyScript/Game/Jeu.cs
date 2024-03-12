@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,7 +14,10 @@ namespace Okey.Game
     public class Jeu
     {
         private int id;
-        private Joueur[] joueurs = new Joueur[4];
+        private CircularLinkedList<Joueur> Joueurs = new CircularLinkedList<Joueur>(); //taille 4
+        //le joueur jette dans sa defausse et prend de la defausse du joueur precedent
+        
+        
         private double MMR;
         private Stack<Tuile> pioche = new Stack<Tuile>();
 
@@ -27,12 +31,16 @@ namespace Okey.Game
         private Joueur JoueurActuel;
         private Tuile TuileJete;
 
-        public Jeu(int id, Joueur[] joueurs, Stack<Tuile> pioche)
+        public Jeu(int id, Joueur[] joueurs)
         {
             this.id = id;
-            this.joueurs = joueurs;
+
+            foreach(var pl in joueurs)
+            {
+                this.Joueurs.Add(pl);
+            }
+
             this.MMR = CalculMMR();
-            this.pioche = pioche;
             this.etat = false;
             (this.PacketTuile, this.TuileCentre) = GenererPacketTuiles();
         }
@@ -80,7 +88,7 @@ namespace Okey.Game
                 )
                 {
                     Okay okay = new Okay(true);
-                    tableauTuiles[i] = okay; // Do you want to replace the existing Tuile with Okay?
+                    tableauTuiles[i] = okay;
                     this.Okays[ok] = okay;
                     ok++;
                 }
@@ -101,7 +109,7 @@ namespace Okey.Game
         {
             for (int i = 0; i < 14; i++)
             {
-                foreach (Joueur pl in this.joueurs)
+                foreach (Joueur pl in this.Joueurs)
                 {
                     Random random = new Random();
                     int randIndex = random.Next(0, this.PacketTuile.Count - 1); // on prend en random l'index de la tuile du packet
@@ -120,18 +128,18 @@ namespace Okey.Game
             Tuile LastTuileTogive = this.PacketTuile[randT];
             this.PacketTuile.RemoveAt(randT);
 
-            this.joueurs[randT % 4].AjoutTuileChevalet(LastTuileTogive);
-            this.joueurs[randT % 4].Ajouer(); // qui recoit la 15 Tuile jouera le premier
+            this.Joueurs[randT % 4].AjoutTuileChevalet(LastTuileTogive);
+            this.Joueurs[randT % 4].Ajouer(); // qui recoit la 15 Tuile jouera le premier
 
             // ce qui reste dans PacketTuile -> this.Pioche ???
             //this.pioche = this.PacketTuile;
 
-            this.JoueurActuel = this.joueurs[randT % 4];
+            this.JoueurActuel = this.Joueurs[randT % 4];
         }
 
         public void AfficheChevaletJoueur()
         {
-            Joueur[] joueurs = this.GetJoueurs();
+            CircularLinkedList<Joueur> joueurs = this.GetJoueurs();
 
             foreach (Joueur pl in joueurs)
             {
@@ -159,23 +167,36 @@ namespace Okey.Game
             JeterTuileAppelee = true;
         }
 
-        public void FinTour(Joueur joueur)
+        /*public void PiocherTuile(string Apiochee)
         {
-            if ( /*(Timer == 0) ||*/
-                JeterTuileAppelee == true
-            )
-            {
-                ChangerTour();
-            }
-        }
+            ArgumentNullException.ThrowIfNull(Apiochee);
 
-        public void ChangerTour()
+            if (Apiochee == "defausse")
+            {
+                if ()//defausse du joueur a gauche en argument.Count==0
+                {
+                    Console.WriteLine("La pile de défaisse du joueur à gauche est vide.Piocher au centre");
+                }
+                else
+                {
+                    JoueurActuel.PiocherTuile();//defausse du joueur a gauche en argument;
+                }
+            }
+            if (Apiochee == "centre")
+            {
+                JoueurActuel.PiocherTuile(pioche);
+            }
+        }*/
+
+
+
+        /*public void ChangerTour()
         {
             // Le joueur actuel n'a plus le tour
             JoueurActuel.EstPlusTour();
 
             // Trouver l'index du joueur actuel dans la liste
-            int indexJoueurActuel = Array.IndexOf(joueurs, JoueurActuel);
+            int indexJoueurActuel = Array.IndexOf(Joueurs, JoueurActuel);
 
             // Choisir le joueur suivant
             int indexJoueurSuivant = (indexJoueurActuel + 1) % joueurs.Length;
@@ -187,11 +208,11 @@ namespace Okey.Game
 
             // Après avoir changé le tour, signalez le changement aux joueurs
             SignalChangementTour(joueurSuivant);
-        }
+        }*/
 
         public void SignalChangementTour(Joueur joueurTour)
         {
-            foreach (var joueur in joueurs)
+            foreach (var joueur in Joueurs)
             {
                 // Envoie un message au joueur indiquant si c'est son tour
                 joueur.EnvoyerMessageTour(joueur == joueurTour);
@@ -218,9 +239,9 @@ namespace Okey.Game
             return this.Okays;
         }
 
-        public Joueur[] GetJoueurs()
+        public CircularLinkedList<Joueur> GetJoueurs()
         {
-            return this.joueurs;
+            return this.Joueurs;
         }
 
         public void SetTuileJete(Tuile t)
@@ -233,4 +254,79 @@ namespace Okey.Game
             return this.JoueurActuel;
         }
     }
+
+    public class CircularLinkedList<T> : IEnumerable<T>
+    {
+        private LinkedList<T> list;
+        private LinkedListNode<T> current;
+
+        public CircularLinkedList()
+        {
+            list = new LinkedList<T>();
+            current = null;
+        }
+
+        public void Add(T item)
+        {
+            list.AddLast(item);
+            if (current == null)
+                current = list.First;
+        }
+
+        public T GetCurrent()
+        {
+            if (current == null)
+                throw new InvalidOperationException("List is empty");
+            return current.Value;
+        }
+
+        public void Next()
+        {
+            if (current == null)
+                throw new InvalidOperationException("List is empty");
+            current = current.Next ?? list.First;
+        }
+
+        public void Previous()
+        {
+            if (current == null)
+                throw new InvalidOperationException("List is empty");
+            current = current.Previous ?? list.Last;
+        }
+
+        public T this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= list.Count)
+                    throw new IndexOutOfRangeException("Index is out of range.");
+
+                LinkedListNode<T> node = list.First;
+                for (int i = 0; i < index; i++)
+                {
+                    node = node.Next;
+                }
+                return node.Value;
+            }
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            LinkedListNode<T> startingNode = current;
+            if (startingNode != null)
+            {
+                do
+                {
+                    yield return startingNode.Value;
+                    startingNode = startingNode.Next ?? list.First;
+                } while (startingNode != current);
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+
 }
