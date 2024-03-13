@@ -17,31 +17,13 @@ namespace Okey
             {
                 new Humain(1, "mohammed", 800),
                 new Humain(2, "Emin", 100),
-                new Bot(100),
+                new Humain(3, "toto", 2400),
                 new Bot(50)
             };
-            Jeu j = new Jeu(1, Joueurs, new Stack<Tuile>());
+            Jeu j = new Jeu(1, Joueurs);
 
-            /*Console.WriteLine("la tuile du centre : " + j.GetTuileCentre());
+            //Console.WriteLine("la tuile du centre : " + j.GetTuileCentre());
 
-            Console.WriteLine(j.GetJokers()[0]);
-            Console.WriteLine(j.GetJokers()[1]);
-            // cbien aleatoire
-
-            Console.WriteLine(j.GetOkays()[0]);
-            Console.WriteLine(j.GetOkays()[1]);
-            //
-            Console.WriteLine("");
-            for (int i = 0; i < 105; i++)
-            {
-                Console.WriteLine(i + 1 + " : " + j.GetPacketTuile()[i]);
-            }*/
-            //105 tuile dans le packet(avec joker et okay) + la Tuile au centre -> (pas de redondance)
-
-
-
-            j.AfficheChevaletJoueur();
-            Console.WriteLine(j.GetPacketTuile().Count); // 105 tuiles apres la distribution
             j.DistibuerTuile(); // on commence
 
             //le joueur pioche
@@ -70,14 +52,50 @@ namespace Okey
                 // }
             }
 
-            Console.WriteLine(j.getJoueurActuel());
+            Joueur joueurCommence = j.getJoueurActuel();
+            Tuile tuileTest = joueurCommence.GetChevalet()[0][0];
+            //Tuile tuileTest2 = j.getPreviousPlayer(joueurCommence).GetChevalet()[0][0];
+
+            Console.WriteLine("le joueur qui commence " + joueurCommence+"\n");
             j.AfficheChevaletJoueur();
-            Console.WriteLine(j.GetPacketTuile().Count); // 48 tuiles avant la disibution
-            // jouer qui a 15tuile est bien c'est tour à jouer
+            joueurCommence.AfficheDefausse();
 
+            Console.WriteLine("------------------------------------------TEST JETER----------------------------------------------");
 
+            //la piece jeté est plus dans son chevalet -> mais dans sa defausse
+            Console.WriteLine($"le joueur {joueurCommence} jette la Tuile {tuileTest}\n");
+            joueurCommence.JeterTuile(tuileTest, j);
+            j.AfficheChevaletJoueur();
+            joueurCommence.AfficheDefausse();
 
-            // ajouter une classe Joueur pour les defausse + ordonance des tours
+            /*Console.WriteLine("------------------------------------------TEST PIOCHER(centre)----------------------------------------------");
+            j.AffichePiocheCentre();
+
+            Joueur joueurActuel = j.getJoueurActuel();
+            Console.WriteLine($"\nC'est à {joueurActuel} de joueur.\n");
+            joueurActuel.PiocherTuile("Centre", j);
+            j.AffichePiocheCentre();
+            joueurActuel.AfficheChevalet();*/
+
+            //!!!!!! on doit faire un SHUFFLE du pioche au centre !!!!!!!!!
+
+            /*Console.WriteLine("------------------------------------------TEST PIOCHER(defausse)----------------------------------------------");
+            Joueur joueurActuel = j.getJoueurActuel();
+            Joueur joueurPrecedent = j.getPreviousPlayer(joueurActuel);
+
+            Console.WriteLine($"\nC'est à {joueurActuel} de joueur.\n");
+
+            Console.WriteLine($"{joueurActuel} a pioché de : ");
+            joueurPrecedent.AfficheDefausse();
+            joueurActuel.PiocherTuile("Defausse", j);
+            joueurPrecedent.AfficheDefausse();
+
+            joueurActuel.AfficheChevalet();*/
+
         }
+
+
     }
+
+
 }
