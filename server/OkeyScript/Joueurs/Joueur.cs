@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Okey.Game;
 using Okey.Tuiles;
@@ -47,8 +48,6 @@ namespace Okey.Joueurs
             this.Gagne();
         }
 
-        public void Piocher() { }
-
         public void PassTour()
         {
             this.Tour = false;
@@ -77,16 +76,19 @@ namespace Okey.Joueurs
         }
 
         //returns a boolean if exists and the index of the list where it does [0-1]
-        private (bool, int) FindTuileInChevalet(Tuile t)
+        private (int, int) FindTuileInChevalet(Tuile t)
         {
-            for (int i = 0; i < this.chevalet.Count; i++)
+            for (int i = 0; i < 2; i++)
             {
-                if (this.chevalet[i].Contains(t))
+                for(int j=0; j < 8; j++)
                 {
-                    return (true, i);
+                    if (this.chevalet[i][j] == t)
+                    {
+                        return (i, j);
+                    }
                 }
             }
-            return (false, -1);
+            return (-1,-1);
         }
 
         public void AjoutTuileChevalet(Tuile t)
@@ -108,14 +110,14 @@ namespace Okey.Joueurs
         {
             //bloquer la pioche (condition lors de l'appel en Jeu.cs)
             //gerer le timer
-            (bool exist, int ListIndex) = FindTuileInChevalet(t);
-            if (exist && this.Tour)
+            (int ListIndex, int Tuileindex) = FindTuileInChevalet(t);
+            if (ListIndex!=-1)
             {
-                this.chevalet[ListIndex].Remove(t); // elever la tuile du chevalet
-                j.SetTuileJete(t); // set dans Jeu (prochain joueur peut l'a pioché )
+                this.chevalet[ListIndex][Tuileindex] = null; // enlever la tuile du chevalet
                 t.SetDefause(); // devient defausse
-                this.defausse.Push(t); // la poser dans la defausse
+                this.JeteTuileDefausse(t); // la poser dans la defausse
                 this.EstPlusTour(); // plus son tour
+                j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour an next jouer
             }
             else
             {
@@ -123,13 +125,47 @@ namespace Okey.Joueurs
             }
         }
 
-        // public void PiocherTuile(Stack<Tuile> PileAPiochee){
-        //     if(PileAPiochee.Count == 0){
-        //         Console.WriteLine("La pile est vide,impossible a piocher");
-        //     }
-        //     Tuile tuileAPiochee = PileAPiochee.Pop();
-        //     this.AjoutTuileChevalet(tuileAPiochee);
-        // }
+        public void PiocherTuile(String OuPiocher, Jeu j)
+        {
+
+            if(OuPiocher == "Centre")
+            {
+                if (j.isPiocheCentreEmpty())
+                {
+                    Console.WriteLine("La pile au centre est vide, impossible a piocher");
+                }
+                else
+                {
+                    Tuile tuilePiochee = j.PopPiocheCentre();
+                    this.AjoutTuileChevalet(tuilePiochee);
+                }
+            }
+            else if (OuPiocher == "Defausse")
+            {
+                Joueur PreviousPlayer = j.getPreviousPlayer(this);
+
+                if (PreviousPlayer.isDefausseEmpty())
+                {
+                    Console.WriteLine("La defausse du joueur est vide, impossible a piocher");
+                }
+                else
+                {
+                    Tuile tuilePiochee = PreviousPlayer.PopDefausseJoueur();
+                    this.AjoutTuileChevalet(tuilePiochee);
+                }
+            }
+
+        }
+
+        public void JoueurJoue(String OuPiocher, Tuile TuileAJete, Jeu j)
+        {
+            if (this.Tour)
+            {
+                this.PiocherTuile(OuPiocher, j);
+                this.JeterTuile(TuileAJete, j);
+            }
+
+        }
 
         public int CountTuileDansChevalet()
         {
@@ -161,6 +197,56 @@ namespace Okey.Joueurs
             EnvoyerMessage(message);
         }
 
+        public void JeteTuileDefausse(Tuile t)
+        {
+            this.defausse.Push(t);
+        }
+
+        public Tuile PopDefausseJoueur()
+        {
+            return this.defausse.Pop();
+        }
+
+        public bool isDefausseEmpty()
+        {
+            return this.defausse.Count == 0;
+        }
+
+        public Stack<Tuile> GetDefausse()
+        {
+            return this.defausse;
+        }
         public abstract override String ToString();
+        public void AfficheDefausse()
+        {
+            if (this.isDefausseEmpty())
+            {
+                Console.WriteLine("La defausse est vide.");
+                return;
+            }
+
+            Console.WriteLine($"La defausse du {this} contient : ");
+            foreach (var elem in this.defausse)
+            {
+                Console.WriteLine(elem);
+            }
+        }
+   
+        public void AfficheChevalet()
+        {
+            Console.WriteLine($"Chevalet du {this} : ");
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    Tuile t = this.chevalet[i][j];
+                    if (t != null)
+                        Console.Write("|" + t);
+                    else
+                        Console.Write("|(        )");
+                }
+                Console.Write("|\n");
+            }
+        }
     }
 }
