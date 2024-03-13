@@ -14,7 +14,8 @@ namespace Okey.Game
     public class Jeu
     {
         private int id;
-        private CircularLinkedList<Joueur> Joueurs = new CircularLinkedList<Joueur>(); //taille 4
+        //private CircularLinkedList<Joueur> Joueurs = new CircularLinkedList<Joueur>(); //taille 4
+        private Joueur[] Joueurs = new Joueur[4];
         //le joueur jette dans sa defausse et prend de la defausse du joueur precedent
         
         
@@ -29,17 +30,17 @@ namespace Okey.Game
         private Tuile TuileCentre;
         private bool JeterTuileAppelee = false;
         private Joueur JoueurActuel;
-        private Tuile TuileJete;
 
         public Jeu(int id, Joueur[] joueurs)
         {
             this.id = id;
 
-            foreach(var pl in joueurs)
+            /*foreach(var pl in joueurs)
             {
                 this.Joueurs.Add(pl);
-            }
+            }*/
 
+            this.Joueurs = joueurs;
             this.MMR = CalculMMR();
             this.etat = false;
             (this.PacketTuile, this.TuileCentre) = GenererPacketTuiles();
@@ -47,7 +48,7 @@ namespace Okey.Game
 
         private double CalculMMR()
         {
-            return 5.2; // donner la formule en fonction des 4 joueurs
+            return 5.3; // donner la formule en fonction des 4 joueurs
         }
 
         private (List<Tuile>, Tuile) GenererPacketTuiles()
@@ -105,7 +106,7 @@ namespace Okey.Game
             return (tableauTuiles, tuileCentre);
         }
 
-        public void DistibuerTuile() //à faire
+        public void DistibuerTuile() 
         {
             for (int i = 0; i < 14; i++)
             {
@@ -131,32 +132,38 @@ namespace Okey.Game
             this.Joueurs[randT % 4].AjoutTuileChevalet(LastTuileTogive);
             this.Joueurs[randT % 4].Ajouer(); // qui recoit la 15 Tuile jouera le premier
 
-            // ce qui reste dans PacketTuile -> this.Pioche ???
-            //this.pioche = this.PacketTuile;
+            // ce qui reste dans PacketTuile -> this.Pioche 
+            foreach (Tuile tuile in this.PacketTuile)
+            {
+                this.pioche.Push(tuile);
+            }
 
             this.JoueurActuel = this.Joueurs[randT % 4];
         }
 
         public void AfficheChevaletJoueur()
         {
-            CircularLinkedList<Joueur> joueurs = this.GetJoueurs();
-
-            foreach (Joueur pl in joueurs)
+            //CircularLinkedList<Joueur> joueurs = this.GetJoueurs();
+            
+            foreach (Joueur pl in this.Joueurs)
             {
-                Console.WriteLine(System.String.Format("Chevalet du {0} : ", pl));
-                for (int i = 0; i < 2; i++)
-                {
-                    for (int j = 0; j < 8; j++)
-                    {
-                        Tuile t = pl.GetChevalet()[i][j];
-                        if (t != null)
-                            Console.Write("|" + t);
-                        else
-                            Console.Write("|(        )");
-                    }
-                    Console.Write("|\n");
-                }
+                pl.AfficheChevalet();
                 Console.WriteLine("");
+            }
+        }
+
+        public void AffichePiocheCentre()
+        {
+            if (this.isPiocheCentreEmpty())
+            {
+                Console.WriteLine("La pioche du centre est vide.");
+                return;
+            }
+
+            Console.WriteLine($"La pioche du centre contient : ");
+            foreach (var elem in this.pioche)
+            {
+                Console.WriteLine(elem);
             }
         }
 
@@ -239,20 +246,48 @@ namespace Okey.Game
             return this.Okays;
         }
 
-        public CircularLinkedList<Joueur> GetJoueurs()
+        /*public CircularLinkedList<Joueur> GetJoueurs()
         {
             return this.Joueurs;
+        }*/
+        public Joueur[] GetJoueurs()
+        {
+            return Joueurs;
         }
 
-        public void SetTuileJete(Tuile t)
-        {
-            this.TuileJete = t;
-        }
 
         public Joueur getJoueurActuel()
         {
             return this.JoueurActuel;
         }
+
+        public void setJoueurActuel(Joueur j)
+        {
+            this.JoueurActuel = j;
+        }
+
+        public Joueur getNextJoueur(Joueur j)
+        {
+            int indexOfNextPlayer = (Array.IndexOf(this.Joueurs, j)+1)%4;
+            return this.Joueurs[indexOfNextPlayer];
+        }
+        public Joueur getPreviousPlayer(Joueur j)
+        {
+            int indexOfj = Array.IndexOf(this.Joueurs, j);
+            int indexOfPreviousPlayer = indexOfj == 0 ? 3 : indexOfj - 1;
+            return this.Joueurs[indexOfPreviousPlayer];
+        }
+
+        public bool isPiocheCentreEmpty()
+        {
+            return this.pioche.Count == 0;
+        }
+
+        public Tuile PopPiocheCentre()
+        {
+            return this.pioche.Pop();
+        }
+
     }
 
     public class CircularLinkedList<T> : IEnumerable<T>
