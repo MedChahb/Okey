@@ -169,55 +169,53 @@ namespace Okey.Game
             }
         }
 
-        public void JeterTuile(Tuile tuile)
+        //prend que 3 ou 4 tuiles en arguments
+        public bool Est_serie_de_meme_chiffre(Tuile[] tuiles)
         {
-            //jeter une tuile
-
-            JeterTuileAppelee = true;
-        }
-
-        /*public void PiocherTuile(string Apiochee)
-        {
-            ArgumentNullException.ThrowIfNull(Apiochee);
-
-            if (Apiochee == "defausse")
+            int diffColors = 1; // On commence avec une couleur différente
+            for (int i = 1; i < tuiles.Length; i++)
             {
-                if ()//defausse du joueur a gauche en argument.Count==0
+                bool CouleurDejaVu = false;
+                for (int j = 0; j < i; j++)
                 {
-                    Console.WriteLine("La pile de défaisse du joueur à gauche est vide.Piocher au centre");
+                    if (tuiles[i].GetCouleur() == tuiles[j].GetCouleur())
+                    {
+                        CouleurDejaVu = true;
+                        break;
+                    }
+                }
+
+                if (!CouleurDejaVu)
+                {
+                    diffColors++;
                 }
                 else
                 {
-                    JoueurActuel.PiocherTuile();//defausse du joueur a gauche en argument;
+                    diffColors--;
                 }
             }
-            if (Apiochee == "centre")
-            {
-                JoueurActuel.PiocherTuile(pioche);
-            }
-        }*/
 
+            return (tuiles.Length == 4 && diffColors == 4)
+                || (tuiles.Length == 3 && diffColors == 3);
+        }
 
-
-        /*public void ChangerTour()
+        public bool EstSerieDeCouleur(Tuile[] t) // tuile se suivent, mm couleur
         {
-            // Le joueur actuel n'a plus le tour
-            JoueurActuel.EstPlusTour();
+            if (t.Length < 3) return false;
+            for (int i =0; i < t.Length - 1; i++)
+            {
+                int j = i + 1;
 
-            // Trouver l'index du joueur actuel dans la liste
-            int indexJoueurActuel = Array.IndexOf(Joueurs, JoueurActuel);
+                if (!t[i].MemeCouleur(t[j]) || !t[i].estSuivant(t[j])) return false;
 
-            // Choisir le joueur suivant
-            int indexJoueurSuivant = (indexJoueurActuel + 1) % joueurs.Length;
-            Joueur joueurSuivant = joueurs[indexJoueurSuivant];
+            }   
+            return true;
+        }
 
-            // Le joueur suivant a maintenant le tour
-            joueurSuivant.EstTour();
-            this.JoueurActuel = joueurSuivant;
-
-            // Après avoir changé le tour, signalez le changement aux joueurs
-            SignalChangementTour(joueurSuivant);
-        }*/
+        public bool Est_serie(Tuile[] tuiles)
+        {
+            return Est_serie_de_meme_chiffre(tuiles) || EstSerieDeCouleur(tuiles);
+        }
 
         public void SignalChangementTour(Joueur joueurTour)
         {
@@ -290,43 +288,7 @@ namespace Okey.Game
             return this.pioche.Pop();
         }
 
-        //prend que 3 ou 4 tuiles en arguments
-        public bool Est_serie_de_meme_chiffre(Tuile[] tuiles)
-        {
-            int diffColors = 1; // On commence avec une couleur différente
-            for (int i = 1; i < tuiles.Length; i++)
-            {
-                bool CouleurDejaVu = false;
-                for (int j = 0; j < i; j++)
-                {
-                    if (tuiles[i].GetCouleur() == tuiles[j].GetCouleur())
-                    {
-                        CouleurDejaVu = true;
-                        break;
-                    }
-                }
-
-                if (!CouleurDejaVu)
-                {
-                    diffColors++;
-                }
-                else
-                {
-                    diffColors--;
-                }
-            }
-
-            return (tuiles.Length == 4 && diffColors == 4)
-                || (tuiles.Length == 3 && diffColors == 3);
-        }
-
-        public bool Est_serie(Tuile[] tuiles)
-        {
-            return Est_serie_de_meme_chiffre(
-                tuiles
-            ) /*|| EstSerieDeCouleur(tuiles)*/
-            ;
-        }
+        
     }
 
     public class CircularLinkedList<T> : IEnumerable<T>
