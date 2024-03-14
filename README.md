@@ -97,7 +97,7 @@ Assurez vous d'avoir la version indiquée de Python dans la liste au dessus. Si 
 
 ##### Virtualenv (optionnel)
 
-Si vous voulez créer et travailler dans un environnement virtuel pour le projet (conseillé), **installez et configurez** [`pyenv`](https://github.com/pyenv/pyenv?tab=readme-ov-file#installation) (gestionnaire de versions Python) et puis, exécutez les commandes suivantes avant la suite :
+Si vous voulez créer et travailler dans un environnement virtuel pour le projet (conseillé), **installez et configurez** [`pyenv`](https://github.com/pyenv/pyenv?tab=readme-ov-file#installation) (gestionnaire de versions Python). **Attention, installer `pyenv` n'est pas juste une simple installation de paquet. Il faut configurer votre shell en suivant [ces instructions supplémentaires](https://github.com/pyenv/pyenv?tab=readme-ov-file#set-up-your-shell-environment-for-pyenv).** Et puis, exécutez les commandes suivantes avant la suite :
 
 ```sh
 pyenv install 3.10.13  # Installez la version de Python recommandée en parallèle avec votre version actuelle
