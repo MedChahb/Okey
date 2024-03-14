@@ -51,7 +51,9 @@ namespace Okey.Tuiles
         public CouleurTuile GetCouleur() {  return this.Couleur; }
         public int GetNum() { return this.num; }
 
+        public abstract bool MemeCouleur(Tuile t);
 
+        public abstract bool estSuivant(Tuile t);
 
         public override abstract String ToString();
     }

@@ -18,6 +18,16 @@ namespace Okey.Tuiles
             throw new NotImplementedException();
         }
 
+        public bool MemeCouleur(TuileNormale t)
+        {
+            return true;
+        }
+
+        public bool estSuivant(TuileNormale t)
+        {
+            return true;
+        }
+
         public override String ToString()
         {
             return String.Format("({0}, {1}, {2})", this.num, this.Couleur, "Ok");
