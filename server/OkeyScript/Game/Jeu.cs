@@ -296,17 +296,17 @@ namespace Okey.Game
             int diffColors = 1; // On commence avec une couleur différente
             for (int i = 1; i < tuiles.Length; i++)
             {
-                bool foundDuplicate = false;
+                bool CouleurDejaVu = false;
                 for (int j = 0; j < i; j++)
                 {
                     if (tuiles[i].GetCouleur() == tuiles[j].GetCouleur())
                     {
-                        foundDuplicate = true;
+                        CouleurDejaVu = true;
                         break;
                     }
                 }
 
-                if (!foundDuplicate)
+                if (!CouleurDejaVu)
                 {
                     diffColors++;
                 }
