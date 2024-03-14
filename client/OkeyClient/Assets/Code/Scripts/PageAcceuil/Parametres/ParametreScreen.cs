@@ -1,23 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class ParametreScreen : MonoBehaviour
 {
     public Image parametresImage; // Reference to the image object
 
-    [SerializeField] private Button enBtn;
-    [SerializeField] private Button frBtn;
-    [SerializeField] private Button BackBtn;
+    [SerializeField]
+    private Button enBtn;
 
-    [SerializeField] private TextMeshProUGUI soundEffects;
-    [SerializeField] private TextMeshProUGUI music;
-    [SerializeField] private TextMeshProUGUI language;
+    [SerializeField]
+    private Button frBtn;
 
-    [SerializeField] private Image enBackground;
-    [SerializeField] private Image frBackground;
+    [SerializeField]
+    private Button BackBtn;
+
+    [SerializeField]
+    private TextMeshProUGUI soundEffects;
+
+    [SerializeField]
+    private TextMeshProUGUI music;
+
+    [SerializeField]
+    private TextMeshProUGUI language;
+
+    [SerializeField]
+    private Image enBackground;
+
+    [SerializeField]
+    private Image frBackground;
 
     public void Start()
     {
@@ -43,8 +56,7 @@ public class ParametreScreen : MonoBehaviour
 
     public void Update()
     {
-
-        if(GameManager.singleton.language == true) // EN
+        if (GameManager.singleton.language == true) // EN
         {
             soundEffects.text = "Sound Effects";
             music.text = "Music";
@@ -57,12 +69,6 @@ public class ParametreScreen : MonoBehaviour
             language.text = "Language";
         }
 
-
-
-
-
-
-
         Color color;
         if (ColorUtility.TryParseHtmlString("#39A24A", out color))
         {
@@ -74,5 +80,4 @@ public class ParametreScreen : MonoBehaviour
             Debug.LogError("Invalid color format!");
         }
     }
-
 }

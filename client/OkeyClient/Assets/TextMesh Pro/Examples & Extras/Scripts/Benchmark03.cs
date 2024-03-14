@@ -1,26 +1,26 @@
-﻿using UnityEngine;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.TextCore.LowLevel;
-
 
 namespace TMPro.Examples
 {
-
     public class Benchmark03 : MonoBehaviour
     {
-        public enum BenchmarkType { TMP_SDF_MOBILE = 0, TMP_SDF__MOBILE_SSD = 1, TMP_SDF = 2, TMP_BITMAP_MOBILE = 3, TEXTMESH_BITMAP = 4 }
+        public enum BenchmarkType
+        {
+            TMP_SDF_MOBILE = 0,
+            TMP_SDF__MOBILE_SSD = 1,
+            TMP_SDF = 2,
+            TMP_BITMAP_MOBILE = 3,
+            TEXTMESH_BITMAP = 4
+        }
 
         public int NumberOfSamples = 100;
         public BenchmarkType Benchmark;
 
         public Font SourceFont;
 
-
-        void Awake()
-        {
-
-        }
-
+        void Awake() { }
 
         void Start()
         {
@@ -30,18 +30,52 @@ namespace TMPro.Examples
             switch (Benchmark)
             {
                 case BenchmarkType.TMP_SDF_MOBILE:
-                    fontAsset = TMP_FontAsset.CreateFontAsset(SourceFont, 90, 9, GlyphRenderMode.SDFAA, 256, 256, AtlasPopulationMode.Dynamic);
+                    fontAsset = TMP_FontAsset.CreateFontAsset(
+                        SourceFont,
+                        90,
+                        9,
+                        GlyphRenderMode.SDFAA,
+                        256,
+                        256,
+                        AtlasPopulationMode.Dynamic
+                    );
                     break;
                 case BenchmarkType.TMP_SDF__MOBILE_SSD:
-                    fontAsset = TMP_FontAsset.CreateFontAsset(SourceFont, 90, 9, GlyphRenderMode.SDFAA, 256, 256, AtlasPopulationMode.Dynamic);
-                    fontAsset.material.shader = Shader.Find("TextMeshPro/Mobile/Distance Field SSD");
+                    fontAsset = TMP_FontAsset.CreateFontAsset(
+                        SourceFont,
+                        90,
+                        9,
+                        GlyphRenderMode.SDFAA,
+                        256,
+                        256,
+                        AtlasPopulationMode.Dynamic
+                    );
+                    fontAsset.material.shader = Shader.Find(
+                        "TextMeshPro/Mobile/Distance Field SSD"
+                    );
                     break;
                 case BenchmarkType.TMP_SDF:
-                    fontAsset = TMP_FontAsset.CreateFontAsset(SourceFont, 90, 9, GlyphRenderMode.SDFAA, 256, 256, AtlasPopulationMode.Dynamic);
+                    fontAsset = TMP_FontAsset.CreateFontAsset(
+                        SourceFont,
+                        90,
+                        9,
+                        GlyphRenderMode.SDFAA,
+                        256,
+                        256,
+                        AtlasPopulationMode.Dynamic
+                    );
                     fontAsset.material.shader = Shader.Find("TextMeshPro/Distance Field");
                     break;
                 case BenchmarkType.TMP_BITMAP_MOBILE:
-                    fontAsset = TMP_FontAsset.CreateFontAsset(SourceFont, 90, 9, GlyphRenderMode.SMOOTH, 256, 256, AtlasPopulationMode.Dynamic);
+                    fontAsset = TMP_FontAsset.CreateFontAsset(
+                        SourceFont,
+                        90,
+                        9,
+                        GlyphRenderMode.SMOOTH,
+                        256,
+                        256,
+                        AtlasPopulationMode.Dynamic
+                    );
                     break;
             }
 
@@ -53,6 +87,7 @@ namespace TMPro.Examples
                     case BenchmarkType.TMP_SDF__MOBILE_SSD:
                     case BenchmarkType.TMP_SDF:
                     case BenchmarkType.TMP_BITMAP_MOBILE:
+
                         {
                             GameObject go = new GameObject();
                             go.transform.position = new Vector3(0, 1.2f, 0);
@@ -66,10 +101,10 @@ namespace TMPro.Examples
 
                             if (Benchmark == BenchmarkType.TMP_BITMAP_MOBILE)
                                 textComponent.fontSize = 132;
-
                         }
                         break;
                     case BenchmarkType.TEXTMESH_BITMAP:
+
                         {
                             GameObject go = new GameObject();
                             go.transform.position = new Vector3(0, 1.2f, 0);
@@ -87,6 +122,5 @@ namespace TMPro.Examples
                 }
             }
         }
-
     }
 }

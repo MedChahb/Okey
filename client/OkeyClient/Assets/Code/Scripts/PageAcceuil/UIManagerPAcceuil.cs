@@ -1,28 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement;
 using UnityEditor.SearchService;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManagerPAcceuil : MonoBehaviour
 {
-    [SerializeField] private Button playBtn;
-    [SerializeField] private Button paramBtn;
+    [SerializeField]
+    private Button playBtn;
 
-    [SerializeField] private TextMeshProUGUI playBtnTxt;
+    [SerializeField]
+    private Button paramBtn;
 
-    [SerializeField] private int sceneId;
+    [SerializeField]
+    private TextMeshProUGUI playBtnTxt;
 
-    [SerializeField] private ParametreScreen parametres;
+    [SerializeField]
+    private int sceneId;
+
+    [SerializeField]
+    private ParametreScreen parametres;
 
     // Start is called before the first frame update
     void Start()
     {
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
-
     }
 
     // Update is called once per frame
@@ -49,7 +54,9 @@ public class UIManagerPAcceuil : MonoBehaviour
         if (parametres.parametresImage != null)
         {
             // Toggle the active state of the image
-            parametres.parametresImage.gameObject.SetActive(!parametres.parametresImage.gameObject.activeSelf);
+            parametres.parametresImage.gameObject.SetActive(
+                !parametres.parametresImage.gameObject.activeSelf
+            );
         }
         else
         {
