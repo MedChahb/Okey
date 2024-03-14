@@ -319,6 +319,14 @@ namespace Okey.Game
             return (tuiles.Length == 4 && diffColors == 4)
                 || (tuiles.Length == 3 && diffColors == 3);
         }
+
+        public bool Est_serie(Tuile[] tuiles)
+        {
+            return Est_serie_de_meme_chiffre(
+                tuiles
+            ) /*|| EstSerieDeCouleur(tuiles)*/
+            ;
+        }
     }
 
     public class CircularLinkedList<T> : IEnumerable<T>
