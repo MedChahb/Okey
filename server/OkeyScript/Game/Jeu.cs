@@ -14,11 +14,13 @@ namespace Okey.Game
     public class Jeu
     {
         private int id;
+
         //private CircularLinkedList<Joueur> Joueurs = new CircularLinkedList<Joueur>(); //taille 4
         private Joueur[] Joueurs = new Joueur[4];
+
         //le joueur jette dans sa defausse et prend de la defausse du joueur precedent
-        
-        
+
+
         private double MMR;
         private Stack<Tuile> pioche = new Stack<Tuile>();
 
@@ -106,7 +108,7 @@ namespace Okey.Game
             return (tableauTuiles, tuileCentre);
         }
 
-        public void DistibuerTuile() 
+        public void DistibuerTuile()
         {
             for (int i = 0; i < 14; i++)
             {
@@ -132,7 +134,7 @@ namespace Okey.Game
             this.Joueurs[randT % 4].AjoutTuileChevalet(LastTuileTogive);
             this.Joueurs[randT % 4].Ajouer(); // qui recoit la 15 Tuile jouera le premier
 
-            // ce qui reste dans PacketTuile -> this.Pioche 
+            // ce qui reste dans PacketTuile -> this.Pioche
             foreach (Tuile tuile in this.PacketTuile)
             {
                 this.pioche.Push(tuile);
@@ -144,7 +146,7 @@ namespace Okey.Game
         public void AfficheChevaletJoueur()
         {
             //CircularLinkedList<Joueur> joueurs = this.GetJoueurs();
-            
+
             foreach (Joueur pl in this.Joueurs)
             {
                 pl.AfficheChevalet();
@@ -255,7 +257,6 @@ namespace Okey.Game
             return Joueurs;
         }
 
-
         public Joueur getJoueurActuel()
         {
             return this.JoueurActuel;
@@ -268,9 +269,10 @@ namespace Okey.Game
 
         public Joueur getNextJoueur(Joueur j)
         {
-            int indexOfNextPlayer = (Array.IndexOf(this.Joueurs, j)+1)%4;
+            int indexOfNextPlayer = (Array.IndexOf(this.Joueurs, j) + 1) % 4;
             return this.Joueurs[indexOfNextPlayer];
         }
+
         public Joueur getPreviousPlayer(Joueur j)
         {
             int indexOfj = Array.IndexOf(this.Joueurs, j);
@@ -288,6 +290,35 @@ namespace Okey.Game
             return this.pioche.Pop();
         }
 
+        //prend que 3 ou 4 tuiles en arguments
+        public bool Est_serie_de_meme_chiffre(Tuile[] tuiles)
+        {
+            int diffColors = 1; // On commence avec une couleur différente
+            for (int i = 1; i < tuiles.Length; i++)
+            {
+                bool foundDuplicate = false;
+                for (int j = 0; j < i; j++)
+                {
+                    if (tuiles[i].GetCouleur() == tuiles[j].GetCouleur())
+                    {
+                        foundDuplicate = true;
+                        break;
+                    }
+                }
+
+                if (!foundDuplicate)
+                {
+                    diffColors++;
+                }
+                else
+                {
+                    diffColors--;
+                }
+            }
+
+            return (tuiles.Length == 4 && diffColors == 4)
+                || (tuiles.Length == 3 && diffColors == 3);
+        }
     }
 
     public class CircularLinkedList<T> : IEnumerable<T>
@@ -363,5 +394,4 @@ namespace Okey.Game
             return GetEnumerator();
         }
     }
-
 }
