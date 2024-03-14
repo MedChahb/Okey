@@ -201,20 +201,41 @@ namespace Okey.Game
 
         public bool EstSerieDeCouleur(Tuile[] t) // tuile se suivent, mm couleur
         {
-            if (t.Length < 3) return false;
-            for (int i =0; i < t.Length - 1; i++)
+            if (t.Length < 3)
+                return false;
+            for (int i = 0; i < t.Length - 1; i++)
             {
                 int j = i + 1;
 
-                if (!t[i].MemeCouleur(t[j]) || !t[i].estSuivant(t[j])) return false;
-
-            }   
+                if (!t[i].MemeCouleur(t[j]) || !t[i].estSuivant(t[j]))
+                    return false;
+            }
             return true;
         }
 
         public bool Est_serie(Tuile[] tuiles)
         {
             return Est_serie_de_meme_chiffre(tuiles) || EstSerieDeCouleur(tuiles);
+        }
+
+        public void ChangerTour()
+        {
+            // Le joueur actuel n'a plus le tour
+            JoueurActuel.EstPlusTour();
+
+            // Trouver l'index du joueur actuel dans la liste
+            int indexJoueurActuel = Array.IndexOf(Joueurs, JoueurActuel);
+
+            // Choisir le joueur suivant
+            int indexJoueurSuivant = (indexJoueurActuel + 1) % Joueurs.Length;
+            Joueur joueurSuivant = Joueurs[indexJoueurSuivant];
+
+            // Le joueur suivant a maintenant le tour
+            joueurSuivant.EstTour();
+            this.JoueurActuel = joueurSuivant;
+
+            // Après avoir changé le tour, signalez le changement aux joueurs
+            SignalChangementTour(joueurSuivant);
         }
 
         public void SignalChangementTour(Joueur joueurTour)
@@ -287,8 +308,6 @@ namespace Okey.Game
         {
             return this.pioche.Pop();
         }
-
-        
     }
 
     public class CircularLinkedList<T> : IEnumerable<T>
