@@ -21,6 +21,7 @@ public class PageConnexion : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Password.contentType = TMP_InputField.ContentType.Password;
         // Ajoute un écouteur au bouton "Créer"
         createButton.onClick.AddListener(OnCreateClicked);
 
