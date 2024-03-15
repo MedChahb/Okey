@@ -143,7 +143,7 @@ namespace Okey.Game
             this.JoueurActuel = this.Joueurs[randT % 4];
         }
 
-        public void AfficheChevaletJoueur()
+        public void AfficheChevaletJoueurs()
         {
             //CircularLinkedList<Joueur> joueurs = this.GetJoueurs();
 
@@ -153,6 +153,8 @@ namespace Okey.Game
                 Console.WriteLine("");
             }
         }
+
+        public void AfficheChevaletActuel() { this.JoueurActuel.AfficheChevalet(); }
 
         public void AffichePiocheCentre()
         {
