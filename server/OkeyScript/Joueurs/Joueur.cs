@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -106,18 +107,23 @@ namespace Okey.Joueurs
             }
         }
 
-        public void JeterTuile(Tuile t, Jeu j) // a discuter les parametres
+        public void JeterTuile(Coord c, Jeu j) // a discuter les parametres
         {
             //bloquer la pioche (condition lors de l'appel en Jeu.cs)
             //gerer le timer
-            (int ListIndex, int Tuileindex) = FindTuileInChevalet(t);
-            if (ListIndex!=-1)
+            
+            int x = c.getX();
+            int y = c.getY();
+            if ((x>=0 && x<=7) && (y==0 || y==1))
             {
-                this.chevalet[ListIndex][Tuileindex] = null; // enlever la tuile du chevalet
+                Tuile t = this.chevalet[y][x];
+                this.chevalet[y][x] = null; // enlever la tuile du chevalet
                 t.SetDefause(); // devient defausse
                 this.JeteTuileDefausse(t); // la poser dans la defausse
                 this.EstPlusTour(); // plus son tour
                 j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour an next jouer
+
+                Console.WriteLine($"le joueur a jeté la tuile {t}\n");
             }
             else
             {
@@ -127,6 +133,7 @@ namespace Okey.Joueurs
 
         public void PiocherTuile(String OuPiocher, Jeu j)
         {
+            if(OuPiocher == null) { Console.WriteLine("ouPiocher est null"); return; }
 
             if(OuPiocher == "Centre")
             {
@@ -157,14 +164,25 @@ namespace Okey.Joueurs
 
         }
 
-        public void JoueurJoue(String OuPiocher, Tuile TuileAJete, Jeu j)
+        public void JoueurJoue(String OuPiocher, Coord c , Jeu j)
         {
             if (this.Tour)
             {
                 this.PiocherTuile(OuPiocher, j);
-                this.JeterTuile(TuileAJete, j);
+                this.JeterTuile(c , j);
             }
 
+        }
+
+        public void MoveTuileChevalet(Coord from, Coord to)
+        {
+            (int yFrom, int xFrom) = (from.getY(), from.getX());
+            (int yTo, int xTo) = (to.getY(), to.getX());
+
+            Tuile tmpTuileTo = this.chevalet[to.getY()][to.getX()];
+
+            this.chevalet[yTo][xTo] = this.chevalet[yFrom][xFrom];
+            this.chevalet[yFrom][xFrom] = tmpTuileTo;
         }
 
         public int CountTuileDansChevalet()
