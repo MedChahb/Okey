@@ -18,12 +18,12 @@ namespace Okey.Tuiles
             throw new NotImplementedException();
         }
 
-        public bool MemeCouleur(TuileNormale t)
+        public override bool MemeCouleur(Tuile t)
         {
             return this.Couleur == t.GetCouleur();
         }
 
-        public bool estSuivant(TuileNormale t)
+        public override bool estSuivant(Tuile t)
         {
             return this.num + 1 == t.GetNum() || (this.num == 13 && t.GetNum() == 1);
         }
