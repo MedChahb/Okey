@@ -1,0 +1,7 @@
+# A test Ansible playbook for debugging purposes
+- hosts: all
+  become: true
+  tasks:
+    - name: Print message
+      ansible.builtin.debug:
+        msg: Hello, World!
