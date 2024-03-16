@@ -44,11 +44,11 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 80
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -84,7 +84,7 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 10
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: blue_1
+      name: Blue1
       rect:
         serializedVersion: 2
         x: 0
@@ -127,11 +127,11 @@ TextureImporter:
       spriteID: e82110bf2a8ed014d89f20e128621c42
       internalID: 603177335
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_2
+      name: Blue2
       rect:
         serializedVersion: 2
         x: 70
@@ -148,11 +148,11 @@ TextureImporter:
       spriteID: eef026c7a4f3b5541915f22c41a2c907
       internalID: -1632890739
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_3
+      name: Blue3
       rect:
         serializedVersion: 2
         x: 140
@@ -169,11 +169,11 @@ TextureImporter:
       spriteID: dff05c1424f3813449619aba487e1e9c
       internalID: -1264110389
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_4
+      name: Blue4
       rect:
         serializedVersion: 2
         x: 210
@@ -190,11 +190,11 @@ TextureImporter:
       spriteID: 910e1d7c4b718f642b5f61803dae9506
       internalID: 840853520
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_5
+      name: Blue5
       rect:
         serializedVersion: 2
         x: 280
@@ -211,11 +211,11 @@ TextureImporter:
       spriteID: af4743ba930e81f45a30763b82308409
       internalID: -1884537590
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_6
+      name: Blue6
       rect:
         serializedVersion: 2
         x: 350
@@ -232,11 +232,11 @@ TextureImporter:
       spriteID: 7d9088eaa8b69c54dac4a26ff810fed7
       internalID: -135365169
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_7
+      name: Blue7
       rect:
         serializedVersion: 2
         x: 420
@@ -253,11 +253,11 @@ TextureImporter:
       spriteID: 5181a13f68ec95a4b991a8bc1a8034b5
       internalID: -114275631
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_8
+      name: Blue8
       rect:
         serializedVersion: 2
         x: 490
@@ -274,11 +274,11 @@ TextureImporter:
       spriteID: 41da98c456f871f48a02a2cfe25be17c
       internalID: 1137859503
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_9
+      name: Blue9
       rect:
         serializedVersion: 2
         x: 560
@@ -295,11 +295,11 @@ TextureImporter:
       spriteID: 9b4894dc16164654c8195313d91ea578
       internalID: 871252293
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_10
+      name: Blue10
       rect:
         serializedVersion: 2
         x: 630
@@ -316,11 +316,11 @@ TextureImporter:
       spriteID: 0580cc4b8b1c10e44bd939c3b664ddaf
       internalID: -1900956825
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_11
+      name: Blue11
       rect:
         serializedVersion: 2
         x: 700
@@ -337,11 +337,11 @@ TextureImporter:
       spriteID: 1c8f0911afe053e4ba9265e2ab9a4eca
       internalID: 1432613978
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_12
+      name: Blue12
       rect:
         serializedVersion: 2
         x: 770
@@ -358,11 +358,11 @@ TextureImporter:
       spriteID: 1741a73b0a5d37940ad435e4617e7f7e
       internalID: 400370579
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: blue_13
+      name: Blue13
       rect:
         serializedVersion: 2
         x: 840
@@ -379,11 +379,11 @@ TextureImporter:
       spriteID: e051a702f301e924db61754298568e98
       internalID: -1672540255
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_1
+      name: Black1
       rect:
         serializedVersion: 2
         x: 0
@@ -400,11 +400,11 @@ TextureImporter:
       spriteID: c4a963211499af14ca216e6cac10ad60
       internalID: 312998043
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_2
+      name: Black2
       rect:
         serializedVersion: 2
         x: 70
@@ -421,11 +421,11 @@ TextureImporter:
       spriteID: e6c4b7a16521e954f9fbf630f67cd8c1
       internalID: 985905724
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_3
+      name: Black3
       rect:
         serializedVersion: 2
         x: 140
@@ -442,11 +442,11 @@ TextureImporter:
       spriteID: bf4e4129de966994885aaf1dff48700d
       internalID: -1386299323
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_4
+      name: Black4
       rect:
         serializedVersion: 2
         x: 210
@@ -463,11 +463,11 @@ TextureImporter:
       spriteID: 06d70326ad13b7243910230a2421ab96
       internalID: 272554031
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_5
+      name: Black5
       rect:
         serializedVersion: 2
         x: 280
@@ -484,11 +484,11 @@ TextureImporter:
       spriteID: 0567930609d85dc418b44a49627a555a
       internalID: -1553238869
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_6
+      name: Black6
       rect:
         serializedVersion: 2
         x: 350
@@ -505,11 +505,11 @@ TextureImporter:
       spriteID: 598e661508d5881458d6d9a8f66c48d2
       internalID: 510747927
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_7
+      name: Black7
       rect:
         serializedVersion: 2
         x: 420
@@ -526,11 +526,11 @@ TextureImporter:
       spriteID: d561071e75c5ad64e97eec1d365d43d2
       internalID: -816949749
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_8
+      name: Black8
       rect:
         serializedVersion: 2
         x: 490
@@ -547,11 +547,11 @@ TextureImporter:
       spriteID: 245ae3f1450fc674abcf62e0405b1d67
       internalID: 1337707416
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_9
+      name: Black9
       rect:
         serializedVersion: 2
         x: 560
@@ -568,11 +568,11 @@ TextureImporter:
       spriteID: ba2b638ffb4d265499de2101daa66a15
       internalID: -2136143848
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_10
+      name: Black10
       rect:
         serializedVersion: 2
         x: 630
@@ -589,11 +589,11 @@ TextureImporter:
       spriteID: c691f6d0d0e085b4d9e20293a141a5ee
       internalID: 894846778
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_11
+      name: Black11
       rect:
         serializedVersion: 2
         x: 700
@@ -610,11 +610,11 @@ TextureImporter:
       spriteID: 174f6c663923bfd498af80d832c10a82
       internalID: 738742128
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_12
+      name: Black12
       rect:
         serializedVersion: 2
         x: 770
@@ -631,11 +631,11 @@ TextureImporter:
       spriteID: 13e8c5a7fbd38364e92b18df576c3436
       internalID: 1368238465
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: black_13
+      name: Black13
       rect:
         serializedVersion: 2
         x: 840
@@ -652,11 +652,11 @@ TextureImporter:
       spriteID: ce87a31faa39f454d94093192cc8fbfd
       internalID: 442148261
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_1
+      name: Red1
       rect:
         serializedVersion: 2
         x: 0
@@ -673,11 +673,11 @@ TextureImporter:
       spriteID: 497157301a99a9042a11781710cf8297
       internalID: -278389402
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_2
+      name: Red2
       rect:
         serializedVersion: 2
         x: 70
@@ -694,11 +694,11 @@ TextureImporter:
       spriteID: 165d76b027e0c5549a6af01b5b62b037
       internalID: 212812231
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_3
+      name: Red3
       rect:
         serializedVersion: 2
         x: 140
@@ -715,11 +715,11 @@ TextureImporter:
       spriteID: 528e6fafb2abacd458424f6167238097
       internalID: 154013037
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_4
+      name: Red4
       rect:
         serializedVersion: 2
         x: 210
@@ -736,11 +736,11 @@ TextureImporter:
       spriteID: 4ea3c881e5a65ef44808a1350d11613e
       internalID: 1822599390
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_5
+      name: Red5
       rect:
         serializedVersion: 2
         x: 280
@@ -757,11 +757,11 @@ TextureImporter:
       spriteID: dae314b7153db764590f6d2f14324159
       internalID: -1075600120
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_6
+      name: Red6
       rect:
         serializedVersion: 2
         x: 350
@@ -778,11 +778,11 @@ TextureImporter:
       spriteID: 88abfdade3ec9764f944e2bfbe3adde7
       internalID: 624556582
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_7
+      name: Red7
       rect:
         serializedVersion: 2
         x: 420
@@ -799,11 +799,11 @@ TextureImporter:
       spriteID: 54602e190be64fa41863b229717f4418
       internalID: 184230619
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_8
+      name: Red8
       rect:
         serializedVersion: 2
         x: 490
@@ -820,11 +820,11 @@ TextureImporter:
       spriteID: 7c3678109b741ba4ab661432a15a6b3d
       internalID: 1504086810
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_9
+      name: Red9
       rect:
         serializedVersion: 2
         x: 560
@@ -841,11 +841,11 @@ TextureImporter:
       spriteID: 02610b588bf7eaa49b66ad14cf07dc76
       internalID: 30994417
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_10
+      name: Red
       rect:
         serializedVersion: 2
         x: 630
@@ -862,11 +862,11 @@ TextureImporter:
       spriteID: bf95f3f161055934b9a4b34535a91f24
       internalID: 1315598053
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_11
+      name: Red11
       rect:
         serializedVersion: 2
         x: 700
@@ -883,11 +883,11 @@ TextureImporter:
       spriteID: b6f3d8947eb78d6419ba090d64e49247
       internalID: -1896721309
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_12
+      name: Red12
       rect:
         serializedVersion: 2
         x: 770
@@ -904,11 +904,11 @@ TextureImporter:
       spriteID: 92b46b30bbc4efe40a9966fa1843be54
       internalID: -72687105
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: red_13
+      name: Red13
       rect:
         serializedVersion: 2
         x: 840
@@ -925,11 +925,11 @@ TextureImporter:
       spriteID: b197ef5baf1d9044681c96eb40b688b4
       internalID: 846292031
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_1
+      name: Green1
       rect:
         serializedVersion: 2
         x: 0
@@ -946,11 +946,11 @@ TextureImporter:
       spriteID: aa3ec525bd149434c982d908b62e4a75
       internalID: 826840078
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_2
+      name: Green2
       rect:
         serializedVersion: 2
         x: 70
@@ -967,11 +967,11 @@ TextureImporter:
       spriteID: bc7ad67c7f6b14e42bfbb4dc6f27aa04
       internalID: 1468206228
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_3
+      name: Green3
       rect:
         serializedVersion: 2
         x: 140
@@ -988,11 +988,11 @@ TextureImporter:
       spriteID: 9b9bbd908297e144eb5c7cb41e3083ba
       internalID: -117691638
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_4
+      name: Green4
       rect:
         serializedVersion: 2
         x: 210
@@ -1009,11 +1009,11 @@ TextureImporter:
       spriteID: 20ff524aaf8badf4d9a8df39b68018d5
       internalID: -759910606
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_5
+      name: Green5
       rect:
         serializedVersion: 2
         x: 280
@@ -1030,11 +1030,11 @@ TextureImporter:
       spriteID: 31c31da92a85d7c4e9fb63ffcba2e60d
       internalID: -820038721
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_6
+      name: Green6
       rect:
         serializedVersion: 2
         x: 350
@@ -1051,11 +1051,11 @@ TextureImporter:
       spriteID: 40a097a5587d1fc448c71343c925985d
       internalID: -1879763527
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_7
+      name: Green7
       rect:
         serializedVersion: 2
         x: 420
@@ -1072,11 +1072,11 @@ TextureImporter:
       spriteID: 07f75c0139de726438c694f97cdefa51
       internalID: 191687475
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_8
+      name: Green8
       rect:
         serializedVersion: 2
         x: 490
@@ -1093,11 +1093,11 @@ TextureImporter:
       spriteID: 60f6d293dee1cd14c9f0d5771e429b48
       internalID: 2000824062
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_9
+      name: Green9
       rect:
         serializedVersion: 2
         x: 560
@@ -1114,11 +1114,11 @@ TextureImporter:
       spriteID: 43ebca10972a47446a704119b1613418
       internalID: -2040021240
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_10
+      name: Green10
       rect:
         serializedVersion: 2
         x: 630
@@ -1135,11 +1135,11 @@ TextureImporter:
       spriteID: 02537d72c02dedf47bc98f606d956263
       internalID: 1515742937
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_11
+      name: Green11
       rect:
         serializedVersion: 2
         x: 700
@@ -1156,11 +1156,11 @@ TextureImporter:
       spriteID: fa114a088326a434abb82fd885c80911
       internalID: 870886329
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_12
+      name: Green12
       rect:
         serializedVersion: 2
         x: 770
@@ -1177,11 +1177,11 @@ TextureImporter:
       spriteID: d9a54be9fb23af0419717d1caed2e1de
       internalID: -180263303
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_13
+      name: Green13
       rect:
         serializedVersion: 2
         x: 840
@@ -1198,11 +1198,11 @@ TextureImporter:
       spriteID: 870181024139dff4bb2f8fd9763c2776
       internalID: 1660509724
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: joker
+      name: FakeJoker1
       rect:
         serializedVersion: 2
         x: 0
@@ -1219,11 +1219,11 @@ TextureImporter:
       spriteID: fa640b7e9b6f274459ae345a9b7a4fd4
       internalID: 1900783586
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: joke
+      name: FakeJoker2
       rect:
         serializedVersion: 2
         x: 70
@@ -1240,238 +1240,28 @@ TextureImporter:
       spriteID: deccac62143202643b0426e1a6e64db2
       internalID: -562497483
       vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tiles_54
+      name: Pioche
       rect:
         serializedVersion: 2
-        x: 140
+        x: 141
         y: 0
-        width: 70
-        height: 100
+        width: 68
+        height: 99
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2a635ecf735401b45b3551069edaf040
-      internalID: -55630587
+      spriteID: 0364d6c3da1827847b3e4c33ca9ac475
+      internalID: -1340357606
       vertices: []
-      indices:
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_55
-      rect:
-        serializedVersion: 2
-        x: 210
-        y: 0
-        width: 70
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 131d9eeb2b78bae438e809b4499a081b
-      internalID: 1298947732
-      vertices: []
-      indices:
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_56
-      rect:
-        serializedVersion: 2
-        x: 280
-        y: 0
-        width: 70
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 082e6db888e871047bc6569e27abaf16
-      internalID: -1017326175
-      vertices: []
-      indices:
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_57
-      rect:
-        serializedVersion: 2
-        x: 350
-        y: 0
-        width: 70
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a58887f14130200408f00210d969366a
-      internalID: -2036941205
-      vertices: []
-      indices:
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_58
-      rect:
-        serializedVersion: 2
-        x: 420
-        y: 0
-        width: 70
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e4f2d0a8600970340b14928077bd2fb8
-      internalID: 71646199
-      vertices: []
-      indices:
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_59
-      rect:
-        serializedVersion: 2
-        x: 490
-        y: 0
-        width: 70
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3b9f2be08dc40b240b6d5347ed30674d
-      internalID: 1775838921
-      vertices: []
-      indices:
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_60
-      rect:
-        serializedVersion: 2
-        x: 560
-        y: 0
-        width: 70
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 691a49024f691534bad945ea1385972e
-      internalID: 1033915780
-      vertices: []
-      indices:
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_61
-      rect:
-        serializedVersion: 2
-        x: 630
-        y: 0
-        width: 70
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f4f3372bad3661144a2682d58c1a8420
-      internalID: -1366568347
-      vertices: []
-      indices:
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_62
-      rect:
-        serializedVersion: 2
-        x: 700
-        y: 0
-        width: 70
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 93e9475d0d2b19c4f82e970af8d317e6
-      internalID: -1805458519
-      vertices: []
-      indices:
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_63
-      rect:
-        serializedVersion: 2
-        x: 770
-        y: 0
-        width: 70
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a0e49e777c4f3344db7b4e029bec44e1
-      internalID: 1457682485
-      vertices: []
-      indices:
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_64
-      rect:
-        serializedVersion: 2
-        x: 840
-        y: 0
-        width: 70
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 11022e8c8c4365449b64b5f4740753d1
-      internalID: -123579441
-      vertices: []
-      indices:
+      indices: 
       edges: []
       weights: []
     outline: []
@@ -1480,66 +1270,68 @@ TextureImporter:
     spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
-    indices:
+    indices: 
     edges: []
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      black_1: 312998043
-      black_10: 894846778
-      black_11: 738742128
-      black_12: 1368238465
-      black_13: 442148261
-      black_2: 985905724
-      black_3: -1386299323
-      black_4: 272554031
-      black_5: -1553238869
-      black_6: 510747927
-      black_7: -816949749
-      black_8: 1337707416
-      black_9: -2136143848
-      blue_1: 603177335
-      blue_10: -1900956825
-      blue_11: 1432613978
-      blue_12: 400370579
-      blue_13: -1672540255
-      blue_2: -1632890739
-      blue_3: -1264110389
-      blue_4: 840853520
-      blue_5: -1884537590
-      blue_6: -135365169
-      blue_7: -114275631
-      blue_8: 1137859503
-      blue_9: 871252293
-      green_1: 826840078
-      green_10: 1515742937
-      green_11: 870886329
-      green_12: -180263303
-      green_13: 1660509724
-      green_2: 1468206228
-      green_3: -117691638
-      green_4: -759910606
-      green_5: -820038721
-      green_6: -1879763527
-      green_7: 191687475
-      green_8: 2000824062
-      green_9: -2040021240
-      joker: 1900783586
-      red_1: -278389402
-      red_10: 1315598053
-      red_11: -1896721309
-      red_12: -72687105
-      red_13: 846292031
-      red_2: 212812231
-      red_3: 154013037
-      red_4: 1822599390
-      red_5: -1075600120
-      red_6: 624556582
-      red_7: 184230619
-      red_8: 1504086810
-      red_9: 30994417
-  mipmapLimitGroupName:
+      Black1: 312998043
+      Black10: 894846778
+      Black11: 738742128
+      Black12: 1368238465
+      Black13: 442148261
+      Black2: 985905724
+      Black3: -1386299323
+      Black4: 272554031
+      Black5: -1553238869
+      Black6: 510747927
+      Black7: -816949749
+      Black8: 1337707416
+      Black9: -2136143848
+      Blue1: 603177335
+      Blue10: -1900956825
+      Blue11: 1432613978
+      Blue12: 400370579
+      Blue13: -1672540255
+      Blue2: -1632890739
+      Blue3: -1264110389
+      Blue4: 840853520
+      Blue5: -1884537590
+      Blue6: -135365169
+      Blue7: -114275631
+      Blue8: 1137859503
+      Blue9: 871252293
+      FakeJoker1: 1900783586
+      FakeJoker2: -562497483
+      Green1: 826840078
+      Green10: 1515742937
+      Green11: 870886329
+      Green12: -180263303
+      Green13: 1660509724
+      Green2: 1468206228
+      Green3: -117691638
+      Green4: -759910606
+      Green5: -820038721
+      Green6: -1879763527
+      Green7: 191687475
+      Green8: 2000824062
+      Green9: -2040021240
+      Pioche: -1340357606
+      Red: 1315598053
+      Red1: -278389402
+      Red11: -1896721309
+      Red12: -72687105
+      Red13: 846292031
+      Red2: 212812231
+      Red3: 154013037
+      Red4: 1822599390
+      Red5: -1075600120
+      Red6: 624556582
+      Red7: 184230619
+      Red8: 1504086810
+      Red9: 30994417
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  userData:
-  assetBundleName:
-  assetBundleVariant:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

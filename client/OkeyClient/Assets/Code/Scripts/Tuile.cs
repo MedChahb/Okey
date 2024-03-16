@@ -8,8 +8,8 @@ public class Tuile : MonoBehaviour
     private int valeur; // number between 1 and 13
     private bool isJoker = false;
     private SpriteRenderer sprite;
-    private bool deplacable = true;
-    private bool estDeplace = false;
+    
+     private bool isPlaced=false ; //tuile bien placé dans la grille(sur un placeholder)
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +20,7 @@ public class Tuile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (this.estDeplace)
+        if (!this.isPlaced)
             this.transform.position = Vector3.Lerp(
                 this.transform.position,
                 Camera.main.ScreenPointToRay(Input.mousePosition).GetPoint(5),
@@ -28,6 +28,7 @@ public class Tuile : MonoBehaviour
             );
     }
 
+    //thibault il faudrait juste modifier deplacable/estDeplace 
     void OnMouseDown()
     {
         if (this.deplacable)
@@ -79,5 +80,13 @@ public class Tuile : MonoBehaviour
     public void SetIsJoker(bool isJoke)
     {
         this.isJoker = isJoke;
+    }
+
+    // Set sprite pour la tuile
+    public void SetTileSprite(Sprite sprite)
+    {
+        spriteRenderer.sprite = sprite;
+        color = sprite.name.Split('_')[0];
+        number = sprite.name.Split('_')[1];
     }
 }
