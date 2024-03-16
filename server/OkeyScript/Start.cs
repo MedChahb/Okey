@@ -96,7 +96,7 @@ namespace Okey
 
             //Console.WriteLine("\nEnter q to exit.\n");
 
-            Joueur joueurStarter = j.getJoueurActuel();
+            /*Joueur joueurStarter = j.getJoueurActuel();
             j.AfficheChevaletActuel();
 
             Console.WriteLine("choisis la tuile à jeter (donner ces coords y x) : ");
@@ -139,7 +139,7 @@ namespace Okey
                 }
 
                 //if (Console.ReadLine() == "q") break;
-            }
+            }*/
 
             /*j.AfficheChevaletActuel();
 
@@ -148,6 +148,45 @@ namespace Okey
             joueurActuel.MoveTuileChevalet(new Coord(0,0), new Coord(1, 7));
 
             j.AfficheChevaletActuel();*/
+        
+
+            //teste de la fin du jeu (marche bien)
+            /*Joueur test = new Humain(1, "mohammed", 9999);
+
+
+            List<Tuile> etage1 = new List<Tuile>();
+            etage1.Add(new TuileNormale(CouleurTuile.N, 2, true)); etage1.Add(new TuileNormale(CouleurTuile.R, 2, true));
+            etage1.Add(new TuileNormale(CouleurTuile.B, 2, true)); etage1.Add(new TuileNormale(CouleurTuile.J, 2, true));
+            etage1.Add(null); etage1.Add(null); etage1.Add(null);
+            etage1.Add(new TuileNormale(CouleurTuile.N, 2, true)); etage1.Add(new TuileNormale(CouleurTuile.N, 3, true));
+            etage1.Add(new TuileNormale(CouleurTuile.N, 4, true)); etage1.Add(new TuileNormale(CouleurTuile.N, 5, true));
+            etage1.Add(null); etage1.Add(null); etage1.Add(null);
+
+            List<Tuile> etage2 = new List<Tuile>();
+            etage2.Add(null); etage2.Add(null); etage2.Add(null);
+            etage2.Add(new TuileNormale(CouleurTuile.B, 10, true)); etage2.Add(new TuileNormale(CouleurTuile.J, 10, true));
+            etage2.Add(new TuileNormale(CouleurTuile.R, 10, true));
+            etage2.Add(null); etage2.Add(null);
+            etage2.Add(new TuileNormale(CouleurTuile.J, 12, true)); etage2.Add(new TuileNormale(CouleurTuile.J, 13, true));
+            etage2.Add(new TuileNormale(CouleurTuile.J, 1, true));
+            etage2.Add(null); etage2.Add(null); etage2.Add(null);
+
+
+            List<List<Tuile>> chevalet = new List<List<Tuile>>();
+            chevalet.Add(etage1); chevalet.Add(etage2);
+            test.setChevalet(chevalet);
+
+            test.AfficheChevalet();
+            Console.WriteLine(test.VerifSerieChevalet());
+
+
+            test.MoveTuileChevalet(new Coord(0, 0), new Coord(1, 3));
+            test.MoveTuileChevalet(new Coord(0, 1), new Coord(1, 4));
+
+
+            test.MoveTuileChevalet(new Coord(0, 0), new Coord(1, 3));
+            test.MoveTuileChevalet(new Coord(0, 1), new Coord(1, 4));*/
+
 
 
         }
