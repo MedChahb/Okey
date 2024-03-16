@@ -261,6 +261,11 @@ namespace Okey.Game
             this.etat = true;
         }
 
+        public bool isTermine()
+        {
+            return this.etat;
+        }
+
         public Joueur getNextJoueur(Joueur j)
         {
             int indexOfNextPlayer = (Array.IndexOf(this.Joueurs, j) + 1) % 4;
