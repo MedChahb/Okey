@@ -46,12 +46,6 @@ namespace Okey.Joueurs
 
         public abstract void Gagne();
 
-
-        public void PassTour()
-        {
-            this.Tour = false;
-        }
-
         public void EstTour()
         {
             this.Tour = true;
@@ -72,22 +66,6 @@ namespace Okey.Joueurs
         public void Ajouer()
         {
             this.Tour = true;
-        }
-
-        //returns a boolean if exists and the index of the list where it does [0-1]
-        private (int, int) FindTuileInChevalet(Tuile t)
-        {
-            for (int i = 0; i < etage; i++)
-            {
-                for(int j=0; j < tuilesDansEtage; j++)
-                {
-                    if (this.chevalet[i][j] == t)
-                    {
-                        return (i, j);
-                    }
-                }
-            }
-            return (-1,-1);
         }
 
         public void AjoutTuileChevalet(Tuile t)
@@ -121,7 +99,7 @@ namespace Okey.Joueurs
                 this.EstPlusTour(); // plus son tour
                 j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour an next joueur
 
-                Console.WriteLine($"le joueur a jeté la tuile {t}\n");
+                Console.WriteLine($"{this.Name} a jeté la tuile {t}\n");
             }
             else
             {
@@ -341,7 +319,7 @@ namespace Okey.Joueurs
    
         public void AfficheChevalet()
         {
-            Console.WriteLine($"Chevalet du {this} : ");
+            Console.WriteLine($"\nLe chevalet de {this} : ");
             for (int i = 0; i < etage; i++)
             {
                 for (int j = 0; j < tuilesDansEtage; j++)
@@ -362,6 +340,7 @@ namespace Okey.Joueurs
             this.chevalet = chev;
         }
 
+        public String getName() { return this.Name; }
 
     }
 }

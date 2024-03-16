@@ -21,9 +21,9 @@ namespace Okey.Joueurs
         private void UpdateElo()
         {
             //if gagne
-            this.Elo += 20;
+            this.Elo += 10;
             //if lose
-            this.Elo -= 0;
+            this.Elo -= 10;
         }
         public override void Gagne()
         {
@@ -37,7 +37,7 @@ namespace Okey.Joueurs
 
         public override string ToString()
         {
-            return String.Format("Joueur : id = {0}, Name = {1}, Elo = {2}", this.id, this.Name, this.Elo);
+            return $"{this.Name}";
         }
 
         
