@@ -30,7 +30,7 @@ namespace Okey.Tuiles
 
         public override String ToString()
         {
-            return String.Format("({0}, {1}, {2})", this.num, this.Couleur, "Ok");
+            return String.Format("({0:00}, {1}, {2})", this.num, this.Couleur, "Ok");
         }
     }
 }

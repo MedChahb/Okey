@@ -29,7 +29,7 @@ namespace Okey.Tuiles
 
         public override string ToString()
         {
-            return String.Format("({0}, {1}, {2})", this.num, this.Couleur, "No");
+            return String.Format("({0:00}, {1}, {2})", this.num, this.Couleur, "No");
         }
     }
 }
