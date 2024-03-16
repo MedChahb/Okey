@@ -96,101 +96,53 @@ namespace Okey
 
             //Console.WriteLine("\nEnter q to exit.\n");
 
-            /*Joueur joueurStarter = j.getJoueurActuel();
+            Joueur joueurStarter = j.getJoueurActuel();
             j.AfficheChevaletActuel();
 
-            Console.WriteLine("choisis la tuile à jeter (donner ces coords y x) : ");
-            String coords = Console.ReadLine();
-            if (coords.Length == 3)
-            {
-                int y = coords[0] - '0';
-                int x = coords[2] - '0';
-                joueurStarter.JeterTuile(new Coord(y, x), j);
-            }
-            else
-            {
-                // do smtg here
-            }
+            Console.Write("choisis la tuile à jeter (donner ces coords y x) : ");
+            Coord coords = readCoord(Console.ReadLine());
+            joueurStarter.JeterTuile(coords, j);
 
 
-            while (true)
+
+
+            while (!j.isTermine())
             {
                 Joueur joueurActuel = j.getJoueurActuel();
 
-                Console.WriteLine("\nc'est le tour de :");
+                Console.WriteLine($"\nc'est le tour de {joueurActuel.getName()}:");
                 j.AfficheChevaletActuel();
 
                 //le joueur pioche
-                Console.WriteLine("choisis de où piocher : (Centre ou Defausse)");
+                Console.Write("choisis de où piocher (Centre ou Defausse) : ");
                 String ouPiocher = Console.ReadLine();
                 joueurActuel.PiocherTuile(ouPiocher, j);
 
                 //le joueur jete
-                Console.WriteLine("maintenant vous devez jeter une tuile.");
+                Console.WriteLine("\nmaintenant vous devez jeter une tuile.");
                 j.AfficheChevaletActuel();
-                Console.WriteLine("choisis la tuile à jeter (donner ces coords y x) : ");
-                String coordos = Console.ReadLine();
 
-                if (coordos != null && coordos.Length == 3)
-                {
-                    int y = coordos[0] - '0';
-                    int x = coordos[2] - '0';
-                    joueurActuel.JeterTuile(new Coord(y, x), j);
-                }
+                Console.Write("choisis la tuile à jeter (donner ces coords y x) : ");
+                Coord coordos = readCoord(Console.ReadLine());
+                joueurActuel.JeterTuile(coordos, j);
+
 
                 //if (Console.ReadLine() == "q") break;
-            }*/
-
-            /*j.AfficheChevaletActuel();
-
-            Joueur joueurActuel = j.getJoueurActuel();
-
-            joueurActuel.MoveTuileChevalet(new Coord(0,0), new Coord(1, 7));
-
-            j.AfficheChevaletActuel();*/
-        
-
-            //teste de la fin du jeu (marche bien)
-            /*Joueur test = new Humain(1, "mohammed", 9999);
+            }
 
 
-            List<Tuile> etage1 = new List<Tuile>();
-            etage1.Add(new TuileNormale(CouleurTuile.N, 2, true)); etage1.Add(new TuileNormale(CouleurTuile.R, 2, true));
-            etage1.Add(new TuileNormale(CouleurTuile.B, 2, true)); etage1.Add(new TuileNormale(CouleurTuile.J, 2, true));
-            etage1.Add(null); etage1.Add(null); etage1.Add(null);
-            etage1.Add(new TuileNormale(CouleurTuile.N, 2, true)); etage1.Add(new TuileNormale(CouleurTuile.N, 3, true));
-            etage1.Add(new TuileNormale(CouleurTuile.N, 4, true)); etage1.Add(new TuileNormale(CouleurTuile.N, 5, true));
-            etage1.Add(null); etage1.Add(null); etage1.Add(null);
-
-            List<Tuile> etage2 = new List<Tuile>();
-            etage2.Add(null); etage2.Add(null); etage2.Add(null);
-            etage2.Add(new TuileNormale(CouleurTuile.B, 10, true)); etage2.Add(new TuileNormale(CouleurTuile.J, 10, true));
-            etage2.Add(new TuileNormale(CouleurTuile.R, 10, true));
-            etage2.Add(null); etage2.Add(null);
-            etage2.Add(new TuileNormale(CouleurTuile.J, 12, true)); etage2.Add(new TuileNormale(CouleurTuile.J, 13, true));
-            etage2.Add(new TuileNormale(CouleurTuile.J, 1, true));
-            etage2.Add(null); etage2.Add(null); etage2.Add(null);
-
-
-            List<List<Tuile>> chevalet = new List<List<Tuile>>();
-            chevalet.Add(etage1); chevalet.Add(etage2);
-            test.setChevalet(chevalet);
-
-            test.AfficheChevalet();
-            Console.WriteLine(test.VerifSerieChevalet());
-
-
-            test.MoveTuileChevalet(new Coord(0, 0), new Coord(1, 3));
-            test.MoveTuileChevalet(new Coord(0, 1), new Coord(1, 4));
-
-
-            test.MoveTuileChevalet(new Coord(0, 0), new Coord(1, 3));
-            test.MoveTuileChevalet(new Coord(0, 1), new Coord(1, 4));*/
-
-
+            // TODO: 
+            // use move methode in the while loop to make the game playable
 
         }
 
+
+        public static Coord readCoord(String str)
+        {
+            string[] parts = str.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return new Coord(int.Parse(parts[0]), int.Parse(parts[1]));
+        }
 
     }
 
