@@ -14,13 +14,7 @@ namespace Okey.Game
     public class Jeu
     {
         private int id;
-
-        //private CircularLinkedList<Joueur> Joueurs = new CircularLinkedList<Joueur>(); //taille 4
         private Joueur[] Joueurs = new Joueur[4];
-
-        //le joueur jette dans sa defausse et prend de la defausse du joueur precedent
-
-
         private double MMR;
         private Stack<Tuile> pioche = new Stack<Tuile>();
 
@@ -36,12 +30,6 @@ namespace Okey.Game
         public Jeu(int id, Joueur[] joueurs)
         {
             this.id = id;
-
-            /*foreach(var pl in joueurs)
-            {
-                this.Joueurs.Add(pl);
-            }*/
-
             this.Joueurs = joueurs;
             this.MMR = CalculMMR();
             this.etat = false;
@@ -145,7 +133,7 @@ namespace Okey.Game
 
         public void AfficheChevaletJoueurs()
         {
-            //CircularLinkedList<Joueur> joueurs = this.GetJoueurs();
+            
 
             foreach (Joueur pl in this.Joueurs)
             {
@@ -172,7 +160,7 @@ namespace Okey.Game
         }
 
         //prend que 3 ou 4 tuiles en arguments
-        public bool Est_serie_de_meme_chiffre(Tuile[] tuiles)
+        /*public bool Est_serie_de_meme_chiffre(Tuile[] tuiles)
         {
             int diffColors = 1; // On commence avec une couleur différente
             for (int i = 1; i < tuiles.Length; i++)
@@ -199,26 +187,9 @@ namespace Okey.Game
 
             return (tuiles.Length == 4 && diffColors == 4)
                 || (tuiles.Length == 3 && diffColors == 3);
-        }
+        }*/
 
-        public bool EstSerieDeCouleur(Tuile[] t) // tuile se suivent, mm couleur
-        {
-            if (t.Length < 3)
-                return false;
-            for (int i = 0; i < t.Length - 1; i++)
-            {
-                int j = i + 1;
-
-                if (!t[i].MemeCouleur(t[j]) || !t[i].estSuivant(t[j]))
-                    return false;
-            }
-            return true;
-        }
-
-        public bool Est_serie(Tuile[] tuiles)
-        {
-            return Est_serie_de_meme_chiffre(tuiles) || EstSerieDeCouleur(tuiles);
-        }
+               
 
         public void ChangerTour()
         {
@@ -269,10 +240,7 @@ namespace Okey.Game
             return this.Okays;
         }
 
-        /*public CircularLinkedList<Joueur> GetJoueurs()
-        {
-            return this.Joueurs;
-        }*/
+       
         public Joueur[] GetJoueurs()
         {
             return Joueurs;
@@ -286,6 +254,11 @@ namespace Okey.Game
         public void setJoueurActuel(Joueur j)
         {
             this.JoueurActuel = j;
+        }
+
+        public void JeuTermine()
+        {
+            this.etat = true;
         }
 
         public Joueur getNextJoueur(Joueur j)
@@ -312,77 +285,5 @@ namespace Okey.Game
         }
     }
 
-    public class CircularLinkedList<T> : IEnumerable<T>
-    {
-        private LinkedList<T> list;
-        private LinkedListNode<T> current;
-
-        public CircularLinkedList()
-        {
-            list = new LinkedList<T>();
-            current = null;
-        }
-
-        public void Add(T item)
-        {
-            list.AddLast(item);
-            if (current == null)
-                current = list.First;
-        }
-
-        public T GetCurrent()
-        {
-            if (current == null)
-                throw new InvalidOperationException("List is empty");
-            return current.Value;
-        }
-
-        public void Next()
-        {
-            if (current == null)
-                throw new InvalidOperationException("List is empty");
-            current = current.Next ?? list.First;
-        }
-
-        public void Previous()
-        {
-            if (current == null)
-                throw new InvalidOperationException("List is empty");
-            current = current.Previous ?? list.Last;
-        }
-
-        public T this[int index]
-        {
-            get
-            {
-                if (index < 0 || index >= list.Count)
-                    throw new IndexOutOfRangeException("Index is out of range.");
-
-                LinkedListNode<T> node = list.First;
-                for (int i = 0; i < index; i++)
-                {
-                    node = node.Next;
-                }
-                return node.Value;
-            }
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            LinkedListNode<T> startingNode = current;
-            if (startingNode != null)
-            {
-                do
-                {
-                    yield return startingNode.Value;
-                    startingNode = startingNode.Next ?? list.First;
-                } while (startingNode != current);
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
+    
 }
