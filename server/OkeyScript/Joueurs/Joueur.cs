@@ -22,6 +22,9 @@ namespace Okey.Joueurs
         protected bool peut_jeter = false;
         protected Stack<Tuile> defausse = new Stack<Tuile>();
 
+        static int etage = 2;
+        static int tuilesDansEtage = 14; //14
+
         public Joueur(int id, String Name)
         {
             this.id = id;
@@ -30,11 +33,11 @@ namespace Okey.Joueurs
             this.Tour = false;
 
             //initialisation du chevalet (ready to get Tuiles)
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < etage; i++)
             {
                 this.chevalet.Add(new List<Tuile>());
 
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < tuilesDansEtage; j++)
                 {
                     this.chevalet[i].Add(null);
                 }
@@ -43,11 +46,6 @@ namespace Okey.Joueurs
 
         public abstract void Gagne();
 
-        public void VerifChevalet()
-        {
-            //chech for series then
-            this.Gagne();
-        }
 
         public void PassTour()
         {
@@ -79,9 +77,9 @@ namespace Okey.Joueurs
         //returns a boolean if exists and the index of the list where it does [0-1]
         private (int, int) FindTuileInChevalet(Tuile t)
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < etage; i++)
             {
-                for(int j=0; j < 8; j++)
+                for(int j=0; j < tuilesDansEtage; j++)
                 {
                     if (this.chevalet[i][j] == t)
                     {
@@ -94,9 +92,9 @@ namespace Okey.Joueurs
 
         public void AjoutTuileChevalet(Tuile t)
         {
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < etage; j++)
             {
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < tuilesDansEtage; i++)
                 {
                     if (this.chevalet[j][i] == null)
                     {
@@ -121,13 +119,18 @@ namespace Okey.Joueurs
                 t.SetDefause(); // devient defausse
                 this.JeteTuileDefausse(t); // la poser dans la defausse
                 this.EstPlusTour(); // plus son tour
-                j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour an next jouer
+                j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour an next joueur
 
                 Console.WriteLine($"le joueur a jeté la tuile {t}\n");
             }
             else
             {
                 Console.WriteLine("error in JeterTuile. (Tuile pas dans le chevalet)");
+            }
+
+            if (this.VerifSerieChevalet())
+            {
+                Console.WriteLine($"{this} a gagné.");
             }
         }
 
@@ -174,7 +177,7 @@ namespace Okey.Joueurs
 
         }
 
-        public void MoveTuileChevalet(Coord from, Coord to)
+        public void MoveTuileChevalet(Coord from, Coord to, Jeu j)
         {
             (int yFrom, int xFrom) = (from.getY(), from.getX());
             (int yTo, int xTo) = (to.getY(), to.getX());
@@ -183,14 +186,100 @@ namespace Okey.Joueurs
 
             this.chevalet[yTo][xTo] = this.chevalet[yFrom][xFrom];
             this.chevalet[yFrom][xFrom] = tmpTuileTo;
+
+            if (this.VerifSerieChevalet() && this.CountTuileDansChevalet() == 14)
+            {
+                Console.WriteLine($"{this} a gagné.");
+                j.JeuTermine();
+            }
+        }
+
+        private bool Est_serie_de_meme_chiffre(List<Tuile> tuiles)
+        {
+            if (tuiles.Count <= 2) return false;
+            List<CouleurTuile> CouleurVues = new List<CouleurTuile>();
+
+            foreach (Tuile tuile in tuiles)
+            {
+                if (tuiles[0].GetNum() != tuile.GetNum()) return false; // deux tuiles pas mm num -> false
+
+                if (CouleurVues.Contains(tuile.GetCouleur())) return false; // deux tuile de mm couleur -> false
+                                                                            // renvoie false automatiquement si y a > 4 Tuiles
+                                                                            // car il ya que 4 couleurs
+                CouleurVues.Add(tuile.GetCouleur()); // on memorise la couleur vue
+
+            }
+
+            return true;
+        }
+
+        private bool EstSerieDeCouleur(List<Tuile> t) // tuile se suivent, mm couleur
+        {
+            if (t.Count < 3)
+                return false;
+            for (int i = 0; i < t.Count - 1; i++)
+            {
+                int j = i + 1;
+
+                if (!t[i].MemeCouleur(t[j]) || !t[i].estSuivant(t[j]))
+                    return false;
+            }
+            return true;
+        }
+
+        public bool Est_serie(List<Tuile> tuiles)
+        {
+            return Est_serie_de_meme_chiffre(tuiles) || EstSerieDeCouleur(tuiles);
+        }
+        
+        public static List<List<Tuile>> PartitionListOnNulls(List<Tuile> etage)
+        {
+            List<List<Tuile>> partitions = new List<List<Tuile>>();
+            List<Tuile> partition = new List<Tuile>();
+
+            foreach (Tuile t in etage)
+            {
+                if(t == null)
+                {
+                    if(partition.Count != 0)
+                        partitions.Add(partition);
+                    partition = new List<Tuile>();
+                }
+                else
+                {
+                    partition.Add(t);
+                }
+
+            }
+            if (partition.Count != 0)
+                partitions.Add(partition);
+            return partitions;
+        }
+        
+        public bool VerifSerieChevalet()
+        {
+            List<List<Tuile>> ParitionEtage1 = PartitionListOnNulls(this.chevalet[0]);
+            List<List<Tuile>> ParitionEtage2 = PartitionListOnNulls(this.chevalet[1]);
+
+            foreach (List<Tuile> part in ParitionEtage1)
+            {
+                if (!Est_serie(part)) return false;
+            }
+
+            foreach (List<Tuile> part in ParitionEtage2)
+            {
+                if (!Est_serie(part)) return false;
+            }
+
+            return true;
         }
 
         public int CountTuileDansChevalet()
         {
             int res = 0;
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < etage; j++)
             {
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < tuilesDansEtage; i++)
                 {
                     if (this.chevalet[j][i] != null)
                     {
@@ -253,18 +342,26 @@ namespace Okey.Joueurs
         public void AfficheChevalet()
         {
             Console.WriteLine($"Chevalet du {this} : ");
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < etage; i++)
             {
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < tuilesDansEtage; j++)
                 {
                     Tuile t = this.chevalet[i][j];
                     if (t != null)
                         Console.Write("|" + t);
                     else
-                        Console.Write("|(        )");
+                        Console.Write("|(         )");
                 }
                 Console.Write("|\n");
             }
         }
+    
+        //pour tester VerifChevalet()
+        public void setChevalet(List<List<Tuile>> chev)
+        {
+            this.chevalet = chev;
+        }
+
+
     }
 }
