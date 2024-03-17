@@ -90,7 +90,7 @@ namespace Okey.Joueurs
             
             int x = c.getX();
             int y = c.getY();
-            if ((x>=0 && x<=7) && (y==0 || y==1))
+            if ((x>=0 && x< tuilesDansEtage) && (y>=0 || y<etage))
             {
                 Tuile t = this.chevalet[y][x];
                 this.chevalet[y][x] = null; // enlever la tuile du chevalet
@@ -103,12 +103,13 @@ namespace Okey.Joueurs
             }
             else
             {
-                Console.WriteLine("error in JeterTuile. (Tuile pas dans le chevalet)");
+                Console.WriteLine("error in JeterTuile. (coords invalides)");
             }
 
             if (this.VerifSerieChevalet())
             {
                 Console.WriteLine($"{this} a gagné.");
+                j.JeuTermine();
             }
         }
 
