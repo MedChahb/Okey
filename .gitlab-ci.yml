@@ -1,5 +1,5 @@
 default:
-  image: registry.app.unistra.fr/okaybytes/okey/projet-integrateur-cicd
+  image: $CI_REGISTRY_IMAGE/projet-integrateur-cicd
   cache:
     paths:
       - .cache/pre-commit
@@ -39,15 +39,20 @@ test 2/2:
   tags:
     - kubernetes
 docker:
-  image: docker:latest
+  # Docker, Docker in Docker (dind) and Buildah don't work
+  # with Unistra GitLab's kubernetes shared runners due to
+  # various permission and runner configuration issues (user space/kernel space)
+  image:
+    name: gcr.io/kaniko-project/executor:v1.21.1-debug
+    entrypoint: [""]
   stage: build
   variables:
     IMAGE_NAME: projet-integrateur-cicd
   before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    # Store registry auth credentials for Kaniko to read during push
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
-    - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME -f docker/Dockerfile .
-    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}"
   after_script: ""
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
