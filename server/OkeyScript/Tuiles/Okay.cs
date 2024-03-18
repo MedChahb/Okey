@@ -13,11 +13,6 @@ namespace Okey.Tuiles
             //calculate value
         }
 
-        public override void Move()
-        {
-            throw new NotImplementedException();
-        }
-
         public override bool MemeCouleur(Tuile t)
         {
             return true;

@@ -31,8 +31,7 @@ namespace Okey.Tuiles
             this.DansPioche = dansPioche;
         }
 
-        public abstract void Move();
-        
+       
         public void SetDefause()
         {
             this.defausse = true;

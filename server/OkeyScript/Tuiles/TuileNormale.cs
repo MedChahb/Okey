@@ -12,10 +12,6 @@ namespace Okey.Tuiles
         {
         }
 
-        public override void Move()
-        {
-            throw new NotImplementedException();
-        }
 
         public override bool MemeCouleur(Tuile t)
         {
