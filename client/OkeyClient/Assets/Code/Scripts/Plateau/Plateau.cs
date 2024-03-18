@@ -1,7 +1,7 @@
+/*
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class Plateau : MonoBehaviour
 {
     private string theme;
@@ -36,12 +36,14 @@ public class Plateau : MonoBehaviour
     }
     */
 
-    // Méthode pour initialiser le plateau de jeu
-    public void InitialiserPlateau(string theme, Stack<Tuile> pioche, Tuile joker)
-    {
-        setTheme(theme);
-        pilePioche = pioche;
-        setJoker(joker);
-        //this.chevalets = chevalets;
-    }
+// Méthode pour initialiser le plateau de jeu
+/*
+public void InitialiserPlateau(string theme, Stack<Tuile> pioche, Tuile joker)
+{
+    setTheme(theme);
+    pilePioche = pioche;
+    setJoker(joker);
+    //this.chevalets = chevalets;
 }
+}
+*/

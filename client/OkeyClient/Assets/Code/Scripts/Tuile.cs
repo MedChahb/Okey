@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class Tuile : MonoBehaviour
 {
     private string couleur; //0: blue, 1: black, 2: green, 3: red
     private int valeur; // number between 1 and 13
     private bool isJoker = false;
     private SpriteRenderer sprite;
-    
-     private bool isPlaced=false ; //tuile bien placé dans la grille(sur un placeholder)
+
+    private bool isPlaced = false; //tuile bien placé dans la grille(sur un placeholder)
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +28,7 @@ public class Tuile : MonoBehaviour
             );
     }
 
-    //thibault il faudrait juste modifier deplacable/estDeplace 
+    //thibault il faudrait juste modifier deplacable/estDeplace
     void OnMouseDown()
     {
         if (this.deplacable)
@@ -85,8 +85,9 @@ public class Tuile : MonoBehaviour
     // Set sprite pour la tuile
     public void SetTileSprite(Sprite sprite)
     {
-        spriteRenderer.sprite = sprite;
-        color = sprite.name.Split('_')[0];
-        number = sprite.name.Split('_')[1];
+        //spriteRenderer.sprite = sprite;
+        //color = sprite.name.Split('_')[0];
+        //number = sprite.name.Split('_')[1];
     }
 }
+*/
