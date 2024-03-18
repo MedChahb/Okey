@@ -128,6 +128,9 @@ namespace Okey.Game
                 this.pioche.Push(tuile);
             }
 
+            //ici shuffle this.pioche
+            ShuffleStack(this.pioche);
+
             this.JoueurActuel = this.Joueurs[randT % 4];
         }
 
@@ -287,6 +290,26 @@ namespace Okey.Game
         public Tuile PopPiocheCentre()
         {
             return this.pioche.Pop();
+        }
+
+        static void ShuffleStack(Stack<Tuile> stack)
+        {
+            List<Tuile> list = stack.ToList();
+            Random rng = new Random();
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                Tuile value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+            stack.Clear();
+            foreach (Tuile item in list)
+            {
+                stack.Push(item);
+            }
         }
     }
 
