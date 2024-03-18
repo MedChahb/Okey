@@ -110,6 +110,8 @@ namespace Okey.Joueurs
             {
                 Console.WriteLine($"{this} a gagné.");
                 j.JeuTermine();
+
+                this.Gagne();
             }
         }
 
@@ -170,6 +172,7 @@ namespace Okey.Joueurs
             {
                 Console.WriteLine($"{this} a gagné.");
                 j.JeuTermine();
+                this.Gagne();
             }
         }
 
