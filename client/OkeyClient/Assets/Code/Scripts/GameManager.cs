@@ -1,19 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager singleton; // this is basically the manager of the game (THAT CAN BE ACCESSED BY DOING GAMEMANAGER.SINGLETON THANKS TO THE STATIC KEYWORD)
+    public static GameManager singleton; // this is the manager of the game that can be accessed globally thanks to the static keyword
     public bool language = true; // true = English, false = French - logic may change later on
 
     // Start is called before the first frame update
     void Start()
     {
-        singleton = this; // singleton equals to this instance of the game manager
-        DontDestroyOnLoad(gameObject); // this will make sure that the game manager is not destroyed when we change scenes
+        // Check if an instance already exists
+        if (singleton == null)
+        {
+            // If not, set the singleton to this instance and make sure it persists across scene loads
+            singleton = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (singleton != this)
+        {
+            // If a different instance exists, destroy this one to avoid duplicates
+            Destroy(gameObject);
+        }
     }
-
-    // Update is called once per frame
-    void Update() { }
 }

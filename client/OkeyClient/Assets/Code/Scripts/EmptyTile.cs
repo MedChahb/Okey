@@ -21,9 +21,6 @@ public class EmptyTile : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void Update() { }
-
     // Set sprite pour la tuile
     public void SetTileSprite(Sprite sprite)
     {

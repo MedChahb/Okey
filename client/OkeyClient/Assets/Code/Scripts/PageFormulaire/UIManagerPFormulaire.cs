@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +9,9 @@ public class UIManagerPFormulaire : MonoBehaviour
     private Button backBtn;
 
     [SerializeField]
+    private TextMeshProUGUI partieSimpleTxt;
+
+    [SerializeField]
     private int SceneId;
 
     // Start is called before the first frame update
@@ -20,7 +21,17 @@ public class UIManagerPFormulaire : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update() { }
+    void Update()
+    {
+        if (GameManager.singleton.language) // En
+        {
+            partieSimpleTxt.text = "Texte en anglais";
+        }
+        else // Fr
+        {
+            partieSimpleTxt.text = "Partie Simple";
+        }
+    }
 
     void onBackBtnClicked()
     {
