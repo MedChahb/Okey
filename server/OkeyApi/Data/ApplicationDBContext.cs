@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OkeyApi.Models;
 
+/// <summary>
+/// Classe permettant l'insertion des Modèles en Base de Donnée
+/// </summary>
+/// <param name="dbContextOptions">Paramètre propre au framework.</param>
 public class ApplicationDBContext(DbContextOptions dbContextOptions)
     : IdentityDbContext<Utilisateur>(dbContextOptions)
 {

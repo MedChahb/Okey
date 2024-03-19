@@ -1,21 +1,17 @@
 namespace OkeyApi.Dtos.Compte;
 
-using System.ComponentModel.DataAnnotations;
-
 /// <summary>
-/// Dto pour l'inscription utilisateur
+/// Dto pour un utilisateur non connecté/public
 /// </summary>
-public class RegisterDto
+public class PublicUtilisateurDto
 {
     /// <summary>
     /// Nom d'utilisateur
     /// </summary>
-    [Required]
     public string? Username { get; set; }
 
     /// <summary>
-    /// Mot de passe
+    /// Elo Score
     /// </summary>
-    [Required]
-    public string? Password { get; set; }
+    public int Elo { get; set; }
 }

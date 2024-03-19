@@ -25,6 +25,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+OkeyApi/Migrations
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -527,7 +528,9 @@ FodyWeavers.xsd
 # .NET Core build folders
 bin/
 obj/
-
+## Dossier de migrations ##
+Migrations/
+api/
 # Common node modules locations
 /node_modules
 /wwwroot/node_modules
