@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using OkeyApi.Data;
 using OkeyApi.Interfaces;
 using OkeyApi.Models;
+using OkeyApi.Repository;
 using OkeyApi.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +53,7 @@ builder
         }
     );
 
+builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
