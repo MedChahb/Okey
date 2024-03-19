@@ -33,10 +33,9 @@ namespace Okey
             Coord coords = readCoord(Console.ReadLine());
             joueurStarter.JeterTuile(coords, j);
 
-
             bool doitJete = false;
 
-            while (! j.isTermine())
+            while (!j.isTermine())
             {
                 Joueur joueurActuel = j.getJoueurActuel();
 
@@ -59,31 +58,27 @@ namespace Okey
                     Console.WriteLine("\nmaintenant vous devez jeter une tuile.");
                     j.AfficheChevaletActuel();
                 }
-                    
+
                 //le joueur jete
-                
+
                 Console.Write("choisis la tuile à jeter (donner ces coords y x) : ");
                 String coordStr = Console.ReadLine();
                 if (coordStr == "Move")
                 {
                     MoveInLoop(joueurActuel, j);
-                    doitJete=true;
+                    doitJete = true;
                     continue;
                 }
                 Coord coordos = readCoord(coordStr);
                 joueurActuel.JeterTuile(coordos, j);
 
                 doitJete = false;
-
             }
 
-
-            // TODO: 
+            // TODO:
             // move for JouerStarter (not essential but can do)
             // add timer
-
         }
-
 
         public static Coord readCoord(String str)
         {
@@ -101,6 +96,4 @@ namespace Okey
             pl.MoveTuileChevalet(from, to, j);
         }
     }
-
-
 }

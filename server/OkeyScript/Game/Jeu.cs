@@ -14,6 +14,7 @@ namespace Okey.Game
     public class Jeu
     {
         private int id;
+
         private Joueur[] Joueurs = new Joueur[4];
         private double MMR;
         private Stack<Tuile> pioche = new Stack<Tuile>();
@@ -136,8 +137,6 @@ namespace Okey.Game
 
         public void AfficheChevaletJoueurs()
         {
-            
-
             foreach (Joueur pl in this.Joueurs)
             {
                 pl.AfficheChevalet();
@@ -145,7 +144,10 @@ namespace Okey.Game
             }
         }
 
-        public void AfficheChevaletActuel() { this.JoueurActuel.AfficheChevalet(); }
+        public void AfficheChevaletActuel()
+        {
+            this.JoueurActuel.AfficheChevalet();
+        }
 
         public void AffichePiocheCentre()
         {
@@ -192,7 +194,7 @@ namespace Okey.Game
                 || (tuiles.Length == 3 && diffColors == 3);
         }*/
 
-               
+
 
         public void ChangerTour()
         {
@@ -243,7 +245,6 @@ namespace Okey.Game
             return this.Okays;
         }
 
-       
         public Joueur[] GetJoueurs()
         {
             return Joueurs;
@@ -312,6 +313,4 @@ namespace Okey.Game
             }
         }
     }
-
-    
 }
