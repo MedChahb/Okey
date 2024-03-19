@@ -14,7 +14,6 @@ namespace Okey.Game
     public class Jeu
     {
         private int id;
-
         private Joueur[] Joueurs = new Joueur[4];
         private double MMR;
         private Stack<Tuile> pioche = new Stack<Tuile>();
@@ -137,6 +136,8 @@ namespace Okey.Game
 
         public void AfficheChevaletJoueurs()
         {
+            
+
             foreach (Joueur pl in this.Joueurs)
             {
                 pl.AfficheChevalet();
@@ -144,10 +145,7 @@ namespace Okey.Game
             }
         }
 
-        public void AfficheChevaletActuel()
-        {
-            this.JoueurActuel.AfficheChevalet();
-        }
+        public void AfficheChevaletActuel() { this.JoueurActuel.AfficheChevalet(); }
 
         public void AffichePiocheCentre()
         {
@@ -162,59 +160,7 @@ namespace Okey.Game
             {
                 Console.WriteLine(elem);
             }
-        }
-
-        //prend que 3 ou 4 tuiles en arguments
-        /*public bool Est_serie_de_meme_chiffre(Tuile[] tuiles)
-        {
-            int diffColors = 1; // On commence avec une couleur différente
-            for (int i = 1; i < tuiles.Length; i++)
-            {
-                bool CouleurDejaVu = false;
-                for (int j = 0; j < i; j++)
-                {
-                    if (tuiles[i].GetCouleur() == tuiles[j].GetCouleur())
-                    {
-                        CouleurDejaVu = true;
-                        break;
-                    }
-                }
-
-                if (!CouleurDejaVu)
-                {
-                    diffColors++;
-                }
-                else
-                {
-                    diffColors--;
-                }
-            }
-
-            return (tuiles.Length == 4 && diffColors == 4)
-                || (tuiles.Length == 3 && diffColors == 3);
-        }*/
-
-
-
-        public void ChangerTour()
-        {
-            // Le joueur actuel n'a plus le tour
-            JoueurActuel.EstPlusTour();
-
-            // Trouver l'index du joueur actuel dans la liste
-            int indexJoueurActuel = Array.IndexOf(Joueurs, JoueurActuel);
-
-            // Choisir le joueur suivant
-            int indexJoueurSuivant = (indexJoueurActuel + 1) % Joueurs.Length;
-            Joueur joueurSuivant = Joueurs[indexJoueurSuivant];
-
-            // Le joueur suivant a maintenant le tour
-            joueurSuivant.EstTour();
-            this.JoueurActuel = joueurSuivant;
-
-            // Après avoir changé le tour, signalez le changement aux joueurs
-            SignalChangementTour(joueurSuivant);
-        }
+        }              
 
         public void SignalChangementTour(Joueur joueurTour)
         {
@@ -255,16 +201,6 @@ namespace Okey.Game
             return this.JoueurActuel;
         }
 
-        public void setJoueurActuel(Joueur j)
-        {
-            this.JoueurActuel = j;
-        }
-
-        public void JeuTermine()
-        {
-            this.etat = true;
-        }
-
         public bool isTermine()
         {
             return this.etat;
@@ -292,7 +228,14 @@ namespace Okey.Game
         {
             return this.pioche.Pop();
         }
-
+        public void setJoueurActuel(Joueur j)
+        {
+            this.JoueurActuel = j;
+        }
+        public void JeuTermine()
+        {
+            this.etat = true;
+        }
         static void ShuffleStack(Stack<Tuile> stack)
         {
             List<Tuile> list = stack.ToList();
@@ -313,4 +256,6 @@ namespace Okey.Game
             }
         }
     }
+
+    
 }

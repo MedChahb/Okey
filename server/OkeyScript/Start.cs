@@ -33,6 +33,7 @@ namespace Okey
             Coord coords = readCoord(Console.ReadLine());
             joueurStarter.JeterTuile(coords, j);
 
+
             bool doitJete = false;
 
             while (!j.isTermine())
@@ -73,12 +74,29 @@ namespace Okey
                 joueurActuel.JeterTuile(coordos, j);
 
                 doitJete = false;
+
             }
 
-            // TODO:
+
+            // TODO: 
             // move for JouerStarter (not essential but can do)
-            // add timer
+            // add timer (alerts)
+
+
+            /*int seconds = 0;
+            Timer timer = new Timer(state =>
+            {
+                Console.Clear();
+                Console.WriteLine("Timer: " + TimeSpan.FromSeconds(seconds));
+                seconds++;
+            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+
+            Console.WriteLine("Press any key to stop the timer.");
+            Console.ReadKey();
+            timer.Dispose();*/
+
         }
+
 
         public static Coord readCoord(String str)
         {
@@ -96,4 +114,6 @@ namespace Okey
             pl.MoveTuileChevalet(from, to, j);
         }
     }
+
+
 }

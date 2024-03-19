@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,7 @@ public enum CouleurTuile
     N, //Noir
     R, //Rouge
     B, //Bleu
-    M //Mult
+    M  //Mult
 }
 
 namespace Okey.Tuiles
@@ -22,7 +22,7 @@ namespace Okey.Tuiles
         protected int num;
         protected bool defausse;
         protected bool DansPioche;
-
+    
         public Tuile(CouleurTuile couleur, int num, bool dansPioche)
         {
             this.Couleur = couleur;
@@ -31,6 +31,7 @@ namespace Okey.Tuiles
             this.DansPioche = dansPioche;
         }
 
+       
         public void SetDefause()
         {
             this.defausse = true;
@@ -46,20 +47,13 @@ namespace Okey.Tuiles
             return this.DansPioche;
         }
 
-        public CouleurTuile GetCouleur()
-        {
-            return this.Couleur;
-        }
-
-        public int GetNum()
-        {
-            return this.num;
-        }
+        public CouleurTuile GetCouleur() {  return this.Couleur; }
+        public int GetNum() { return this.num; }
 
         public abstract bool MemeCouleur(Tuile t);
 
         public abstract bool estSuivant(Tuile t);
 
-        public abstract override String ToString();
+        public override abstract String ToString();
     }
 }
