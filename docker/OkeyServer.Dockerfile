@@ -1,13 +1,12 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0.101 AS build
 WORKDIR /app
 
-COPY ../server/OkeyServer/*.csproj ./
-RUN dotnet restore
 
-COPY ../server/OkeyServer/ ./
+COPY server/OkeyServer/ ./
+RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/runtime:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/runtime:8.0.1 AS runtime
 WORKDIR /app
 COPY --from=build /app/out ./
 

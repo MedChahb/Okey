@@ -1,0 +1,4 @@
+# Ignorer les fichiers générés par le Makefile
+/projet-integrateur-cicd
+/okeyapi
+/server
