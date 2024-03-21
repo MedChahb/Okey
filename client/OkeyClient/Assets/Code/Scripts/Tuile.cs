@@ -8,7 +8,7 @@ public class Tuile : MonoBehaviour
     private bool isJoker = false;
     private SpriteRenderer sprite;
     private bool deplacable = true;
-    private bool estDeplace= false;
+    private bool estDeplace = false;
 
     // Start is called before the first frame update
     void Start()
@@ -19,11 +19,15 @@ public class Tuile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(this.estDeplace)
-        this.transform.position = Vector3.Lerp(this.transform.position, Camera.main.ScreenPointToRay(Input.mousePosition).GetPoint(5), Time.deltaTime*6);
+        if (this.estDeplace)
+            this.transform.position = Vector3.Lerp(
+                this.transform.position,
+                Camera.main.ScreenPointToRay(Input.mousePosition).GetPoint(5),
+                Time.deltaTime * 6
+            );
     }
-   
-   void OnMouseDown()
+
+    void OnMouseDown()
     {
         if (this.deplacable)
         {

@@ -1,20 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PageConnexion : MonoBehaviour
 {
     [SerializeField]
     private TMP_InputField Username;
+
     [SerializeField]
     private TMP_InputField Login;
+
     [SerializeField]
     private TMP_InputField Password;
+
     [SerializeField]
     private Button createButton;
+
     [SerializeField]
     private Button backButton;
 
@@ -37,7 +41,11 @@ public class PageConnexion : MonoBehaviour
         // Mdp à hasher avant envoi
         string password = Password.text.Trim();
 
-        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(password))
+        if (
+            !string.IsNullOrEmpty(username)
+            && !string.IsNullOrEmpty(login)
+            && !string.IsNullOrEmpty(password)
+        )
         {
             // Envoi du formulaire (à implémenter)
             Debug.Log("Formulaire envoyé !");
