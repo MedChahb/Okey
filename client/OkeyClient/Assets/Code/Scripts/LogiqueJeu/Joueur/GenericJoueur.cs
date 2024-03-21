@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class GenericJoueur : Joueur
+public sealed class GenericJoueur : Joueur
 {
     public GenericJoueur(
         string NomUtilisateur,
