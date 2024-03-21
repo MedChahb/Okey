@@ -16,7 +16,7 @@ repos:
           - "--no-ensure-ascii"
         exclude: 'client/OkeyClient/ProjectSettings/Packages/com\.unity\.testtools\.codecoverage/Settings\.json'
       - id: end-of-file-fixer
-        exclude: '.*\.asset$'
+        exclude: '.*\.(asset|meta|unity)$'
       - id: trailing-whitespace
         exclude: '.*\.(asset|meta|unity)$'
       - id: fix-byte-order-marker
