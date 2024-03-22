@@ -7,12 +7,13 @@ using UnityEngine.SceneManagement;
 
 public class PageConnexion : MonoBehaviour
 {
+    public Image connexionImage;
     [SerializeField]
-    private TMP_InputField Username;
+    private InputField Username;
     [SerializeField]
-    private TMP_InputField Login;
+    private InputField Login;
     [SerializeField]
-    private TMP_InputField Password;
+    private InputField Password;
     [SerializeField]
     private Button createButton;
     [SerializeField]
@@ -21,12 +22,12 @@ public class PageConnexion : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Password.contentType = TMP_InputField.ContentType.Password;
+        Password.contentType = InputField.ContentType.Password;
         // Ajoute un écouteur au bouton "Créer"
         createButton.onClick.AddListener(OnCreateClicked);
 
         // Ajoute un écouteur au bouton "Retour"
-        backButton.onClick.AddListener(LoadPreviousScene);
+        backButton.onClick.AddListener(onBackBtnClicked);
     }
 
     // Méthode appelée lors du clic sur le bouton "Créer"
@@ -49,9 +50,8 @@ public class PageConnexion : MonoBehaviour
     }
 
     // Méthode pour charger la scène précédente
-    public void LoadPreviousScene()
+    private void onBackBtnClicked()
     {
-        // Charge la scène précédente
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        connexionImage.gameObject.SetActive(false);
     }
 }
