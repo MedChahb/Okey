@@ -14,8 +14,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ApplicationDBContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"))
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySQL(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException()
+    )
 );
 
 builder
@@ -27,7 +30,7 @@ builder
         options.Password.RequireNonAlphanumeric = true;
         options.Password.RequiredLength = 12;
     })
-    .AddEntityFrameworkStores<ApplicationDBContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder
     .Services.AddAuthentication(options =>
@@ -48,7 +51,9 @@ builder
             ValidAudience = builder.Configuration["JWT:Audience"],
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
-                System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
+                System.Text.Encoding.UTF8.GetBytes(
+                    builder.Configuration["JWT:SigningKey"] ?? string.Empty
+                )
             )
         }
     );
