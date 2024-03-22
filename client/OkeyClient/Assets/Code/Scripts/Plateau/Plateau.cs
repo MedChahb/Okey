@@ -1,49 +1,45 @@
-/*
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public class Plateau : MonoBehaviour
 {
     private string theme;
 
-    //public List<Chevalet> chevalets = new List<Chevalet>();
-    private Stack<Tuile> pilePioche = new Stack<Tuile>();
+    public List<Chevalet> chevalets = new();
+    private Stack<Tuile> pilePioche = new();
     private Tuile jocker;
 
     //Methode pour definir le themes
-    public void setTheme(string type)
+    public void SetTheme(string Type)
     {
-        theme = type;
+        this.theme = Type;
     }
 
     //Methode pour obtenir la tuile jocker
-    public Tuile getJocker()
+    public Tuile GetJocker()
     {
-        return jocker;
+        return this.jocker;
     }
 
     //methode pour definir la tuile joker
-    public void setJoker(Tuile JockerTile)
+    public void SetJoker(Tuile JockerTile)
     {
-        jocker = JockerTile;
+        this.jocker = JockerTile;
     }
 
     // Methode pour depiler la pile pioche
-    /*
-    public List<Chevalet> getChevalet()
+    public List<Chevalet> GetChevalet()
     {
-        return chevalets;
+        return this.chevalets;
     }
-    */
 
-// Méthode pour initialiser le plateau de jeu
-/*
-public void InitialiserPlateau(string theme, Stack<Tuile> pioche, Tuile joker)
-{
-    setTheme(theme);
-    pilePioche = pioche;
-    setJoker(joker);
-    //this.chevalets = chevalets;
+    // Méthode pour initialiser le plateau de jeu
+    public void InitialiserPlateau(string Theme, Stack<Tuile> Pioche, Tuile Joker)
+    {
+        this.SetTheme(Theme);
+        this.pilePioche = Pioche;
+        this.SetJoker(Joker);
+        // this.chevalets = chevalets;
+    }
 }
-}
-*/
