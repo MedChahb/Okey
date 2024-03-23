@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Chevalet : MonoBehaviour
@@ -47,27 +47,33 @@ public class Chevalet : MonoBehaviour
     public void UpdateTiles(GameObject placeholder)
     {
         // Vérifier si le placeholder a des enfants (des tuiles)
-        if (placeholder.transform.childCount > 0)
+        if (placeholder.transform.childCount > 1)
         {
-            // Récupérer la première tuile enfant
-            GameObject tile = placeholder.transform.GetChild(0).gameObject;
+            // Déterminer le numéro du placeholder actuel
+            int currentPlaceholderNumber = GetPlaceholderNumber(placeholder.name);
+            int indexTab = currentPlaceholderNumber-1;
 
-            // Récupérer le numéro du placeholder actuel
-            int currentPlaceholderNumber = int.Parse(placeholder.name.Substring(9));
-
-            // Vérifier s'il y a un placeholder à droite
-            if (currentPlaceholderNumber < 28)
+            // Vérifier s'il y a un placeholder à droite et s'il n'est pas plein
+            if (currentPlaceholderNumber < 29 && placeholders[(indexTab+1)%28].transform.childCount <= 1)
             {
-                // Récupérer le placeholder suivant
-                GameObject nextPlaceholder = GameObject.Find("PlaceHolder" + (currentPlaceholderNumber + 1));
+                // Déplacer la première tuile du placeholder actuel vers le placeholder à droite
+                GameObject tile = placeholder.transform.GetChild(0).gameObject;
+                tile.GetComponent<Tuile>().AttachToPlaceholder(placeholders[(indexTab+1)%28]);
 
-                // Déplacer la tuile vers le placeholder suivant
-                tile.GetComponent<Tuile>().AttachToPlaceholder(placeholder);
-
-                // Déplacer récursivement les tuiles suivantes
-                UpdateTiles(nextPlaceholder);
+                // Appeler récursivement la fonction UpdateTiles sur le placeholder à droite
+                UpdateTiles(placeholders[(indexTab+1)%28]);
             }
         }
     }
+
+    // Fonction auxiliaire pour extraire le numéro du placeholder à partir de son nom
+    public static int GetPlaceholderNumber(string name)
+    {
+        string numberString = name.Substring(11);
+        int number;
+        int.TryParse(numberString, out number);
+        return number;
+    }
+
 
 }

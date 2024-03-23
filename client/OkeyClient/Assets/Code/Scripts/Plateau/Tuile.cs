@@ -26,7 +26,7 @@ public class Tuile : MonoBehaviour
         {
             // Update tile position based on mouse position
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            transform.localPosition = new Vector3(mousePosition.x - offset.x, mousePosition.y - offset.y, transform.localPosition.z);
+            transform.localPosition = new Vector3(mousePosition.x - offset.x, mousePosition.y - offset.y, -5);
         }
     }
 
@@ -52,17 +52,17 @@ public class Tuile : MonoBehaviour
 
             if (closestPlaceholder != null)
             {
-                //if (closestPlaceholder.transform.childCount == 0)
-                //{
-                // Attach the tile to the new placeholder
-                AttachToPlaceholder(closestPlaceholder);
-                //chevalet.UpdateTiles(closestPlaceholder);
-                /*}
+                if (closestPlaceholder.transform.childCount == 0)
+                {
+                    // Attach the tile to the new placeholder
+                    AttachToPlaceholder(closestPlaceholder);
+                }
                 else
                 {
+                    AttachToPlaceholder(closestPlaceholder);
                     // The placeholder countains already a Tile, we must update before insert
-                    //chevalet.UpdateTiles(closestPlaceholder);
-                }*/
+                    chevalet.UpdateTiles(closestPlaceholder);
+                }
             }
         }
     }
