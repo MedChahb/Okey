@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Level/Scenes/Confirmation.unity
     guid: c405bf67e49fe4233ae0a9b0ec835caf
+  - enabled: 1
+    path: Assets/Level/Scenes/plateau 1.unity
+    guid: 403b853b98ab54cd9b0762fa7b28dfa5
   m_configObjects: {}
