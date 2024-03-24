@@ -22,4 +22,10 @@ public class AvatarPanelGear : MonoBehaviour
     {
         InfoPanel.SetActive(true);
     }
+
+    public void ShowDecoPanel()
+    {
+        InfoPanel.SetActive(false);
+        Avatar.SetActive(false);
+    }
 }
