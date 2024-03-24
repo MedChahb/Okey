@@ -1,7 +1,6 @@
 namespace OkeyApi.Mappers;
 
 using Dtos.Achievements;
-using Dtos.Compte;
 using Models;
 
 /// <summary>

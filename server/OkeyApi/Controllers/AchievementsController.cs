@@ -1,12 +1,8 @@
 namespace OkeyApi.Controllers;
 
-using Dtos.Achievements;
+using Data;
 using Interfaces;
-using Mappers;
 using Microsoft.AspNetCore.Mvc;
-using Models;
-using OkeyApi.Data;
-using Repository;
 
 /// <summary>
 /// Classe Controller de la table Achievements
@@ -17,7 +13,7 @@ using Repository;
 public class AchievementsController : ControllerBase
 {
     private readonly IAchievementsRepository _achievementsRepo;
-    private readonly ApplicationDBContext _context;
+    private readonly ApplicationDbContext _context;
 
     /// <summary>
     /// Constructeur de la classe AchievementsController
@@ -25,7 +21,7 @@ public class AchievementsController : ControllerBase
     /// <param name="context">Issu de notre API permet l'écriture/lecture en Base de Donnée</param>
     /// <param name="achievementsRepo">Issu de notre API fournissant des fonctions de recherche des achievements efficaces.</param>
     public AchievementsController(
-        ApplicationDBContext context,
+        ApplicationDbContext context,
         IAchievementsRepository achievementsRepo
     )
     {
