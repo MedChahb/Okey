@@ -15,10 +15,10 @@ public class CreateAchievementsDto
     /// <summary>
     /// UserId associé aux achievements
     /// </summary>
-    public string UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
 
     /// <summary>
     /// Attribut propre au framework
     /// </summary>
-    public Utilisateur Utilisateur { get; set; }
+    public Utilisateur? Utilisateur { get; set; }
 }

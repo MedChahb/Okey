@@ -1,15 +1,13 @@
 namespace OkeyApi.Controllers;
 
-using System.Security.Claims;
 using Data;
+using Dtos.Compte;
+using Interfaces;
 using Mappers;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OkeyApi.Dtos.Compte;
-using OkeyApi.Interfaces;
-using OkeyApi.Models;
+using Models;
 
 ///<summary>
 /// Classe Controller de la gestion des comptes utilisateurs
@@ -24,7 +22,7 @@ public class AccountController : ControllerBase
     private readonly ITokenService _tokenService;
     private readonly SignInManager<Utilisateur> _signInManager;
     private readonly IUtilisateurRepository _utilisateurRepository;
-    private readonly ApplicationDBContext _dbContext;
+    private readonly ApplicationDbContext _dbContext;
 
     /// <summary>
     /// Constructeur de la classe Account Controller
@@ -40,7 +38,7 @@ public class AccountController : ControllerBase
         ITokenService tokenService,
         SignInManager<Utilisateur> signInManager,
         IUtilisateurRepository utilisateurRepository,
-        ApplicationDBContext dbContext
+        ApplicationDbContext dbContext
     )
     {
         this._utilisateurManager = utilisateurManager;
@@ -64,19 +62,28 @@ public class AccountController : ControllerBase
         }
 
         var user = await this._utilisateurManager.Users.FirstOrDefaultAsync(x =>
-            x.UserName == loginDto.UserName.ToLower()
+            x.UserName != null
+            && x.UserName.Equals(loginDto.UserName, StringComparison.OrdinalIgnoreCase)
         );
         if (user == null)
+        {
             return this.Unauthorized("Nom d'utilisateur invalide");
-        var result = await this._signInManager.CheckPasswordSignInAsync(
-            user,
-            loginDto.Password,
-            false
-        );
-        if (!result.Succeeded)
-            return this.Unauthorized(
-                "Utilisateur non trouvé! (nom d'utilisateur ou mot de passe incorrect)"
+        }
+
+        if (loginDto.Password != null)
+        {
+            var result = await this._signInManager.CheckPasswordSignInAsync(
+                user,
+                loginDto.Password,
+                false
             );
+            if (!result.Succeeded)
+            {
+                return this.Unauthorized(
+                    "Utilisateur non trouvé! (nom d'utilisateur ou mot de passe incorrect)"
+                );
+            }
+        }
 
         return this.Ok(
             new NewUtilisateurDto
@@ -103,46 +110,59 @@ public class AccountController : ControllerBase
             }
 
             var utilisateur = new Utilisateur { UserName = registerDto.Username };
-            var createUtilisateur = await this._utilisateurManager.CreateAsync(
-                utilisateur,
-                registerDto.Password
-            );
-            if (createUtilisateur.Succeeded)
+            if (registerDto.Password != null)
             {
-                var roleResult = await this._utilisateurManager.AddToRoleAsync(utilisateur, "USER");
-                if (roleResult.Succeeded)
+                var createUtilisateur = await this._utilisateurManager.CreateAsync(
+                    utilisateur,
+                    registerDto.Password
+                );
+                if (createUtilisateur.Succeeded)
                 {
-                    try
-                    {
-                        var achievement = new Achievements
-                        {
-                            UserId = utilisateur.Id,
-                            Utilisateur = utilisateur
-                        };
-                        this._dbContext.Achievements.Add(achievement);
-                        await this._dbContext.SaveChangesAsync();
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                        throw;
-                    }
-                    return this.Ok(
-                        new NewUtilisateurDto
-                        {
-                            UserName = utilisateur.UserName,
-                            Token = this._tokenService.CreateToken(utilisateur)
-                        }
+                    var roleResult = await this._utilisateurManager.AddToRoleAsync(
+                        utilisateur,
+                        "USER"
                     );
+                    if (roleResult.Succeeded)
+                    {
+                        try
+                        {
+                            var achievement = new Achievements
+                            {
+                                UserId = utilisateur.Id,
+                                Utilisateur = utilisateur
+                            };
+                            var dbContextAchievements = this._dbContext.Achievements;
+                            if (dbContextAchievements != null)
+                            {
+                                dbContextAchievements.Add(achievement);
+                            }
+
+                            await this._dbContext.SaveChangesAsync();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
+                        }
+                        return this.Ok(
+                            new NewUtilisateurDto
+                            {
+                                UserName = utilisateur.UserName,
+                                Token = this._tokenService.CreateToken(utilisateur)
+                            }
+                        );
+                    }
+                    return this.StatusCode(500, roleResult.Errors);
                 }
-                return this.StatusCode(500, roleResult.Errors);
+                return this.StatusCode(500, createUtilisateur.Errors);
             }
-            return this.StatusCode(500, createUtilisateur.Errors);
         }
         catch (Exception e)
         {
             return this.StatusCode(500, e);
         }
+
+        return null!;
     }
 
     /// <summary>
@@ -189,20 +209,29 @@ public class AccountController : ControllerBase
             var utilisateur = this.GetCurrentUser();
             if (utilisateur.Result.Username == username)
             {
-                var achievements = await this._dbContext.Achievements.FirstOrDefaultAsync(e =>
-                    e.Utilisateur.UserName.Equals(utilisateur.Result.Username)
-                );
-                var list = new List<bool>();
-                list.Add(achievements.Jouer5Parties);
-                list.Add(achievements.GagnerUneFois);
-                return this.Ok(
-                    new PrivateUtilisateurDto
-                    {
-                        Username = utilisateur.Result.Username,
-                        Elo = utilisateur.Result.Elo,
-                        Achievements = list
-                    }
-                );
+                var dbContextAchievements = this._dbContext.Achievements;
+                if (dbContextAchievements != null)
+                {
+                    var achievements = await dbContextAchievements.FirstOrDefaultAsync(e =>
+                        e.Utilisateur != null
+                        && e.Utilisateur.UserName != null
+                        && e.Utilisateur.UserName.Equals(
+                            utilisateur.Result.Username,
+                            StringComparison.Ordinal
+                        )
+                    );
+                    var list = new List<bool>();
+                    list.Add(achievements != null && achievements.Jouer5Parties);
+                    list.Add(achievements != null && achievements.GagnerUneFois);
+                    return this.Ok(
+                        new PrivateUtilisateurDto
+                        {
+                            Username = utilisateur.Result.Username,
+                            Elo = utilisateur.Result.Elo,
+                            Achievements = list
+                        }
+                    );
+                }
             }
         }
         return this.Ok(user.ToPublicUtilisateurDto());
