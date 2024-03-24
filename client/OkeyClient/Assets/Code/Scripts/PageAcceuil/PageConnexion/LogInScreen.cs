@@ -7,15 +7,22 @@ using UnityEngine.UI;
 
 public class LogInScreen : MonoBehaviour
 {
+    public GameObject Panel;
+    public GameObject PanelAvatar;
     public Image connexionImage;
+
     [SerializeField]
     private TMP_InputField Username;
+
     [SerializeField]
     private TMP_InputField Login;
+
     [SerializeField]
     private TMP_InputField Password;
+
     [SerializeField]
     private Button createButton;
+
     [SerializeField]
     private Button backButton;
 
@@ -46,6 +53,11 @@ public class LogInScreen : MonoBehaviour
         {
             // Envoi du formulaire (à implémenter)
             Debug.Log("Formulaire envoyé !");
+            //mettre le Panel de connexion en off
+            Panel.SetActive(false);
+
+            //activer le Panel de User avec avatar
+            PanelAvatar.SetActive(true);
         }
         else
         {

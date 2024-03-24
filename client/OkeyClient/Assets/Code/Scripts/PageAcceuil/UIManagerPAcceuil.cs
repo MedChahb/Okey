@@ -73,9 +73,7 @@ public class UIManagerPAcceuil : MonoBehaviour
         if (login.connexionImage != null)
         {
             // Toggle the active state of the image
-            login.connexionImage.gameObject.SetActive(
-                !login.connexionImage.gameObject.activeSelf
-            );
+            login.connexionImage.gameObject.SetActive(!login.connexionImage.gameObject.activeSelf);
         }
         else
         {
