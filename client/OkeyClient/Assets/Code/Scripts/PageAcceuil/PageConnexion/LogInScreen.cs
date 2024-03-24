@@ -5,25 +5,24 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class PageConnexion : MonoBehaviour
+public class LogInScreen : MonoBehaviour
 {
     public Image connexionImage;
     [SerializeField]
-    private InputField Username;
+    private TMP_InputField Username;
     [SerializeField]
-    private InputField Login;
+    private TMP_InputField Login;
     [SerializeField]
-    private InputField Password;
+    private TMP_InputField Password;
     [SerializeField]
     private Button createButton;
-
     [SerializeField]
     private Button backButton;
 
     // Start is called before the first frame update
     void Start()
     {
-        Password.contentType = InputField.ContentType.Password;
+        Password.contentType = TMP_InputField.ContentType.Password;
         // Ajoute un écouteur au bouton "Créer"
         createButton.onClick.AddListener(OnCreateClicked);
 

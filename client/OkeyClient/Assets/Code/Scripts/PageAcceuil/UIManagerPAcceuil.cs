@@ -12,6 +12,9 @@ public class UIManagerPAcceuil : MonoBehaviour
     private Button paramBtn;
 
     [SerializeField]
+    private Button connexionBtn;
+
+    [SerializeField]
     private TextMeshProUGUI playBtnTxt;
 
     [SerializeField]
@@ -20,11 +23,15 @@ public class UIManagerPAcceuil : MonoBehaviour
     [SerializeField]
     private ParametreScreen parametres;
 
+    [SerializeField]
+    private LogInScreen login;
+
     // Start is called before the first frame update
     void Start()
     {
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
+        connexionBtn.onClick.AddListener(onLoginClicked);
     }
 
     // Update is called once per frame
@@ -58,6 +65,21 @@ public class UIManagerPAcceuil : MonoBehaviour
         else
         {
             Debug.LogWarning("Parametres Image reference is not set!");
+        }
+    }
+
+    void onLoginClicked()
+    {
+        if (login.connexionImage != null)
+        {
+            // Toggle the active state of the image
+            login.connexionImage.gameObject.SetActive(
+                !login.connexionImage.gameObject.activeSelf
+            );
+        }
+        else
+        {
+            Debug.LogWarning("Login Image reference is not set!");
         }
     }
 }
