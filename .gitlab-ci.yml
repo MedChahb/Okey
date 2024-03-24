@@ -21,6 +21,8 @@ variables:
 test 1/2:
   stage: test
   script:
+    - dotnet restore server/OkeyApi
+    - dotnet restore server/OkeyServer
     - pre-commit run -a
   rules:
     - if: $CI_COMMIT_BRANCH
