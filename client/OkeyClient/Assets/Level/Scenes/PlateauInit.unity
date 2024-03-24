@@ -691,7 +691,7 @@ GameObject:
   - component: {fileID: 480997741}
   - component: {fileID: 480997740}
   m_Layer: 5
-  m_Name: Plateau_Panel
+  m_Name: PlateauPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -771,7 +771,7 @@ GameObject:
   - component: {fileID: 600682808}
   - component: {fileID: 600682807}
   m_Layer: 5
-  m_Name: Buttom
+  m_Name: BtnRetour
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1395,7 +1395,7 @@ GameObject:
   - component: {fileID: 948194874}
   - component: {fileID: 948194875}
   m_Layer: 0
-  m_Name: DefausseHolder4 (1)
+  m_Name: 'DefausseHolder4 '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2590,7 +2590,7 @@ GameObject:
   - component: {fileID: 1832863139}
   - component: {fileID: 1832863138}
   m_Layer: 5
-  m_Name: Buttom (1)
+  m_Name: BtnParam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2721,7 +2721,7 @@ GameObject:
   - component: {fileID: 1979797656}
   - component: {fileID: 1979797655}
   m_Layer: 5
-  m_Name: Confirmation_Panel
+  m_Name: ConfirmationPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3247,9 +3247,13 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 209
       objectReference: {fileID: 0}
+    - target: {fileID: 2954784287602247283, guid: 04fe61a6085a64fdfb5752bdb3d0b7c2, type: 3}
+      propertyPath: m_Name
+      value: ChevaletDroit
+      objectReference: {fileID: 0}
     - target: {fileID: 2975166492651819125, guid: 04fe61a6085a64fdfb5752bdb3d0b7c2, type: 3}
       propertyPath: m_Name
-      value: chevalet1
+      value: ChevaletGauche
       objectReference: {fileID: 0}
     - target: {fileID: 4030580736643322078, guid: 04fe61a6085a64fdfb5752bdb3d0b7c2, type: 3}
       propertyPath: m_Pivot.x
@@ -3330,6 +3334,10 @@ PrefabInstance:
     - target: {fileID: 4030580736643322078, guid: 04fe61a6085a64fdfb5752bdb3d0b7c2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150579031760267786, guid: 04fe61a6085a64fdfb5752bdb3d0b7c2, type: 3}
+      propertyPath: m_Name
+      value: ChevaletHaut
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
