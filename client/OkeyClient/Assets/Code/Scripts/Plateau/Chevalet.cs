@@ -29,6 +29,7 @@ public class Chevalet : MonoBehaviour
         }
 
         InitializeBoardFromPlaceholders();
+        PrintTuilesArray();
     }
 
     //void InitializePlaceholders()
@@ -153,5 +154,27 @@ public class Chevalet : MonoBehaviour
     public Tuile[,] GetTuilesArray()
     {
         return tuiles2D;
+    }
+
+    public void PrintTuilesArray()
+    {
+        for (int x = 0; x < tuiles2D.GetLength(0); x++)
+        {
+            for (int y = 0; y < tuiles2D.GetLength(1); y++)
+            {
+                // Check if there is a Tuile at the current position
+                if (tuiles2D[x, y] != null)
+                {
+                    // If there is a Tuile, print its details
+                    Debug.Log(
+                        $"Tuile at [{x},{y}]: Color = {tuiles2D[x, y].GetCouleur()}, Value = {tuiles2D[x, y].GetValeur()}"
+                    );
+                }
+                else
+                {
+                    Debug.Log($"Tuile at [{x},{y}]: None");
+                }
+            }
+        }
     }
 }
