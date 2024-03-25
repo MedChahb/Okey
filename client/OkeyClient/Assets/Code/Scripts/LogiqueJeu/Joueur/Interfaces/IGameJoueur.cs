@@ -1,7 +1,10 @@
-public interface IGameJoueur
+namespace LogiqueJeu.Joueur
 {
-    EtatTourJoueurEnum EtatTour { get; }
-    Chevalet Chevalet { get; set; }
-    Emote CurrentEmote { get; set; }
-    public void JouerTour(Timer Timer);
+    public interface IGameJoueur
+    {
+        EtatTour.Etats EtatTour { get; }
+        Chevalet Chevalet { get; set; }
+        Emote CurrentEmote { get; set; }
+        public void JouerTour(Timer Timer);
+    }
 }

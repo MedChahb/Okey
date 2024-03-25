@@ -1,5 +1,8 @@
-public interface ISelfJoueur
+namespace LogiqueJeu.Joueur
 {
-    string Login { get; set; }
-    string TokenConnexion { get; set; }
+    public interface ISelfJoueur
+    {
+        string Login { get; set; }
+        string TokenConnexion { get; set; }
+    }
 }

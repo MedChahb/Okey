@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c94a12e1713694712a71c6441368b780, type: 3}
+  m_Name: TestPlayer
+  m_EditorClassIdentifier: 
+  <NomUtilisateur>k__BackingField: "Pok\xE9"
+  <Elo>k__BackingField: 400
+  <IconeProfil>k__BackingField: 2
+  <Score>k__BackingField: 50000
+  <Niveau>k__BackingField: 43

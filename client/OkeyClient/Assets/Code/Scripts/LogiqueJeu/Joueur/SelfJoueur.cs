@@ -1,5 +1,11 @@
-public sealed class SelfJoueur : ISelfJoueur
+namespace LogiqueJeu.Joueur
 {
-    public string Login { get; set; }
-    public string TokenConnexion { get; set; }
+    using UnityEngine;
+
+    [CreateAssetMenu(menuName = "ScriptableObjects/SelfJoueur")]
+    public sealed class SelfJoueur : Joueur, ISelfJoueur
+    {
+        public string Login { get; set; }
+        public string TokenConnexion { get; set; }
+    }
 }

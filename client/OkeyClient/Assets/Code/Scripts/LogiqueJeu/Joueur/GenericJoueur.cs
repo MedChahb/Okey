@@ -1,14 +1,7 @@
-using System.Collections.Generic;
-
-public sealed class GenericJoueur : Joueur
+namespace LogiqueJeu.Joueur
 {
-    public GenericJoueur(
-        string NomUtilisateur,
-        int Elo,
-        int IconeProfil,
-        List<Achievement> Achievements,
-        int Score,
-        int Niveau
-    )
-        : base(NomUtilisateur, Elo, IconeProfil, Achievements, Score, Niveau) { }
+    using UnityEngine;
+
+    [CreateAssetMenu(menuName = "ScriptableObjects/GenericJoueur")]
+    public sealed class GenericJoueur : Joueur { }
 }
