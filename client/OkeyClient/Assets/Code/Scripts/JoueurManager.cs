@@ -5,13 +5,13 @@ using LogiqueJeu.Joueur;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Joueur : MonoBehaviour
+public class JoueurManager : MonoBehaviour
 {
-    private GameJoueur playerLeft;
+    private Joueur playerLeft;
 
     private void Awake()
     {
-        this.playerLeft = ScriptableObject.CreateInstance<GameJoueur>();
+        this.playerLeft = ScriptableObject.CreateInstance<GenericJoueur>();
 
         // Concurrent
         // this.StartCoroutine(this.FetchUserBG("Testeur1", this.UnmarshalAndInit));
@@ -26,7 +26,7 @@ public class Joueur : MonoBehaviour
 
     private void UnmarshalAndInit(string Json)
     {
-        var unmarshal = JsonUtility.FromJson<JoueurAPIDTO>(Json);
+        var unmarshal = JsonUtility.FromJson<JoueurAPICompteDTO>(Json);
         this.playerLeft.NomUtilisateur = unmarshal.username;
         this.playerLeft.Elo = unmarshal.elo;
     }

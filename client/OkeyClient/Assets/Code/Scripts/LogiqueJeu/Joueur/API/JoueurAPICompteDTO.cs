@@ -3,7 +3,7 @@ namespace LogiqueJeu.Joueur
     using System;
 
     [Serializable]
-    public class JoueurAPIDTO
+    public class JoueurAPICompteDTO
     {
         public string username;
         public int elo;
