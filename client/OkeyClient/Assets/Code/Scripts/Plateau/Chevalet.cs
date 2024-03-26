@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,7 +29,10 @@ public class Chevalet : MonoBehaviour
             }
         }
 
-        InitializeBoardFromPlaceholders();
+        StartCoroutine(WaitAndCall(2f));
+
+        //InitializeBoardFromPlaceholders();
+
         PrintTuilesArray();
     }
 
@@ -103,23 +107,96 @@ public class Chevalet : MonoBehaviour
         return number;
     }
 
+    //void InitializeBoardFromPlaceholders()
+    //{
+    //    for (int i = 0; i < placeholders.Length; i++)
+    //    {
+    //        int x = i / 14;
+    //        int y = i % 14;
+
+    //        GameObject placeholder = placeholders[i];
+    //        if (placeholder != null)
+    //        {
+    //            Tuile tuile = placeholder.GetComponent<Tuile>();
+    //            if (tuile == null)
+    //            {
+    //                tuile = placeholder.AddComponent<Tuile>();
+    //            }
+
+    //            SetTuile(x, y, tuile); // fill the matrice with the values retrieved
+    //        }
+    //    }
+    //}
+
+
+
+    IEnumerator WaitAndCall(float waitTime)
+    {
+        // Wait for the specified amount of time
+        yield return new WaitForSeconds(waitTime);
+
+        // Call your function here
+        InitializeBoardFromPlaceholders();
+    }
+
     void InitializeBoardFromPlaceholders()
     {
+        Debug.Log("outside loop");
+
         for (int i = 0; i < placeholders.Length; i++)
         {
-            int x = i / 14;
-            int y = i % 14;
+            int x = i / 14; // Calculate the row based on index.
+            int y = i % 14; // Calculate the column based on index.
 
             GameObject placeholder = placeholders[i];
-            if (placeholder != null)
-            {
-                Tuile tuile = placeholder.GetComponent<Tuile>();
-                if (tuile == null)
-                {
-                    tuile = placeholder.AddComponent<Tuile>();
-                }
 
-                SetTuile(x, y, tuile); // fill the matrice with the values retrieved
+            Debug.Log(
+                $"Checking placeholder {i}, Null: {placeholder == null}, Child count: {placeholder?.transform.childCount}"
+            );
+
+            if (placeholder != null && placeholder.transform.childCount > 1)
+            {
+                Debug.Log("inside first if");
+                // Get the first child of the placeholder
+                GameObject child = placeholder.transform.GetChild(0).gameObject;
+                SpriteRenderer childSpriteRenderer = child.GetComponent<SpriteRenderer>();
+
+                if (childSpriteRenderer != null)
+                {
+                    // note: "color_value" should be used for naming the sprites
+                    string[] properties = childSpriteRenderer.sprite.name.Split('_');
+
+                    if (properties.Length == 2)
+                    {
+                        // Create a new Tuile, or use an existing one
+                        Tuile tuile = new Tuile();
+
+                        // Extract and assign color and value from the sprite's name
+                        tuile.SetCouleur(properties[0]);
+                        tuile.SetValeur(int.Parse(properties[1]));
+                        Debug.Log("here");
+                        // Place the Tuile in the 2D array
+                        SetTuile(x, y, tuile);
+                    }
+                    else
+                    {
+                        // If the name does not contain both color and value, log an error or set as null
+                        Debug.LogError(
+                            $"Child sprite of placeholder at index {i} does not have a properly formatted name."
+                        );
+                        tuiles2D[x, y] = null;
+                    }
+                }
+                else
+                {
+                    // If there is no SpriteRenderer component, set the corresponding array position to null
+                    tuiles2D[x, y] = null;
+                }
+            }
+            else
+            {
+                // If the placeholder is empty, set the corresponding array position to null
+                tuiles2D[x, y] = null;
             }
         }
     }
