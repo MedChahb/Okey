@@ -106,11 +106,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Blue1
+      name: Blue_1
       rect:
         serializedVersion: 2
         x: 0
@@ -131,11 +144,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue2
+      name: Blue_2
       rect:
         serializedVersion: 2
         x: 70
-        y: 400
+        y: 399
         width: 70
         height: 100
       alignment: 0
@@ -152,7 +165,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue3
+      name: Blue_3
       rect:
         serializedVersion: 2
         x: 140
@@ -173,11 +186,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue4
+      name: Blue_4
       rect:
         serializedVersion: 2
         x: 210
-        y: 400
+        y: 399
         width: 70
         height: 100
       alignment: 0
@@ -194,7 +207,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue5
+      name: Blue_5
       rect:
         serializedVersion: 2
         x: 280
@@ -215,7 +228,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue6
+      name: Blue_6
       rect:
         serializedVersion: 2
         x: 350
@@ -236,7 +249,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue7
+      name: Blue_7
       rect:
         serializedVersion: 2
         x: 420
@@ -257,7 +270,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue8
+      name: Blue_8
       rect:
         serializedVersion: 2
         x: 490
@@ -278,7 +291,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue9
+      name: Blue_9
       rect:
         serializedVersion: 2
         x: 560
@@ -299,7 +312,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue10
+      name: Blue_10
       rect:
         serializedVersion: 2
         x: 630
@@ -320,7 +333,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue11
+      name: Blue_11
       rect:
         serializedVersion: 2
         x: 700
@@ -341,7 +354,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue12
+      name: Blue_12
       rect:
         serializedVersion: 2
         x: 770
@@ -362,7 +375,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Blue13
+      name: Blue_13
       rect:
         serializedVersion: 2
         x: 840
@@ -383,7 +396,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black1
+      name: Black_1
       rect:
         serializedVersion: 2
         x: 0
@@ -404,7 +417,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black2
+      name: Black_2
       rect:
         serializedVersion: 2
         x: 70
@@ -425,7 +438,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black3
+      name: Black_3
       rect:
         serializedVersion: 2
         x: 140
@@ -446,7 +459,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black4
+      name: Black_4
       rect:
         serializedVersion: 2
         x: 210
@@ -467,7 +480,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black5
+      name: Black_5
       rect:
         serializedVersion: 2
         x: 280
@@ -488,7 +501,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black6
+      name: Black_6
       rect:
         serializedVersion: 2
         x: 350
@@ -509,7 +522,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black7
+      name: Black_7
       rect:
         serializedVersion: 2
         x: 420
@@ -530,7 +543,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black8
+      name: Black_8
       rect:
         serializedVersion: 2
         x: 490
@@ -551,7 +564,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black9
+      name: Black_9
       rect:
         serializedVersion: 2
         x: 560
@@ -572,7 +585,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black10
+      name: Black_10
       rect:
         serializedVersion: 2
         x: 630
@@ -593,7 +606,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black11
+      name: Black_11
       rect:
         serializedVersion: 2
         x: 700
@@ -614,7 +627,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black12
+      name: Black_12
       rect:
         serializedVersion: 2
         x: 770
@@ -635,7 +648,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Black13
+      name: Black_13
       rect:
         serializedVersion: 2
         x: 840
@@ -656,7 +669,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red1
+      name: Red_1
       rect:
         serializedVersion: 2
         x: 0
@@ -677,7 +690,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red2
+      name: Red_2
       rect:
         serializedVersion: 2
         x: 70
@@ -698,7 +711,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red3
+      name: Red_3
       rect:
         serializedVersion: 2
         x: 140
@@ -719,7 +732,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red4
+      name: Red_4
       rect:
         serializedVersion: 2
         x: 210
@@ -740,7 +753,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red5
+      name: Red_5
       rect:
         serializedVersion: 2
         x: 280
@@ -761,7 +774,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red6
+      name: Red_6
       rect:
         serializedVersion: 2
         x: 350
@@ -782,7 +795,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red7
+      name: Red_7
       rect:
         serializedVersion: 2
         x: 420
@@ -803,7 +816,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red8
+      name: Red_8
       rect:
         serializedVersion: 2
         x: 490
@@ -824,7 +837,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red9
+      name: Red_9
       rect:
         serializedVersion: 2
         x: 560
@@ -845,7 +858,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red
+      name: Red_10
       rect:
         serializedVersion: 2
         x: 630
@@ -866,7 +879,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red11
+      name: Red_11
       rect:
         serializedVersion: 2
         x: 700
@@ -887,10 +900,10 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red12
+      name: Red_12
       rect:
         serializedVersion: 2
-        x: 770
+        x: 769
         y: 200
         width: 70
         height: 100
@@ -908,7 +921,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Red13
+      name: Red_13
       rect:
         serializedVersion: 2
         x: 840
@@ -929,7 +942,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green1
+      name: Green_1
       rect:
         serializedVersion: 2
         x: 0
@@ -950,7 +963,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green2
+      name: Green_2
       rect:
         serializedVersion: 2
         x: 70
@@ -971,7 +984,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green3
+      name: Green_3
       rect:
         serializedVersion: 2
         x: 140
@@ -992,7 +1005,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green4
+      name: Green_4
       rect:
         serializedVersion: 2
         x: 210
@@ -1013,7 +1026,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green5
+      name: Green_5
       rect:
         serializedVersion: 2
         x: 280
@@ -1034,7 +1047,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green6
+      name: Green_6
       rect:
         serializedVersion: 2
         x: 350
@@ -1055,7 +1068,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green7
+      name: Green_7
       rect:
         serializedVersion: 2
         x: 420
@@ -1076,7 +1089,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green8
+      name: Green_8
       rect:
         serializedVersion: 2
         x: 490
@@ -1097,7 +1110,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green9
+      name: Green_9
       rect:
         serializedVersion: 2
         x: 560
@@ -1118,7 +1131,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green10
+      name: Green_10
       rect:
         serializedVersion: 2
         x: 630
@@ -1139,7 +1152,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green11
+      name: Green_11
       rect:
         serializedVersion: 2
         x: 700
@@ -1160,7 +1173,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green12
+      name: Green_12
       rect:
         serializedVersion: 2
         x: 770
@@ -1181,7 +1194,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Green13
+      name: Green_13
       rect:
         serializedVersion: 2
         x: 840
@@ -1252,7 +1265,7 @@ TextureImporter:
         width: 68
         height: 99
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1275,61 +1288,61 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Black1: 312998043
-      Black10: 894846778
-      Black11: 738742128
-      Black12: 1368238465
-      Black13: 442148261
-      Black2: 985905724
-      Black3: -1386299323
-      Black4: 272554031
-      Black5: -1553238869
-      Black6: 510747927
-      Black7: -816949749
-      Black8: 1337707416
-      Black9: -2136143848
-      Blue1: 603177335
-      Blue10: -1900956825
-      Blue11: 1432613978
-      Blue12: 400370579
-      Blue13: -1672540255
-      Blue2: -1632890739
-      Blue3: -1264110389
-      Blue4: 840853520
-      Blue5: -1884537590
-      Blue6: -135365169
-      Blue7: -114275631
-      Blue8: 1137859503
-      Blue9: 871252293
+      Black_1: 312998043
+      Black_10: 894846778
+      Black_11: 738742128
+      Black_12: 1368238465
+      Black_13: 442148261
+      Black_2: 985905724
+      Black_3: -1386299323
+      Black_4: 272554031
+      Black_5: -1553238869
+      Black_6: 510747927
+      Black_7: -816949749
+      Black_8: 1337707416
+      Black_9: -2136143848
+      Blue_1: 603177335
+      Blue_10: -1900956825
+      Blue_11: 1432613978
+      Blue_12: 400370579
+      Blue_13: -1672540255
+      Blue_2: -1632890739
+      Blue_3: -1264110389
+      Blue_4: 840853520
+      Blue_5: -1884537590
+      Blue_6: -135365169
+      Blue_7: -114275631
+      Blue_8: 1137859503
+      Blue_9: 871252293
       FakeJoker1: 1900783586
       FakeJoker2: -562497483
-      Green1: 826840078
-      Green10: 1515742937
-      Green11: 870886329
-      Green12: -180263303
-      Green13: 1660509724
-      Green2: 1468206228
-      Green3: -117691638
-      Green4: -759910606
-      Green5: -820038721
-      Green6: -1879763527
-      Green7: 191687475
-      Green8: 2000824062
-      Green9: -2040021240
+      Green_1: 826840078
+      Green_10: 1515742937
+      Green_11: 870886329
+      Green_12: -180263303
+      Green_13: 1660509724
+      Green_2: 1468206228
+      Green_3: -117691638
+      Green_4: -759910606
+      Green_5: -820038721
+      Green_6: -1879763527
+      Green_7: 191687475
+      Green_8: 2000824062
+      Green_9: -2040021240
       Pioche: -1340357606
-      Red: 1315598053
-      Red1: -278389402
-      Red11: -1896721309
-      Red12: -72687105
-      Red13: 846292031
-      Red2: 212812231
-      Red3: 154013037
-      Red4: 1822599390
-      Red5: -1075600120
-      Red6: 624556582
-      Red7: 184230619
-      Red8: 1504086810
-      Red9: 30994417
+      Red_1: -278389402
+      Red_10: 1315598053
+      Red_11: -1896721309
+      Red_12: -72687105
+      Red_13: 846292031
+      Red_2: 212812231
+      Red_3: 154013037
+      Red_4: 1822599390
+      Red_5: -1075600120
+      Red_6: 624556582
+      Red_7: 184230619
+      Red_8: 1504086810
+      Red_9: 30994417
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

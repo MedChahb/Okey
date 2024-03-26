@@ -29,9 +29,9 @@ public class Chevalet : MonoBehaviour
             }
         }
 
-        StartCoroutine(WaitAndCall(2f));
+        //StartCoroutine(WaitAndCall(2f));
 
-        //InitializeBoardFromPlaceholders();
+        InitializeBoardFromPlaceholders();
 
         PrintTuilesArray();
     }
@@ -150,11 +150,9 @@ public class Chevalet : MonoBehaviour
 
             GameObject placeholder = placeholders[i];
 
-            Debug.Log(
-                $"Checking placeholder {i}, Null: {placeholder == null}, Child count: {placeholder?.transform.childCount}"
-            );
+            Debug.Log($"Checking placeholder {i}, Child count: {placeholder.transform.childCount}");
 
-            if (placeholder != null && placeholder.transform.childCount > 1)
+            if (placeholder.transform.childCount > 0)
             {
                 Debug.Log("inside first if");
                 // Get the first child of the placeholder
@@ -163,13 +161,18 @@ public class Chevalet : MonoBehaviour
 
                 if (childSpriteRenderer != null)
                 {
+                    Debug.Log("inside sec if");
+
                     // note: "color_value" should be used for naming the sprites
                     string[] properties = childSpriteRenderer.sprite.name.Split('_');
+                    Debug.Log(properties[0] + properties[1]);
 
                     if (properties.Length == 2)
                     {
+                        Debug.Log("inside third if");
+
                         // Create a new Tuile, or use an existing one
-                        Tuile tuile = new Tuile();
+                        Tuile tuile = placeholder.AddComponent<Tuile>();
 
                         // Extract and assign color and value from the sprite's name
                         tuile.SetCouleur(properties[0]);
@@ -201,17 +204,9 @@ public class Chevalet : MonoBehaviour
         }
     }
 
-    // set le positionnement des tuiles dans la matrice
     public void SetTuile(int x, int y, Tuile tuile)
     {
-        if (x >= 0 && x < 2 && y >= 0 && y < 14)
-        {
-            tuiles2D[x, y] = tuile;
-        }
-        else
-        {
-            Debug.LogError("SetTuile: Index out of bounds");
-        }
+        tuiles2D[x, y] = tuile;
     }
 
     // get Tuile de l'index donnee
