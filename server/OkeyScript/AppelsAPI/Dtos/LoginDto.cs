@@ -1,4 +1,4 @@
-namespace AppelsApi.Dtos;
+namespace Okey.AppelsAPI.Dtos;
 
 public class LoginDto
 {

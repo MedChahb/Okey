@@ -1,8 +1,11 @@
-namespace AppelsApi;
+namespace Okey.AppelsAPI;
 
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using AppelsApi.Dtos;
 using Dtos;
+using Factory;
 
 public class APICalls
 {
@@ -45,8 +48,8 @@ public class APICalls
 
     public async Task<List<ClassementDto>?> GetClassementAsync()
     {
-        var url = $"{_baseUrl}/classement/";
-        var response = await _httpClient.GetAsync(url);
+        var url = $"{this._baseUrl}/classement/";
+        var response = await this._httpClient.GetAsync(url);
         if (response.IsSuccessStatusCode)
         {
             var rep = await response.Content.ReadAsStringAsync();
@@ -61,7 +64,7 @@ public class APICalls
     public async Task<ClassementDto?> GetClassementAsync(string username)
     {
         var url = $"{this._baseUrl}/classement/{username}";
-        var response = await _httpClient.GetAsync(url);
+        var response = await this._httpClient.GetAsync(url);
         if (response.IsSuccessStatusCode)
         {
             var rep = await response.Content.ReadAsStringAsync();
@@ -82,6 +85,28 @@ public class APICalls
             var rep = await response.Content.ReadAsStringAsync();
             var jsonArray = JsonSerializer.Deserialize<List<ClassementDto>>(rep);
             return jsonArray;
+        }
+        throw new Exception(
+            $"Erreur d'appel API, [Code]: {response.StatusCode} [Message]: {response.ReasonPhrase}"
+        );
+    }
+
+    public async Task<object?> GetWatchUsersAsync(string username, IWatchDtoFactory watchDtoFactory)
+    {
+        var url = $"{this._baseUrl}/compte/watch/{username}";
+        this._httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            "Bearer",
+            this._token
+        );
+        var response = await this._httpClient.GetAsync(url);
+        if (response.IsSuccessStatusCode)
+        {
+            var rep = await response.Content.ReadAsStringAsync();
+            if (this._token == string.Empty)
+            {
+                return await watchDtoFactory.CreatePublicWatchDtoTask(rep);
+            }
+            return await watchDtoFactory.CreatePrivateWatchDtoTask(rep);
         }
         throw new Exception(
             $"Erreur d'appel API, [Code]: {response.StatusCode} [Message]: {response.ReasonPhrase}"
