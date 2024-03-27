@@ -5,16 +5,30 @@ using UnityEngine;
 
 public class Chevalet : MonoBehaviour
 {
-    public GameObject[] placeholders = new GameObject[28]; // Tableau des 28 Placeholders (la grille)
+    public static GameObject[] placeholders = new GameObject[28]; // Tableau des 28 Placeholders (la grille)
 
-    private Tuile[,] tuiles2D = new Tuile[2, 14];
+   // private Tuile[,] tuiles2D = new Tuile[2, 14];
     private Stack<Tuile> pileGauche = new Stack<Tuile>();
     private Stack<Tuile> pileDroite = new Stack<Tuile>();
 
+
+
+
     void Start()
     {
-        //InitializePlaceholders();
+        InitPlaceholders();
 
+        //StartCoroutine(WaitAndCall(2f));
+      
+        /*
+        InitializeBoardFromPlaceholders();
+        PrintTuilesArray();
+        */
+    }
+
+   
+
+    void InitPlaceholders(){
         // Remplir le tableau avec les placeholders dans la scene
         for (int i = 1; i <= 28; i++) //i commence a 1 car le premier placeholder est "PlaceHolder1"
         {
@@ -28,29 +42,82 @@ public class Chevalet : MonoBehaviour
                 Debug.LogError("PlaceHolder" + i + " not found!");
             }
         }
+   }
 
-        //StartCoroutine(WaitAndCall(2f));
+    public static Tuile[] GetTilesPlacementInChevaletTab(){
 
-        InitializeBoardFromPlaceholders();
+        // Creation d'un tableau pour stocker le placement courant des tuiles sur le chevalet
+        Tuile[] TilesArray = new Tuile[placeholders.Length]; 
 
-        PrintTuilesArray();
+        //loop sur les placeholders
+        foreach (GameObject placeholder in placeholders)
+        {
+            int index = Array.IndexOf(placeholders, placeholder);
+
+            if (placeholder.transform.childCount > 0){// le placeholder a un child -> il contient une tuile -> on la met dans le tableau avec l'index du placeholder parent
+
+                GameObject child = placeholder.transform.GetChild(0).gameObject;
+                Tuile tuile = child.GetComponent<Tuile>();
+
+                if (tuile != null)
+                {
+                    // Place the Tuile in the 1D array
+                    TilesArray[index] = tuile;
+                }
+                else
+                {
+                     Debug.LogError("Error : placeholder has a child that isn't a Tile");
+                }
+
+            }
+            else // si le placeholder n'a aucun child -> il est vide -> on met null a l'index correspondant au placeholder dans le tableau
+            {
+               
+                TilesArray[index] = null;
+            }
+        }
+
+        return TilesArray;
+}
+
+public static void PrintTilesArrayForTest()
+{
+    // Get the tiles placement array using the method
+    Tuile[] TilesArray = GetTilesPlacementInChevaletTab();
+
+    // Check if TilesArray is not null
+    if (TilesArray != null)
+    {
+        // Loop through the TilesArray to print tile number and color
+        for (int i = 0; i < TilesArray.Length; i++)
+        {
+            if (TilesArray[i] != null)
+            {
+                // Check if GetValeur() and GetCouleur() are not null
+                if (TilesArray[i].GetValeur().ToString() != null && TilesArray[i].GetCouleur().ToString() != null) // supposons que les valeurs sont init a 0
+                {
+                    Debug.Log("Tile Number " +(i+1)+" :"+ TilesArray[i].GetValeur().ToString() + ", Tile Color: " + TilesArray[i].GetCouleur().ToString());
+                }
+                else
+                {
+                    Debug.Log("Tile at index " + i + " has null values.");
+                }
+            }
+            else
+            {
+                Debug.Log("Tile at index " + i + " is null.");
+            }
+        }
     }
+    else
+    {
+        Debug.Log("TilesArray is null.");
+    }
+}
 
-    //void InitializePlaceholders()
-    //{
-    //    for (int i = 1; i <= 28; i++)
-    //    {
-    //        GameObject placeholder = GameObject.Find("PlaceHolder" + i);
-    //        if (placeholder != null)
-    //        {
-    //            placeholders[i - 1] = placeholder;
-    //        }
-    //        else
-    //        {
-    //            Debug.LogError("PlaceHolder" + i + " not found!");
-    //        }
-    //    }
-    //}
+
+
+
 
     public GameObject ClosestPlaceholder(Vector3 position)
     {
@@ -129,7 +196,7 @@ public class Chevalet : MonoBehaviour
     //}
 
 
-
+    /*
     IEnumerator WaitAndCall(float waitTime)
     {
         // Wait for the specified amount of time
@@ -249,4 +316,5 @@ public class Chevalet : MonoBehaviour
             }
         }
     }
+    */
 }

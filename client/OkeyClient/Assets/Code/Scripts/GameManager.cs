@@ -21,4 +21,16 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+
+    void Update(){ //Principal gameloop
+        /* mise en place Etc
+        ..
+        ..
+        lancement du tour d'un joueur
+        */
+        Tuile[] TilesArray = Chevalet.GetTilesPlacementInChevaletTab();
+        Chevalet.PrintTilesArrayForTest();
+
+    }
 }

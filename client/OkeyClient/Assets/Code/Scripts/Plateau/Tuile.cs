@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Tuile : MonoBehaviour
 {
-    private string couleur;
-    private int valeur;
+    [SerializeField] private string couleur;
+    [SerializeField]  private int valeur;
     private bool isJoker = false;
     private SpriteRenderer sprite;
     private bool deplacable = true;
