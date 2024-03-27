@@ -1,5 +1,6 @@
 namespace AppelsApi;
 
+using System.Text;
 using System.Text.Json;
 using Dtos;
 
@@ -59,7 +60,7 @@ public class APICalls
 
     public async Task<ClassementDto?> GetClassementAsync(string username)
     {
-        var url = $"{_baseUrl}/classement/{username}";
+        var url = $"{this._baseUrl}/classement/{username}";
         var response = await _httpClient.GetAsync(url);
         if (response.IsSuccessStatusCode)
         {
@@ -74,13 +75,59 @@ public class APICalls
 
     public async Task<List<ClassementDto>?> GetClassementAsync(int pagination)
     {
-        var url = $"{_baseUrl}/classement/{pagination}";
-        var response = await _httpClient.GetAsync(url);
+        var url = $"{this._baseUrl}/classement/{pagination}";
+        var response = await this._httpClient.GetAsync(url);
         if (response.IsSuccessStatusCode)
         {
             var rep = await response.Content.ReadAsStringAsync();
             var jsonArray = JsonSerializer.Deserialize<List<ClassementDto>>(rep);
             return jsonArray;
+        }
+        throw new Exception(
+            $"Erreur d'appel API, [Code]: {response.StatusCode} [Message]: {response.ReasonPhrase}"
+        );
+    }
+
+    public async Task<LoginDto?> PostLoginAsync(object data)
+    {
+        var url = $"{this._baseUrl}/compte/login/";
+        var jsonData = JsonSerializer.Serialize(data);
+        var response = await this._httpClient.PostAsync(
+            url,
+            new StringContent(jsonData, Encoding.UTF8, "application/json")
+        );
+        if (response.IsSuccessStatusCode)
+        {
+            var rep = await response.Content.ReadAsStringAsync();
+            var jsonArray = JsonSerializer.Deserialize<LoginDto>(rep);
+            if (jsonArray != null)
+            {
+                this._token = jsonArray.token;
+                return jsonArray;
+            }
+        }
+        throw new Exception(
+            $"Erreur d'appel API, [Code]: {response.StatusCode} [Message]: {response.ReasonPhrase}"
+        );
+    }
+
+    public async Task<RegisterDto?> PostRegisterAsync(object data)
+    {
+        var url = $"{this._baseUrl}/compte/register/";
+        var jsonData = JsonSerializer.Serialize(data);
+        var response = await this._httpClient.PostAsync(
+            url,
+            new StringContent(jsonData, Encoding.UTF8, "application/json")
+        );
+        if (response.IsSuccessStatusCode)
+        {
+            var rep = await response.Content.ReadAsStringAsync();
+            var jsonArray = JsonSerializer.Deserialize<RegisterDto>(rep);
+            if (jsonArray != null)
+            {
+                this._token = jsonArray.token;
+                return jsonArray;
+            }
         }
         throw new Exception(
             $"Erreur d'appel API, [Code]: {response.StatusCode} [Message]: {response.ReasonPhrase}"
