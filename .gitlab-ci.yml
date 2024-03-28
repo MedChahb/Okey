@@ -5,11 +5,12 @@ default:
       - .cache/pre-commit
   before_script:
     # Fix Unistra GitLab Docker runner permission issues
-    - ls -ld .git/ | awk '{print $3}' > RUNNER_USER
+    - export RUNNER_USER=$(ls -ld .git/ | awk '{print $3}')
+    - mkdir -p .cache/pre-commit/
     - chown -R $(whoami) .
   after_script:
     # Fix Unistra GitLab Docker runner permission issues
-    - chown -fR $(cat RUNNER_USER) .cache/pip/ .venv/ .cache/pre-commit/
+    - chown -fR "$RUNNER_USER" .cache/pre-commit/
 stages:
   - build
   - test
@@ -20,6 +21,8 @@ variables:
 test 1/2:
   stage: test
   script:
+    - dotnet restore server/OkeyApi
+    - dotnet restore server/OkeyServer
     - pre-commit run -a
   rules:
     - if: $CI_COMMIT_BRANCH
@@ -38,7 +41,7 @@ test 2/2:
       - public
   tags:
     - kubernetes
-docker:
+docker-ci:
   # Docker, Docker in Docker (dind) and Buildah don't work
   # with Unistra GitLab's kubernetes shared runners due to
   # various permission and runner configuration issues (user space/kernel space)
@@ -58,6 +61,70 @@ docker:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - docker/Dockerfile
+        - requirements.txt
+        - .config/dotnet-tools.json
+      when: always
+  tags:
+    - kubernetes
+docker-api:
+  # Docker, Docker in Docker (dind) and Buildah don't work
+  # with Unistra GitLab's kubernetes shared runners due to
+  # various permission and runner configuration issues (user space/kernel space)
+  image:
+    name: gcr.io/kaniko-project/executor:v1.21.1-debug
+    entrypoint: [""]
+  stage: build
+  variables:
+    IMAGE_NAME: okeyapi
+  before_script:
+    # Store registry auth credentials for Kaniko to read during push
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - IMAGE_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev-${CI_COMMIT_SHORT_SHA}"; else echo ${CI_COMMIT_TAG}; fi)
+    - IMAGE_SLIDING_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev"; else echo "latest"; fi)
+  script:
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/OkeyApi.Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_TAG}" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_SLIDING_TAG}"
+  after_script: ""
+  rules:
+    - if: $CI_COMMIT_BRANCH == "back-end"
+      changes:
+        - docker/OkeyApi.Dockerfile
+        - server/OkeyApi/**/*.cs
+        - server/OkeyApi/appsettings*.json
+        - server/OkeyApi/**/launchSettings.json
+        - server/OkeyApi/*.csproj
+        - server/OkeyApi/*.sln
+      when: always
+    - if: '$CI_COMMIT_TAG =~ $RELEASE_TAG'
+      when: always
+  tags:
+    - kubernetes
+docker-server:
+  # Docker, Docker in Docker (dind) and Buildah don't work
+  # with Unistra GitLab's kubernetes shared runners due to
+  # various permission and runner configuration issues (user space/kernel space)
+  image:
+    name: gcr.io/kaniko-project/executor:v1.21.1-debug
+    entrypoint: [""]
+  stage: build
+  variables:
+    IMAGE_NAME: okeyserver
+  before_script:
+    # Store registry auth credentials for Kaniko to read during push
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - IMAGE_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev-${CI_COMMIT_SHORT_SHA}"; else echo ${CI_COMMIT_TAG}; fi)
+    - IMAGE_SLIDING_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev"; else echo "latest"; fi)
+  script:
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/OkeyApi.Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_TAG}" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_SLIDING_TAG}"
+  after_script: ""
+  rules:
+    - if: $CI_COMMIT_BRANCH == "back-end"
+      changes:
+        - docker/OkeyServer.Dockerfile
+        - server/OkeyServer/**/*.cs
+        - server/OkeyServer/*.csproj
+        - server/OkeyServer/*.sln
+      when: always
+    - if: '$CI_COMMIT_TAG =~ $RELEASE_TAG'
       when: always
   tags:
     - kubernetes

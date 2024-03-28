@@ -88,7 +88,9 @@ public class ClassementController : ControllerBase
                 classement[i].Classement = i + 1;
             }
 
-            var user = classement.FirstOrDefault(u => u.Username.Equals(username));
+            var user = classement.FirstOrDefault(u =>
+                u.Username != null && u.Username.Equals(username, StringComparison.Ordinal)
+            );
             if (user == null)
             {
                 return this.StatusCode(404, "Utilisateur non trouvé");

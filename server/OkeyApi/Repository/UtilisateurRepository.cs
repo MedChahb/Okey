@@ -13,13 +13,13 @@ public class UtilisateurRepository : IUtilisateurRepository
     /// <summary>
     /// Contexte de la base de donnée
     /// </summary>
-    private readonly ApplicationDBContext _context;
+    private readonly ApplicationDbContext _context;
 
     /// <summary>
     /// Constructeur de la classe
     /// </summary>
     /// <param name="context">Contexte Base de Donnée</param>
-    public UtilisateurRepository(ApplicationDBContext context)
+    public UtilisateurRepository(ApplicationDbContext context)
     {
         this._context = context;
     }
@@ -40,6 +40,8 @@ public class UtilisateurRepository : IUtilisateurRepository
     /// <returns>Contrat permettant la validation des actions à faire, propre au système</returns>
     public async Task<Utilisateur?> GetByUsername(string username)
     {
-        return await this._context.Users.FirstOrDefaultAsync(s => s.UserName.Equals(username));
+        return await this._context.Users.FirstOrDefaultAsync(s =>
+            s.UserName != null && s.UserName.Equals(username, StringComparison.Ordinal)
+        );
     }
 }
