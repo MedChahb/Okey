@@ -10,9 +10,9 @@ public class Chevalet : MonoBehaviour
 
     private TuileData[,] tuiles2D = new TuileData[2, 14];
     private Stack<Tuile> pileGauche = new Stack<Tuile>();
-    public GameObject pileGauchePlaceHolder;
+    public static GameObject pileGauchePlaceHolder;
     private Stack<Tuile> pileDroite = new Stack<Tuile>();
-    public GameObject pileDroitePlaceHolder;
+    public static GameObject pileDroitePlaceHolder;
 
     void Start()
     {
@@ -36,15 +36,45 @@ public class Chevalet : MonoBehaviour
                 Debug.LogError("PlaceHolder" + i + " not found!");
             }
         }
+        pileGauchePlaceHolder = GameObject.Find("PileGauchePlaceHolder");
+        pileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
+        pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
+        pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInLeftStack(true);
+        pileDroitePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
     }
 
     public static Tuile[] GetTilesPlacementInChevaletTab()
     {
         // Creation d'un tableau pour stocker le placement courant des tuiles sur le chevalet
         Tuile[] TilesArray = new Tuile[placeholders.Length];
-        InitializeBoardFromPlaceholders();
-        //Ajouter event clique sur pileDroitePlaceHolder et déclencher draw()
-        PrintTuilesArray();
+
+        //loop sur les placeholders
+        foreach (GameObject placeholder in placeholders)
+        {
+            int index = Array.IndexOf(placeholders, placeholder);
+
+            if (placeholder.transform.childCount > 0)
+            { // le placeholder a un child -> il contient une tuile -> on la met dans le tableau avec l'index du placeholder parent
+                GameObject child = placeholder.transform.GetChild(0).gameObject;
+                Tuile tuile = child.GetComponent<Tuile>();
+
+                if (tuile != null)
+                {
+                    // Place the Tuile in the 1D array
+                    TilesArray[index] = tuile;
+                }
+                else
+                {
+                    Debug.LogError("Error : placeholder has a child that isn't a Tile");
+                }
+            }
+            else // si le placeholder n'a aucun child -> il est vide -> on met null a l'index correspondant au placeholder dans le tableau
+            {
+                TilesArray[index] = null;
+            }
+        }
+
+        return TilesArray;
     }
 
     public static void PrintTilesArrayForTest()
@@ -107,35 +137,30 @@ public class Chevalet : MonoBehaviour
                     closestPlaceholder = placeholder;
                     closestDistance = distance;
                 }
-            }
-        }
-        if (Vector3.Distance(position, pileDroitePlaceHolder) < closestDistance)
-        {
-            //Vérifier la distance à la pile
-            if (1/*Nombre de tuiles == 15 et */) 
-            {
-                closestDistance = distance;
-                closestPlaceholder = pileDroitePlaceHolder;
-            }
-            else 
-            {
-                //Affichage vous ne pouvez pas jetter
+
+                // Recalculate distance to pile at each iteration
+                distance = Vector3.Distance(position, pileDroitePlaceHolder.transform.position);
+                if (distance < closestDistance)
+                {
+                    // Check if pile is the closest
+                    if (getTilesNumber() == 15)
+                    {
+                        closestDistance = distance;
+                        closestPlaceholder = pileDroitePlaceHolder;
+                    }
+                    else
+                    {
+                        // Display "You can't discard yet" message
+                        Debug.Log("Vous devez avoir 15 tuiles pour jeter !");
+                    }
+                }
             }
         }
 
+        Debug.Log("Position de la souris:" + position + "Closest distance" + closestDistance);
         return closestPlaceholder;
     }
 
-    public void draw() {
-        if (1/*Nombre de tuiles == 14 et c'est mon tour*/) 
-        {
-            pileGauchePlaceHolder.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(true);
-        }
-        else 
-        {
-            pileGauchePlaceHolder.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
-        }
-    }
 
     public void UpdateTiles(GameObject placeholder)
     {
@@ -159,6 +184,20 @@ public class Chevalet : MonoBehaviour
                 // Appeler récursivement la fonction UpdateTiles sur le placeholder à droite
                 UpdateTiles(placeholders[(indexTab + 1) % 28]);
             }
+        }
+    }
+
+    public void draw() {
+        if (getTilesNumber() == 14/* et c'est mon tour*/) 
+        {
+            pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(true);
+            pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInLeftStack(false);
+            //Insérer la tuile suivante de la stack comme tuile fille du pileGauchePlaceHolder et lui passer 
+        }
+        else 
+        {
+            //Pour être sur qu'on ne puisse pas déplacer la tuile
+            pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
         }
     }
 
@@ -325,5 +364,18 @@ public class Chevalet : MonoBehaviour
         }
 
         Debug.Log(sb.ToString());
+    }
+
+    public int getTilesNumber() 
+    {
+        int num = 0;
+        foreach (GameObject placeholder in placeholders) 
+        {
+            if(placeholder.transform.childCount == 1) 
+            {
+                num++;
+            }
+        }
+        return num;
     }
 }

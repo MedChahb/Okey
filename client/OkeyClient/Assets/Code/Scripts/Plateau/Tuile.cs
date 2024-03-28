@@ -12,11 +12,13 @@ public class Tuile : MonoBehaviour
     private GameObject placeholderActuel;
     private Vector3 offset;
     private Chevalet chevalet;
+    private bool isInLeftStack = false;
 
     void Start()
     {
         this.sprite = GetComponent<SpriteRenderer>();
-        chevalet = GetComponentInParent<Chevalet>(); // Find Chevalet script in the parent hierarchy
+        //chevalet = GetComponentInParent<Chevalet>(); // Find Chevalet script in the parent hierarchy
+        chevalet = GameObject.Find("ChevaletFront").GetComponent<Chevalet>();
         placeholderActuel = transform.parent.gameObject;
     }
 
@@ -32,6 +34,10 @@ public class Tuile : MonoBehaviour
 
     void OnMouseDown()
     {
+        if (isInLeftStack)
+        {
+            this.chevalet.draw();
+        }
         if (deplacable)
         {
             // Save difference between mouse position and tile position
@@ -60,8 +66,11 @@ public class Tuile : MonoBehaviour
                 else
                 {
                     AttachToPlaceholder(closestPlaceholder);
-                    // The placeholder countains already a Tile, we must update before insert
-                    chevalet.UpdateTiles(closestPlaceholder);
+                    if(closestPlaceholder != Chevalet.pileDroitePlaceHolder) 
+                    {
+                        // The placeholder countains already a Tile, we must update before insert
+                        chevalet.UpdateTiles(closestPlaceholder);
+                    }
                 }
             }
         }
@@ -124,5 +133,10 @@ public class Tuile : MonoBehaviour
     public void SetIsDeplacable(bool isDeplacable)
     {
         this.deplacable = isDeplacable;
+    }
+
+    public void SetIsInLeftStack(bool isInLeftStack)
+    {
+        this.isInLeftStack = isInLeftStack;
     }
 }
