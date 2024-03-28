@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class Chevalet : MonoBehaviour
 {
-    public GameObject[] placeholders = new GameObject[28]; // Tableau des 28 Placeholders (la grille)
+    public static GameObject[] placeholders = new GameObject[28]; // Tableau des 28 Placeholders (la grille)
 
-    private Tuile[,] tuiles2D = new Tuile[2, 14];
+    private TuileData[,] tuiles2D = new TuileData[2, 14];
     private Stack<Tuile> pileGauche = new Stack<Tuile>();
     public GameObject pileGauchePlaceHolder;
     private Stack<Tuile> pileDroite = new Stack<Tuile>();
@@ -15,8 +16,13 @@ public class Chevalet : MonoBehaviour
 
     void Start()
     {
-        //InitializePlaceholders();
+        InitPlaceholders();
+        this.InitializeBoardFromPlaceholders();
+        PrintTuilesArray();
+    }
 
+    void InitPlaceholders()
+    {
         // Remplir le tableau avec les placeholders dans la scene
         for (int i = 1; i <= 28; i++) //i commence a 1 car le premier placeholder est "PlaceHolder1"
         {
@@ -30,29 +36,61 @@ public class Chevalet : MonoBehaviour
                 Debug.LogError("PlaceHolder" + i + " not found!");
             }
         }
+    }
 
-        //StartCoroutine(WaitAndCall(2f));
-
+    public static Tuile[] GetTilesPlacementInChevaletTab()
+    {
+        // Creation d'un tableau pour stocker le placement courant des tuiles sur le chevalet
+        Tuile[] TilesArray = new Tuile[placeholders.Length];
         InitializeBoardFromPlaceholders();
         //Ajouter event clique sur pileDroitePlaceHolder et déclencher draw()
         PrintTuilesArray();
     }
 
-    //void InitializePlaceholders()
-    //{
-    //    for (int i = 1; i <= 28; i++)
-    //    {
-    //        GameObject placeholder = GameObject.Find("PlaceHolder" + i);
-    //        if (placeholder != null)
-    //        {
-    //            placeholders[i - 1] = placeholder;
-    //        }
-    //        else
-    //        {
-    //            Debug.LogError("PlaceHolder" + i + " not found!");
-    //        }
-    //    }
-    //}
+    public static void PrintTilesArrayForTest()
+    {
+        // Get the tiles placement array using the method
+        Tuile[] TilesArray = GetTilesPlacementInChevaletTab();
+
+        // Check if TilesArray is not null
+        if (TilesArray != null)
+        {
+            // Loop through the TilesArray to print tile number and color
+            for (int i = 0; i < TilesArray.Length; i++)
+            {
+                if (TilesArray[i] != null)
+                {
+                    // Check if GetValeur() and GetCouleur() are not null
+                    if (
+                        TilesArray[i].GetValeur().ToString() != null
+                        && TilesArray[i].GetCouleur().ToString() != null
+                    ) // supposons que les valeurs sont init a 0
+                    {
+                        Debug.Log(
+                            "Tile Number "
+                                + (i + 1)
+                                + " :"
+                                + TilesArray[i].GetValeur().ToString()
+                                + ", Tile Color: "
+                                + TilesArray[i].GetCouleur().ToString()
+                        );
+                    }
+                    else
+                    {
+                        Debug.Log("Tile at index " + i + " has null values.");
+                    }
+                }
+                else
+                {
+                    Debug.Log("Tile at index " + i + " is null.");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("TilesArray is null.");
+        }
+    }
 
     public GameObject ClosestPlaceholder(Vector3 position)
     {
@@ -133,46 +171,14 @@ public class Chevalet : MonoBehaviour
         return number;
     }
 
-    //void InitializeBoardFromPlaceholders()
-    //{
-    //    for (int i = 0; i < placeholders.Length; i++)
-    //    {
-    //        int x = i / 14;
-    //        int y = i % 14;
-
-    //        GameObject placeholder = placeholders[i];
-    //        if (placeholder != null)
-    //        {
-    //            Tuile tuile = placeholder.GetComponent<Tuile>();
-    //            if (tuile == null)
-    //            {
-    //                tuile = placeholder.AddComponent<Tuile>();
-    //            }
-
-    //            SetTuile(x, y, tuile); // fill the matrice with the values retrieved
-    //        }
-    //    }
-    //}
-
-
-
-    IEnumerator WaitAndCall(float waitTime)
-    {
-        // Wait for the specified amount of time
-        yield return new WaitForSeconds(waitTime);
-
-        // Call your function here
-        InitializeBoardFromPlaceholders();
-    }
-
-    void InitializeBoardFromPlaceholders()
+    private void InitializeBoardFromPlaceholders()
     {
         Debug.Log("outside loop");
 
-        for (int i = 0; i < placeholders.Length; i++)
+        for (var i = 0; i < placeholders.Length; i++)
         {
-            int x = i / 14; // Calculate the row based on index.
-            int y = i % 14; // Calculate the column based on index.
+            var x = i / 14; // Calculate the row based on index.
+            var y = i % 14; // Calculate the column based on index.
 
             GameObject placeholder = placeholders[i];
 
@@ -182,30 +188,35 @@ public class Chevalet : MonoBehaviour
             {
                 Debug.Log("inside first if");
                 // Get the first child of the placeholder
-                GameObject child = placeholder.transform.GetChild(0).gameObject;
-                SpriteRenderer childSpriteRenderer = child.GetComponent<SpriteRenderer>();
+                var child = placeholder.transform.GetChild(0).gameObject;
+                var childSpriteRenderer = child.GetComponent<SpriteRenderer>();
 
                 if (childSpriteRenderer != null)
                 {
                     Debug.Log("inside sec if");
 
                     // note: "color_value" should be used for naming the sprites
-                    string[] properties = childSpriteRenderer.sprite.name.Split('_');
+                    var properties = childSpriteRenderer.sprite.name.Split('_');
                     Debug.Log(properties[0] + properties[1]);
 
                     if (properties.Length == 2)
                     {
                         Debug.Log("inside third if");
 
-                        // Create a new Tuile, or use an existing one
-                        Tuile tuile = placeholder.AddComponent<Tuile>();
+                        //// Create a new Tuile, or use an existing one
+                        //Tuile tuile = placeholder.AddComponent<Tuile>();
 
-                        // Extract and assign color and value from the sprite's name
-                        tuile.SetCouleur(properties[0]);
-                        tuile.SetValeur(int.Parse(properties[1]));
-                        Debug.Log("here");
-                        // Place the Tuile in the 2D array
-                        SetTuile(x, y, tuile);
+                        //// Extract and assign color and value from the sprite's name
+                        //tuile.SetCouleur(properties[0]);
+                        //tuile.SetValeur(int.Parse(properties[1]));
+                        //Debug.Log("here");
+                        //// Place the Tuile in the 2D array
+                        //SetTuile(x, y, tuile);
+
+                        var couleur = this.ConvertToFrontendColorToBackendEnumName(properties[0]);
+                        var num = int.Parse(properties[1]);
+                        var isJoker = properties[0] == "FakeJoker";
+                        this.tuiles2D[x, y] = new TuileData(couleur, num, isJoker);
                     }
                     else
                     {
@@ -213,66 +224,106 @@ public class Chevalet : MonoBehaviour
                         Debug.LogError(
                             $"Child sprite of placeholder at index {i} does not have a properly formatted name."
                         );
-                        tuiles2D[x, y] = null;
+                        this.tuiles2D[x, y] = null;
                     }
                 }
                 else
                 {
                     // If there is no SpriteRenderer component, set the corresponding array position to null
-                    tuiles2D[x, y] = null;
+                    this.tuiles2D[x, y] = null;
                 }
             }
             else
             {
                 // If the placeholder is empty, set the corresponding array position to null
-                tuiles2D[x, y] = null;
+                this.tuiles2D[x, y] = null;
             }
         }
     }
 
-    public void SetTuile(int x, int y, Tuile tuile)
+    private CouleurTuile ConvertToFrontendColorToBackendEnumName(string FrontendColor)
     {
-        tuiles2D[x, y] = tuile;
+        return FrontendColor.ToLower() switch
+        {
+            "jaune" => CouleurTuile.J,
+            "noir" => CouleurTuile.N,
+            "rouge" => CouleurTuile.R,
+            "bleu" => CouleurTuile.B,
+            // other cases still needed
+            "FakeJoker" => CouleurTuile.X,
+            _ => CouleurTuile.M, // the okey
+        };
     }
 
-    // get Tuile de l'index donnee
-    public Tuile GetTuile(int x, int y)
+    //public void SetTuile(int x, int y, TuileData tuile)
+    //{
+    //    tuiles2D[x, y] = tuile;
+    //}
+
+    //// get Tuile de l'index donnee
+    //public TuileData GetTuile(int x, int y)
+    //{
+    //    if (x >= 0 && x < 2 && y >= 0 && y < 14)
+    //    {
+    //        return tuiles2D[x, y];
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("GetTuile: Index out of bounds");
+    //        return null;
+    //    }
+    //}
+
+    public TuileData[,] GetTuilesArray()
     {
-        if (x >= 0 && x < 2 && y >= 0 && y < 14)
-        {
-            return tuiles2D[x, y];
-        }
-        else
-        {
-            Debug.LogError("GetTuile: Index out of bounds");
-            return null;
-        }
+        return this.tuiles2D;
     }
 
-    public Tuile[,] GetTuilesArray()
-    {
-        return tuiles2D;
-    }
+    //public void PrintTuilesArray()
+    //{
+    //    for (int x = 0; x < tuiles2D.GetLength(0); x++)
+    //    {
+    //        for (int y = 0; y < tuiles2D.GetLength(1); y++)
+    //        {
+    //            // Check if there is a Tuile at the current position
+    //            if (tuiles2D[x, y] != null)
+    //            {
+    //                // If there is a Tuile, print its details
+    //                Debug.Log(
+    //                    $"Tuile at [{x},{y}]: Color = {tuiles2D[x, y].GetCouleur()}, Value = {tuiles2D[x, y].GetValeur()}"
+    //                );
+    //            }
+    //            else
+    //            {
+    //                Debug.Log($"Tuile at [{x},{y}]: None");
+    //            }
+    //        }
+    //    }
+    //}
 
-    public void PrintTuilesArray()
+    private void PrintTuilesArray()
     {
-        for (int x = 0; x < tuiles2D.GetLength(0); x++)
+        var sb = new StringBuilder();
+        sb.AppendLine("Board State:");
+
+        for (int x = 0; x < this.tuiles2D.GetLength(0); x++)
         {
-            for (int y = 0; y < tuiles2D.GetLength(1); y++)
+            for (int y = 0; y < this.tuiles2D.GetLength(1); y++)
             {
-                // Check if there is a Tuile at the current position
-                if (tuiles2D[x, y] != null)
+                TuileData tile = this.tuiles2D[x, y];
+                if (tile != null)
                 {
-                    // If there is a Tuile, print its details
-                    Debug.Log(
-                        $"Tuile at [{x},{y}]: Color = {tuiles2D[x, y].GetCouleur()}, Value = {tuiles2D[x, y].GetValeur()}"
+                    sb.AppendLine(
+                        $"Tile at [{x},{y}]: Color = {tile.couleur}, Number = {tile.num}, IsJoker = {tile.isJoker}"
                     );
                 }
                 else
                 {
-                    Debug.Log($"Tuile at [{x},{y}]: None");
+                    sb.AppendLine($"Tile at [{x},{y}]: None");
                 }
             }
         }
+
+        Debug.Log(sb.ToString());
     }
 }

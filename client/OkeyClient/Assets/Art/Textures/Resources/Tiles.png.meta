@@ -1215,7 +1215,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FakeJoker1
+      name: FakeJoker_1
       rect:
         serializedVersion: 2
         x: 0
@@ -1236,7 +1236,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FakeJoker2
+      name: FakeJoker_2
       rect:
         serializedVersion: 2
         x: 70
@@ -1314,8 +1314,8 @@ TextureImporter:
       Blue_7: -114275631
       Blue_8: 1137859503
       Blue_9: 871252293
-      FakeJoker1: 1900783586
-      FakeJoker2: -562497483
+      FakeJoker_1: 1900783586
+      FakeJoker_2: -562497483
       Green_1: 826840078
       Green_10: 1515742937
       Green_11: 870886329
