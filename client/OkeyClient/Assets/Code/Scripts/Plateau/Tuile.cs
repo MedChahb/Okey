@@ -91,7 +91,7 @@ public class Tuile : MonoBehaviour
         this.valeur = int.Parse(sprite.name.Split('_')[1]);
     }
 
-public string GetCouleur()
+    public string GetCouleur()
     {
         return this.couleur;
     }
@@ -119,5 +119,10 @@ public string GetCouleur()
     public void SetIsJoker(bool isJoke)
     {
         this.isJoker = isJoke;
+    }
+
+    public void SetIsDeplacable(bool isDeplacable)
+    {
+        this.deplacable = isDeplacable;
     }
 }

@@ -1697,6 +1697,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5728036229959319432, guid: d2f1d025b4d528b46a6cd86df2527c93, type: 3}
+      propertyPath: pileDroitePlaceHolder
+      value: 
+      objectReference: {fileID: 2090110151}
+    - target: {fileID: 5728036229959319432, guid: d2f1d025b4d528b46a6cd86df2527c93, type: 3}
+      propertyPath: pileGauchePlaceHolder
+      value: 
+      objectReference: {fileID: 322410326}
+    - target: {fileID: 5728036229959319432, guid: d2f1d025b4d528b46a6cd86df2527c93, type: 3}
       propertyPath: placeholders.Array.data[0]
       value: 
       objectReference: {fileID: 323229111}

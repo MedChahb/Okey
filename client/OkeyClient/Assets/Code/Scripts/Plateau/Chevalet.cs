@@ -9,7 +9,9 @@ public class Chevalet : MonoBehaviour
 
     private Tuile[,] tuiles2D = new Tuile[2, 14];
     private Stack<Tuile> pileGauche = new Stack<Tuile>();
+    public GameObject pileGauchePlaceHolder;
     private Stack<Tuile> pileDroite = new Stack<Tuile>();
+    public GameObject pileDroitePlaceHolder;
 
     void Start()
     {
@@ -32,7 +34,7 @@ public class Chevalet : MonoBehaviour
         //StartCoroutine(WaitAndCall(2f));
 
         InitializeBoardFromPlaceholders();
-
+        //Ajouter event clique sur pileDroitePlaceHolder et déclencher draw()
         PrintTuilesArray();
     }
 
@@ -69,8 +71,32 @@ public class Chevalet : MonoBehaviour
                 }
             }
         }
+        if (Vector3.Distance(position, pileDroitePlaceHolder) < closestDistance)
+        {
+            //Vérifier la distance à la pile
+            if (1/*Nombre de tuiles == 15 et */) 
+            {
+                closestDistance = distance;
+                closestPlaceholder = pileDroitePlaceHolder;
+            }
+            else 
+            {
+                //Affichage vous ne pouvez pas jetter
+            }
+        }
 
         return closestPlaceholder;
+    }
+
+    public void draw() {
+        if (1/*Nombre de tuiles == 14 et c'est mon tour*/) 
+        {
+            pileGauchePlaceHolder.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(true);
+        }
+        else 
+        {
+            pileGauchePlaceHolder.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
+        }
     }
 
     public void UpdateTiles(GameObject placeholder)
