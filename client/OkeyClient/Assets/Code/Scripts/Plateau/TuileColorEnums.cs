@@ -4,6 +4,6 @@ public enum CouleurTuile
     N, // Noir
     R, // Rouge
     B, // Bleu
-    M, // Multicolor
+    M, // Multicolor (la piece okey)
     X // Joker
 }

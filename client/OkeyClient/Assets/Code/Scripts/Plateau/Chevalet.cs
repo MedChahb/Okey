@@ -50,84 +50,6 @@ public class Chevalet : MonoBehaviour
         pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInPioche(true);
     }
 
-    public static Tuile[] GetTilesPlacementInChevaletTab()
-    {
-        // Creation d'un tableau pour stocker le placement courant des tuiles sur le chevalet
-        Tuile[] TilesArray = new Tuile[placeholders.Length];
-
-        //loop sur les placeholders
-        foreach (GameObject placeholder in placeholders)
-        {
-            int index = Array.IndexOf(placeholders, placeholder);
-
-            if (placeholder.transform.childCount > 0)
-            { // le placeholder a un child -> il contient une tuile -> on la met dans le tableau avec l'index du placeholder parent
-                GameObject child = placeholder.transform.GetChild(0).gameObject;
-                Tuile tuile = child.GetComponent<Tuile>();
-
-                if (tuile != null)
-                {
-                    // Place the Tuile in the 1D array
-                    TilesArray[index] = tuile;
-                }
-                else
-                {
-                    Debug.LogError("Error : placeholder has a child that isn't a Tile");
-                }
-            }
-            else // si le placeholder n'a aucun child -> il est vide -> on met null a l'index correspondant au placeholder dans le tableau
-            {
-                TilesArray[index] = null;
-            }
-        }
-
-        return TilesArray;
-    }
-
-    public static void PrintTilesArrayForTest()
-    {
-        // Get the tiles placement array using the method
-        Tuile[] TilesArray = GetTilesPlacementInChevaletTab();
-
-        // Check if TilesArray is not null
-        if (TilesArray != null)
-        {
-            // Loop through the TilesArray to print tile number and color
-            for (int i = 0; i < TilesArray.Length; i++)
-            {
-                if (TilesArray[i] != null)
-                {
-                    // Check if GetValeur() and GetCouleur() are not null
-                    if (
-                        TilesArray[i].GetValeur().ToString() != null
-                        && TilesArray[i].GetCouleur().ToString() != null
-                    ) // supposons que les valeurs sont init a 0
-                    {
-                        Debug.Log(
-                            "Tile Number "
-                                + (i + 1)
-                                + " :"
-                                + TilesArray[i].GetValeur().ToString()
-                                + ", Tile Color: "
-                                + TilesArray[i].GetCouleur().ToString()
-                        );
-                    }
-                    else
-                    {
-                        Debug.Log("Tile at index " + i + " has null values.");
-                    }
-                }
-                else
-                {
-                    Debug.Log("Tile at index " + i + " is null.");
-                }
-            }
-        }
-        else
-        {
-            Debug.Log("TilesArray is null.");
-        }
-    }
 
     public GameObject ClosestPlaceholder(Vector3 position)
     {
@@ -276,10 +198,10 @@ public class Chevalet : MonoBehaviour
                 else
                 {
                     // If there is no SpriteRenderer component, set the corresponding array position to null
-                    this.tuiles2D[x, y] = null;
+                    this.tuiles2D[x, y] = null; 
                 }
             }
-            else
+            else//empty placeholder
             {
                 // If the placeholder is empty, set the corresponding array position to null
                 this.tuiles2D[x, y] = null;
@@ -325,28 +247,6 @@ public class Chevalet : MonoBehaviour
         return this.tuiles2D;
     }
 
-    //public void PrintTuilesArray()
-    //{
-    //    for (int x = 0; x < tuiles2D.GetLength(0); x++)
-    //    {
-    //        for (int y = 0; y < tuiles2D.GetLength(1); y++)
-    //        {
-    //            // Check if there is a Tuile at the current position
-    //            if (tuiles2D[x, y] != null)
-    //            {
-    //                // If there is a Tuile, print its details
-    //                Debug.Log(
-    //                    $"Tuile at [{x},{y}]: Color = {tuiles2D[x, y].GetCouleur()}, Value = {tuiles2D[x, y].GetValeur()}"
-    //                );
-    //            }
-    //            else
-    //            {
-    //                Debug.Log($"Tuile at [{x},{y}]: None");
-    //            }
-    //        }
-    //    }
-    //}
-
     private void PrintTuilesArray()
     {
         var sb = new StringBuilder();
@@ -386,3 +286,92 @@ public class Chevalet : MonoBehaviour
         return num;
     }
 }
+
+
+
+
+
+
+
+
+/*
+    to keep just in case : 
+    public static Tuile[] GetTilesPlacementInChevaletTab()
+    {
+        // Creation d'un tableau pour stocker le placement courant des tuiles sur le chevalet
+        Tuile[] TilesArray = new Tuile[placeholders.Length];
+
+        //loop sur les placeholders
+        foreach (GameObject placeholder in placeholders)
+        {
+            int index = Array.IndexOf(placeholders, placeholder);
+
+            if (placeholder.transform.childCount > 0)
+            { // le placeholder a un child -> il contient une tuile -> on la met dans le tableau avec l'index du placeholder parent
+                GameObject child = placeholder.transform.GetChild(0).gameObject;
+                Tuile tuile = child.GetComponent<Tuile>();
+
+                if (tuile != null)
+                {
+                    // Place the Tuile in the 1D array
+                    TilesArray[index] = tuile;
+                }
+                else
+                {
+                    Debug.LogError("Error : placeholder has a child that isn't a Tile");
+                }
+            }
+            else // si le placeholder n'a aucun child -> il est vide -> on met null a l'index correspondant au placeholder dans le tableau
+            {
+                TilesArray[index] = null;
+            }
+        }
+
+        return TilesArray;
+    }
+
+    public static void PrintTilesArrayForTest()
+    {
+        // Get the tiles placement array using the method
+        Tuile[] TilesArray = GetTilesPlacementInChevaletTab();
+
+        // Check if TilesArray is not null
+        if (TilesArray != null)
+        {
+            // Loop through the TilesArray to print tile number and color
+            for (int i = 0; i < TilesArray.Length; i++)
+            {
+                if (TilesArray[i] != null)
+                {
+                    // Check if GetValeur() and GetCouleur() are not null
+                    if (
+                        TilesArray[i].GetValeur().ToString() != null
+                        && TilesArray[i].GetCouleur().ToString() != null
+                    ) // supposons que les valeurs sont init a 0
+                    {
+                        Debug.Log(
+                            "Tile Number "
+                                + (i + 1)
+                                + " :"
+                                + TilesArray[i].GetValeur().ToString()
+                                + ", Tile Color: "
+                                + TilesArray[i].GetCouleur().ToString()
+                        );
+                    }
+                    else
+                    {
+                        Debug.Log("Tile at index " + i + " has null values.");
+                    }
+                }
+                else
+                {
+                    Debug.Log("Tile at index " + i + " is null.");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("TilesArray is null.");
+        }
+    }
+    */

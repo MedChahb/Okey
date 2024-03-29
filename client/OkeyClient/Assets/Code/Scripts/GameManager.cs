@@ -29,8 +29,10 @@ public class GameManager : MonoBehaviour
         ..
         lancement du tour d'un joueur
         */
+        /*
         Tuile[] TilesArray = Chevalet.GetTilesPlacementInChevaletTab();
         Chevalet.PrintTilesArrayForTest();
+        */
 
     }
 }
