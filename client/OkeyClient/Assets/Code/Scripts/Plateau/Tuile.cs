@@ -12,7 +12,8 @@ public class Tuile : MonoBehaviour
     private GameObject placeholderActuel;
     private Vector3 offset;
     private Chevalet chevalet;
-    private bool isInLeftStack = false;
+    private bool isInStack = false;
+    private bool isInPioche = false;
 
     void Start()
     {
@@ -34,9 +35,12 @@ public class Tuile : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (isInLeftStack)
+        if (isInStack)
         {
-            this.chevalet.draw();
+            this.chevalet.draw(true);
+        }
+        if (isInPioche) {
+            this.chevalet.draw(false);
         }
         if (deplacable)
         {
@@ -66,7 +70,7 @@ public class Tuile : MonoBehaviour
                 else
                 {
                     AttachToPlaceholder(closestPlaceholder);
-                    if(closestPlaceholder != Chevalet.pileDroitePlaceHolder) 
+                    if(closestPlaceholder != Chevalet.pileDroitePlaceHolder && closestPlaceholder != Chevalet.jokerPlaceHolder) 
                     {
                         // The placeholder countains already a Tile, we must update before insert
                         chevalet.UpdateTiles(closestPlaceholder);
@@ -135,8 +139,13 @@ public class Tuile : MonoBehaviour
         this.deplacable = isDeplacable;
     }
 
-    public void SetIsInLeftStack(bool isInLeftStack)
+    public void SetIsInStack(bool isInStack)
     {
-        this.isInLeftStack = isInLeftStack;
+        this.isInStack = isInStack;
+    }
+
+    public void SetIsInPioche(bool isInPioche)
+    {
+        this.isInPioche = isInPioche;
     }
 }

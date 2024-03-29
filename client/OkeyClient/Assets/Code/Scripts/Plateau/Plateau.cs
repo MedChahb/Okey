@@ -6,7 +6,7 @@ public class Plateau : MonoBehaviour
 {
     private string theme;
 
-    public List<Chevalet> chevalets = new();
+    private List<Chevalet> chevalets = new();
     private Stack<Tuile> pilePioche = new();
     private Tuile jocker;
 
@@ -35,11 +35,11 @@ public class Plateau : MonoBehaviour
     }
 
     // Méthode pour initialiser le plateau de jeu
-    public void InitialiserPlateau(string Theme, Stack<Tuile> Pioche, Tuile Joker)
+    public void InitialiserPlateau(string Theme, Stack<Tuile> Pioche, Tuile Joker, List<Chevalet> chevalets)
     {
         this.SetTheme(Theme);
         this.pilePioche = Pioche;
         this.SetJoker(Joker);
-        // this.chevalets = chevalets;
+        this.chevalets = chevalets;
     }
 }

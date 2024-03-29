@@ -13,6 +13,8 @@ public class Chevalet : MonoBehaviour
     public static GameObject pileGauchePlaceHolder;
     private Stack<Tuile> pileDroite = new Stack<Tuile>();
     public static GameObject pileDroitePlaceHolder;
+    public static GameObject jokerPlaceHolder;
+    public static GameObject pilePiochePlaceHolder;
 
     void Start()
     {
@@ -38,9 +40,14 @@ public class Chevalet : MonoBehaviour
         }
         pileGauchePlaceHolder = GameObject.Find("PileGauchePlaceHolder");
         pileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
+        pilePiochePlaceHolder = GameObject.Find("PiochePlaceHolder");
+        jokerPlaceHolder = GameObject.Find("Okey");
         pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
-        pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInLeftStack(true);
+        pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInStack(true);
         pileDroitePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
+        jokerPlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
+        pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
+        pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInPioche(true);
     }
 
     public static Tuile[] GetTilesPlacementInChevaletTab()
@@ -127,37 +134,47 @@ public class Chevalet : MonoBehaviour
         GameObject closestPlaceholder = null;
         float closestDistance = Mathf.Infinity;
 
+        // Calculer la position relative de la souris
+        Vector3 relativeMousePosition = position - Camera.main.transform.position;
+
         foreach (GameObject placeholder in placeholders)
         {
             if (placeholder != null)
             {
-                float distance = Vector3.Distance(position, placeholder.transform.position);
+                // Calculer la position relative du placeholder
+                Vector3 relativePlaceholderPosition = placeholder.transform.position - Camera.main.transform.position;
+
+                // Calculer la distance entre les positions relatives
+                float distance = Vector3.Distance(relativeMousePosition, relativePlaceholderPosition);
+
                 if (distance < closestDistance)
                 {
                     closestPlaceholder = placeholder;
                     closestDistance = distance;
                 }
-
-                // Recalculate distance to pile at each iteration
-                distance = Vector3.Distance(position, pileDroitePlaceHolder.transform.position);
-                if (distance < closestDistance)
-                {
-                    // Check if pile is the closest
-                    if (getTilesNumber() == 15)
-                    {
-                        closestDistance = distance;
-                        closestPlaceholder = pileDroitePlaceHolder;
-                    }
-                    else
-                    {
-                        // Display "You can't discard yet" message
-                        Debug.Log("Vous devez avoir 15 tuiles pour jeter !");
-                    }
-                }
             }
         }
 
-        Debug.Log("Position de la souris:" + position + "Closest distance" + closestDistance);
+        // Calculer la distance relative aux piles
+        Vector3 relativePileDroitePosition = pileDroitePlaceHolder.transform.position - Camera.main.transform.position;
+        float distancePileDroite = Vector3.Distance(relativeMousePosition, relativePileDroitePosition);
+
+        Vector3 relativeJokerPosition = jokerPlaceHolder.transform.position - Camera.main.transform.position;
+        float distanceJoker = Vector3.Distance(relativeMousePosition, relativeJokerPosition);
+
+        // Déterminer le placeholder le plus proche en tenant compte des conditions
+        if (distancePileDroite < closestDistance && getTilesNumber() == 15)
+        {
+            closestDistance = distancePileDroite;
+            closestPlaceholder = pileDroitePlaceHolder;
+        }
+        else if (distanceJoker < closestDistance && getTilesNumber() == 15)
+        {
+            closestDistance = distanceJoker;
+            closestPlaceholder = jokerPlaceHolder;
+        }
+
+        Debug.Log("Position de la souris (relative):" + relativeMousePosition + " - Closest distance:" + closestDistance);
         return closestPlaceholder;
     }
 
@@ -187,17 +204,20 @@ public class Chevalet : MonoBehaviour
         }
     }
 
-    public void draw() {
+    public void draw(bool pioche) {
         if (getTilesNumber() == 14/* et c'est mon tour*/) 
         {
-            pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(true);
-            pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInLeftStack(false);
-            //Insérer la tuile suivante de la stack comme tuile fille du pileGauchePlaceHolder et lui passer 
-        }
-        else 
-        {
-            //Pour être sur qu'on ne puisse pas déplacer la tuile
-            pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
+            if (pioche) 
+            {
+                pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(true);
+                pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInStack(false);
+                //Insérer la tuile suivante de la stack comme tuile fille du pileGauchePlaceHolder et lui passer 
+            }
+            else
+            {
+                pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(true);
+                pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInPioche(false);
+            }
         }
     }
 
