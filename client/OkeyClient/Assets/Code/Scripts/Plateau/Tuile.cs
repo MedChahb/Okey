@@ -75,6 +75,9 @@ public class Tuile : MonoBehaviour
                         // The placeholder countains already a Tile, we must update before insert
                         chevalet.UpdateTiles(closestPlaceholder);
                     }
+                    else {
+                        deplacable = false;
+                    }
                 }
             }
         }

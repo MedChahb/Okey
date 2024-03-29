@@ -42,7 +42,7 @@ public class Chevalet : MonoBehaviour
         pileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
         pilePiochePlaceHolder = GameObject.Find("PiochePlaceHolder");
         jokerPlaceHolder = GameObject.Find("Okey");
-        pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
+        pileGauchePlaceHolder.   transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
         pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInStack(true);
         pileDroitePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
         jokerPlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
@@ -134,19 +134,12 @@ public class Chevalet : MonoBehaviour
         GameObject closestPlaceholder = null;
         float closestDistance = Mathf.Infinity;
 
-        // Calculer la position relative de la souris
-        Vector3 relativeMousePosition = position - Camera.main.transform.position;
-
+        // Loop through placeholders using absolute positions
         foreach (GameObject placeholder in placeholders)
         {
             if (placeholder != null)
             {
-                // Calculer la position relative du placeholder
-                Vector3 relativePlaceholderPosition = placeholder.transform.position - Camera.main.transform.position;
-
-                // Calculer la distance entre les positions relatives
-                float distance = Vector3.Distance(relativeMousePosition, relativePlaceholderPosition);
-
+                float distance = Vector3.Distance(position, placeholder.transform.position); // Absolute position
                 if (distance < closestDistance)
                 {
                     closestPlaceholder = placeholder;
@@ -155,29 +148,23 @@ public class Chevalet : MonoBehaviour
             }
         }
 
-        // Calculer la distance relative aux piles
-        Vector3 relativePileDroitePosition = pileDroitePlaceHolder.transform.position - Camera.main.transform.position;
-        float distancePileDroite = Vector3.Distance(relativeMousePosition, relativePileDroitePosition);
+        // Check specific piles using absolute positions
+        float distancePileDroite = Vector3.Distance(position, pileDroitePlaceHolder.transform.position); // Absolute position
 
-        Vector3 relativeJokerPosition = jokerPlaceHolder.transform.position - Camera.main.transform.position;
-        float distanceJoker = Vector3.Distance(relativeMousePosition, relativeJokerPosition);
-
-        // Déterminer le placeholder le plus proche en tenant compte des conditions
+        // Determine closest placeholder based on distance and tile number
         if (distancePileDroite < closestDistance && getTilesNumber() == 15)
         {
             closestDistance = distancePileDroite;
             closestPlaceholder = pileDroitePlaceHolder;
         }
-        else if (distanceJoker < closestDistance && getTilesNumber() == 15)
+        else if (position.y > 0 && getTilesNumber() == 15 /* et peut gagner*/)
         {
-            closestDistance = distanceJoker;
             closestPlaceholder = jokerPlaceHolder;
         }
 
-        Debug.Log("Position de la souris (relative):" + relativeMousePosition + " - Closest distance:" + closestDistance);
+        Debug.Log("Position de la souris:" + position + " - Closest distance:" + closestDistance);
         return closestPlaceholder;
     }
-
 
     public void UpdateTiles(GameObject placeholder)
     {
