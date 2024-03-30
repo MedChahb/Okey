@@ -29,8 +29,18 @@ namespace Okey
             j.AfficheChevaletActuel();
 
             Console.Write("choisis la tuile à jeter (donner ces coords y x) : ");
+            String action = Console.ReadLine();
 
-            Coord coords = readCoord(Console.ReadLine());
+            while(action == "Move")
+            {
+                MoveInLoop(joueurStarter, j);
+                joueurStarter.AfficheChevalet();
+                Console.Write("choisis la tuile à jeter (donner ces coords y x) : ");
+                action = Console.ReadLine();
+            }
+
+
+            Coord coords = readCoord(action);
             joueurStarter.JeterTuile(coords, j);
 
 
@@ -79,7 +89,6 @@ namespace Okey
 
 
             // TODO: 
-            // move for JouerStarter (not essential but can do)
             // add timer (alerts)
 
 
