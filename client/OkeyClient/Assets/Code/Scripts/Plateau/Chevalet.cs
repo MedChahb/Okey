@@ -20,7 +20,7 @@ public class Chevalet : MonoBehaviour
     {
         InitPlaceholders();
         this.InitializeBoardFromPlaceholders();
-        PrintTuilesArray();
+        //PrintTuilesArray();
     }
 
     void InitPlaceholders()
@@ -42,14 +42,31 @@ public class Chevalet : MonoBehaviour
         pileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
         pilePiochePlaceHolder = GameObject.Find("PiochePlaceHolder");
         jokerPlaceHolder = GameObject.Find("Okey");
-        pileGauchePlaceHolder.   transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
-        pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInStack(true);
-        pileDroitePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
-        jokerPlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
-        pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
-        pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInPioche(true);
+        pileGauchePlaceHolder
+            .transform.GetChild(0)
+            .gameObject.GetComponent<Tuile>()
+            .SetIsDeplacable(false);
+        pileGauchePlaceHolder
+            .transform.GetChild(0)
+            .gameObject.GetComponent<Tuile>()
+            .SetIsInStack(true);
+        pileDroitePlaceHolder
+            .transform.GetChild(0)
+            .gameObject.GetComponent<Tuile>()
+            .SetIsDeplacable(false);
+        jokerPlaceHolder
+            .transform.GetChild(0)
+            .gameObject.GetComponent<Tuile>()
+            .SetIsDeplacable(false);
+        pilePiochePlaceHolder
+            .transform.GetChild(0)
+            .gameObject.GetComponent<Tuile>()
+            .SetIsDeplacable(false);
+        pilePiochePlaceHolder
+            .transform.GetChild(0)
+            .gameObject.GetComponent<Tuile>()
+            .SetIsInPioche(true);
     }
-
 
     public GameObject ClosestPlaceholder(Vector3 position)
     {
@@ -71,7 +88,10 @@ public class Chevalet : MonoBehaviour
         }
 
         // Check specific piles using absolute positions
-        float distancePileDroite = Vector3.Distance(position, pileDroitePlaceHolder.transform.position); // Absolute position
+        float distancePileDroite = Vector3.Distance(
+            position,
+            pileDroitePlaceHolder.transform.position
+        ); // Absolute position
 
         // Determine closest placeholder based on distance and tile number
         if (distancePileDroite < closestDistance && getTilesNumber() == 15)
@@ -79,7 +99,10 @@ public class Chevalet : MonoBehaviour
             closestDistance = distancePileDroite;
             closestPlaceholder = pileDroitePlaceHolder;
         }
-        else if (position.y > 0 && getTilesNumber() == 15 /* et peut gagner*/)
+        else if (
+            position.y > 0
+            && getTilesNumber() == 15 /* et peut gagner*/
+        )
         {
             closestPlaceholder = jokerPlaceHolder;
         }
@@ -113,19 +136,34 @@ public class Chevalet : MonoBehaviour
         }
     }
 
-    public void draw(bool pioche) {
-        if (getTilesNumber() == 14/* et c'est mon tour*/) 
+    public void draw(bool pioche)
+    {
+        if (
+            getTilesNumber() == 14 /* et c'est mon tour*/
+        )
         {
-            if (pioche) 
+            if (pioche)
             {
-                pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(true);
-                pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInStack(false);
-                //Insérer la tuile suivante de la stack comme tuile fille du pileGauchePlaceHolder et lui passer 
+                pileGauchePlaceHolder
+                    .transform.GetChild(0)
+                    .gameObject.GetComponent<Tuile>()
+                    .SetIsDeplacable(true);
+                pileGauchePlaceHolder
+                    .transform.GetChild(0)
+                    .gameObject.GetComponent<Tuile>()
+                    .SetIsInStack(false);
+                //Insérer la tuile suivante de la stack comme tuile fille du pileGauchePlaceHolder et lui passer
             }
             else
             {
-                pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsDeplacable(true);
-                pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>().SetIsInPioche(false);
+                pilePiochePlaceHolder
+                    .transform.GetChild(0)
+                    .gameObject.GetComponent<Tuile>()
+                    .SetIsDeplacable(true);
+                pilePiochePlaceHolder
+                    .transform.GetChild(0)
+                    .gameObject.GetComponent<Tuile>()
+                    .SetIsInPioche(false);
             }
         }
     }
@@ -141,8 +179,6 @@ public class Chevalet : MonoBehaviour
 
     private void InitializeBoardFromPlaceholders()
     {
-        Debug.Log("outside loop");
-
         for (var i = 0; i < placeholders.Length; i++)
         {
             var x = i / 14; // Calculate the row based on index.
@@ -150,38 +186,24 @@ public class Chevalet : MonoBehaviour
 
             GameObject placeholder = placeholders[i];
 
-            Debug.Log($"Checking placeholder {i}, Child count: {placeholder.transform.childCount}");
+            //Debug.Log($"Checking placeholder {i}, Child count: {placeholder.transform.childCount}");
 
             if (placeholder.transform.childCount > 0)
             {
-                Debug.Log("inside first if");
                 // Get the first child of the placeholder
                 var child = placeholder.transform.GetChild(0).gameObject;
                 var childSpriteRenderer = child.GetComponent<SpriteRenderer>();
 
                 if (childSpriteRenderer != null)
                 {
-                    Debug.Log("inside sec if");
-
                     // note: "color_value" should be used for naming the sprites
                     var properties = childSpriteRenderer.sprite.name.Split('_');
-                    Debug.Log(properties[0] + properties[1]);
+                    //Debug.Log(properties[0] + properties[1]);
 
                     if (properties.Length == 2)
                     {
-                        Debug.Log("inside third if");
-
-                        //// Create a new Tuile, or use an existing one
-                        //Tuile tuile = placeholder.AddComponent<Tuile>();
-
-                        //// Extract and assign color and value from the sprite's name
-                        //tuile.SetCouleur(properties[0]);
-                        //tuile.SetValeur(int.Parse(properties[1]));
-                        //Debug.Log("here");
-                        //// Place the Tuile in the 2D array
-                        //SetTuile(x, y, tuile);
-
                         var couleur = this.ConvertToFrontendColorToBackendEnumName(properties[0]);
+                        Debug.Log(couleur);
                         var num = int.Parse(properties[1]);
                         var isJoker = properties[0] == "FakeJoker";
                         this.tuiles2D[x, y] = new TuileData(couleur, num, isJoker);
@@ -198,10 +220,10 @@ public class Chevalet : MonoBehaviour
                 else
                 {
                     // If there is no SpriteRenderer component, set the corresponding array position to null
-                    this.tuiles2D[x, y] = null; 
+                    this.tuiles2D[x, y] = null;
                 }
             }
-            else//empty placeholder
+            else //empty placeholder
             {
                 // If the placeholder is empty, set the corresponding array position to null
                 this.tuiles2D[x, y] = null;
@@ -211,14 +233,15 @@ public class Chevalet : MonoBehaviour
 
     private CouleurTuile ConvertToFrontendColorToBackendEnumName(string FrontendColor)
     {
+        //Debug.Log(FrontendColor);
         return FrontendColor.ToLower() switch
         {
-            "jaune" => CouleurTuile.J,
-            "noir" => CouleurTuile.N,
-            "rouge" => CouleurTuile.R,
-            "bleu" => CouleurTuile.B,
+            "yellow" => CouleurTuile.J,
+            "black" => CouleurTuile.N,
+            "red" => CouleurTuile.R,
+            "blue" => CouleurTuile.B,
             // other cases still needed
-            "FakeJoker" => CouleurTuile.X,
+            "fakejoker" => CouleurTuile.X,
             _ => CouleurTuile.M, // the okey
         };
     }
@@ -273,12 +296,12 @@ public class Chevalet : MonoBehaviour
         Debug.Log(sb.ToString());
     }
 
-    public int getTilesNumber() 
+    public int getTilesNumber()
     {
         int num = 0;
-        foreach (GameObject placeholder in placeholders) 
+        foreach (GameObject placeholder in placeholders)
         {
-            if(placeholder.transform.childCount == 1) 
+            if (placeholder.transform.childCount == 1)
             {
                 num++;
             }
@@ -295,7 +318,7 @@ public class Chevalet : MonoBehaviour
 
 
 /*
-    to keep just in case : 
+    to keep just in case :
     public static Tuile[] GetTilesPlacementInChevaletTab()
     {
         // Creation d'un tableau pour stocker le placement courant des tuiles sur le chevalet
