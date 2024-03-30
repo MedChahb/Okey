@@ -1,2 +1,21 @@
-// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+using OkeyServer.Hubs;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+app.MapHub<OkeyHub>("OkeyHub");
+
+app.Run();
