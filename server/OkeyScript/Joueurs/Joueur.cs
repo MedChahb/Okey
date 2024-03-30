@@ -45,6 +45,7 @@ namespace Okey.Joueurs
         }
 
         public abstract void Gagne();
+        public abstract void UpdateElo();
 
         public void EstTour()
         {
@@ -78,7 +79,7 @@ namespace Okey.Joueurs
             }
         }
 
-        public void JeterTuile(Coord c, Jeu j) // a discuter les parametres
+        public void JeterTuile(Coord c, Jeu j)
         {
             //bloquer la pioche (condition lors de l'appel en Jeu.cs)
             //gerer le timer
@@ -103,9 +104,7 @@ namespace Okey.Joueurs
 
             if (this.VerifSerieChevalet())
             {
-                Console.WriteLine($"{this} a gagné.");
                 j.JeuTermine();
-
                 this.Gagne();
             }
         }
@@ -163,9 +162,8 @@ namespace Okey.Joueurs
             this.chevalet[yTo][xTo] = this.chevalet[yFrom][xFrom];
             this.chevalet[yFrom][xFrom] = tmpTuileTo;
 
-            if (this.VerifSerieChevalet() && this.CountTuileDansChevalet() == 14)
+            if (this.CountTuileDansChevalet() == 14 && this.VerifSerieChevalet())
             {
-                Console.WriteLine($"{this} a gagné.");
                 j.JeuTermine();
                 this.Gagne();
             }

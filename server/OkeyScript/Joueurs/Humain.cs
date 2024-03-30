@@ -18,7 +18,7 @@ namespace Okey.Joueurs
             this.Rank = -1; // au debut le joueur n'est pas classé
         }
 
-        private void UpdateElo()
+        public override void UpdateElo()
         {
             //if gagne
             this.Elo += 10;
@@ -27,9 +27,9 @@ namespace Okey.Joueurs
         }
         public override void Gagne()
         {
-            Console.Write(String.Format("Le gagnant est : {0}, encient Elo = {1}, ", this.Name, this.Elo));
+            Console.Write($"Le gagnant est : {Name}, encient Elo = {Elo}, ");
             this.UpdateElo();
-            Console.WriteLine(String.Format("nouveau Elo = {0}", this.Elo));
+            Console.WriteLine($"nouveau Elo = {Elo}.");
         }
 
         public int GetRank() { return this.Rank; }  
