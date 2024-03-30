@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using OkeyApi.Data;
 using OkeyApi.Interfaces;
 using OkeyApi.Models;
+using OkeyApi.Repository;
 using OkeyApi.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +14,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ApplicationDBContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"))
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySQL(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException()
+    )
 );
 
 builder
@@ -26,7 +30,7 @@ builder
         options.Password.RequireNonAlphanumeric = true;
         options.Password.RequiredLength = 12;
     })
-    .AddEntityFrameworkStores<ApplicationDBContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder
     .Services.AddAuthentication(options =>
@@ -47,11 +51,14 @@ builder
             ValidAudience = builder.Configuration["JWT:Audience"],
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
-                System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
+                System.Text.Encoding.UTF8.GetBytes(
+                    builder.Configuration["JWT:SigningKey"] ?? string.Empty
+                )
             )
         }
     );
 
+builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();

@@ -48,7 +48,6 @@ Cette liste indique les versions minimales recommandées ou des versions exactes
   * [pre-commit](https://pre-commit.com/) >= 3.6.1
   * [python-gitlab](https://python-gitlab.readthedocs.io/en/v4.4.0/) >= 4.4.0
   * [python-dotenv](https://pypi.org/project/python-dotenv/) >= 1.0.1
-  * [gitlint](https://jorisroovers.com/gitlint/latest/) >= 0.19.1
 * [.NET Core](https://dotnet.microsoft.com/en-us/download) 8.0.1 LTS
   * [csharpier](https://csharpier.com/) >= 0.27.2
   * [docfx](https://dotnet.github.io/docfx/index.html) >= 2.75.2
@@ -97,7 +96,7 @@ Assurez vous d'avoir la version indiquée de Python dans la liste au dessus. Si 
 
 ##### Virtualenv (optionnel)
 
-Si vous voulez créer et travailler dans un environnement virtuel pour le projet (conseillé), **installez et configurez** [`pyenv`](https://github.com/pyenv/pyenv?tab=readme-ov-file#installation) (gestionnaire de versions Python) et puis, exécutez les commandes suivantes avant la suite :
+Si vous voulez créer et travailler dans un environnement virtuel pour le projet (conseillé), **installez et configurez** [`pyenv`](https://github.com/pyenv/pyenv?tab=readme-ov-file#installation) (gestionnaire de versions Python). **Attention, installer `pyenv` n'est pas juste une simple installation de paquet. Il faut configurer votre shell en suivant [ces instructions supplémentaires](https://github.com/pyenv/pyenv?tab=readme-ov-file#set-up-your-shell-environment-for-pyenv).** Et puis, exécutez les commandes suivantes avant la suite :
 
 ```sh
 pyenv install 3.10.13  # Installez la version de Python recommandée en parallèle avec votre version actuelle
@@ -143,28 +142,6 @@ git commit --no-verify
 
 Notez que les hooks Git sont là pour vous aider à écrire des commits propres et bien formatés. Essayez de n'utiliser cette astuce qu'en cas de force majeure ou si vous venez d'exécuter les git hooks et tout s'est bien passé, et vous savez que rien n'a changé entre temps, pour ne pas relancer les hooks et perdre du temps quand vous savez déjà le résultat, vous pouvez faire cela. Mais puisqu'un certain nombre de ces hooks sont aussi lancé coté serveur, si vous les désactivez vous n'aurez pas la garantie que votre commit sera accepté par le serveur lors du CI et votre merge request peut être bloqué.
 
-### Astuce hook `gitlint`
-
-Vous pouvez le désactiver pour un commit en mettant une des deux formules suivantes sur une nouvelle ligne (forcément au tout début de la ligne) dans votre message de commit :
-
-* `+no-gitlint` (désactive toutes les vérifications)
-* `gitlint-ignore: all` (configuration fine possible pour ne désactiver que certaines vérifications), voir les détails sur <https://jorisroovers.com/gitlint/latest/configuration/commit_config/>
-
-Par exemple :
-
-```git
-GL-881: Fix a typo in the README
-
-Here is a body message going into more details about the commit.
-
-+no-gitlint
-
-# Please enter the commit message for your changes. Lines starting
-# with '#' will be ignored, and an empty message aborts the commit.
-#
-...
-```
-
 ### Astuce Roslynator
 
 Roslynator est un analyseur et correcteurs d'erreurs du code C#. Pour lancer l'analyse :
@@ -203,7 +180,7 @@ Voir <https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/
 
 Le dépôt git de [ce projet](https://git.unistra.fr/okaybytes/okey) suit le modèle de branchement git "[Github Flow](https://docs.github.com/en/get-started/using-github/github-flow)" avec une obligation de merge request pour chaque modification et une issue GitLab pour chaque tâche ou problème. La branche `main` est protégé et ne peut être modifié que par des merge request validées par le CI. Les merge request doivent être validées par au moins un autre développeur avant d'être fusionnées.
 
-Les noms des branches doivent avoir la référence vers l'issue correspondante avec le format `<numéro de issue>-<titre-de-la-branche>` (par exemple `42-add-a-new-feature`). Chaque commit doit être lié à une issue avec le format `GL-<numéro de issue>: <reste du titre>` au tout début du message de commit (par exemple `GL-881: Fix a typo in the README`). Normalement, si les hooks git sont bien configurés dans votre environnement de développement local, ces vérifications seront faites automatiquement à chaque commit et la référence d'issue dans le titre de chaque commit automatiquement inséré et vérifié pour vous.
+Les noms des branches doivent avoir la référence vers l'issue correspondante avec le format `<numéro de issue>-<titre-de-la-branche>` (par exemple `42-add-a-new-feature`). Chaque commit doit être lié à une issue avec le format `GL-<numéro de issue>: <reste du titre>` au tout début du message de commit (par exemple `GL-881: Fix a typo in the README`).
 
 Pour suivre ce modèle, suivez les étapes suivantes :
 

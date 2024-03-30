@@ -28,11 +28,11 @@ repos:
       - id: check-case-conflict
       - id: detect-private-key
       - id: mixed-line-ending
-  - repo:  https://github.com/milin/giticket
+  - repo: https://github.com/milin/giticket
     rev: v1.3
     hooks:
-      - id:  giticket
-        args: ['--regex=\d+', '--format=GL-{ticket}: {commit_msg}', '--mode=regex_match']  # Optional
+      - id: giticket
+        args: ['--regex=\d+', '--format=GL-{ticket}: {commit_msg}', '--mode=regex_match'] # Optional
         stages: [prepare-commit-msg]
   - repo: local
     hooks:
@@ -75,20 +75,3 @@ repos:
         verbose: true
         pass_filenames: false
         description: Roslynator is a static analysis tool
-      - id: roslynator-OkeyClient
-        name: Run Roslynator on OkeyClient Unity project
-        entry: dotnet tool run roslynator analyze client/OkeyClient/OkeyClient.sln
-        language: system
-        files: '^client/OkeyClient/'
-        types:
-          - c#
-        verbose: true
-        pass_filenames: false
-        description: Roslynator is a static analysis tool
-      - id: gitlint
-        name: gitlint
-        description: Checks your git commit messages for style.
-        stages: [commit-msg]
-        language: system
-        entry: gitlint
-        args: [--staged, --msg-filename]

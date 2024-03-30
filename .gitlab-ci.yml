@@ -1,0 +1,159 @@
+default:
+  image: $CI_REGISTRY_IMAGE/projet-integrateur-cicd
+  cache:
+    paths:
+      - .cache/pre-commit
+  before_script:
+    # Fix Unistra GitLab Docker runner permission issues
+    - export RUNNER_USER=$(ls -ld .git/ | awk '{print $3}')
+    - mkdir -p .cache/pre-commit/
+    - chown -R $(whoami) .
+  after_script:
+    # Fix Unistra GitLab Docker runner permission issues
+    - chown -fR "$RUNNER_USER" .cache/pre-commit/
+stages:
+  - build
+  - test
+  - deploy
+variables:
+  PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
+  RELEASE_TAG: '/^v\d+\.\d+\.\d+$/'
+test 1/2:
+  stage: test
+  script:
+    - dotnet restore server/OkeyApi
+    - dotnet restore server/OkeyServer
+    - pre-commit run -a
+  rules:
+    - if: $CI_COMMIT_BRANCH
+  allow_failure: true
+  tags:
+    - kubernetes
+test 2/2:
+  stage: test
+  script:
+    - dotnet docfx docs/docfx.json
+    - cp -r docs/_site public
+  rules:
+    - if: $CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+  artifacts:
+    paths:
+      - public
+  tags:
+    - kubernetes
+docker-ci:
+  # Docker, Docker in Docker (dind) and Buildah don't work
+  # with Unistra GitLab's kubernetes shared runners due to
+  # various permission and runner configuration issues (user space/kernel space)
+  image:
+    name: gcr.io/kaniko-project/executor:v1.21.1-debug
+    entrypoint: [""]
+  stage: build
+  variables:
+    IMAGE_NAME: projet-integrateur-cicd
+  before_script:
+    # Store registry auth credentials for Kaniko to read during push
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+  script:
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}"
+  after_script: ""
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        - docker/Dockerfile
+        - requirements.txt
+        - .config/dotnet-tools.json
+      when: always
+  tags:
+    - kubernetes
+docker-api:
+  # Docker, Docker in Docker (dind) and Buildah don't work
+  # with Unistra GitLab's kubernetes shared runners due to
+  # various permission and runner configuration issues (user space/kernel space)
+  image:
+    name: gcr.io/kaniko-project/executor:v1.21.1-debug
+    entrypoint: [""]
+  stage: build
+  variables:
+    IMAGE_NAME: okeyapi
+  before_script:
+    # Store registry auth credentials for Kaniko to read during push
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - IMAGE_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev-${CI_COMMIT_SHORT_SHA}"; else echo ${CI_COMMIT_TAG}; fi)
+    - IMAGE_SLIDING_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev"; else echo "latest"; fi)
+  script:
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/OkeyApi.Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_TAG}" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_SLIDING_TAG}"
+  after_script: ""
+  rules:
+    - if: $CI_COMMIT_BRANCH == "back-end"
+      changes:
+        - docker/OkeyApi.Dockerfile
+        - server/OkeyApi/**/*.cs
+        - server/OkeyApi/appsettings*.json
+        - server/OkeyApi/**/launchSettings.json
+        - server/OkeyApi/*.csproj
+        - server/OkeyApi/*.sln
+      when: always
+    - if: '$CI_COMMIT_TAG =~ $RELEASE_TAG'
+      when: always
+  tags:
+    - kubernetes
+docker-server:
+  # Docker, Docker in Docker (dind) and Buildah don't work
+  # with Unistra GitLab's kubernetes shared runners due to
+  # various permission and runner configuration issues (user space/kernel space)
+  image:
+    name: gcr.io/kaniko-project/executor:v1.21.1-debug
+    entrypoint: [""]
+  stage: build
+  variables:
+    IMAGE_NAME: okeyserver
+  before_script:
+    # Store registry auth credentials for Kaniko to read during push
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - IMAGE_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev-${CI_COMMIT_SHORT_SHA}"; else echo ${CI_COMMIT_TAG}; fi)
+    - IMAGE_SLIDING_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev"; else echo "latest"; fi)
+  script:
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/OkeyApi.Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_TAG}" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_SLIDING_TAG}"
+  after_script: ""
+  rules:
+    - if: $CI_COMMIT_BRANCH == "back-end"
+      changes:
+        - docker/OkeyServer.Dockerfile
+        - server/OkeyServer/**/*.cs
+        - server/OkeyServer/*.csproj
+        - server/OkeyServer/*.sln
+      when: always
+    - if: '$CI_COMMIT_TAG =~ $RELEASE_TAG'
+      when: always
+  tags:
+    - kubernetes
+pages:
+  stage: deploy
+  script:
+    - dotnet docfx docs/docfx.json
+    - cp -r docs/_site public
+  rules:
+    - if: '$CI_COMMIT_TAG =~ $RELEASE_TAG' # Run this job when a release tag is created
+  artifacts:
+    paths:
+      - public
+  tags:
+    - kubernetes
+release_job:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: '$CI_COMMIT_TAG =~ $RELEASE_TAG' # Run this job when a release tag is created
+  before_script:
+    - apk add --update --no-cache git python3 && ln -sf python3 /usr/bin/python
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+  script:
+    - echo "Running release_job for $CI_COMMIT_TAG"
+    - scripts/create_latest_release_description.sh > RELEASE_NOTES.md
+  release: # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+    tag_name: $CI_COMMIT_TAG
+    name: 'Release $CI_COMMIT_TAG'
+    description: './RELEASE_NOTES.md'
+  tags:
+    - kubernetes

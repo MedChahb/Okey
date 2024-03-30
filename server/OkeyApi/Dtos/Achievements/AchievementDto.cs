@@ -1,9 +1,11 @@
-namespace OkeyApi.Models;
+namespace OkeyApi.Dtos.Achievements;
+
+using Models;
 
 /// <summary>
-/// Classe modèle des Achievements
+/// Dto du modèle Achievement
 /// </summary>
-public class Achievements
+public class AchievementDto
 {
     /// <summary>
     /// Id de l'Achievement
