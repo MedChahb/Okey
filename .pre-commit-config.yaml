@@ -75,13 +75,3 @@ repos:
         verbose: true
         pass_filenames: false
         description: Roslynator is a static analysis tool
-      - id: roslynator-OkeyClient
-        name: Run Roslynator on OkeyClient Unity project
-        entry: dotnet tool run roslynator analyze client/OkeyClient/OkeyClient.sln
-        language: system
-        files: '^client/OkeyClient/'
-        types:
-          - c#
-        verbose: true
-        pass_filenames: false
-        description: Roslynator is a static analysis tool

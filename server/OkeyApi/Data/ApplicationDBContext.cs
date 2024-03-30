@@ -10,15 +10,15 @@ using OkeyApi.Models;
 /// Classe permettant l'insertion des Modèles en Base de Donnée
 /// </summary>
 /// <param name="dbContextOptions">Paramètre propre au framework.</param>
-public class ApplicationDBContext(DbContextOptions dbContextOptions)
+public class ApplicationDbContext(DbContextOptions dbContextOptions)
     : IdentityDbContext<Utilisateur>(dbContextOptions)
 {
-    public DbSet<Achievements> Achievements { get; set; }
+    public DbSet<Achievements>? Achievements { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        List<IdentityRole> roles = new List<IdentityRole>
+        var roles = new List<IdentityRole>
         {
             new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
             new IdentityRole { Name = "Utilisateur", NormalizedName = "USER" }
