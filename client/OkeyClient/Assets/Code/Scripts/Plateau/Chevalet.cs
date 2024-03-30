@@ -240,6 +240,7 @@ public class Chevalet : MonoBehaviour
             "black" => CouleurTuile.N,
             "red" => CouleurTuile.R,
             "blue" => CouleurTuile.B,
+            "green" => CouleurTuile.V,
             // other cases still needed
             "fakejoker" => CouleurTuile.X,
             _ => CouleurTuile.M, // the okey
