@@ -10,6 +10,8 @@ public class Tuile : MonoBehaviour
     private bool deplacable = true;
     private bool estDeplace = false;
     private GameObject placeholderActuel;
+
+    private GameObject PreviousPlaceHolder;
     private Vector3 offset;
     private Chevalet chevalet;
     private bool isInStack = false;
@@ -33,7 +35,7 @@ public class Tuile : MonoBehaviour
         }
     }
 
-    void OnMouseDown()
+    void OnMouseDown()//click
     {
         if (isInStack)
         {
@@ -51,7 +53,7 @@ public class Tuile : MonoBehaviour
         }
     }
 
-    void OnMouseUp()
+    void OnMouseUp()//release
     {
         if (deplacable)
         {
@@ -59,6 +61,9 @@ public class Tuile : MonoBehaviour
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // Find the closest placeholder using the Chevalet's function
             GameObject closestPlaceholder = chevalet.ClosestPlaceholder(new Vector3(mousePosition.x, mousePosition.y, transform.localPosition.z));
+
+            //pour enregistrer le placeholder ou la tuile était avant que attach to placeholder modifie placeholderactuel
+            PreviousPlaceHolder=placeholderActuel;
 
             if (closestPlaceholder != null)
             {
@@ -80,6 +85,10 @@ public class Tuile : MonoBehaviour
                     }
                 }
             }
+
+            chevalet.UpdateMatrixAfterMovement(PreviousPlaceHolder,closestPlaceholder);//placeholder ou la piece était avant le deplacement et le placeholder ou elle a été deplacé
+            Debug.Log("Tile changed position from : " + PreviousPlaceHolder.name +" to "+ closestPlaceholder.name);
+            
         }
     }
 
@@ -100,12 +109,13 @@ public class Tuile : MonoBehaviour
     }
 
 
+    /*    
     public void SetBlockSprite(Sprite sprite)
     {
         this.sprite.sprite = sprite;
         this.couleur = sprite.name.Split('_')[0];
         this.valeur = int.Parse(sprite.name.Split('_')[1]);
-    }
+    }*/
 
     public string GetCouleur()
     {

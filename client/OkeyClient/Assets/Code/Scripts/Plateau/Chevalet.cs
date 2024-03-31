@@ -10,19 +10,27 @@ public class Chevalet : MonoBehaviour
 
     private TuileData[,] tuiles2D = new TuileData[2, 14];
     private Stack<Tuile> pileGauche = new Stack<Tuile>();
-    public static GameObject pileGauchePlaceHolder;
     private Stack<Tuile> pileDroite = new Stack<Tuile>();
+    public static GameObject pileGauchePlaceHolder;
+    public static GameObject pilePiochePlaceHolder;
+
     public static GameObject pileDroitePlaceHolder;
     public static GameObject jokerPlaceHolder;
-    public static GameObject pilePiochePlaceHolder;
+    
 
     void Start()
     {
         InitPlaceholders();
         this.InitializeBoardFromPlaceholders();
+        this.Print2DMatrix();
+
+
         //PrintTuilesArray();
     }
 
+
+
+      
     void InitPlaceholders()
     {
         // Remplir le tableau avec les placeholders dans la scene
@@ -203,10 +211,12 @@ public class Chevalet : MonoBehaviour
                     if (properties.Length == 2)
                     {
                         var couleur = this.ConvertToFrontendColorToBackendEnumName(properties[0]);
-                        Debug.Log(couleur);
+    //                    Debug.Log(couleur);
                         var num = int.Parse(properties[1]);
                         var isJoker = properties[0] == "FakeJoker";
                         this.tuiles2D[x, y] = new TuileData(couleur, num, isJoker);
+                        //Debug.Log("["+x+"]"+"["+y+"]"+" "+this.tuiles2D[x, y].couleur+ " " +this.tuiles2D[x, y].num+" "+this.tuiles2D[x, y].isJoker);
+
                     }
                     else
                     {
@@ -246,6 +256,60 @@ public class Chevalet : MonoBehaviour
             _ => CouleurTuile.M, // the okey
         };
     }
+
+
+
+    
+    private (int, int) ConvertPlaceHolderNumberToMatrixCoordinates(int PlaceholderNumber)
+    {
+        //conversion du numero du place holder 1->28 en coordonnées dans la matrice [2][14]
+        int x = (PlaceholderNumber - 1) / 14; 
+        int y = (PlaceholderNumber - 1) % 14; 
+        return (x, y);
+    }
+
+
+    public void UpdateMatrixAfterMovement(GameObject PreviousPlaceHolder,GameObject NextPlaceholder){
+        
+        //cas de deplacement a l'interieur du chevalet : Chevalet -> Chevalet
+        GameObject ChevaletFront = GameObject.Find("ChevaletFront");
+        if(PreviousPlaceHolder.transform.IsChildOf(ChevaletFront.transform) && NextPlaceholder.transform.IsChildOf(ChevaletFront.transform))
+        {
+            InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets pour recuperer les nouvelles position car il y'a le decalage des tuiles
+
+        }
+    }
+
+
+    private void Print2DMatrix() //Really useful to visualize tiles placement matrix
+    {
+        // Initialize a string to store the table
+        string table = "";
+
+        for (int x = 0; x < 2; x++) // Rows
+        {
+            for (int y = 0; y < 14; y++) // Columns
+            {
+                if(this.tuiles2D[x, y] != null)
+                {
+                    table += $"| {this.tuiles2D[x, y].couleur} {this.tuiles2D[x, y].num} {this.tuiles2D[x, y].isJoker} ";
+                }
+                else
+                {
+                    table += "| Vide ";
+                }
+            }
+            table += "|\n                    "; // End of the row
+        }
+
+        // Print the table
+        Debug.Log(table);
+
+    }
+
+
+
+
 
     //public void SetTuile(int x, int y, TuileData tuile)
     //{
