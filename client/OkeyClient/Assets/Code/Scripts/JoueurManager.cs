@@ -1,90 +1,27 @@
-using System;
-using System.Collections;
-using LogiqueJeu.Constants;
+using System.Collections.Generic;
 using LogiqueJeu.Joueur;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class JoueurManager : MonoBehaviour
 {
-    private Joueur playerLeft;
+    private readonly List<Joueur> Joueurs = new(3);
+    private SelfJoueur SoiMeme;
+    public readonly List<JoueurSO> JoueursSOs = new(4);
 
     private void Awake()
     {
-        this.playerLeft = ScriptableObject.CreateInstance<GenericJoueur>();
+        this.SoiMeme = new();
 
-        // Concurrent
-        // this.StartCoroutine(this.FetchUserBG("Testeur1", this.UnmarshalAndInit));
+        this.SoiMeme.NomUtilisateur = "Testeur1";
+        this.SoiMeme.TokenConnexion =
+            "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJnaXZlbl9uYW1lIjoiVGVzdGV1cjEiLCJuYmYiOjE3MTE4NDc3MDksImV4cCI6MTcxMjQ1MjUwOSwiaWF0IjoxNzExODQ3NzA5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUyNDYiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUyNDYifQ.uf4hmpxz6MwjWD7txbxuZtf64gEMg_kxuQRYFNmWEGnw5pDLJShABigmZrFhUdODs11nBQNvQMVzV3v8VFRyfQ";
 
-        // Sequential
-        this.UnmarshalAndInit(this.FetchUserFG("Testeur1"));
+        this.SoiMeme.LoadSelf(this);
 
-        Debug.Log(this.playerLeft);
+        var SoiMemeSO = ScriptableObject.CreateInstance<JoueurSO>();
+        SoiMemeSO.Joueur = this.SoiMeme;
+        this.JoueursSOs.Add(SoiMemeSO);
     }
 
     private void Update() { }
-
-    private void UnmarshalAndInit(string Json)
-    {
-        var unmarshal = JsonUtility.FromJson<JoueurAPICompteDTO>(Json);
-        this.playerLeft.NomUtilisateur = unmarshal.username;
-        this.playerLeft.Elo = unmarshal.elo;
-    }
-
-    private IEnumerator FetchUserBG(string Username, Action<string> CallbackJSON = null)
-    {
-        var Response = "";
-
-        var www = UnityWebRequest.Get(Constants.API_URL_DEV + "/compte/watch/" + Username);
-        www.certificateHandler = new BypassCertificate();
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Debug.Log(www.error);
-        }
-        else
-        {
-            Response = www.downloadHandler.text;
-        }
-
-        CallbackJSON?.Invoke(Response);
-    }
-
-    private string FetchUserFG(string Username)
-    {
-        var Response = "";
-
-        var www = UnityWebRequest.Get(Constants.API_URL_DEV + "/compte/watch/" + Username);
-        www.certificateHandler = new BypassCertificate();
-        www.SendWebRequest();
-
-        while (!www.isDone) { }
-
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Debug.Log(www.error);
-        }
-        else
-        {
-            Response = www.downloadHandler.text;
-        }
-
-        return Response;
-    }
-}
-
-public class BypassCertificate : CertificateHandler
-{
-    // Cela devrait pas être nécessaire vu que la connexion passe par HTTPS
-    // avec un certificat de l'Unistra bien reconnu.
-    // Il faut mettre l'API en HTTP simple.
-    // À mon avis il y a deux HTTPS en jeu en ce moment,
-    // 1) le bastion Unistra, 2) l'API ou le reverse proxy Nginx.
-    // Il faut enlever le HTTPS de l'API pour que ça marche mieux sans cette duplication.
-    protected override bool ValidateCertificate(byte[] certificateData)
-    {
-        //Simply return true no matter what
-        return true;
-    }
 }

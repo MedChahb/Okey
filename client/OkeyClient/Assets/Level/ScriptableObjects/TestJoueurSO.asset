@@ -9,12 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a49fb739e9d141cea1619ae20f5f49b, type: 3}
-  m_Name: TestJoueur
+  m_Script: {fileID: 11500000, guid: e66e41c3211644fe69ed0ad585373bc9, type: 3}
+  m_Name: TestJoueurSO
   m_EditorClassIdentifier: 
-  <NomUtilisateur>k__BackingField: 
-  <Elo>k__BackingField: 0
-  <IconeProfil>k__BackingField: 0
-  <Score>k__BackingField: 0
-  <Niveau>k__BackingField: 0
-  <IsInGame>k__BackingField: 0
