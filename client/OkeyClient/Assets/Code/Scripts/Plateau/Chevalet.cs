@@ -278,6 +278,38 @@ public class Chevalet : MonoBehaviour
             InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets pour recuperer les nouvelles position car il y'a le decalage des tuiles
 
         }
+        //cas de tirage : pioche ou pile gauche -> Chevalet
+        else if(PreviousPlaceHolder==pileGauchePlaceHolder || PreviousPlaceHolder==pilePiochePlaceHolder && NextPlaceholder.transform.IsChildOf(ChevaletFront.transform))
+        { 
+            (int,int) nxt_ph_pos= ConvertPlaceHolderNumberToMatrixCoordinates(GetPlaceholderNumber(NextPlaceholder.name));
+            
+            //ajouter la piece pioché au chevalet
+                InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets car quand on pioche on peut la mettre entre 2 tuiles et ca crée un decalage
+           
+
+
+            //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece pioché
+            
+
+        }
+        //cas de jet : Chevalet -> pile droite ou joker(gagné)
+        else if( PreviousPlaceHolder.transform.IsChildOf(ChevaletFront.transform) && NextPlaceholder==pileDroitePlaceHolder || NextPlaceholder==jokerPlaceHolder)
+        {
+                //enlever la piece jeté du chevalet
+                (int,int) prv_ph_pos= ConvertPlaceHolderNumberToMatrixCoordinates(GetPlaceholderNumber(PreviousPlaceHolder.name));
+                Debug.Log($"tuile[{prv_ph_pos.Item1}][{prv_ph_pos.Item1}] a été jeté");
+                Debug.Log(""+this.tuiles2D[prv_ph_pos.Item1,prv_ph_pos.Item2].couleur + this.tuiles2D[prv_ph_pos.Item1,prv_ph_pos.Item2].num + this.tuiles2D[prv_ph_pos.Item1,prv_ph_pos.Item2].isJoker);
+                this.tuiles2D[prv_ph_pos.Item1,prv_ph_pos.Item2]=null;
+
+            //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece jeté 
+
+        }
+        else //cas derreur 
+        {
+            Debug.Log("erreur de switch de position");
+        }
+        Print2DMatrix();
+
     }
 
 
