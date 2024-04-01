@@ -16,6 +16,7 @@ public class Tuile : MonoBehaviour
     private Chevalet chevalet;
     private bool isInStack = false;
     private bool isInPioche = false;
+    private Vector3 initialOffset;
 
     void Start()
     {
@@ -31,7 +32,7 @@ public class Tuile : MonoBehaviour
         {
             // Update tile position based on mouse position
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            transform.localPosition = new Vector3(mousePosition.x - offset.x, mousePosition.y - offset.y, -5);
+            transform.position = new Vector3(mousePosition.x + initialOffset.x, mousePosition.y + initialOffset.y, -7);
         }
     }
 
@@ -48,7 +49,7 @@ public class Tuile : MonoBehaviour
         {
             // Save difference between mouse position and tile position
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            offset = new Vector3(mousePosition.x - transform.localPosition.x, mousePosition.y - transform.localPosition.y, 0);
+            initialOffset = transform.position - mousePosition;
             estDeplace = true;
         }
     }
