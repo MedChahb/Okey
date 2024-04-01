@@ -12,6 +12,12 @@ namespace LogiqueJeu.Joueur
     {
         public string Login { get; set; }
 
+        public SelfJoueur()
+            : base()
+        {
+            this.InGame.Pos = Position.SoiMeme;
+        }
+
         public string TokenConnexion { get; set; }
 
         public override void LoadSelf(MonoBehaviour Behaviour)
@@ -64,6 +70,15 @@ namespace LogiqueJeu.Joueur
             base.CopyFrom(SelfJoueur);
             this.Login = SelfJoueur.NomUtilisateur;
             this.TokenConnexion = SelfJoueur.TokenConnexion;
+        }
+
+        protected override void UnmarshalAndInit(string Json)
+        {
+            var unmarshal = JsonUtility.FromJson<SelfJoueurAPICompteDTO>(Json);
+            this.NomUtilisateur = unmarshal.username;
+            this.Elo = unmarshal.elo;
+            this.Achievements = unmarshal.achievements;
+            this.SaveXML();
         }
     }
 }

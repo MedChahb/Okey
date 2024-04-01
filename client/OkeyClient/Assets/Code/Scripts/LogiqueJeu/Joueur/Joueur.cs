@@ -19,7 +19,8 @@ namespace LogiqueJeu.Joueur
 
 #pragma warning disable IDE0052, IDE0044
         // A placeholder for the time being until it gets potentially implemented
-        private List<Achievement> Achievements;
+        // private List<Achievement> Achievements;
+        public List<bool> Achievements;
 #pragma warning restore IDE0052, IDE0044
         public int Score { get; set; }
 
@@ -34,6 +35,8 @@ namespace LogiqueJeu.Joueur
 
         public struct InGameDetails
         {
+            public int ID;
+            public Position? Pos;
             public EtatTour _etatTour;
             public Chevalet Chevalet { get; set; }
             public Emote CurrentEmote { get; set; }
@@ -54,6 +57,8 @@ namespace LogiqueJeu.Joueur
             this.IsInGame = false;
             this.InGame = new InGameDetails
             {
+                ID = -1,
+                Pos = null,
                 _etatTour = new EtatTour(),
                 Chevalet = null,
                 CurrentEmote = null
@@ -70,6 +75,7 @@ namespace LogiqueJeu.Joueur
                                 NomUtilisateur: {this.NomUtilisateur},
                                 Elo: {this.Elo},
                                 IconeProfil: {this.IconeProfil},
+                                Achievements: {string.Join(",", this.Achievements)},
                                 Score: {this.Score},
                                 Niveau: {this.Niveau},
                                 EtatTour: {this.InGame.EtatTour},
@@ -84,6 +90,7 @@ namespace LogiqueJeu.Joueur
                                 NomUtilisateur: {this.NomUtilisateur},
                                 Elo: {this.Elo},
                                 IconeProfil: {this.IconeProfil},
+                                Achievements: {string.Join(",", this.Achievements)},
                                 Score: {this.Score},
                                 Niveau: {this.Niveau}
                                 ";
@@ -99,12 +106,6 @@ namespace LogiqueJeu.Joueur
             this.Score = Joueur.Score;
             this.Niveau = Joueur.Niveau;
             this.IsInGame = false;
-            this.InGame = new InGameDetails
-            {
-                _etatTour = new EtatTour(),
-                Chevalet = null,
-                CurrentEmote = null
-            };
         }
 
         public abstract void LoadSelf(MonoBehaviour Behaviour);
@@ -119,12 +120,6 @@ namespace LogiqueJeu.Joueur
                     Application.persistentDataPath + Constants.SELF_PLAYER_SAVE_FILE
                 );
                 serializer.Serialize(writer, this);
-
-                Debug.Log(
-                    File.ReadAllText(
-                        Application.persistentDataPath + Constants.SELF_PLAYER_SAVE_FILE
-                    )
-                );
             }
             finally
             {
@@ -137,10 +132,8 @@ namespace LogiqueJeu.Joueur
             Behaviour.StartCoroutine(this.FetchUserBG(this.UnmarshalAndInit));
         }
 
-        protected void UnmarshalAndInit(string Json)
+        protected virtual void UnmarshalAndInit(string Json)
         {
-            Debug.Log(Json);
-
             var unmarshal = JsonUtility.FromJson<JoueurAPICompteDTO>(Json);
             this.NomUtilisateur = unmarshal.username;
             this.Elo = unmarshal.elo;

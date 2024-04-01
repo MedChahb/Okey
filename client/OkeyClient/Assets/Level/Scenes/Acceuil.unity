@@ -2635,7 +2635,7 @@ GameObject:
   - component: {fileID: 970465726}
   - component: {fileID: 970465725}
   m_Layer: 0
-  m_Name: GameManger
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2654,6 +2654,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   language: 0
+  JoueurManager: {fileID: 279409712}
 --- !u!4 &970465726
 Transform:
   m_ObjectHideFlags: 0

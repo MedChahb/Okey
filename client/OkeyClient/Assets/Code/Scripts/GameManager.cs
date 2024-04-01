@@ -5,6 +5,9 @@ public class GameManager : MonoBehaviour
     public static GameManager singleton; // this is the manager of the game that can be accessed globally thanks to the static keyword
     public bool language = true; // true = English, false = French - logic may change later on
 
+    [SerializeField]
+    private JoueurManager JoueurManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,8 +25,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    void Update(){ //Principal gameloop
+    void Update()
+    { //Principal gameloop
         /* mise en place Etc
         ..
         ..
@@ -34,6 +37,5 @@ public class GameManager : MonoBehaviour
         Tuile[] TilesArray = Chevalet.GetTilesPlacementInChevaletTab();
         Chevalet.PrintTilesArrayForTest();
         */
-
     }
 }
