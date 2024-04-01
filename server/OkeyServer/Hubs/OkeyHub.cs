@@ -167,21 +167,29 @@ public sealed class OkeyHub : Hub
                 {
                     /* La room est désormais complète il faut la retirer des rooms disponnibles */
                     await this.Groups.AddToGroupAsync(this.Context.ConnectionId, lobbyName);
+                    _roomsBusy.Add(room);
+                    _roomsAvailable.Remove(room);
+                    await this.SendRoomListUpdate();
                     await this
                         .Clients.Group(lobbyName)
                         .SendAsync(
                             "ReceiveMessage",
-                            $"Bienvenue, {this.Context.ConnectionId} a rejoint la room {lobbyName}, {room.GetNbCurrent()} / {room.GetCapacity()}"
+                            $"Le joueur {this.Context.ConnectionId} a rejoint {lobbyName}"
                         );
-                    _roomsBusy.Add(room);
-                    _roomsAvailable.Remove(room);
-                    await this.SendRoomListUpdate();
+                    /* Ici on lance la partie ! */
+                    await this.LaunchGame(room);
                 }
                 else
                 {
                     /* Tout se passe bien ici */
                     await this.Groups.AddToGroupAsync(this.Context.ConnectionId, lobbyName);
                     await this.SendRoomListUpdate();
+                    await this
+                        .Clients.Group(lobbyName)
+                        .SendAsync(
+                            "ReceiveMessage",
+                            $"Le joueur {this.Context.ConnectionId} a rejoint {lobbyName}"
+                        );
                 }
             }
             catch (Exception e)
@@ -191,12 +199,6 @@ public sealed class OkeyHub : Hub
                 );
                 throw;
             }
-            await this
-                .Clients.Group(lobbyName)
-                .SendAsync(
-                    "ReceiveMessage",
-                    $"Le joueur {this.Context.ConnectionId} a rejoint {lobbyName}"
-                );
         }
     }
 
@@ -221,7 +223,7 @@ public sealed class OkeyHub : Hub
                 }
                 else
                 {
-                    throw new ApplicationException();
+                    throw new RoomNotFoundException("Erreur systeme.");
                 }
             }
             await this
@@ -238,5 +240,12 @@ public sealed class OkeyHub : Hub
             Console.WriteLine(e);
             throw;
         }
+    }
+
+    private async Task LaunchGame(Room room)
+    {
+        await this
+            .Clients.Group(room.GetRoomName())
+            .SendAsync("ReceiveMessage", "La partie va commencer !");
     }
 }
