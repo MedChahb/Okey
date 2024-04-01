@@ -3,7 +3,6 @@ namespace LogiqueJeu.Joueur
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.IO;
     using System.Xml.Serialization;
     using LogiqueJeu.Constants;
     using UnityEngine;
@@ -26,6 +25,7 @@ namespace LogiqueJeu.Joueur
 
         public int Niveau { get; set; }
 
+        // Not sure if this is necessary
         public bool IsInGame { get; set; }
 
         // public bool IsInLobby { get; set; }
@@ -41,7 +41,7 @@ namespace LogiqueJeu.Joueur
             public Chevalet Chevalet { get; set; }
             public Emote CurrentEmote { get; set; }
 
-            public EtatTour.Etats EtatTour
+            public readonly EtatTour.Etats EtatTour
             {
                 get { return this._etatTour.Etat; }
             }
@@ -110,24 +110,7 @@ namespace LogiqueJeu.Joueur
 
         public abstract void LoadSelf(MonoBehaviour Behaviour);
 
-        public void SaveXML()
-        {
-            TextWriter writer = null;
-            try
-            {
-                var serializer = new XmlSerializer(this.GetType());
-                writer = new StreamWriter(
-                    Application.persistentDataPath + Constants.SELF_PLAYER_SAVE_FILE
-                );
-                serializer.Serialize(writer, this);
-            }
-            finally
-            {
-                writer?.Close();
-            }
-        }
-
-        public void UpdateDetails(MonoBehaviour Behaviour)
+        public virtual void UpdateDetails(MonoBehaviour Behaviour)
         {
             Behaviour.StartCoroutine(this.FetchUserBG(this.UnmarshalAndInit));
         }
@@ -137,10 +120,9 @@ namespace LogiqueJeu.Joueur
             var unmarshal = JsonUtility.FromJson<JoueurAPICompteDTO>(Json);
             this.NomUtilisateur = unmarshal.username;
             this.Elo = unmarshal.elo;
-            this.SaveXML();
         }
 
-        protected IEnumerator FetchUserBG(Action<string> CallbackJSON = null)
+        protected virtual IEnumerator FetchUserBG(Action<string> CallbackJSON = null)
         {
             var Response = "";
 

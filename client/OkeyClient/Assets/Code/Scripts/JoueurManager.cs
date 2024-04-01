@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using LogiqueJeu.Joueur;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class JoueurManager : MonoBehaviour
@@ -108,5 +110,53 @@ public class JoueurManager : MonoBehaviour
     public void SaveSelfJoueur()
     {
         this.SoiMeme.SaveXML();
+    }
+
+    // For now doesn't return a clone, but the actual object
+    // Should maybe change that later to abide by encapsulation
+    // and protect inner data structures
+    public SelfJoueur GetSelfJoueur()
+    {
+        return this.SoiMeme;
+    }
+
+    // For now doesn't return a clone, but the actual object
+    // Should maybe change that later to abide by encapsulation
+    // and protect inner data structures
+    public ReadOnlyCollection<Joueur> GetOtherJoueurs()
+    {
+        return this.Joueurs.AsReadOnly();
+        // return this.Joueurs.ConvertAll(Joueur => Joueur.Clone());
+    }
+
+    // For now doesn't return a clone, but the actual object
+    // Should maybe change that later to abide by encapsulation
+    // and protect inner data structures
+    public List<Joueur> GetAllJoueurs()
+    {
+        var Result = new List<Joueur>(this.Joueurs);
+        Result.Insert(0, this.SoiMeme);
+        return Result;
+        // return this.Joueurs.ConvertAll(Joueur => Joueur.Clone()).Insert(0, this.SoiMeme.Clone());
+    }
+
+    public void ConnexionSelfJoueur(string NomUtilisateur, string MotDePasse)
+    {
+        this.SoiMeme.ConnexionCompte(this, NomUtilisateur, MotDePasse);
+    }
+
+    public void CreationCompteSelfJoueur(string NomUtilisateur, string MotDePasse)
+    {
+        this.SoiMeme.CreationCompte(this, NomUtilisateur, MotDePasse);
+    }
+
+    public void DeconnexionSelfJoueur()
+    {
+        this.SoiMeme.DeconnexionCompte();
+    }
+
+    public void SetIconeSelfJoueur(int Icone)
+    {
+        throw new NotImplementedException();
     }
 }
