@@ -16,7 +16,6 @@ public class Chevalet : MonoBehaviour
 
     public static GameObject pileDroitePlaceHolder;
     public static GameObject jokerPlaceHolder;
-    
 
     void Start()
     {
@@ -24,13 +23,9 @@ public class Chevalet : MonoBehaviour
         this.InitializeBoardFromPlaceholders();
         this.Print2DMatrix();
 
-
         //PrintTuilesArray();
     }
 
-
-
-      
     void InitPlaceholders()
     {
         // Remplir le tableau avec les placeholders dans la scene
@@ -211,12 +206,11 @@ public class Chevalet : MonoBehaviour
                     if (properties.Length == 2)
                     {
                         var couleur = this.ConvertToFrontendColorToBackendEnumName(properties[0]);
-    //                    Debug.Log(couleur);
+                        //                    Debug.Log(couleur);
                         var num = int.Parse(properties[1]);
                         var isJoker = properties[0] == "FakeJoker";
                         this.tuiles2D[x, y] = new TuileData(couleur, num, isJoker);
                         //Debug.Log("["+x+"]"+"["+y+"]"+" "+this.tuiles2D[x, y].couleur+ " " +this.tuiles2D[x, y].num+" "+this.tuiles2D[x, y].isJoker);
-
                     }
                     else
                     {
@@ -257,61 +251,72 @@ public class Chevalet : MonoBehaviour
         };
     }
 
-
-
-    
     private (int, int) ConvertPlaceHolderNumberToMatrixCoordinates(int PlaceholderNumber)
     {
         //conversion du numero du place holder 1->28 en coordonnées dans la matrice [2][14]
-        int x = (PlaceholderNumber - 1) / 14; 
-        int y = (PlaceholderNumber - 1) % 14; 
+        int x = (PlaceholderNumber - 1) / 14;
+        int y = (PlaceholderNumber - 1) % 14;
         return (x, y);
     }
 
-
-    public void UpdateMatrixAfterMovement(GameObject PreviousPlaceHolder,GameObject NextPlaceholder){
-        
+    public void UpdateMatrixAfterMovement(
+        GameObject PreviousPlaceHolder,
+        GameObject NextPlaceholder
+    )
+    {
         //cas de deplacement a l'interieur du chevalet : Chevalet -> Chevalet
         GameObject ChevaletFront = GameObject.Find("ChevaletFront");
-        if(PreviousPlaceHolder.transform.IsChildOf(ChevaletFront.transform) && NextPlaceholder.transform.IsChildOf(ChevaletFront.transform))
+        if (
+            PreviousPlaceHolder.transform.IsChildOf(ChevaletFront.transform)
+            && NextPlaceholder.transform.IsChildOf(ChevaletFront.transform)
+        )
         {
             InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets pour recuperer les nouvelles position car il y'a le decalage des tuiles
-
         }
         //cas de tirage : pioche ou pile gauche -> Chevalet
-        else if(PreviousPlaceHolder==pileGauchePlaceHolder || PreviousPlaceHolder==pilePiochePlaceHolder && NextPlaceholder.transform.IsChildOf(ChevaletFront.transform))
-        { 
-            (int,int) nxt_ph_pos= ConvertPlaceHolderNumberToMatrixCoordinates(GetPlaceholderNumber(NextPlaceholder.name));
-            
-            //ajouter la piece pioché au chevalet
-                InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets car quand on pioche on peut la mettre entre 2 tuiles et ca crée un decalage
-           
+        else if (
+            PreviousPlaceHolder == pileGauchePlaceHolder
+            || PreviousPlaceHolder == pilePiochePlaceHolder
+                && NextPlaceholder.transform.IsChildOf(ChevaletFront.transform)
+        )
+        {
+            (int, int) nxt_ph_pos = ConvertPlaceHolderNumberToMatrixCoordinates(
+                GetPlaceholderNumber(NextPlaceholder.name)
+            );
 
+            //ajouter la piece pioché au chevalet
+            InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets car quand on pioche on peut la mettre entre 2 tuiles et ca crée un decalage
 
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece pioché
-            
-
         }
         //cas de jet : Chevalet -> pile droite ou joker(gagné)
-        else if( PreviousPlaceHolder.transform.IsChildOf(ChevaletFront.transform) && NextPlaceholder==pileDroitePlaceHolder || NextPlaceholder==jokerPlaceHolder)
+        else if (
+            PreviousPlaceHolder.transform.IsChildOf(ChevaletFront.transform)
+                && NextPlaceholder == pileDroitePlaceHolder
+            || NextPlaceholder == jokerPlaceHolder
+        )
         {
-                //enlever la piece jeté du chevalet
-                (int,int) prv_ph_pos= ConvertPlaceHolderNumberToMatrixCoordinates(GetPlaceholderNumber(PreviousPlaceHolder.name));
-                Debug.Log($"tuile[{prv_ph_pos.Item1}][{prv_ph_pos.Item1}] a été jeté");
-                Debug.Log(""+this.tuiles2D[prv_ph_pos.Item1,prv_ph_pos.Item2].couleur + this.tuiles2D[prv_ph_pos.Item1,prv_ph_pos.Item2].num + this.tuiles2D[prv_ph_pos.Item1,prv_ph_pos.Item2].isJoker);
-                this.tuiles2D[prv_ph_pos.Item1,prv_ph_pos.Item2]=null;
+            //enlever la piece jeté du chevalet
+            (int, int) prv_ph_pos = ConvertPlaceHolderNumberToMatrixCoordinates(
+                GetPlaceholderNumber(PreviousPlaceHolder.name)
+            );
+            Debug.Log($"tuile[{prv_ph_pos.Item1}][{prv_ph_pos.Item1}] a été jeté");
+            Debug.Log(
+                ""
+                    + this.tuiles2D[prv_ph_pos.Item1, prv_ph_pos.Item2].couleur
+                    + this.tuiles2D[prv_ph_pos.Item1, prv_ph_pos.Item2].num
+                    + this.tuiles2D[prv_ph_pos.Item1, prv_ph_pos.Item2].isJoker
+            );
+            this.tuiles2D[prv_ph_pos.Item1, prv_ph_pos.Item2] = null;
 
-            //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece jeté 
-
+            //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece jeté
         }
-        else //cas derreur 
+        else //cas derreur
         {
             Debug.Log("erreur de switch de position");
         }
         Print2DMatrix();
-
     }
-
 
     private void Print2DMatrix() //Really useful to visualize tiles placement matrix
     {
@@ -322,9 +327,10 @@ public class Chevalet : MonoBehaviour
         {
             for (int y = 0; y < 14; y++) // Columns
             {
-                if(this.tuiles2D[x, y] != null)
+                if (this.tuiles2D[x, y] != null)
                 {
-                    table += $"| {this.tuiles2D[x, y].couleur} {this.tuiles2D[x, y].num} {this.tuiles2D[x, y].isJoker} ";
+                    table +=
+                        $"| {this.tuiles2D[x, y].couleur} {this.tuiles2D[x, y].num} {this.tuiles2D[x, y].isJoker} ";
                 }
                 else
                 {
@@ -336,12 +342,7 @@ public class Chevalet : MonoBehaviour
 
         // Print the table
         Debug.Log(table);
-
     }
-
-
-
-
 
     //public void SetTuile(int x, int y, TuileData tuile)
     //{

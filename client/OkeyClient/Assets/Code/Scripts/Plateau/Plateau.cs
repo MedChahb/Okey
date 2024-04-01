@@ -35,7 +35,12 @@ public class Plateau : MonoBehaviour
     }
 
     // Méthode pour initialiser le plateau de jeu
-    public void InitialiserPlateau(string Theme, Stack<Tuile> Pioche, Tuile Joker, List<Chevalet> chevalets)
+    public void InitialiserPlateau(
+        string Theme,
+        Stack<Tuile> Pioche,
+        Tuile Joker,
+        List<Chevalet> chevalets
+    )
     {
         this.SetTheme(Theme);
         this.pilePioche = Pioche;

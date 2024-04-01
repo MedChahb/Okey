@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class Tuile : MonoBehaviour
 {
-    [SerializeField] private string couleur;
-    [SerializeField]  private int valeur;
+    [SerializeField]
+    private string couleur;
+
+    [SerializeField]
+    private int valeur;
     private bool isJoker = false;
     private SpriteRenderer sprite;
     private bool deplacable = true;
@@ -32,17 +35,22 @@ public class Tuile : MonoBehaviour
         {
             // Update tile position based on mouse position
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            transform.position = new Vector3(mousePosition.x + initialOffset.x, mousePosition.y + initialOffset.y, -7);
+            transform.position = new Vector3(
+                mousePosition.x + initialOffset.x,
+                mousePosition.y + initialOffset.y,
+                -7
+            );
         }
     }
 
-    void OnMouseDown()//click
+    void OnMouseDown() //click
     {
         if (isInStack)
         {
             this.chevalet.draw(true);
         }
-        if (isInPioche) {
+        if (isInPioche)
+        {
             this.chevalet.draw(false);
         }
         if (deplacable)
@@ -54,17 +62,19 @@ public class Tuile : MonoBehaviour
         }
     }
 
-    void OnMouseUp()//release
+    void OnMouseUp() //release
     {
         if (deplacable)
         {
             estDeplace = false;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // Find the closest placeholder using the Chevalet's function
-            GameObject closestPlaceholder = chevalet.ClosestPlaceholder(new Vector3(mousePosition.x, mousePosition.y, transform.localPosition.z));
+            GameObject closestPlaceholder = chevalet.ClosestPlaceholder(
+                new Vector3(mousePosition.x, mousePosition.y, transform.localPosition.z)
+            );
 
             //pour enregistrer le placeholder ou la tuile était avant que attach to placeholder modifie placeholderactuel
-            PreviousPlaceHolder=placeholderActuel;
+            PreviousPlaceHolder = placeholderActuel;
 
             if (closestPlaceholder != null)
             {
@@ -76,20 +86,28 @@ public class Tuile : MonoBehaviour
                 else
                 {
                     AttachToPlaceholder(closestPlaceholder);
-                    if(closestPlaceholder != Chevalet.pileDroitePlaceHolder && closestPlaceholder != Chevalet.jokerPlaceHolder) 
+                    if (
+                        closestPlaceholder != Chevalet.pileDroitePlaceHolder
+                        && closestPlaceholder != Chevalet.jokerPlaceHolder
+                    )
                     {
                         // The placeholder countains already a Tile, we must update before insert
                         chevalet.UpdateTiles(closestPlaceholder);
                     }
-                    else {
+                    else
+                    {
                         deplacable = false;
                     }
                 }
             }
 
-            chevalet.UpdateMatrixAfterMovement(PreviousPlaceHolder,closestPlaceholder);//placeholder ou la piece était avant le deplacement et le placeholder ou elle a été deplacé
-            Debug.Log("Tile changed position from : " + PreviousPlaceHolder.name +" to "+ closestPlaceholder.name);
-            
+            chevalet.UpdateMatrixAfterMovement(PreviousPlaceHolder, closestPlaceholder); //placeholder ou la piece était avant le deplacement et le placeholder ou elle a été deplacé
+            Debug.Log(
+                "Tile changed position from : "
+                    + PreviousPlaceHolder.name
+                    + " to "
+                    + closestPlaceholder.name
+            );
         }
     }
 
@@ -109,8 +127,7 @@ public class Tuile : MonoBehaviour
         placeholderActuel = placeholder;
     }
 
-
-    /*    
+    /*
     public void SetBlockSprite(Sprite sprite)
     {
         this.sprite.sprite = sprite;
