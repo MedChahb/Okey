@@ -1,5 +1,6 @@
 namespace OkeyServer.Hubs;
 
+using Lobby.Exception;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
 
