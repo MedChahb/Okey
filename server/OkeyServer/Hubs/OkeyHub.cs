@@ -99,7 +99,7 @@ public sealed class OkeyHub : Hub
     {
         try
         {
-            await this.Clients.Group(lobbyName).SendAsync("ReceiveMessage", $"{message}");
+            await this.Clients.Group(lobbyName).SendAsync("ReceiveMessage", message);
         }
         catch (Exception e)
         {
