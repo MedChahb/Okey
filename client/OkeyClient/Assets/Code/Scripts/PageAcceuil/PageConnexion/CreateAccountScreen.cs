@@ -10,9 +10,6 @@ public class CreateAccountScreen : MonoBehaviour
     public GameObject Panel;
 
     [SerializeField]
-    private TMP_InputField Login;
-
-    [SerializeField]
     private TMP_InputField Username;
 
     [SerializeField]
@@ -23,6 +20,9 @@ public class CreateAccountScreen : MonoBehaviour
 
     [SerializeField]
     private Button createAccount;
+
+    [SerializeField]
+    private JoueurManager manager;
 
     // Start is called before the first frame update
     void Start()
@@ -37,20 +37,20 @@ public class CreateAccountScreen : MonoBehaviour
 
     void OnCreateAccountClicked()
     {
-        string login = Login.text.Trim();
         string username = Username.text.Trim();
         string password = Password.text.Trim();
 
         if (
-            !string.IsNullOrEmpty(login)
-            && !string.IsNullOrEmpty(username)
+            !string.IsNullOrEmpty(username)
             && !string.IsNullOrEmpty(password)
         )
         {
-            // Envoi du formulaire (à implémenter)
-            Debug.Log("Formulaire envoyé !");
+            manager.CreationCompteSelfJoueur(username, password);
             //mettre le Panel de connexion en off
             Panel.SetActive(false);
+            Debug.LogWarning("Compte créé !");
+            Debug.LogWarning(username);
+            Debug.LogWarning(password);
         }
         else
         {

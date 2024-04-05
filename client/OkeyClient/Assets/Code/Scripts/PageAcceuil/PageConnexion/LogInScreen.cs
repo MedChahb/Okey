@@ -9,10 +9,10 @@ public class LogInScreen : MonoBehaviour
 {
     public GameObject Panel;
     public GameObject PanelAvatar;
-    public GameObject creationPanel;
+    //public GameObject creationPanel;
 
     [SerializeField]
-    private TMP_InputField Login;
+    private TMP_InputField Username;
 
     [SerializeField]
     private TMP_InputField Password;
@@ -25,6 +25,9 @@ public class LogInScreen : MonoBehaviour
 
     [SerializeField]
     private Button backButton;
+
+    [SerializeField]
+    private JoueurManager manager;
 
     // Start is called before the first frame update
     void Start()
@@ -42,16 +45,15 @@ public class LogInScreen : MonoBehaviour
     // Méthode appelée lors du clic sur le bouton "Créer"
     void OnConnexionClicked()
     {
-        string login = Login.text.Trim();
+        string username = Username.text.Trim();
         string password = Password.text.Trim();
 
         if (
-            !string.IsNullOrEmpty(login)
+            !string.IsNullOrEmpty(username)
             && !string.IsNullOrEmpty(password)
         )
         {
-            // Envoi du formulaire (à implémenter)
-            Debug.Log("Formulaire envoyé !");
+            manager.ConnexionSelfJoueur(username, password);
             //mettre le Panel de connexion en off
             Panel.SetActive(false);
 
@@ -65,8 +67,25 @@ public class LogInScreen : MonoBehaviour
     }
 
     void OnCreateClicked() {
-        Panel.SetActive(false);
-        creationPanel.SetActive(true);
+        string username = Username.text.Trim();
+        string password = Password.text.Trim();
+
+        if (
+            !string.IsNullOrEmpty(username)
+            && !string.IsNullOrEmpty(password)
+        )
+        {
+            manager.CreationCompteSelfJoueur(username, password);
+            //mettre le Panel de connexion en off
+            Panel.SetActive(false);
+            Debug.LogWarning("Compte créé !");
+            Debug.LogWarning(username);
+            Debug.LogWarning(password);
+        }
+        else
+        {
+            Debug.LogWarning("Veuillez remplir tous les champs !");
+        }
     }
 
     // Méthode pour charger la scène précédente
