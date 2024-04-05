@@ -70,10 +70,10 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     void onLoginClicked()
     {
-        if (login.connexionImage != null)
+        if (login.Panel != null)
         {
             // Toggle the active state of the image
-            login.connexionImage.gameObject.SetActive(!login.connexionImage.gameObject.activeSelf);
+            login.Panel.SetActive(!login.Panel.activeSelf);
         }
         else
         {
