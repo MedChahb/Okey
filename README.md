@@ -33,6 +33,10 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 * [UML](https://drive.google.com/file/d/1YIBEHZWpCWMH5IgFtIi-53_cFjVEIpYE/view?usp=sharing_eip_m&ts=65d4c787)
 * [Diagramme d'activités](https://drive.google.com/file/d/1TDauPSD0wWvksGSJn-EX9Y7hbyhopGBx/view?ts=65de1e74)
 
+### Commun entre backend et frontend
+
+* [Spécification des communications](https://docs.google.com/document/d/1m7YraiAPQxlpeK8IJXncBgzjGUizkMRcMqzwSLpFpZ8/edit?usp=sharing)
+
 ## Environnement de développement
 
 *Pour une utilisation en tant que développeur, un environnement dev*.
