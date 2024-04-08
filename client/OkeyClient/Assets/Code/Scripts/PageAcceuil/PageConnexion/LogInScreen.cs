@@ -32,6 +32,9 @@ public class LogInScreen : MonoBehaviour
     [SerializeField]
     private UIManagerPAcceuil accueil;
 
+    [SerializeField]
+    private TextMeshProUGUI erreurTxt;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +46,7 @@ public class LogInScreen : MonoBehaviour
 
         // Ajoute un écouteur au bouton "Retour"
         backButton.onClick.AddListener(onBackBtnClicked);
+        erreurTxt.gameObject.SetActive(false);
     }
 
     // Méthode appelée lors du clic sur le bouton "Créer"
@@ -66,7 +70,8 @@ public class LogInScreen : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Veuillez remplir tous les champs !");
+            erreurTxt.text = "Veuillez remplir tous les champs !";
+            erreurTxt.gameObject.SetActive(true);
         }
     }
 
@@ -89,7 +94,8 @@ public class LogInScreen : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Veuillez remplir tous les champs !");
+            erreurTxt.text = "Veuillez remplir tous les champs !";
+            erreurTxt.gameObject.SetActive(true);
         }
     }
 
