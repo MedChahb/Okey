@@ -313,8 +313,9 @@ public class Chevalet : MonoBehaviour
         }
         else //cas derreur
         {
-            Debug.Log("erreur de switch de position");
+            Debug.Log("error updating matrix after movement");
         }
+        
         Print2DMatrix();
     }
 
