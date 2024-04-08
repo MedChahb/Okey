@@ -15,6 +15,9 @@ public class UIManagerPAcceuil : MonoBehaviour
     private Button connexionBtn;
 
     [SerializeField]
+    private TextMeshProUGUI connexionBtnTxt;
+
+    [SerializeField]
     private TextMeshProUGUI playBtnTxt;
 
     [SerializeField]
@@ -25,6 +28,11 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     [SerializeField]
     private LogInScreen login;
+
+    [SerializeField]
+    public GameObject PanelAvatar;
+
+    private bool connected = false;
 
     // Start is called before the first frame update
     void Start()
@@ -40,10 +48,29 @@ public class UIManagerPAcceuil : MonoBehaviour
         if (GameManager.singleton.language)
         {
             playBtnTxt.text = "Play";
+            if (!connected) 
+            {
+                connexionBtn.gameObject.SetActive(true);
+                connexionBtnTxt.text = "Connection";
+            }
         }
         else
         {
             playBtnTxt.text = "Jouer";
+            if (!connected) 
+            {
+                connexionBtn.gameObject.SetActive(true);
+                connexionBtnTxt.text = "Connexion";
+            }
+        }
+        if (connected) 
+        {
+            PanelAvatar.SetActive(true);
+            connexionBtn.gameObject.SetActive(false);
+        }
+        else
+        {
+            PanelAvatar.SetActive(false);
         }
     }
 
@@ -79,5 +106,9 @@ public class UIManagerPAcceuil : MonoBehaviour
         {
             Debug.LogWarning("Login Image reference is not set!");
         }
+    }
+
+    public void setConnected(bool isConnected) {
+        this.connected = isConnected;
     }
 }

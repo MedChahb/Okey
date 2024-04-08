@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class LogInScreen : MonoBehaviour
 {
     public GameObject Panel;
-    public GameObject PanelAvatar;
+    //public GameObject PanelAvatar;
     //public GameObject creationPanel;
 
     [SerializeField]
@@ -28,6 +28,9 @@ public class LogInScreen : MonoBehaviour
 
     [SerializeField]
     private JoueurManager manager;
+
+    [SerializeField]
+    private UIManagerPAcceuil accueil;
 
     // Start is called before the first frame update
     void Start()
@@ -53,12 +56,13 @@ public class LogInScreen : MonoBehaviour
             && !string.IsNullOrEmpty(password)
         )
         {
-            manager.ConnexionSelfJoueur(username, password);
+            //manager.ConnexionSelfJoueur(username, password);
             //mettre le Panel de connexion en off
             Panel.SetActive(false);
 
             //activer le Panel de User avec avatar
-            PanelAvatar.SetActive(true);
+            //PanelAvatar.SetActive(true);
+            accueil.setConnected(true);
         }
         else
         {
@@ -75,12 +79,13 @@ public class LogInScreen : MonoBehaviour
             && !string.IsNullOrEmpty(password)
         )
         {
-            manager.CreationCompteSelfJoueur(username, password);
+            //manager.CreationCompteSelfJoueur(username, password);
             //mettre le Panel de connexion en off
             Panel.SetActive(false);
-            Debug.LogWarning("Compte créé !");
-            Debug.LogWarning(username);
-            Debug.LogWarning(password);
+            accueil.setConnected(true);
+            //Debug.LogWarning("Compte créé !");
+            //Debug.LogWarning(username);
+            //Debug.LogWarning(password);
         }
         else
         {
