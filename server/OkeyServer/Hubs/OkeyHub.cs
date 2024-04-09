@@ -1,12 +1,16 @@
 namespace OkeyServer.Hubs;
 
+using System.Collections.Concurrent;
+using System.IdentityModel.Tokens.Jwt;
 using Lobby.Exception;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
+using Security;
 
 /// <summary>
 /// Hub de communication entre les clients et le serveur
 /// </summary>
+
 public sealed class OkeyHub : Hub
 {
     // necessité d'avoir accès à l'ensemble des rooms ici
@@ -14,6 +18,8 @@ public sealed class OkeyHub : Hub
     private static List<Room> _roomsAvailable;
     private static List<Room> _roomsBusy;
     private static int _nbJoueursOnline;
+    private static ConcurrentDictionary<string, string> _clientServeur =
+        new ConcurrentDictionary<string, string>();
 
     static OkeyHub()
     {
@@ -67,6 +73,8 @@ public sealed class OkeyHub : Hub
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
+        _clientServeur.TryRemove(this.Context.ConnectionId, out _);
+
         var roomId = string.Empty;
         foreach (var r in _roomsAvailable)
         {
@@ -88,6 +96,57 @@ public sealed class OkeyHub : Hub
             await this.SendRoomListUpdate();
         }
         await base.OnDisconnectedAsync(exception);
+    }
+
+    /// <summary>
+    /// Quand le joueur fourni un JWT Token lie la session de connxion au nom d'utilisateur
+    /// </summary>
+    /// <param name="token">JWT token</param>
+    public Task ConnectAccount(string token)
+    {
+        // Premièrement on vérifie la validité du token
+        if (JWTCheck.CheckToken(token))
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+            if (securityToken != null)
+            {
+                // on recupère le champ "given_name" correspondant au username
+                var claim = securityToken.Claims.FirstOrDefault(c => c.Type == "given_name");
+
+                if (claim != null)
+                {
+                    // on récupère le string
+                    var claimValue = claim.Value;
+                    try
+                    {
+                        //on ajoute ou on update le lien entre le connexion_id et l'username
+                        _clientServeur.AddOrUpdate(
+                            this.Context.ConnectionId,
+                            cle => claimValue,
+                            (cle, ancienneValeur) => claimValue.ToString()
+                        );
+                        //Console.WriteLine("user : "+ claimValue + " associé à l'id : " + this.Context.ConnectionId );
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                }
+                else
+                {
+                    // a remplacer par une exception
+                    Console.WriteLine("No given_name in the token");
+                }
+            }
+            else
+            {
+                // a remplacer par une exception
+                Console.WriteLine("Invalid JWT token format.");
+            }
+        }
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -249,4 +308,14 @@ public sealed class OkeyHub : Hub
             .Clients.Group(room.GetRoomName())
             .SendAsync("ReceiveMessage", "La partie va commencer !");
     }
+
+    /* test pruposes only
+    public async Task getAllAssociations()
+    {
+        foreach (var elmt in _clientServeur)
+        {
+            Console.WriteLine($"Key: {elmt.Key}, Value: {elmt.Value}");
+        }
+    }
+    */
 }
