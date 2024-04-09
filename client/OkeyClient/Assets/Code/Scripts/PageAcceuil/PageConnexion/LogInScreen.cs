@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class LogInScreen : MonoBehaviour
 {
     public GameObject Panel;
+
     //public GameObject PanelAvatar;
     //public GameObject creationPanel;
 
@@ -19,7 +20,7 @@ public class LogInScreen : MonoBehaviour
 
     [SerializeField]
     private Button connexionButton;
-    
+
     [SerializeField]
     private Button createButton;
 
@@ -55,10 +56,7 @@ public class LogInScreen : MonoBehaviour
         string username = Username.text.Trim();
         string password = Password.text.Trim();
 
-        if (
-            !string.IsNullOrEmpty(username)
-            && !string.IsNullOrEmpty(password)
-        )
+        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
             //manager.ConnexionSelfJoueur(username, password);
             //mettre le Panel de connexion en off
@@ -75,14 +73,12 @@ public class LogInScreen : MonoBehaviour
         }
     }
 
-    void OnCreateClicked() {
+    void OnCreateClicked()
+    {
         string username = Username.text.Trim();
         string password = Password.text.Trim();
 
-        if (
-            !string.IsNullOrEmpty(username)
-            && !string.IsNullOrEmpty(password)
-        )
+        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
             //manager.CreationCompteSelfJoueur(username, password);
             //mettre le Panel de connexion en off

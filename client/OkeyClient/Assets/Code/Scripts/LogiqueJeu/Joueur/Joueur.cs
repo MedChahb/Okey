@@ -25,6 +25,8 @@ namespace LogiqueJeu.Joueur
 
         public int Niveau { get; set; }
 
+        public int Classement { get; set; }
+
         // Not sure if this is necessary
         public bool IsInGame { get; set; }
 
@@ -67,32 +69,25 @@ namespace LogiqueJeu.Joueur
 
         public override string ToString()
         {
-            var Representation = "";
-            if (this.IsInGame)
-            {
-                Representation =
-                    $@"
-                                NomUtilisateur: {this.NomUtilisateur},
-                                Elo: {this.Elo},
-                                IconeProfil: {this.IconeProfil},
-                                Achievements: {string.Join(",", this.Achievements)},
-                                Score: {this.Score},
-                                Niveau: {this.Niveau},
-                                EtatTour: {this.InGame.EtatTour},
-                                Chevalet: {this.InGame.Chevalet},
-                                CurrentEmote: {this.InGame.CurrentEmote}
-                                ";
-            }
-            else
-            {
-                Representation =
-                    $@"
+            var Representation =
+                $@"
                                 NomUtilisateur: {this.NomUtilisateur},
                                 Elo: {this.Elo},
                                 IconeProfil: {this.IconeProfil},
                                 Achievements: {string.Join(",", this.Achievements)},
                                 Score: {this.Score},
                                 Niveau: {this.Niveau}
+
+                                ";
+            if (this.IsInGame)
+            {
+                Representation +=
+                    $@"
+                                ID (SignalR): {this.InGame.ID},
+                                Positon: {this.InGame.Pos},
+                                EtatTour: {this.InGame.EtatTour},
+                                Chevalet: {this.InGame.Chevalet},
+                                CurrentEmote: {this.InGame.CurrentEmote}
                                 ";
             }
             return Representation;

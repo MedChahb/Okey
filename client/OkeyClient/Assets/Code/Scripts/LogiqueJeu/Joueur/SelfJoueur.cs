@@ -176,5 +176,14 @@ namespace LogiqueJeu.Joueur
             this.TokenConnexion = unmarshal.token;
             this.LoadSelf(Behaviour);
         }
+
+        public override string ToString()
+        {
+            return $@"
+                                Login: {this.Login},
+                                TokenConnexion: {this.TokenConnexion},
+                                ";
+            ;
+        }
     }
 }
