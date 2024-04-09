@@ -28,4 +28,9 @@ public class AvatarPanelGear : MonoBehaviour
         InfoPanel.SetActive(false);
         Avatar.SetActive(false);
     }
+
+    public void ShowParamPanel()
+    {
+        Avatar.SetActive(false);
+    }
 }
