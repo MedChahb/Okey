@@ -7,6 +7,9 @@ public class ParametreScreen : MonoBehaviour
     public Image parametresImage; // Reference to the image object
 
     [SerializeField]
+    private TextMeshProUGUI titleCard;
+
+    [SerializeField]
     private Button enBtn;
 
     [SerializeField]
@@ -56,12 +59,14 @@ public class ParametreScreen : MonoBehaviour
     {
         if (GameManager.singleton.language == true) // EN
         {
+            titleCard.text = "Settings";
             soundEffects.text = "Sound Effects";
             music.text = "Music";
             language.text = "Language";
         }
         else
         {
+            titleCard.text = "Parametres";
             soundEffects.text = "Effet Sonores";
             music.text = "Ambiance Musique";
             language.text = "Language";
@@ -70,8 +75,8 @@ public class ParametreScreen : MonoBehaviour
         Color color;
         if (ColorUtility.TryParseHtmlString("#39A24A", out color))
         {
-            enBackground.color = GameManager.singleton.language ? color : Color.white;
-            frBackground.color = GameManager.singleton.language ? Color.white : color;
+            enBackground.color = GameManager.singleton.language ? color : Color.clear;
+            frBackground.color = GameManager.singleton.language ? Color.clear : color;
         }
         else
         {

@@ -100,4 +100,10 @@ public class LogInScreen : MonoBehaviour
     {
         Panel.SetActive(false);
     }
+
+    void Update()
+    {
+        if (GameManager.singleton.language) { }
+        else { }
+    }
 }

@@ -48,22 +48,22 @@ public class UIManagerPAcceuil : MonoBehaviour
         if (GameManager.singleton.language)
         {
             playBtnTxt.text = "Play";
-            if (!connected) 
+            if (!connected)
             {
                 connexionBtn.gameObject.SetActive(true);
-                connexionBtnTxt.text = "Connection";
+                connexionBtnTxt.text = "LogIn";
             }
         }
         else
         {
             playBtnTxt.text = "Jouer";
-            if (!connected) 
+            if (!connected)
             {
                 connexionBtn.gameObject.SetActive(true);
                 connexionBtnTxt.text = "Connexion";
             }
         }
-        if (connected) 
+        if (connected)
         {
             PanelAvatar.SetActive(true);
             connexionBtn.gameObject.SetActive(false);
@@ -108,7 +108,8 @@ public class UIManagerPAcceuil : MonoBehaviour
         }
     }
 
-    public void setConnected(bool isConnected) {
+    public void setConnected(bool isConnected)
+    {
         this.connected = isConnected;
     }
 }
