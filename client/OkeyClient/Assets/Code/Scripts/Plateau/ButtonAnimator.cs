@@ -32,9 +32,9 @@ public class ButtonAnimator : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     {
         while (isAutomaticallyAnimating)
         {
-            // Anime le bouton pour se compresser doucement
+            // Anime le bouton pour se compresser
             yield return AnimateScale(pressedScale, animationSpeed / 2);
-            // Puis anime le bouton pour se décompresser doucement
+            // Puis anime le bouton pour se décompresser
             yield return AnimateScale(normalScale, animationSpeed / 2);
         }
     }
