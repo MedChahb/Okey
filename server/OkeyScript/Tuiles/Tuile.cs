@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//just pour l'affichage du chevalet, apres je les remets
 
-//just pour l'affichage du chevalet, apres je les remets
-public enum CouleurTuile
-{
-    J, //Jaune
-    N, //Noir
-    R, //Rouge
-    B, //Bleu
-    M  //Mult
-}
 
 namespace Okey.Tuiles
 {
+    public enum CouleurTuile
+    {
+        J, //Jaune
+        N, //Noir
+        R, //Rouge
+        B, //Bleu
+        M  //Mult
+    }
     public abstract class Tuile
     {
         protected CouleurTuile Couleur;
