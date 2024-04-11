@@ -34,6 +34,9 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     private bool connected = false;
 
+    [SerializeField]
+    public JoueurManager manager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,6 +69,7 @@ public class UIManagerPAcceuil : MonoBehaviour
         if (connected)
         {
             PanelAvatar.SetActive(true);
+            PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager.GetSelfJoueur().NomUtilisateur;
             connexionBtn.gameObject.SetActive(false);
         }
         else
