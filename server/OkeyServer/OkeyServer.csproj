@@ -15,8 +15,7 @@
 
     <ItemGroup>
       <Reference Include="Okey">
-        <HintPath>..\OkeyScript\bin\Debug\net8.0\Okey.dll</HintPath>
+        <HintPath>References\Okey.dll</HintPath>
       </Reference>
     </ItemGroup>
-
 </Project>
