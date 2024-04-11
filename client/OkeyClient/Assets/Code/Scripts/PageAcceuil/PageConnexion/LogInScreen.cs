@@ -47,6 +47,11 @@ public class LogInScreen : MonoBehaviour
 
         // Ajoute un écouteur au bouton "Retour"
         backButton.onClick.AddListener(onBackBtnClicked);
+        
+        Username.onValueChanged.AddListener(OnInputChanged);
+
+        Password.onValueChanged.AddListener(OnInputChanged);
+        
         erreurTxt.gameObject.SetActive(false);
     }
 
@@ -58,13 +63,7 @@ public class LogInScreen : MonoBehaviour
 
         if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
-            //manager.ConnexionSelfJoueur(username, password);
-            //mettre le Panel de connexion en off
-            Panel.SetActive(false);
-
-            //activer le Panel de User avec avatar
-            //PanelAvatar.SetActive(true);
-            accueil.setConnected(true);
+            manager.ConnexionSelfJoueur(username, password, UpdateWithConnection);
         }
         else
         {
@@ -80,13 +79,7 @@ public class LogInScreen : MonoBehaviour
 
         if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
-            //manager.CreationCompteSelfJoueur(username, password);
-            //mettre le Panel de connexion en off
-            Panel.SetActive(false);
-            accueil.setConnected(true);
-            //Debug.LogWarning("Compte créé !");
-            //Debug.LogWarning(username);
-            //Debug.LogWarning(password);
+            manager.CreationCompteSelfJoueur(username, password, UpdateWithConnection);
         }
         else
         {
@@ -99,5 +92,39 @@ public class LogInScreen : MonoBehaviour
     private void onBackBtnClicked()
     {
         Panel.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (UIManager.singleton.language) { }
+        else { }
+    }
+
+    public void UpdateWithConnection(int code) 
+    {
+        if (code == 200)
+        {
+            Panel.SetActive(false);
+            accueil.setConnected(true);
+        }
+        else if(code == 500)
+        {
+            erreurTxt.text = "La création de votre compte a échouée";
+            erreurTxt.gameObject.SetActive(true);
+        }
+        else
+        {
+            erreurTxt.text = "Identifiant ou mot de passe invalide";
+            erreurTxt.gameObject.SetActive(true);
+        }
+    }
+
+
+    private void OnInputChanged(string value)
+    {
+        if(value != null)
+        {
+            erreurTxt.gameObject.SetActive(false);
+        }
     }
 }

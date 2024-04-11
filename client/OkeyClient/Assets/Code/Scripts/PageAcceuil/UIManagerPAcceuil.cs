@@ -34,6 +34,9 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     private bool connected = false;
 
+    [SerializeField]
+    public JoueurManager manager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,27 +48,28 @@ public class UIManagerPAcceuil : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.singleton.language)
+        if (UIManager.singleton.language)
         {
             playBtnTxt.text = "Play";
-            if (!connected) 
+            if (!connected)
             {
                 connexionBtn.gameObject.SetActive(true);
-                connexionBtnTxt.text = "Connection";
+                connexionBtnTxt.text = "LogIn";
             }
         }
         else
         {
             playBtnTxt.text = "Jouer";
-            if (!connected) 
+            if (!connected)
             {
                 connexionBtn.gameObject.SetActive(true);
                 connexionBtnTxt.text = "Connexion";
             }
         }
-        if (connected) 
+        if (connected)
         {
             PanelAvatar.SetActive(true);
+            PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager.GetSelfJoueur().NomUtilisateur;
             connexionBtn.gameObject.SetActive(false);
         }
         else
@@ -108,7 +112,8 @@ public class UIManagerPAcceuil : MonoBehaviour
         }
     }
 
-    public void setConnected(bool isConnected) {
+    public void setConnected(bool isConnected)
+    {
         this.connected = isConnected;
     }
 }
