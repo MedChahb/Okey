@@ -48,9 +48,11 @@ namespace LogiqueJeu.Joueur
             }
         }
 
+        public event EventHandler JoueurChangeEvent;
+
         public Joueur()
         {
-            this.NomUtilisateur = "Anonyme";
+            this.NomUtilisateur = Constants.ANONYMOUS_PLAYER_NAME;
             this.Elo = 0;
             this.IconeProfil = 0;
             this.Score = 0;

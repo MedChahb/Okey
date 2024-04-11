@@ -12,5 +12,6 @@ public static class Constants
     public const string API_URL_PROD =
         "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-1/okeyapi/";
     public const string SELF_PLAYER_SAVE_FILE = "/Player.dat";
+    public const string ANONYMOUS_PLAYER_NAME = "Anonyme";
     public const string SIGNALR_HUB_URL = "to be added";
 }

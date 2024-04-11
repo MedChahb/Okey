@@ -9,14 +9,11 @@ namespace LogiqueJeu.Joueur
 
     public sealed class SelfJoueur : Joueur
     {
-        // Pas d'idée si ça c'est nécessaire vraiment
-        public string Login { get; set; }
         public string TokenConnexion { get; set; }
 
         public SelfJoueur()
             : base()
         {
-            this.Login = null;
             this.TokenConnexion = null;
             this.InGame.Pos = Position.SoiMeme;
         }
@@ -39,7 +36,7 @@ namespace LogiqueJeu.Joueur
                     reader?.Close();
                 }
             }
-            if (this.NomUtilisateur != null && this.TokenConnexion != null)
+            if (this.TokenConnexion != null && this.NomUtilisateur != null)
             {
                 Behaviour.StartCoroutine(this.FetchUserBG(this.UnmarshalAndInit));
             }
@@ -63,6 +60,23 @@ namespace LogiqueJeu.Joueur
             finally
             {
                 writer?.Close();
+            }
+        }
+
+        public void DeleteXML()
+        {
+            try
+            {
+                File.Delete(Application.persistentDataPath + Constants.SELF_PLAYER_SAVE_FILE);
+            }
+            catch (Exception e)
+            {
+                if (e is DirectoryNotFoundException or NotSupportedException)
+                {
+                    Debug.Log("Could not delete SelfJoueur save file");
+                    return;
+                }
+                throw;
             }
         }
 
@@ -92,7 +106,6 @@ namespace LogiqueJeu.Joueur
         private void CopyFrom(SelfJoueur SelfJoueur)
         {
             base.CopyFrom(SelfJoueur);
-            this.Login = SelfJoueur.NomUtilisateur;
             this.TokenConnexion = SelfJoueur.TokenConnexion;
         }
 
@@ -108,30 +121,36 @@ namespace LogiqueJeu.Joueur
         public void ConnexionCompte(
             MonoBehaviour Behaviour,
             string NomUtilisateur,
-            string MotDePasse
+            string MotDePasse,
+            Action<int> CallbackResult = null
         )
         {
             var JSON = JsonUtility.ToJson(
                 new SelfJoueurAPIConnexionDTO(NomUtilisateur, MotDePasse)
             );
-            Behaviour.StartCoroutine(this.PostUserConnexionBG(Behaviour, JSON, IsCreation: false));
+            Behaviour.StartCoroutine(
+                this.PostUserConnexionBG(Behaviour, JSON, IsCreation: false, CallbackResult)
+            );
         }
 
         public void CreationCompte(
             MonoBehaviour Behaviour,
             string NomUtilisateur,
-            string MotDePasse
+            string MotDePasse,
+            Action<int> CallbackResult = null
         )
         {
             var JSON = JsonUtility.ToJson(
                 new SelfJoueurAPIConnexionDTO(NomUtilisateur, MotDePasse)
             );
-            Behaviour.StartCoroutine(this.PostUserConnexionBG(Behaviour, JSON, IsCreation: true));
+            Behaviour.StartCoroutine(
+                this.PostUserConnexionBG(Behaviour, JSON, IsCreation: true, CallbackResult)
+            );
         }
 
         public void DeconnexionCompte()
         {
-            File.Delete(Application.persistentDataPath + Constants.SELF_PLAYER_SAVE_FILE);
+            this.DeleteXML();
             this.CopyFrom(new SelfJoueur());
         }
 
@@ -148,7 +167,8 @@ namespace LogiqueJeu.Joueur
         private IEnumerator PostUserConnexionBG(
             MonoBehaviour Behaviour,
             string JSON,
-            bool IsCreation = false
+            bool IsCreation = false,
+            Action<int> CallbackResult = null
         )
         {
             var Response = "";
@@ -161,25 +181,25 @@ namespace LogiqueJeu.Joueur
             www.certificateHandler = new BypassCertificate();
             yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+            if (www.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log(www.error);
+                Response = www.downloadHandler.text;
+                var unmarshal = JsonUtility.FromJson<SelfJoueurAPIConnexionResponseDTO>(Response);
+                this.NomUtilisateur = unmarshal.userName;
+                this.TokenConnexion = unmarshal.token;
+                this.LoadSelf(Behaviour);
             }
             else
             {
-                Response = www.downloadHandler.text;
+                Debug.Log(www.error);
             }
 
-            var unmarshal = JsonUtility.FromJson<SelfJoueurAPIConnexionResponseDTO>(Response);
-            this.NomUtilisateur = unmarshal.userName;
-            this.TokenConnexion = unmarshal.token;
-            this.LoadSelf(Behaviour);
+            CallbackResult?.Invoke((int)www.responseCode);
         }
 
         public override string ToString()
         {
             return $@"
-                                Login: {this.Login},
                                 TokenConnexion: {this.TokenConnexion},
                                 ";
             ;
