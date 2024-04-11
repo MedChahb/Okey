@@ -1,13 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Okey.Joueurs;
 using Okey.Tuiles;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Okey.Game
 {
