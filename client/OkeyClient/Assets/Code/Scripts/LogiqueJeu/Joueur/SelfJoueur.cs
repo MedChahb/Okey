@@ -4,7 +4,6 @@ namespace LogiqueJeu.Joueur
     using System.Collections;
     using System.IO;
     using System.Xml.Serialization;
-    using LogiqueJeu.Constants;
     using UnityEngine;
     using UnityEngine.Networking;
 
