@@ -45,6 +45,12 @@ public class Chevalet : MonoBehaviour
         pileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
         pilePiochePlaceHolder = GameObject.Find("PiochePlaceHolder");
         jokerPlaceHolder = GameObject.Find("Okey");
+        pileGauche.Push(pileGauchePlaceHolder
+            .transform.GetChild(0)
+            .gameObject.GetComponent<Tuile>());
+        pileGauche.Push(pileGauchePlaceHolder
+            .transform.GetChild(0)
+            .gameObject.GetComponent<Tuile>());
         pileGauchePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
@@ -107,10 +113,9 @@ public class Chevalet : MonoBehaviour
             && getTilesNumber() == 15 /* et peut gagner*/
         )
         {
-            closestPlaceholder = jokerPlaceHolder;
+            closestPlaceholder = pilePiochePlaceHolder;
         }
 
-        Debug.Log("Position de la souris:" + position + " - Closest distance:" + closestDistance);
         return closestPlaceholder;
     }
 
@@ -155,6 +160,14 @@ public class Chevalet : MonoBehaviour
                     .transform.GetChild(0)
                     .gameObject.GetComponent<Tuile>()
                     .SetIsInStack(false);
+                pileGauche.Pop();
+                if (pileGauche.Count > 0) 
+                {
+                    GameObject newChild = Instantiate(pileGauche.Peek().gameObject, pileGauchePlaceHolder.transform);
+                    newChild.transform.localPosition = Vector3.zero;
+                    newChild.GetComponent<Tuile>().SetIsInStack(true);
+                    newChild.GetComponent<Tuile>().SetIsDeplacable(false);
+                }
                 //Insérer la tuile suivante de la stack comme tuile fille du pileGauchePlaceHolder et lui passer
             }
             else
