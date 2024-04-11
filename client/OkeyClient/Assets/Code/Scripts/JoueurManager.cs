@@ -2,29 +2,47 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using LogiqueJeu.Joueur;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class JoueurManager : MonoBehaviour
 {
+    public static JoueurManager Instance { get; private set; }
+
+    [SerializeField]
+    private bool CleanStart = false; // Manipulez dans l'éditeur Unity pour invalider les données de cache SelfJoueur
     private readonly List<Joueur> Joueurs = new(3);
     private SelfJoueur SoiMeme;
 
+    [HideInInspector]
+    public UnityEvent OnSelfJoueurChange = new();
+
+    [HideInInspector]
+    public UnityEvent OnOtherJoueurChange = new();
+
+    [HideInInspector]
+    public UnityEvent OnAnyJoueurChange = new();
+
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
+
         this.SoiMeme = new();
-
-        // code pour tester
-        this.SoiMeme.NomUtilisateur = "Testeur1";
-        this.SoiMeme.TokenConnexion =
-            "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJnaXZlbl9uYW1lIjoiVGVzdGV1cjEiLCJuYmYiOjE3MTE4NDc3MDksImV4cCI6MTcxMjQ1MjUwOSwiaWF0IjoxNzExODQ3NzA5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUyNDYiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUyNDYifQ.uf4hmpxz6MwjWD7txbxuZtf64gEMg_kxuQRYFNmWEGnw5pDLJShABigmZrFhUdODs11nBQNvQMVzV3v8VFRyfQ";
-        this.SoiMeme.SaveXML();
-        // fin code pour tester
-
+        if (this.CleanStart)
+        {
+            this.SoiMeme.DeleteXML();
+        }
         this.SoiMeme.LoadSelf(this);
     }
-
-    private void Update() { }
 
     public void AddGenericJoueur(
         int ID,
@@ -101,6 +119,7 @@ public class JoueurManager : MonoBehaviour
 
     public void UpdateJoueurs()
     {
+        this.SoiMeme.LoadSelf(this);
         foreach (var Joueur in this.Joueurs)
         {
             Joueur.LoadSelf(this);
@@ -140,14 +159,22 @@ public class JoueurManager : MonoBehaviour
         // return this.Joueurs.ConvertAll(Joueur => Joueur.Clone()).Insert(0, this.SoiMeme.Clone());
     }
 
-    public void ConnexionSelfJoueur(string NomUtilisateur, string MotDePasse)
+    public void ConnexionSelfJoueur(
+        string NomUtilisateur,
+        string MotDePasse,
+        Action<int> CallbackResult = null
+    )
     {
-        this.SoiMeme.ConnexionCompte(this, NomUtilisateur, MotDePasse);
+        this.SoiMeme.ConnexionCompte(this, NomUtilisateur, MotDePasse, CallbackResult);
     }
 
-    public void CreationCompteSelfJoueur(string NomUtilisateur, string MotDePasse)
+    public void CreationCompteSelfJoueur(
+        string NomUtilisateur,
+        string MotDePasse,
+        Action<int> CallbackResult = null
+    )
     {
-        this.SoiMeme.CreationCompte(this, NomUtilisateur, MotDePasse);
+        this.SoiMeme.CreationCompte(this, NomUtilisateur, MotDePasse, CallbackResult);
     }
 
     public void DeconnexionSelfJoueur()
