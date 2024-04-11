@@ -42,12 +42,12 @@ public class ParametreScreen : MonoBehaviour
 
     private void onFrBtnClicked()
     {
-        GameManager.singleton.language = false;
+        UIManager.singleton.language = false;
     }
 
     private void onEnBtnClicked()
     {
-        GameManager.singleton.language = true;
+        UIManager.singleton.language = true;
     }
 
     private void onBackBtnClicked()
@@ -57,7 +57,7 @@ public class ParametreScreen : MonoBehaviour
 
     public void Update()
     {
-        if (GameManager.singleton.language == true) // EN
+        if (UIManager.singleton.language == true) // EN
         {
             titleCard.text = "Settings";
             soundEffects.text = "Sound Effects";
@@ -75,8 +75,8 @@ public class ParametreScreen : MonoBehaviour
         Color color;
         if (ColorUtility.TryParseHtmlString("#39A24A", out color))
         {
-            enBackground.color = GameManager.singleton.language ? color : Color.clear;
-            frBackground.color = GameManager.singleton.language ? Color.clear : color;
+            enBackground.color = UIManager.singleton.language ? color : Color.clear;
+            frBackground.color = UIManager.singleton.language ? Color.clear : color;
         }
         else
         {

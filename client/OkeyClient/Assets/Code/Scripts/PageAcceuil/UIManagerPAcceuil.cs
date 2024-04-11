@@ -45,7 +45,7 @@ public class UIManagerPAcceuil : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.singleton.language)
+        if (UIManager.singleton.language)
         {
             playBtnTxt.text = "Play";
             if (!connected)

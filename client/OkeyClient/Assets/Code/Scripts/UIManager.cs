@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
-    public static GameManager singleton; // this is the manager of the game that can be accessed globally thanks to the static keyword
+    public static UIManager singleton; // this is the manager of the game that can be accessed globally thanks to the static keyword
     public bool language = true; // true = English, false = French - logic may change later on
 
     [SerializeField]
@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Check if an instance already exists
+        Debug.Log("[UIManager] Awake called.");
+
         if (singleton == null)
         {
             // If not, set the singleton to this instance and make sure it persists across scene loads

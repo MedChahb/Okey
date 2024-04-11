@@ -599,6 +599,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backBtn: {fileID: 1234134177}
   partieSimpleTxt: {fileID: 2056424586}
+  joinLobbyBtn: {fileID: 31012457}
   SceneId: 0
 --- !u!1 &1878747872
 GameObject:

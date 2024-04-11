@@ -12,18 +12,22 @@ public class UIManagerPFormulaire : MonoBehaviour
     private TextMeshProUGUI partieSimpleTxt;
 
     [SerializeField]
+    private Button joinLobbyBtn;
+
+    [SerializeField]
     private int SceneId;
 
     // Start is called before the first frame update
     void Start()
     {
         backBtn.onClick.AddListener(onBackBtnClicked);
+        joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.singleton.language) // En
+        if (UIManager.singleton.language) // En
         {
             partieSimpleTxt.text = "Texte en anglais";
         }
@@ -36,5 +40,15 @@ public class UIManagerPFormulaire : MonoBehaviour
     void onBackBtnClicked()
     {
         SceneManager.LoadScene(SceneId);
+    }
+
+    public void onJoinLobbyButtonPressed()
+    {
+        if (LobbyManager.Instance == null)
+        {
+            Debug.LogError("LobbyManager instance is null.");
+            return;
+        }
+        LobbyManager.Instance.InitializeConnection();
     }
 }
