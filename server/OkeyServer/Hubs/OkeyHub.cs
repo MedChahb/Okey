@@ -2,9 +2,11 @@ namespace OkeyServer.Hubs;
 
 using System.Collections.Concurrent;
 using System.IdentityModel.Tokens.Jwt;
-using Lobby.Exception;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
+using Okey;
+using Okey.Game;
+using Okey.Joueurs;
 using Security;
 
 /// <summary>
@@ -13,42 +15,18 @@ using Security;
 
 public sealed class OkeyHub : Hub
 {
-    // necessité d'avoir accès à l'ensemble des rooms ici
-
-    private static List<Room> _roomsAvailable;
-    private static List<Room> _roomsBusy;
-    private static int _nbJoueursOnline;
     private static ConcurrentDictionary<string, string> _clientServeur =
         new ConcurrentDictionary<string, string>();
+    private readonly IRoomManager _roomManager;
+    private readonly IHubContext<OkeyHub> _hubContext;
+    private static readonly char[] Separator = new char[] { ';' };
+    private ConcurrentDictionary<string, bool> _isPlayerTurn;
 
-    static OkeyHub()
+    public OkeyHub(IHubContext<OkeyHub> hubContext, IRoomManager roomManager)
     {
-        var r1 = new Room("room1");
-        var r2 = new Room("room2");
-        var r3 = new Room("room3");
-        var r4 = new Room("room4");
-
-        _roomsAvailable = new List<Room>() { r1, r2, r3, r4 };
-        _roomsBusy = new List<Room>();
-        _nbJoueursOnline = 0;
-    }
-
-    /// <summary>
-    /// Méthode temporaire permettant de recuperer les rooms avec toutes les informations
-    /// </summary>
-    /// <returns>Chaine de caractere contenant l'affichage de l'etat actuel des rooms</returns>
-    private static string DisplayRoomsAvailable()
-    {
-        var buffer =
-            $"\nIl y a {_nbJoueursOnline} joueurs en ligne.\nVoici les chambres que vous pouvez rejoindre: \n";
-        foreach (var r in _roomsAvailable)
-        {
-            buffer += "----\n";
-            buffer += $"Nom: {r.GetRoomName()}\n";
-            buffer += $"État de la room: {r.GetNbCurrent()} / {r.GetCapacity()}\n";
-        }
-        buffer += "---";
-        return buffer;
+        this._roomManager = roomManager;
+        this._hubContext = hubContext;
+        this._isPlayerTurn = new ConcurrentDictionary<string, bool>();
     }
 
     /// <summary>
@@ -57,44 +35,29 @@ public sealed class OkeyHub : Hub
     /// </summary>
     public override async Task OnConnectedAsync()
     {
-        try
-        {
-            await this.Groups.AddToGroupAsync(this.Context.ConnectionId, "Hub");
-            _nbJoueursOnline++;
-            await this.SendToLobby("Hub", DisplayRoomsAvailable());
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, "Hub");
+        await this.SendRoomListUpdate();
         await base.OnConnectedAsync();
     }
 
+    /// <summary>
+    /// On supprime automatiquement le client au groupe Hub.
+    /// </summary>
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        _clientServeur.TryRemove(this.Context.ConnectionId, out _);
+        var roomId = this._roomManager.GetRoomIdByConnectionId(this.Context.ConnectionId);
+        this._roomManager.PlayerDisconnected(this.Context.ConnectionId);
+        await this.SendRoomListUpdate();
+        if (!string.IsNullOrEmpty(roomId))
+        {
+            await this
+                ._hubContext.Clients.Group(roomId)
+                .SendAsync(
+                    "ReceiveMessage",
+                    $"Player {this.Context.ConnectionId} has left the lobby."
+                );
+        }
 
-        var roomId = string.Empty;
-        foreach (var r in _roomsAvailable)
-        {
-            foreach (var id in r.GetUserIds())
-            {
-                if (this.Context.ConnectionId.Equals(id, StringComparison.Ordinal))
-                {
-                    roomId = r.GetRoomName();
-                }
-            }
-        }
-        _nbJoueursOnline--;
-        if (roomId != string.Empty)
-        {
-            await this.LobbyDisconnection(roomId);
-        }
-        else
-        {
-            await this.SendRoomListUpdate();
-        }
         await base.OnDisconnectedAsync(exception);
     }
 
@@ -168,97 +131,36 @@ public sealed class OkeyHub : Hub
     }
 
     /// <summary>
-    /// Donne l'objet Room correspondant à son nom.
-    /// </summary>
-    /// <param name="lobbyName">Nom de la room recherché</param>
-    /// <returns>Room ayant pour attribut roomName le lobbyName</returns>
-    private static Room? GetRoomById(string lobbyName) =>
-        _roomsAvailable.FirstOrDefault(r =>
-            r.GetRoomName().Equals(lobbyName, StringComparison.Ordinal)
-        );
-
-    /// <summary>
-    /// Permet d'envoyer le nouvel etat des rooms au clients dans le Hub.
-    /// </summary>
-    private async Task SendRoomListUpdate() =>
-        await this.Clients.Group("Hub").SendAsync("ReceiveMessage", DisplayRoomsAvailable());
-
-    /// <summary>
     /// Effectue la connection au lobby correspondant au lobbyName si ce lobby est joignable
     /// </summary>
     /// <param name="lobbyName"> chaine de caractère correspondant au lobby souhaitant être rejoint </param>
     public async Task LobbyConnection(string lobbyName)
     {
-        var room = GetRoomById(lobbyName);
-        if ( /* vérifie que lobbyname correspond à un lobby existant et disponible*/
-            room != null
-        )
+        var success = this._roomManager.TryJoinRoom(lobbyName, this.Context.ConnectionId);
+        if (success)
         {
-            /* soit on assigne automatiquement le lobby soit le joueur à le choix  enlever lobbyname si auto*/
-            try
-            {
-                await this.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, "Hub");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                await this.Clients.Caller.SendAsync(
-                    "ReceiveMessage",
-                    $"An error Occured or you tried to connect to a lobby from another lobby \nException : {e}"
-                );
-                throw;
-            }
+            await this._hubContext.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, "Hub");
 
-            try
-            {
-                var res = room.JoueurJoinRoom(this.Context.ConnectionId);
-                if (res == null)
-                {
-                    /* La room est pleine */
-                    await this
-                        .Clients.Client(this.Context.ConnectionId)
-                        .SendAsync(
-                            "ReceiveMessage",
-                            "Le lobby est plein, veuillez en choisir un autre."
-                        );
-                    await this.Groups.AddToGroupAsync(this.Context.ConnectionId, "Hub");
-                }
-                else if (res == false)
-                {
-                    /* La room est désormais complète il faut la retirer des rooms disponnibles */
-                    await this.Groups.AddToGroupAsync(this.Context.ConnectionId, lobbyName);
-                    _roomsBusy.Add(room);
-                    _roomsAvailable.Remove(room);
-                    await this.SendRoomListUpdate();
-                    await this
-                        .Clients.Group(lobbyName)
-                        .SendAsync(
-                            "ReceiveMessage",
-                            $"Le joueur {this.Context.ConnectionId} a rejoint {lobbyName}"
-                        );
-                    /* Ici on lance la partie ! */
-                    await this.LaunchGame(room);
-                }
-                else
-                {
-                    /* Tout se passe bien ici */
-                    await this.Groups.AddToGroupAsync(this.Context.ConnectionId, lobbyName);
-                    await this.SendRoomListUpdate();
-                    await this
-                        .Clients.Group(lobbyName)
-                        .SendAsync(
-                            "ReceiveMessage",
-                            $"Le joueur {this.Context.ConnectionId} a rejoint {lobbyName}"
-                        );
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(
-                    $"{e} \nAn error occured while user was added to the group {lobbyName}"
+            await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, lobbyName);
+            await this.SendRoomListUpdate();
+
+            await this
+                ._hubContext.Clients.Group(lobbyName)
+                .SendAsync(
+                    "ReceiveMessage",
+                    $"Player {this.Context.ConnectionId} joined {lobbyName}"
                 );
-                throw;
+
+            if (this._roomManager.IsRoomFull(lobbyName))
+            {
+                this.OnGameStarted(lobbyName);
             }
+        }
+        else
+        {
+            await this
+                ._hubContext.Clients.Client(this.Context.ConnectionId)
+                .SendAsync("ReceiveMessage", "Unable to join the room. It may be full.");
         }
     }
 
@@ -268,45 +170,160 @@ public sealed class OkeyHub : Hub
     /// <param name="lobbyName"> nom du lobby à quitter </param>
     public async Task LobbyDisconnection(string lobbyName)
     {
-        try
+        this._roomManager.LeaveRoom(lobbyName, this.Context.ConnectionId);
+        await this
+            ._hubContext.Clients.Group(lobbyName)
+            .SendAsync("ReceiveMessage", $"Player {this.Context.ConnectionId} left the lobby.");
+        await this.SendRoomListUpdate();
+    }
+
+    public Coord ReadCoords(string str)
+    {
+        Console.WriteLine(str);
+        var parts = str.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length != 2)
         {
-            var room = GetRoomById(lobbyName);
-            await this.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, lobbyName);
-            var b = room?.JoueurLeaveRoom(this.Context.ConnectionId);
-            if (b == true)
-            {
-                /* Une nouvelle room est disponible */
-                if (room != null)
-                {
-                    _roomsAvailable.Add(room);
-                    _roomsBusy.Remove(room);
-                }
-                else
-                {
-                    throw new RoomNotFoundException("Erreur systeme.");
-                }
-            }
-            await this
-                .Clients.Group(lobbyName)
-                .SendAsync(
-                    "ReceiveMessage",
-                    $"Le joueur {this.Context.ConnectionId} a quitté le lobby!"
-                );
-            await this.Groups.AddToGroupAsync(this.Context.ConnectionId, "Hub");
-            await this.SendRoomListUpdate();
+            throw new ArgumentException(
+                "La chaîne de coordonnées doit contenir exactement deux parties."
+            );
         }
-        catch (Exception e)
+        return new Coord(int.Parse(parts[0]), int.Parse(parts[1]));
+    }
+
+    /// <summary>
+    /// Permet de lancer la partie
+    /// </summary>
+    /// <param name="roomName">Nom de room</param>
+    private async void OnGameStarted(string roomName) => await this.StartGameForRoom(roomName);
+
+    /// <summary>
+    /// Envoie un message a tout les utilisateurs d'un groupe
+    /// </summary>
+    /// <param name="roomName">nom de room</param>
+    /// <param name="message">message a envoyer</param>
+    private async Task BroadCastInRoom(string roomName, string message) =>
+        await this._hubContext.Clients.Group(roomName).SendAsync("ReceiveMessage", message);
+
+    /// <summary>
+    /// Envoie un message a tout un utilisateur d'un groupe
+    /// </summary>
+    /// <param name="userId">nom de l'utilisateur</param>
+    /// <param name="message">message a envoyer</param>
+    private async Task SendMpToPlayer(string userId, string message) =>
+        await this._hubContext.Clients.Client(userId).SendAsync("ReceiveMessage", message);
+
+    /// <summary>
+    /// Requete de coordoonnees
+    /// </summary>
+    /// <param name="connectionId">Id de l'utilisateur</param>
+    /// <returns>Contrat</returns>
+    private async Task<string> CoordsRequest(string connectionId) =>
+        await this
+            ._hubContext.Clients.Client(connectionId)
+            .InvokeAsync<string>("ReceiveRequest", cancellationToken: CancellationToken.None);
+
+    /// <summary>
+    /// Requete de pioche
+    /// </summary>
+    /// <param name="connectionId"></param>
+    /// <returns>Contrat</returns>
+    public async Task<string> PiocheRequest(string connectionId) =>
+        await this
+            ._hubContext.Clients.Client(connectionId)
+            .InvokeAsync<string>("PiocheRequest", cancellationToken: CancellationToken.None);
+
+    /// <summary>
+    /// Permet de definir l'etat du tour d'un joueur
+    /// </summary>
+    /// <param name="playerName">Nom du joueur</param>
+    /// <param name="isTurn">Booleen: vrai -> c'est son tour ; false => ce n'est pas son tour</param>
+    private void SetPlayerTurn(string playerName, bool isTurn) =>
+        this._isPlayerTurn[playerName] = isTurn;
+
+    /// <summary>
+    /// Fonction se declanchant quand il y a assez de monde, lancement du jeu
+    /// </summary>
+    /// <param name="roomName">nom de la room qui accueille le jeu</param>
+    public async Task StartGameForRoom(string roomName)
+    {
+        await this.BroadCastInRoom(roomName, "La partie va commencer");
+
+        var playerIds = this._roomManager.GetRooms()[roomName].GetPlayerIds();
+        Joueur[] joueurs =
         {
-            Console.WriteLine(e);
-            throw;
+            new Humain(1, playerIds[0], 800),
+            new Humain(2, playerIds[1], 100),
+            new Humain(3, playerIds[2], 2400),
+            new Humain(4, playerIds[3], 2400)
+        };
+
+        var jeu = new Jeu(1, joueurs);
+        jeu.DistibuerTuile();
+        await this.BroadCastInRoom(roomName, "Les tuiles ont été distribuees");
+
+        foreach (var t in joueurs)
+        {
+            this.SetPlayerTurn(t.getName(), false);
+        }
+
+        var joueurStarter = jeu.getJoueurActuel();
+        this.SetPlayerTurn(joueurStarter.getName(), true);
+        await this.SendMpToPlayer(joueurStarter.getName(), jeu.StringChevaletActuel());
+        var coords = await this.CoordsRequest(joueurStarter.getName());
+        joueurStarter.JeterTuile(this.ReadCoords(coords), jeu);
+        this.SetPlayerTurn(joueurStarter.getName(), false);
+        this.SetPlayerTurn(jeu.getJoueurActuel().getName(), true);
+
+        while (!jeu.isTermine())
+        {
+            var currentPlayer = jeu.getJoueurActuel();
+            if (this._isPlayerTurn[currentPlayer.getName()])
+            {
+                Console.WriteLine($"C'est le tour de {currentPlayer.getName()}");
+                await this.SendMpToPlayer(currentPlayer.getName(), "C'est votre tour");
+                await this.SendMpToPlayer(currentPlayer.getName(), jeu.StringChevaletActuel());
+
+                var pioche = await this.PiocheRequest(currentPlayer.getName());
+                if (pioche == "Move")
+                {
+                    await this.MoveInLoop(currentPlayer, jeu);
+                    continue;
+                }
+                currentPlayer.PiocherTuile(pioche, jeu);
+
+                await this.SendMpToPlayer(currentPlayer.getName(), jeu.StringChevaletActuel());
+
+                var coordinates = await this.CoordsRequest(currentPlayer.getName());
+                currentPlayer.JeterTuile(this.ReadCoords(coordinates), jeu);
+
+                this.SetPlayerTurn(currentPlayer.getName(), false);
+                this.SetPlayerTurn(jeu.getJoueurActuel().getName(), true);
+            }
         }
     }
 
-    private async Task LaunchGame(Room room)
+    /// <summary>
+    /// Permet de bouger une tuile sur son chevalet
+    /// </summary>
+    /// <param name="pl"></param>
+    /// <param name="j"></param>
+    public async Task MoveInLoop(Joueur pl, Jeu j)
     {
-        await this
-            .Clients.Group(room.GetRoomName())
-            .SendAsync("ReceiveMessage", "La partie va commencer !");
+        Console.Write("Donner les coords de la tuile à deplacer (y x): ");
+        var from = await this.CoordsRequest(pl.getName());
+        Console.Write("Donner les coords d'où la mettre (y x): ");
+        var to = await this.CoordsRequest(pl.getName());
+        pl.MoveTuileChevalet(this.ReadCoords(from), this.ReadCoords(to), j);
+    }
+
+    /// <summary>
+    /// Permet d'envoyer le nouvel etat des rooms au clients dans le Hub.
+    /// </summary>
+    private async Task SendRoomListUpdate()
+    {
+        var roomsInfo = this._roomManager.GetRoomsInfo();
+        await this._hubContext.Clients.Group("Hub").SendAsync("ReceiveMessage", roomsInfo);
     }
 
     /* test pruposes only

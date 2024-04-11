@@ -13,4 +13,10 @@
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Okey">
+        <HintPath>..\OkeyScript\bin\Debug\net8.0\Okey.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
