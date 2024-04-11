@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Okey.Joueurs
 {
-    
+
     public class Humain : Joueur
     {
         private int Elo;
@@ -20,7 +20,7 @@ namespace Okey.Joueurs
 
         public override void UpdateElo()
         {
-            if(this.Gagnant)
+            if (this.Gagnant)
                 this.Elo += 10;
             else
                 this.Elo -= 10;
@@ -32,7 +32,7 @@ namespace Okey.Joueurs
             Console.WriteLine($"nouveau Elo = {Elo}.");
         }
 
-        public int GetRank() { return this.Rank; }  
+        public int GetRank() { return this.Rank; }
 
 
         public override string ToString()
@@ -40,6 +40,6 @@ namespace Okey.Joueurs
             return $"{this.Name}";
         }
 
-        
+
     }
 }

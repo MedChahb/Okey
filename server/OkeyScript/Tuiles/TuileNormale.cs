@@ -20,7 +20,7 @@ namespace Okey.Tuiles
 
         public override bool estSuivant(Tuile t)
         {
-            return this.Num + 1 == t.GetNum() || (this.Num==13 && t.GetNum() == 1);
+            return this.Num + 1 == t.GetNum() || (this.Num == 13 && t.GetNum() == 1);
         }
 
         public override string ToString()

@@ -16,7 +16,7 @@ namespace Okey.Tuiles
         private int num;
         private bool defausse;
         private bool dansPioche;
-    
+
         public Tuile(CouleurTuile couleur, int num, bool dansPioche)
         {
             this.couleur = couleur;
@@ -48,7 +48,7 @@ namespace Okey.Tuiles
             return this.dansPioche;
         }
 
-        public CouleurTuile GetCouleur() {  return this.couleur; }
+        public CouleurTuile GetCouleur() { return this.couleur; }
         public int GetNum() { return this.num; }
 
         public abstract bool MemeCouleur(Tuile t);

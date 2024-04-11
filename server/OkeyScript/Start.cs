@@ -31,7 +31,7 @@ namespace Okey
             Console.Write("choisis la tuile à jeter (donner ces coords y x) ou 'Move' : ");
             String? action = Console.ReadLine();
 
-            while(string.Equals(action, "move", StringComparison.OrdinalIgnoreCase)) //action == "move"
+            while (string.Equals(action, "move", StringComparison.OrdinalIgnoreCase)) //action == "move"
             {
                 MoveInLoop(joueurStarter, j);
                 joueurStarter?.AfficheChevalet();
@@ -59,7 +59,7 @@ namespace Okey
                     Console.Write("choisis de où piocher ('Centre' ou 'Defausse') ou 'Move': ");
                     String? ouPiocher = Console.ReadLine();
 
-    
+
                     if (string.Equals(ouPiocher, "move", StringComparison.OrdinalIgnoreCase))
                     {
                         MoveInLoop(joueurActuel, j);
@@ -109,11 +109,11 @@ namespace Okey
         internal static readonly char[] separator = new char[] { ' ' };
         public static Coord readCoord(String? str)
         {
-            if(str == null) return new Coord(-1,-1); // renvoie un error (on doit garantir qu'on passera jamais ici)
+            if (str == null) return new Coord(-1, -1); // renvoie un error (on doit garantir qu'on passera jamais ici)
 
             string[] parts = str.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
-            return new Coord(int.Parse(parts[0], System.Globalization.CultureInfo.InvariantCulture), 
+            return new Coord(int.Parse(parts[0], System.Globalization.CultureInfo.InvariantCulture),
                              int.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture));
         }
 

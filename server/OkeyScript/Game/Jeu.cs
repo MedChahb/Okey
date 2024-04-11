@@ -133,7 +133,7 @@ namespace Okey.Game
 
         public void AfficheChevaletJoueurs()
         {
-            
+
 
             foreach (Joueur pl in this.Joueurs)
             {
@@ -142,7 +142,7 @@ namespace Okey.Game
             }
         }
 
-        public void AfficheChevaletActuel() { if(JoueurActuel != null) this.JoueurActuel.AfficheChevalet(); }
+        public void AfficheChevaletActuel() { if (JoueurActuel != null) this.JoueurActuel.AfficheChevalet(); }
 
         public void AffichePiocheCentre()
         {
@@ -157,7 +157,7 @@ namespace Okey.Game
             {
                 Console.WriteLine(elem);
             }
-        }              
+        }
 
         public void SignalChangementTour(Joueur joueurTour)
         {
@@ -260,5 +260,5 @@ namespace Okey.Game
         }
     }
 
-    
+
 }
