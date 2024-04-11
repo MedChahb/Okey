@@ -96,7 +96,7 @@ public class LogInScreen : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.singleton.language) { }
+        if (UIManager.singleton.language) { }
         else { }
     }
 
