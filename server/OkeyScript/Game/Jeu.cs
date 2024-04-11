@@ -15,23 +15,20 @@ namespace Okey.Game
     {
         private int id;
         private Joueur[] Joueurs = new Joueur[4];
-        private double MMR;
+        //private double MMR;
         private Stack<Tuile> pioche = new Stack<Tuile>();
-
-        //Timer timer;
         private bool etat; // false : in game
         private Tuile[] Jokers = new Joker[2];
         private Tuile[] Okays = new Okay[2];
         private List<Tuile> PacketTuile = new List<Tuile>();
-        private Tuile TuileCentre;
-        private bool JeterTuileAppelee = false;
-        private Joueur JoueurActuel;
+        private readonly Tuile TuileCentre;
+        private Joueur? JoueurActuel;
 
         public Jeu(int id, Joueur[] joueurs)
         {
             this.id = id;
             this.Joueurs = joueurs;
-            this.MMR = CalculMMR();
+            //this.MMR = CalculMMR();
             this.etat = false;
             (this.PacketTuile, this.TuileCentre) = GenererPacketTuiles();
         }
@@ -145,7 +142,7 @@ namespace Okey.Game
             }
         }
 
-        public void AfficheChevaletActuel() { this.JoueurActuel.AfficheChevalet(); }
+        public void AfficheChevaletActuel() { if(JoueurActuel != null) this.JoueurActuel.AfficheChevalet(); }
 
         public void AffichePiocheCentre()
         {
@@ -196,7 +193,7 @@ namespace Okey.Game
             return Joueurs;
         }
 
-        public Joueur getJoueurActuel()
+        public Joueur? getJoueurActuel()
         {
             return this.JoueurActuel;
         }
@@ -227,6 +224,12 @@ namespace Okey.Game
         public Tuile PopPiocheCentre()
         {
             return this.pioche.Pop();
+        }
+
+        public void PushPiocheCentre(Tuile? t)
+        {
+            if (t == null) return;
+            this.pioche.Push(t);
         }
         public void setJoueurActuel(Joueur j)
         {

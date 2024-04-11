@@ -34,6 +34,7 @@ namespace Okey.Tuiles
        
         public void SetDefause()
         {
+            if (this == null) return;
             this.defausse = true;
         }
 

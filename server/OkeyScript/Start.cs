@@ -25,102 +25,104 @@ namespace Okey
             j.DistibuerTuile(); // on commence
             Console.WriteLine("Tuiles distribués.\n");
 
-            Joueur joueurStarter = j.getJoueurActuel();
+            Joueur? joueurStarter = j.getJoueurActuel();
             j.AfficheChevaletActuel();
 
-            Console.Write("choisis la tuile à jeter (donner ces coords y x) : ");
-            String action = Console.ReadLine();
+            Console.Write("choisis la tuile à jeter (donner ces coords y x) ou 'Move' : ");
+            String? action = Console.ReadLine();
 
-            while(action == "Move")
+            while(string.Equals(action, "move", StringComparison.OrdinalIgnoreCase)) //action == "move"
             {
                 MoveInLoop(joueurStarter, j);
-                joueurStarter.AfficheChevalet();
-                Console.Write("choisis la tuile à jeter (donner ces coords y x) : ");
+                joueurStarter?.AfficheChevalet();
+                Console.Write("choisis la tuile à jeter (donner ces coords y x) ou 'Move' : ");
                 action = Console.ReadLine();
             }
 
 
             Coord coords = readCoord(action);
-            joueurStarter.JeterTuile(coords, j);
+            joueurStarter?.JeterTuile(coords, j);
 
 
             bool doitJete = false;
 
             while (!j.isTermine())
             {
-                Joueur joueurActuel = j.getJoueurActuel();
+                Joueur? joueurActuel = j.getJoueurActuel();
 
-                Console.WriteLine($"\nc'est le tour de {joueurActuel.getName()}:");
+                Console.WriteLine($"\nc'est le tour de {joueurActuel?.getName()}:");
                 j.AfficheChevaletActuel();
 
                 //le joueur pioche
                 if (!doitJete)
                 {
-                    Console.Write("choisis de où piocher (Centre ou Defausse) : ");
-                    String ouPiocher = Console.ReadLine();
+                    Console.Write("choisis de où piocher ('Centre' ou 'Defausse') ou 'Move': ");
+                    String? ouPiocher = Console.ReadLine();
 
-                    if (ouPiocher == "Move")
+    
+                    if (string.Equals(ouPiocher, "move", StringComparison.OrdinalIgnoreCase))
                     {
                         MoveInLoop(joueurActuel, j);
                         continue;
                     }
-                    joueurActuel.PiocherTuile(ouPiocher, j);
 
-                    Console.WriteLine("\nmaintenant vous devez jeter une tuile.");
-                    j.AfficheChevaletActuel();
+                    if (string.Equals(ouPiocher, "Centre", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(ouPiocher, "Defausse", StringComparison.OrdinalIgnoreCase))
+                    {
+                        joueurActuel?.PiocherTuile(ouPiocher, j);
+                        Console.WriteLine("\nmaintenant vous devez jeter une tuile.");
+                        j.AfficheChevaletActuel();
+                    }
+                    else
+                    { // s'il a pas taper centre ou defausse
+                        continue;
+                    }
                 }
 
                 //le joueur jete
 
-                Console.Write("choisis la tuile à jeter (donner ces coords y x) : ");
-                String coordStr = Console.ReadLine();
-                if (coordStr == "Move")
+                Console.Write("choisis la tuile à jeter (donner ces coords y x) ou taper 'Move' ou 'Gagner': ");
+                String? coordStr = Console.ReadLine();
+                if (string.Equals(coordStr, "move", StringComparison.OrdinalIgnoreCase))
                 {
                     MoveInLoop(joueurActuel, j);
                     doitJete = true;
                     continue;
                 }
+                if (string.Equals(coordStr, "gagner", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.Write("donner les coords de la tuile que vous voulez finir avec : ");
+                    String? coordsToFinish = Console.ReadLine();
+                    Coord c = readCoord(coordsToFinish);
+                    joueurActuel?.JeteTuilePourTerminer(c, j);
+                    doitJete = true;
+                    continue;
+                }
                 Coord coordos = readCoord(coordStr);
-                joueurActuel.JeterTuile(coordos, j);
+                joueurActuel?.JeterTuile(coordos, j);
 
                 doitJete = false;
 
             }
-
-
-            // TODO: 
-            // add timer (alerts)
-
-
-            /*int seconds = 0;
-            Timer timer = new Timer(state =>
-            {
-                Console.Clear();
-                Console.WriteLine("Timer: " + TimeSpan.FromSeconds(seconds));
-                seconds++;
-            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
-
-            Console.WriteLine("Press any key to stop the timer.");
-            Console.ReadKey();
-            timer.Dispose();*/
-
         }
 
 
-        public static Coord readCoord(String str)
+        public static Coord readCoord(String? str)
         {
+            if(str == null) return new Coord(-1,-1); // renvoie un error (on doit garantir qu'on passera jamais ici)
+
             string[] parts = str.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             return new Coord(int.Parse(parts[0]), int.Parse(parts[1]));
         }
 
-        public static void MoveInLoop(Joueur pl, Jeu j)
+        public static void MoveInLoop(Joueur? pl, Jeu j)
         {
             Console.Write("Donner les coords de la tuile à deplacer (y x): ");
             Coord from = readCoord(Console.ReadLine());
             Console.Write("Donner les coords d'où la mettre (y x): ");
             Coord to = readCoord(Console.ReadLine());
-            pl.MoveTuileChevalet(from, to, j);
+            pl?.MoveTuileChevalet(from, to, j);
         }
     }
 
