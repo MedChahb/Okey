@@ -33,10 +33,10 @@ namespace Okey.Game
             (this.PacketTuile, this.TuileCentre) = GenererPacketTuiles();
         }
 
-        private double CalculMMR()
+        /*private double CalculMMR()
         {
             return 5.3; // donner la formule en fonction des 4 joueurs
-        }
+        }*/
 
         private (List<Tuile>, Tuile) GenererPacketTuiles()
         {

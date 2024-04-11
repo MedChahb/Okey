@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Okey.Tuiles
 {
-    internal class Okay : Tuile
+    public class Okay : Tuile
     {
         public Okay(bool dansPioche) : base(CouleurTuile.M, 0, dansPioche)
         {
@@ -25,7 +25,7 @@ namespace Okey.Tuiles
 
         public override String ToString()
         {
-            return String.Format("({0:00}, {1}, {2})", this.num, this.Couleur, "Ok");
+            return String.Format(null, "({0:00}, {1}, {2})", this.Num, this.Couleur, "Ok");
         }
     }
 }

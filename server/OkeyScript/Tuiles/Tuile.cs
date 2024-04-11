@@ -1,5 +1,4 @@
-﻿//just pour l'affichage du chevalet, apres je les remets
-
+﻿using Okey.Joueurs;
 
 namespace Okey.Tuiles
 {
@@ -13,20 +12,26 @@ namespace Okey.Tuiles
     }
     public abstract class Tuile
     {
-        protected CouleurTuile Couleur;
-        protected int num;
-        protected bool defausse;
-        protected bool DansPioche;
+        private CouleurTuile couleur;
+        private int num;
+        private bool defausse;
+        private bool dansPioche;
     
         public Tuile(CouleurTuile couleur, int num, bool dansPioche)
         {
-            this.Couleur = couleur;
+            this.couleur = couleur;
             this.num = num;
             this.defausse = false;
-            this.DansPioche = dansPioche;
+            this.dansPioche = dansPioche;
         }
 
-       
+        // Protected properties to allow access to private fields from child classes
+        protected CouleurTuile Couleur { get => couleur; set => couleur = value; }
+        protected int Num { get => num; set => num = value; }
+        protected bool Defausse { get => defausse; set => defausse = value; }
+        protected bool DansPioche { get => dansPioche; set => dansPioche = value; }
+
+
         public void SetDefause()
         {
             if (this == null) return;
@@ -40,10 +45,10 @@ namespace Okey.Tuiles
 
         public Boolean inPioche()
         {
-            return this.DansPioche;
+            return this.dansPioche;
         }
 
-        public CouleurTuile GetCouleur() {  return this.Couleur; }
+        public CouleurTuile GetCouleur() {  return this.couleur; }
         public int GetNum() { return this.num; }
 
         public abstract bool MemeCouleur(Tuile t);

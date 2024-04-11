@@ -9,7 +9,7 @@ using Okey.Tuiles;
 
 namespace Okey
 {
-    internal class Start
+    public class Start
     {
         public static void Main(string[] args)
         {
@@ -106,14 +106,15 @@ namespace Okey
             }
         }
 
-
+        internal static readonly char[] separator = new char[] { ' ' };
         public static Coord readCoord(String? str)
         {
             if(str == null) return new Coord(-1,-1); // renvoie un error (on doit garantir qu'on passera jamais ici)
 
-            string[] parts = str.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = str.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
-            return new Coord(int.Parse(parts[0]), int.Parse(parts[1]));
+            return new Coord(int.Parse(parts[0], System.Globalization.CultureInfo.InvariantCulture), 
+                             int.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture));
         }
 
         public static void MoveInLoop(Joueur? pl, Jeu j)

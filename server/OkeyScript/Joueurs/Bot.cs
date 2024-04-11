@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Okey.Joueurs
 {
-    internal class Bot : Joueur
+    public class Bot : Joueur
     {
         private int difficulte;
         public Bot(int diff) : base(0, "BOT")
@@ -26,7 +26,7 @@ namespace Okey.Joueurs
 
         public override string ToString()
         {
-            return String.Format("Bot de difficulté : {0}", this.difficulte);
+            return $"Bot de difficulté : {this.difficulte}";
         }
     }
 }

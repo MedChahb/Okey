@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Okey.Game;
 using Okey.Tuiles;
 
@@ -12,11 +13,12 @@ namespace Okey.Joueurs
 {
     public abstract class Joueur
     {
-        protected int id;
-        protected String Name;
-        protected List<List<Tuile?>> chevalet = []; // 15tuile + 1case vide
-        public Boolean Tour;
-        protected Stack<Tuile> defausse = new Stack<Tuile>();
+        private int id;
+        private String name;
+        private List<List<Tuile?>> chevalet = []; // 15tuile + 1case vide
+        private bool tour;
+        private bool gagnant;
+        private Stack<Tuile> defausse = new Stack<Tuile>();
 
         static readonly int etage = 2;
         static readonly int tuilesDansEtage = 14; //14
@@ -24,8 +26,9 @@ namespace Okey.Joueurs
         public Joueur(int id, String Name)
         {
             this.id = id;
-            this.Name = Name;
-            this.Tour = false;
+            this.name = Name;
+            this.tour = false;
+            this.gagnant = false;
 
             //initialisation du chevalet (ready to get Tuiles)
             for (int i = 0; i < etage; i++)
@@ -38,21 +41,21 @@ namespace Okey.Joueurs
                 }
             }
         }
+        protected int Id { get => id; set => id = value; }
+        protected string Name { get => name; set => name = value; }
+        protected List<List<Tuile?>> Chevalet { get => chevalet; set => chevalet = value; }
+        protected bool Tour { get => tour; set => tour = value; }
+        protected bool Gagnant { get => gagnant; set => gagnant = value; }
+        protected Stack<Tuile> Defausse { get => defausse; set => defausse = value; }
 
         public abstract void Gagne();
         public abstract void UpdateElo();
 
-        public void EstTour()
-        {
-            this.Tour = true;
-        }
 
         public void EstPlusTour()
         {
             this.Tour = false;
         }
-
-        public void AjoutToChevalet(Tuile t) { }
 
         public void Ajouer()
         {
@@ -159,6 +162,7 @@ namespace Okey.Joueurs
                 j.PushPiocheCentre(toThrow); // on met la tuile que le joueur desire finir avec sur la pioche
                 j.JeuTermine();
                 this.Gagne();
+                this.Gagnant = true;
             }
             else
             {
@@ -180,7 +184,7 @@ namespace Okey.Joueurs
 
         }
 
-        private bool Est_serie_de_meme_chiffre(List<Tuile> tuiles)
+        private static bool Est_serie_de_meme_chiffre(List<Tuile> tuiles)
         {
             if (tuiles.Count <= 2) return false;
             List<CouleurTuile> CouleurVues = new List<CouleurTuile>();
@@ -200,7 +204,7 @@ namespace Okey.Joueurs
             return true;
         }
 
-        private bool EstSerieDeCouleur(List<Tuile> t) // tuile se suivent, mm couleur
+        private static bool EstSerieDeCouleur(List<Tuile> t) // tuile se suivent, mm couleur
         {
             if (t.Count < 3)
                 return false;
@@ -214,7 +218,7 @@ namespace Okey.Joueurs
             return true;
         }
 
-        public bool Est_serie(List<Tuile> tuiles)
+        public static bool EstSerie(List<Tuile> tuiles)
         {
             return Est_serie_de_meme_chiffre(tuiles) || EstSerieDeCouleur(tuiles);
         }
@@ -250,12 +254,12 @@ namespace Okey.Joueurs
 
             foreach (List<Tuile> part in ParitionEtage1)
             {
-                if (!Est_serie(part)) return false;
+                if (!EstSerie(part)) return false;
             }
 
             foreach (List<Tuile> part in ParitionEtage2)
             {
-                if (!Est_serie(part)) return false;
+                if (!EstSerie(part)) return false;
             }
 
             return true;
@@ -305,6 +309,11 @@ namespace Okey.Joueurs
         public bool isDefausseEmpty()
         {
             return this.defausse.Count == 0;
+        }
+
+        public bool isGagnant()
+        {
+            return this.Gagnant;
         }
 
         public Stack<Tuile> GetDefausse()

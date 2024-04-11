@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Okey.Joueurs
 {
     
-    internal class Humain : Joueur
+    public class Humain : Joueur
     {
         private int Elo;
         private int Rank;
@@ -20,10 +20,10 @@ namespace Okey.Joueurs
 
         public override void UpdateElo()
         {
-            //if gagne
-            this.Elo += 10;
-            //if lose
-            this.Elo -= 10;
+            if(this.Gagnant)
+                this.Elo += 10;
+            else
+                this.Elo -= 10;
         }
         public override void Gagne()
         {
