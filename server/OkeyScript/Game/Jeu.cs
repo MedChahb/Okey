@@ -1,46 +1,34 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Okey.Joueurs;
 using Okey.Tuiles;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Okey.Game
 {
     public class Jeu
     {
         private int id;
-
         private Joueur[] Joueurs = new Joueur[4];
-        private double MMR;
+        //private double MMR;
         private Stack<Tuile> pioche = new Stack<Tuile>();
-
-        //Timer timer;
         private bool etat; // false : in game
         private Tuile[] Jokers = new Joker[2];
         private Tuile[] Okays = new Okay[2];
         private List<Tuile> PacketTuile = new List<Tuile>();
-        private Tuile TuileCentre;
-        private bool JeterTuileAppelee = false;
-        private Joueur JoueurActuel;
+        private readonly Tuile TuileCentre;
+        private Joueur? JoueurActuel;
 
         public Jeu(int id, Joueur[] joueurs)
         {
             this.id = id;
             this.Joueurs = joueurs;
-            this.MMR = CalculMMR();
+            //this.MMR = CalculMMR();
             this.etat = false;
             (this.PacketTuile, this.TuileCentre) = GenererPacketTuiles();
         }
 
-        private double CalculMMR()
+        /*private double CalculMMR()
         {
             return 5.3; // donner la formule en fonction des 4 joueurs
-        }
+        }*/
 
         private (List<Tuile>, Tuile) GenererPacketTuiles()
         {
@@ -137,6 +125,8 @@ namespace Okey.Game
 
         public void AfficheChevaletJoueurs()
         {
+
+
             foreach (Joueur pl in this.Joueurs)
             {
                 pl.AfficheChevalet();
@@ -144,10 +134,7 @@ namespace Okey.Game
             }
         }
 
-        public void AfficheChevaletActuel()
-        {
-            this.JoueurActuel.AfficheChevalet();
-        }
+        public void AfficheChevaletActuel() { if (JoueurActuel != null) this.JoueurActuel.AfficheChevalet(); }
 
         public void AffichePiocheCentre()
         {
@@ -162,58 +149,6 @@ namespace Okey.Game
             {
                 Console.WriteLine(elem);
             }
-        }
-
-        //prend que 3 ou 4 tuiles en arguments
-        /*public bool Est_serie_de_meme_chiffre(Tuile[] tuiles)
-        {
-            int diffColors = 1; // On commence avec une couleur différente
-            for (int i = 1; i < tuiles.Length; i++)
-            {
-                bool CouleurDejaVu = false;
-                for (int j = 0; j < i; j++)
-                {
-                    if (tuiles[i].GetCouleur() == tuiles[j].GetCouleur())
-                    {
-                        CouleurDejaVu = true;
-                        break;
-                    }
-                }
-
-                if (!CouleurDejaVu)
-                {
-                    diffColors++;
-                }
-                else
-                {
-                    diffColors--;
-                }
-            }
-
-            return (tuiles.Length == 4 && diffColors == 4)
-                || (tuiles.Length == 3 && diffColors == 3);
-        }*/
-
-
-
-        public void ChangerTour()
-        {
-            // Le joueur actuel n'a plus le tour
-            JoueurActuel.EstPlusTour();
-
-            // Trouver l'index du joueur actuel dans la liste
-            int indexJoueurActuel = Array.IndexOf(Joueurs, JoueurActuel);
-
-            // Choisir le joueur suivant
-            int indexJoueurSuivant = (indexJoueurActuel + 1) % Joueurs.Length;
-            Joueur joueurSuivant = Joueurs[indexJoueurSuivant];
-
-            // Le joueur suivant a maintenant le tour
-            joueurSuivant.EstTour();
-            this.JoueurActuel = joueurSuivant;
-
-            // Après avoir changé le tour, signalez le changement aux joueurs
-            SignalChangementTour(joueurSuivant);
         }
 
         public void SignalChangementTour(Joueur joueurTour)
@@ -250,19 +185,9 @@ namespace Okey.Game
             return Joueurs;
         }
 
-        public Joueur getJoueurActuel()
+        public Joueur? getJoueurActuel()
         {
             return this.JoueurActuel;
-        }
-
-        public void setJoueurActuel(Joueur j)
-        {
-            this.JoueurActuel = j;
-        }
-
-        public void JeuTermine()
-        {
-            this.etat = true;
         }
 
         public bool isTermine()
@@ -293,6 +218,19 @@ namespace Okey.Game
             return this.pioche.Pop();
         }
 
+        public void PushPiocheCentre(Tuile? t)
+        {
+            if (t == null) return;
+            this.pioche.Push(t);
+        }
+        public void setJoueurActuel(Joueur j)
+        {
+            this.JoueurActuel = j;
+        }
+        public void JeuTermine()
+        {
+            this.etat = true;
+        }
         static void ShuffleStack(Stack<Tuile> stack)
         {
             List<Tuile> list = stack.ToList();
@@ -313,4 +251,6 @@ namespace Okey.Game
             }
         }
     }
+
+
 }

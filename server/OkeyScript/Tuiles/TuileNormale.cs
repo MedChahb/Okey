@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Okey.Tuiles
+﻿namespace Okey.Tuiles
 {
-    internal class TuileNormale : Tuile
+    public class TuileNormale : Tuile
     {
         public TuileNormale(CouleurTuile couleur, int num, bool dansPioche) : base(couleur, num, dansPioche)
         {
@@ -20,12 +14,12 @@ namespace Okey.Tuiles
 
         public override bool estSuivant(Tuile t)
         {
-            return this.num + 1 == t.GetNum() || (this.num==13 && t.GetNum() == 1);
+            return this.Num + 1 == t.GetNum() || (this.Num == 13 && t.GetNum() == 1);
         }
 
         public override string ToString()
         {
-            return String.Format("({0:00}, {1}, {2})", this.num, this.Couleur, "No");
+            return String.Format(null, "({0:00}, {1}, {2})", this.Num, this.Couleur, "No");
         }
     }
 }

@@ -1,15 +1,8 @@
-﻿using Okey.Joueurs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Okey
+﻿namespace Okey
 {
-    internal class Classement
+    public class Classement
     {
-        private LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
+        /*private LinkedList<Joueur> joueurs = new LinkedList<Joueur>();
 
         public void afficheClassement()
         {
@@ -34,6 +27,6 @@ namespace Okey
 
             Console.WriteLine("Le joueur n'est pas sur le classement OU c'est un BOT.");
             return -1;
-        }
+        }*/
     }
 }
