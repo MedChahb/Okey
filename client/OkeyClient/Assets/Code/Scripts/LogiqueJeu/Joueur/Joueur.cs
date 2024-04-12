@@ -128,13 +128,12 @@ namespace LogiqueJeu.Joueur
                 var unmarshal = JsonUtility.FromJson<JoueurAPICompteDTO>(Response);
                 this.NomUtilisateur = unmarshal.username;
                 this.Elo = unmarshal.elo;
+                this.OnShapeChanged(EventArgs.Empty);
             }
             else
             {
                 Debug.Log(www.error);
             }
-
-            this.OnShapeChanged(EventArgs.Empty);
         }
 
         protected virtual void OnShapeChanged(EventArgs E)

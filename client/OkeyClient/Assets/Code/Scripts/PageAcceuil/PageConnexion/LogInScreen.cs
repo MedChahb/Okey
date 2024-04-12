@@ -63,7 +63,7 @@ public class LogInScreen : MonoBehaviour
 
         if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
-            manager.ConnexionSelfJoueur(username, password, UpdateWithConnection);
+            manager.StartConnexionSelfJoueur(username, password, UpdateWithConnection);
         }
         else
         {
@@ -79,7 +79,7 @@ public class LogInScreen : MonoBehaviour
 
         if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
-            manager.CreationCompteSelfJoueur(username, password, UpdateWithConnection);
+            manager.StartCreationCompteSelfJoueur(username, password, UpdateWithConnection);
         }
         else
         {

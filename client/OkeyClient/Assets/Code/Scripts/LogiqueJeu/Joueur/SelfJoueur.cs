@@ -99,13 +99,12 @@ namespace LogiqueJeu.Joueur
                 this.Elo = unmarshal.elo;
                 this.Achievements = unmarshal.achievements;
                 this.SaveXML();
+                this.OnShapeChanged(EventArgs.Empty);
             }
             else
             {
                 Debug.Log(www.error);
             }
-
-            this.OnShapeChanged(EventArgs.Empty);
         }
 
         protected override void OnShapeChanged(EventArgs E)
@@ -119,7 +118,7 @@ namespace LogiqueJeu.Joueur
             this.TokenConnexion = SelfJoueur.TokenConnexion;
         }
 
-        public void ConnexionCompte(
+        public void StartConnexionCompte(
             MonoBehaviour Behaviour,
             string NomUtilisateur,
             string MotDePasse,
@@ -134,7 +133,7 @@ namespace LogiqueJeu.Joueur
             );
         }
 
-        public void CreationCompte(
+        public void StartCreationCompte(
             MonoBehaviour Behaviour,
             string NomUtilisateur,
             string MotDePasse,

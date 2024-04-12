@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using LogiqueJeu.Joueur;
 using UnityEngine;
 using UnityEngine.Events;
@@ -41,8 +40,20 @@ public class JoueurManager : MonoBehaviour
         {
             this.SoiMeme.DeleteXML();
         }
-        this.SoiMeme.JoueurChangeEvent += (_, _) => this.SelfJoueurChangeEvent?.Invoke();
+        this.SoiMeme.JoueurChangeEvent += this.OnSelfJoueurChange;
         this.SoiMeme.LoadSelf(this);
+    }
+
+    private void OnSelfJoueurChange(object O = null, EventArgs E = null)
+    {
+        this.SelfJoueurChangeEvent?.Invoke();
+        this.AnyJoueurChangeEvent?.Invoke();
+    }
+
+    private void OnOtherJoueurChange(object O = null, EventArgs E = null)
+    {
+        this.OtherJoueurChangeEvent?.Invoke();
+        this.AnyJoueurChangeEvent?.Invoke();
     }
 
     public void AddGenericJoueur(
@@ -86,13 +97,16 @@ public class JoueurManager : MonoBehaviour
             }
             foreach (var JF in J)
             {
+                JF.JoueurChangeEvent -= this.OnOtherJoueurChange;
                 this.Joueurs.Remove(JF);
             }
         }
         this.Joueurs.Add(Joueur);
+        Joueur.JoueurChangeEvent += this.OnOtherJoueurChange;
+        this.OnOtherJoueurChange();
     }
 
-    public void AssignPositionGenericJoueur(int ID, Position Pos)
+    public void AssignPositionJoueur(int ID, Position Pos)
     {
         if (Pos == Position.SoiMeme)
         {
@@ -106,11 +120,24 @@ public class JoueurManager : MonoBehaviour
             throw new ArgumentException("Cannot change the position of oneself");
         }
         Joueur.InGame.Pos = Pos;
+        this.OnOtherJoueurChange();
     }
 
     public int RemoveJoueur(int ID)
     {
-        return this.Joueurs.RemoveAll(Joueur => Joueur.InGame.ID == ID && Joueur is not SelfJoueur);
+        var J = this.Joueurs.FindAll(Joueur => Joueur.InGame.ID == ID && Joueur is not SelfJoueur);
+        if (J.Count > 1)
+        {
+            throw new DataMisalignedException(
+                "There are multiple players with the same ID, internal error, this should've never happenned"
+            );
+        }
+        foreach (var JF in J)
+        {
+            JF.JoueurChangeEvent -= this.OnOtherJoueurChange;
+            this.Joueurs.Remove(JF);
+        }
+        return J.Count;
     }
 
     public int RemoveJoueur(Joueur Joueur)
@@ -132,50 +159,39 @@ public class JoueurManager : MonoBehaviour
         this.SoiMeme.SaveXML();
     }
 
-    // For now doesn't return a clone, but the actual object
-    // Should maybe change that later to abide by encapsulation
-    // and protect inner data structures
     public SelfJoueur GetSelfJoueur()
     {
         return (SelfJoueur)this.SoiMeme.Clone();
     }
 
-    // For now doesn't return a clone, but the actual object
-    // Should maybe change that later to abide by encapsulation
-    // and protect inner data structures
-    public ReadOnlyCollection<Joueur> GetOtherJoueurs()
+    public List<Joueur> GetOtherJoueurs()
     {
-        return this.Joueurs.AsReadOnly();
-        // return this.Joueurs.ConvertAll(Joueur => Joueur.Clone());
+        return this.Joueurs.ConvertAll<Joueur>(Joueur => (Joueur)Joueur.Clone());
     }
 
-    // For now doesn't return a clone, but the actual object
-    // Should maybe change that later to abide by encapsulation
-    // and protect inner data structures
     public List<Joueur> GetAllJoueurs()
     {
-        var Result = new List<Joueur>(this.Joueurs);
-        Result.Insert(0, this.SoiMeme);
-        return Result;
-        // return this.Joueurs.ConvertAll(Joueur => Joueur.Clone()).Insert(0, this.SoiMeme.Clone());
+        var res = this.Joueurs.ConvertAll<Joueur>(Joueur => (Joueur)Joueur.Clone());
+        res.Insert(0, (Joueur)this.SoiMeme.Clone());
+        return res;
     }
 
-    public void ConnexionSelfJoueur(
+    public void StartConnexionSelfJoueur(
         string NomUtilisateur,
         string MotDePasse,
         Action<int> CallbackResult = null
     )
     {
-        this.SoiMeme.ConnexionCompte(this, NomUtilisateur, MotDePasse, CallbackResult);
+        this.SoiMeme.StartConnexionCompte(this, NomUtilisateur, MotDePasse, CallbackResult);
     }
 
-    public void CreationCompteSelfJoueur(
+    public void StartCreationCompteSelfJoueur(
         string NomUtilisateur,
         string MotDePasse,
         Action<int> CallbackResult = null
     )
     {
-        this.SoiMeme.CreationCompte(this, NomUtilisateur, MotDePasse, CallbackResult);
+        this.SoiMeme.StartCreationCompte(this, NomUtilisateur, MotDePasse, CallbackResult);
     }
 
     public void DeconnexionSelfJoueur()
