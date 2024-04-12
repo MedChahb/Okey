@@ -165,9 +165,12 @@ public class Chevalet : MonoBehaviour
                     .gameObject.GetComponent<Tuile>()
                     .SetIsInStack(false);
                 pileGauche.Pop();
-                if (pileGauche.Count > 0) 
+                if (pileGauche.Count > 0)
                 {
-                    GameObject newChild = Instantiate(pileGauche.Peek().gameObject, pileGauchePlaceHolder.transform);
+                    GameObject newChild = Instantiate(
+                        pileGauche.Peek().gameObject,
+                        pileGauchePlaceHolder.transform
+                    );
                     newChild.transform.localPosition = Vector3.zero;
                     newChild.GetComponent<Tuile>().SetIsInStack(true);
                     newChild.GetComponent<Tuile>().SetIsDeplacable(false);
@@ -343,7 +346,7 @@ public class Chevalet : MonoBehaviour
         {
             Debug.Log("error updating matrix after movement");
         }
-        
+
         Print2DMatrix();
     }
 

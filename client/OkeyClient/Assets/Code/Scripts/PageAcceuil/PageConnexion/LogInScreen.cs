@@ -47,11 +47,11 @@ public class LogInScreen : MonoBehaviour
 
         // Ajoute un écouteur au bouton "Retour"
         backButton.onClick.AddListener(onBackBtnClicked);
-        
+
         Username.onValueChanged.AddListener(OnInputChanged);
 
         Password.onValueChanged.AddListener(OnInputChanged);
-        
+
         erreurTxt.gameObject.SetActive(false);
     }
 
@@ -100,14 +100,14 @@ public class LogInScreen : MonoBehaviour
         else { }
     }
 
-    public void UpdateWithConnection(int code) 
+    public void UpdateWithConnection(int code)
     {
         if (code == 200)
         {
             Panel.SetActive(false);
             accueil.setConnected(true);
         }
-        else if(code == 500)
+        else if (code == 500)
         {
             erreurTxt.text = "La création de votre compte a échouée";
             erreurTxt.gameObject.SetActive(true);
@@ -119,10 +119,9 @@ public class LogInScreen : MonoBehaviour
         }
     }
 
-
     private void OnInputChanged(string value)
     {
-        if(value != null)
+        if (value != null)
         {
             erreurTxt.gameObject.SetActive(false);
         }

@@ -69,7 +69,9 @@ public class UIManagerPAcceuil : MonoBehaviour
         if (connected)
         {
             PanelAvatar.SetActive(true);
-            PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager.GetSelfJoueur().NomUtilisateur;
+            PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
+                .GetSelfJoueur()
+                .NomUtilisateur;
             connexionBtn.gameObject.SetActive(false);
         }
         else
