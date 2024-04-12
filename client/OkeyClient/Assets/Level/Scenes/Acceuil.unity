@@ -4970,6 +4970,7 @@ MonoBehaviour:
   login: {fileID: 790733547}
   PanelAvatar: {fileID: 1718247711}
   manager: {fileID: 0}
+  manager: {fileID: 279409712}
 --- !u!1 &1487514794
 GameObject:
   m_ObjectHideFlags: 0
