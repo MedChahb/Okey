@@ -7,6 +7,7 @@ using Misc;
 using Okey;
 using Okey.Game;
 using Okey.Joueurs;
+using Packets;
 using Security;
 
 /// <summary>
@@ -54,7 +55,10 @@ public sealed class OkeyHub : Hub
                 ._hubContext.Clients.Group(roomId)
                 .SendAsync(
                     "ReceiveMessage",
-                    $"Player {this.Context.ConnectionId} has left the lobby."
+                    new PacketSignal
+                    {
+                        _message = $"Player {this.Context.ConnectionId} has left the lobby."
+                    }
                 );
         }
 
@@ -121,7 +125,9 @@ public sealed class OkeyHub : Hub
     {
         try
         {
-            await this.Clients.Group(lobbyName).SendAsync("ReceiveMessage", message);
+            await this
+                .Clients.Group(lobbyName)
+                .SendAsync("ReceiveMessage", new PacketSignal { _message = message });
         }
         catch (Exception e)
         {
@@ -148,7 +154,10 @@ public sealed class OkeyHub : Hub
                 ._hubContext.Clients.Group(lobbyName)
                 .SendAsync(
                     "ReceiveMessage",
-                    $"Player {this.Context.ConnectionId} joined {lobbyName}"
+                    new PacketSignal
+                    {
+                        _message = $"Player {this.Context.ConnectionId} joined {lobbyName}"
+                    }
                 );
 
             if (this._roomManager.IsRoomFull(lobbyName))
@@ -160,7 +169,10 @@ public sealed class OkeyHub : Hub
         {
             await this
                 ._hubContext.Clients.Client(this.Context.ConnectionId)
-                .SendAsync("ReceiveMessage", "Unable to join the room. It may be full.");
+                .SendAsync(
+                    "ReceiveMessage",
+                    new PacketSignal { _message = "Unable to join the room. It may be full." }
+                );
         }
     }
 
@@ -173,7 +185,13 @@ public sealed class OkeyHub : Hub
         this._roomManager.LeaveRoom(lobbyName, this.Context.ConnectionId);
         await this
             ._hubContext.Clients.Group(lobbyName)
-            .SendAsync("ReceiveMessage", $"Player {this.Context.ConnectionId} left the lobby.");
+            .SendAsync(
+                "ReceiveMessage",
+                new PacketSignal
+                {
+                    _message = $"Player {this.Context.ConnectionId} left the lobby."
+                }
+            );
         await this.SendRoomListUpdate();
     }
 
@@ -202,7 +220,7 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="roomName">nom de room</param>
     /// <param name="message">message a envoyer</param>
-    private async Task BroadCastInRoom(string roomName, string message) =>
+    private async Task BroadCastInRoom(string roomName, PacketSignal message) =>
         await this._hubContext.Clients.Group(roomName).SendAsync("ReceiveMessage", message);
 
     /// <summary>
@@ -211,7 +229,9 @@ public sealed class OkeyHub : Hub
     /// <param name="userId">nom de l'utilisateur</param>
     /// <param name="message">message a envoyer</param>
     private async Task SendMpToPlayer(string userId, string message) =>
-        await this._hubContext.Clients.Client(userId).SendAsync("ReceiveMessage", message);
+        await this
+            ._hubContext.Clients.Client(userId)
+            .SendAsync("ReceiveMessage", new PacketSignal { _message = message });
 
     /// <summary>
     /// Requete de coordoonnees
@@ -247,7 +267,10 @@ public sealed class OkeyHub : Hub
     /// <param name="roomName">nom de la room qui accueille le jeu</param>
     public async Task StartGameForRoom(string roomName)
     {
-        await this.BroadCastInRoom(roomName, "La partie va commencer");
+        await this.BroadCastInRoom(
+            roomName,
+            new PacketSignal { _message = "La partie va commencer" }
+        );
 
         var playerIds = this._roomManager.GetRooms()[roomName].GetPlayerIds();
         Joueur[] joueurs =
@@ -260,7 +283,10 @@ public sealed class OkeyHub : Hub
 
         var jeu = new Jeu(1, joueurs);
         jeu.DistibuerTuile();
-        await this.BroadCastInRoom(roomName, "Les tuiles ont été distribuees");
+        await this.BroadCastInRoom(
+            roomName,
+            new PacketSignal { _message = "Les tuiles ont été distribuees" }
+        );
 
         foreach (var t in joueurs)
         {
@@ -323,7 +349,9 @@ public sealed class OkeyHub : Hub
     private async Task SendRoomListUpdate()
     {
         var roomsInfo = this._roomManager.GetRoomsInfo();
-        await this._hubContext.Clients.Group("Hub").SendAsync("ReceiveMessage", roomsInfo);
+        await this
+            ._hubContext.Clients.Group("Hub")
+            .SendAsync("ReceiveMessage", new PacketSignal { _message = roomsInfo });
     }
 
     /* test pruposes only
