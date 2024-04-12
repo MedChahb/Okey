@@ -2,7 +2,7 @@ namespace LogiqueJeu.Joueur
 {
     using System;
 
-    public class EtatTour
+    public class EtatTour : ICloneable
     {
         public enum Etats
         {
@@ -42,6 +42,11 @@ namespace LogiqueJeu.Joueur
         public Etats ResetTour()
         {
             return this.Etat = Etats.Attente;
+        }
+
+        public object Clone()
+        {
+            return new EtatTour { Etat = this.Etat };
         }
     }
 }

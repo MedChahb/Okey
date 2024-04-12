@@ -6,7 +6,7 @@ namespace LogiqueJeu.Joueur
     {
         public override void LoadSelf(MonoBehaviour Behaviour)
         {
-            Behaviour.StartCoroutine(this.FetchUserBG(this.UnmarshalAndInit));
+            Behaviour.StartCoroutine(this.FetchUserBG());
         }
     }
 }

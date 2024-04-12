@@ -15,13 +15,13 @@ public class JoueurManager : MonoBehaviour
     private SelfJoueur SoiMeme;
 
     [HideInInspector]
-    public UnityEvent OnSelfJoueurChange = new();
+    public UnityEvent SelfJoueurChangeEvent = new();
 
     [HideInInspector]
-    public UnityEvent OnOtherJoueurChange = new();
+    public UnityEvent OtherJoueurChangeEvent = new();
 
     [HideInInspector]
-    public UnityEvent OnAnyJoueurChange = new();
+    public UnityEvent AnyJoueurChangeEvent = new();
 
     private void Awake()
     {
@@ -41,6 +41,7 @@ public class JoueurManager : MonoBehaviour
         {
             this.SoiMeme.DeleteXML();
         }
+        this.SoiMeme.JoueurChangeEvent += (_, _) => this.SelfJoueurChangeEvent?.Invoke();
         this.SoiMeme.LoadSelf(this);
     }
 
@@ -136,7 +137,7 @@ public class JoueurManager : MonoBehaviour
     // and protect inner data structures
     public SelfJoueur GetSelfJoueur()
     {
-        return this.SoiMeme;
+        return (SelfJoueur)this.SoiMeme.Clone();
     }
 
     // For now doesn't return a clone, but the actual object

@@ -38,7 +38,7 @@ namespace LogiqueJeu.Joueur
             }
             if (this.TokenConnexion != null && this.NomUtilisateur != null)
             {
-                Behaviour.StartCoroutine(this.FetchUserBG(this.UnmarshalAndInit));
+                Behaviour.StartCoroutine(this.FetchUserBG());
             }
         }
 
@@ -80,7 +80,7 @@ namespace LogiqueJeu.Joueur
             }
         }
 
-        protected override IEnumerator FetchUserBG(Action<string> CallbackJSON = null)
+        protected override IEnumerator FetchUserBG()
         {
             var Response = "";
 
@@ -91,31 +91,32 @@ namespace LogiqueJeu.Joueur
             www.certificateHandler = new BypassCertificate();
             yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+            if (www.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log(www.error);
+                Response = www.downloadHandler.text;
+                var unmarshal = JsonUtility.FromJson<SelfJoueurAPICompteDTO>(Response);
+                this.NomUtilisateur = unmarshal.username;
+                this.Elo = unmarshal.elo;
+                this.Achievements = unmarshal.achievements;
+                this.SaveXML();
             }
             else
             {
-                Response = www.downloadHandler.text;
+                Debug.Log(www.error);
             }
 
-            CallbackJSON?.Invoke(Response);
+            this.OnShapeChanged(EventArgs.Empty);
+        }
+
+        protected override void OnShapeChanged(EventArgs E)
+        {
+            base.OnShapeChanged(E);
         }
 
         private void CopyFrom(SelfJoueur SelfJoueur)
         {
             base.CopyFrom(SelfJoueur);
             this.TokenConnexion = SelfJoueur.TokenConnexion;
-        }
-
-        protected override void UnmarshalAndInit(string Json)
-        {
-            var unmarshal = JsonUtility.FromJson<SelfJoueurAPICompteDTO>(Json);
-            this.NomUtilisateur = unmarshal.username;
-            this.Elo = unmarshal.elo;
-            this.Achievements = unmarshal.achievements;
-            this.SaveXML();
         }
 
         public void ConnexionCompte(
@@ -164,6 +165,10 @@ namespace LogiqueJeu.Joueur
         // In case of creating a new account
         // - Invalid username (illegal character, already taken...)
         // - Invalid password (length, complexity...)
+        //
+        // See these references for more information:
+        // https://discord.com/channels/1201575577132486766/1204866892993536021/1220835503671349269
+        // https://discord.com/channels/1201575577132486766/1204874375480873011/1227992255512449058
         private IEnumerator PostUserConnexionBG(
             MonoBehaviour Behaviour,
             string JSON,
@@ -199,10 +204,18 @@ namespace LogiqueJeu.Joueur
 
         public override string ToString()
         {
-            return $@"
-                                TokenConnexion: {this.TokenConnexion},
+            return base.ToString()
+                + $@"
+
+                                TokenConnexion: {this.TokenConnexion}
                                 ";
-            ;
+        }
+
+        public override object Clone()
+        {
+            var copy = (SelfJoueur)base.Clone();
+            copy.TokenConnexion = this.TokenConnexion;
+            return copy;
         }
     }
 }

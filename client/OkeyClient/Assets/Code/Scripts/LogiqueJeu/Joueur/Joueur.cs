@@ -7,7 +7,7 @@ namespace LogiqueJeu.Joueur
     using UnityEngine;
     using UnityEngine.Networking;
 
-    public abstract class Joueur
+    public abstract class Joueur : ICloneable
     {
         public string NomUtilisateur { get; set; }
 
@@ -57,6 +57,7 @@ namespace LogiqueJeu.Joueur
             this.IconeProfil = 0;
             this.Score = 0;
             this.Niveau = 0;
+            this.Classement = 0;
             this.IsInGame = false;
             this.InGame = new InGameDetails
             {
@@ -75,15 +76,15 @@ namespace LogiqueJeu.Joueur
                                 NomUtilisateur: {this.NomUtilisateur},
                                 Elo: {this.Elo},
                                 IconeProfil: {this.IconeProfil},
-                                Achievements: {string.Join(",", this.Achievements)},
+                                Achievements: {((this.Achievements != null) ? string.Join(",", this.Achievements) : "Liste vide")},
                                 Score: {this.Score},
                                 Niveau: {this.Niveau}
-
                                 ";
             if (this.IsInGame)
             {
                 Representation +=
                     $@"
+
                                 ID (SignalR): {this.InGame.ID},
                                 Positon: {this.InGame.Pos},
                                 EtatTour: {this.InGame.EtatTour},
@@ -108,17 +109,10 @@ namespace LogiqueJeu.Joueur
 
         public virtual void UpdateDetails(MonoBehaviour Behaviour)
         {
-            Behaviour.StartCoroutine(this.FetchUserBG(this.UnmarshalAndInit));
+            Behaviour.StartCoroutine(this.FetchUserBG());
         }
 
-        protected virtual void UnmarshalAndInit(string Json)
-        {
-            var unmarshal = JsonUtility.FromJson<JoueurAPICompteDTO>(Json);
-            this.NomUtilisateur = unmarshal.username;
-            this.Elo = unmarshal.elo;
-        }
-
-        protected virtual IEnumerator FetchUserBG(Action<string> CallbackJSON = null)
+        protected virtual IEnumerator FetchUserBG()
         {
             var Response = "";
 
@@ -128,16 +122,33 @@ namespace LogiqueJeu.Joueur
             www.certificateHandler = new BypassCertificate();
             yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+            if (www.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log(www.error);
+                Response = www.downloadHandler.text;
+                var unmarshal = JsonUtility.FromJson<JoueurAPICompteDTO>(Response);
+                this.NomUtilisateur = unmarshal.username;
+                this.Elo = unmarshal.elo;
             }
             else
             {
-                Response = www.downloadHandler.text;
+                Debug.Log(www.error);
             }
 
-            CallbackJSON?.Invoke(Response);
+            this.OnShapeChanged(EventArgs.Empty);
+        }
+
+        protected virtual void OnShapeChanged(EventArgs E)
+        {
+            JoueurChangeEvent?.Invoke(this, E);
+        }
+
+        public virtual object Clone()
+        {
+            var copy = (Joueur)this.MemberwiseClone();
+            copy.Achievements = (this.Achievements != null) ? new(this.Achievements) : null;
+            copy.InGame._etatTour = (EtatTour)this.InGame._etatTour.Clone();
+            copy.JoueurChangeEvent = null;
+            return copy;
         }
     }
 
