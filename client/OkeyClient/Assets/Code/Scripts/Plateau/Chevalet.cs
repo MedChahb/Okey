@@ -11,6 +11,7 @@ public class Chevalet : MonoBehaviour
     private TuileData[,] tuiles2D = new TuileData[2, 14];
     private Stack<Tuile> pileGauche = new Stack<Tuile>();
     private Stack<Tuile> pileDroite = new Stack<Tuile>();
+    private Stack<Tuile> pilePioche = new Stack<Tuile>();
     public static GameObject pileGauchePlaceHolder;
     public static GameObject pilePiochePlaceHolder;
 
@@ -41,6 +42,7 @@ public class Chevalet : MonoBehaviour
                 Debug.LogError("PlaceHolder" + i + " not found!");
             }
         }
+        //ToDo : Instancier les piles en fonction de ce qu'on reçoit du Back
         pileGauchePlaceHolder = GameObject.Find("PileGauchePlaceHolder");
         pileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
         pilePiochePlaceHolder = GameObject.Find("PiochePlaceHolder");
@@ -49,6 +51,9 @@ public class Chevalet : MonoBehaviour
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>());
         pileGauche.Push(pileGauchePlaceHolder
+            .transform.GetChild(0)
+            .gameObject.GetComponent<Tuile>());
+        pilePioche.Push(pilePiochePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>());
         pileGauchePlaceHolder
@@ -115,7 +120,6 @@ public class Chevalet : MonoBehaviour
         {
             closestPlaceholder = pilePiochePlaceHolder;
         }
-
         return closestPlaceholder;
     }
 
@@ -168,7 +172,6 @@ public class Chevalet : MonoBehaviour
                     newChild.GetComponent<Tuile>().SetIsInStack(true);
                     newChild.GetComponent<Tuile>().SetIsDeplacable(false);
                 }
-                //Insérer la tuile suivante de la stack comme tuile fille du pileGauchePlaceHolder et lui passer
             }
             else
             {
@@ -180,8 +183,20 @@ public class Chevalet : MonoBehaviour
                     .transform.GetChild(0)
                     .gameObject.GetComponent<Tuile>()
                     .SetIsInPioche(false);
+                pilePioche.Pop();
+                if (pilePioche.Count > 0) 
+                {
+                    GameObject newChild = Instantiate(pilePioche.Peek().gameObject, pilePiochePlaceHolder.transform);
+                    newChild.transform.localPosition = Vector3.zero;
+                    newChild.GetComponent<Tuile>().SetIsInStack(true);
+                    newChild.GetComponent<Tuile>().SetIsDeplacable(false);
+                }
             }
         }
+    }
+
+    public void throwTile(Tuile tuile) {
+        pileDroite.Push(tuile);
     }
 
     // Fonction auxiliaire pour extraire le numéro du placeholder à partir de son nom

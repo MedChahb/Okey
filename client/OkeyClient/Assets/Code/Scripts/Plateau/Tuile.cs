@@ -72,7 +72,6 @@ public class Tuile : MonoBehaviour
             GameObject closestPlaceholder = chevalet.ClosestPlaceholder(
                 new Vector3(mousePosition.x, mousePosition.y, transform.localPosition.z)
             );
-
             //pour enregistrer le placeholder ou la tuile était avant que attach to placeholder modifie placeholderactuel
             PreviousPlaceHolder = placeholderActuel;
 
@@ -97,6 +96,10 @@ public class Tuile : MonoBehaviour
                     else
                     {
                         deplacable = false;
+                        if(closestPlaceholder == Chevalet.pileDroitePlaceHolder)
+                        {
+                            this.chevalet.throwTile(this);
+                        }
                     }
                 }
             }
