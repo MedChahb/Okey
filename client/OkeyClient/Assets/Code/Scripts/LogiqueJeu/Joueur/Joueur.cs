@@ -76,9 +76,10 @@ namespace LogiqueJeu.Joueur
                                 NomUtilisateur: {this.NomUtilisateur},
                                 Elo: {this.Elo},
                                 IconeProfil: {this.IconeProfil},
-                                Achievements: {((this.Achievements != null) ? string.Join(",", this.Achievements) : "Liste vide")},
+                                Achievements: {((this.Achievements != null) ? string.Join(", ", this.Achievements) : "Liste vide")},
                                 Score: {this.Score},
-                                Niveau: {this.Niveau}
+                                Niveau: {this.Niveau},
+                                Classement: {this.Classement}
                                 ";
             if (this.IsInGame)
             {

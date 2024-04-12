@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using LogiqueJeu.Joueur;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Networking;
 
 public class JoueurManager : MonoBehaviour
 {
@@ -176,6 +178,21 @@ public class JoueurManager : MonoBehaviour
         return res;
     }
 
+    public Joueur GetLeftJoueur()
+    {
+        return (Joueur)this.Joueurs.Find(Joueur => Joueur.InGame.Pos == Position.Gauche).Clone();
+    }
+
+    public Joueur GetRightJoueur()
+    {
+        return (Joueur)this.Joueurs.Find(Joueur => Joueur.InGame.Pos == Position.Droite).Clone();
+    }
+
+    public Joueur GetTopJoueur()
+    {
+        return (Joueur)this.Joueurs.Find(Joueur => Joueur.InGame.Pos == Position.Haut).Clone();
+    }
+
     public void StartConnexionSelfJoueur(
         string NomUtilisateur,
         string MotDePasse,
@@ -199,8 +216,89 @@ public class JoueurManager : MonoBehaviour
         this.SoiMeme.DeconnexionCompte();
     }
 
+    // Une requête est à faire ici pour mettre à jour l'icone dans l'API
     public void SetIconeSelfJoueur(int Icone)
     {
         throw new NotImplementedException();
+    }
+
+    // This method fetches the order of the players in the leaderboard
+    // but it does it in two stages. It first fetches the leaderboard
+    // and secondly for each entry in the leaderboard, it fetches more
+    // information on that specific account from a seperate endpoint.
+    // Due to the nature of this two stage behaviour which is dictated by
+    // the backend API implementation (there is nothing we can do about it
+    // from the client side to make it better), there is a possiblity for a
+    // weird pseudo error case where the leaderboard or the player details
+    // of some players in the previously fetched leaderboard might have changed
+    // in the meantime, making the leaderboard inconsistent.
+    //
+    // A good way to handle this would be to merge the two endpoints on the backend
+    // or implement a database lock mechanism to prevent changes while this method executes.
+    // This would then result in a consistent result no matter what with zero race conditions.
+    private IEnumerator FetchClassementsBG(
+        string NomUtilisateur = null,
+        int Limit = 5,
+        Action<List<Joueur>> CallbackResult = null
+    )
+    {
+        List<Joueur> Result = null;
+
+        var RequestURL = Constants.API_URL_DEV + "/classement/";
+        if (NomUtilisateur != null)
+        {
+            RequestURL += NomUtilisateur;
+        }
+        else if (Limit > 0)
+        {
+            RequestURL += Limit;
+        }
+        else if (Limit < 0)
+        {
+            throw new ArgumentException("Limit must be a positive integer or zero");
+        }
+
+        var www = UnityWebRequest.Get(RequestURL);
+        www.certificateHandler = new BypassCertificate();
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+            Result = new();
+            var unmarshal = JsonUtility.FromJson<JoueurAPIClassementListDTO>(
+                "{ \"Classements\": " + www.downloadHandler.text + " }"
+            );
+            foreach (var JoueurDTO in unmarshal.Classements)
+            {
+                Joueur J;
+                if (JoueurDTO.username == this.SoiMeme.NomUtilisateur)
+                {
+                    this.SoiMeme.UpdateDetails(this);
+                    J = (SelfJoueur)this.SoiMeme.Clone();
+                }
+                else
+                {
+                    J = new GenericJoueur { NomUtilisateur = JoueurDTO.username };
+                    J.LoadSelf(this);
+                }
+                J.Classement = JoueurDTO.classement;
+                Result.Add(J);
+            }
+        }
+        else
+        {
+            Debug.Log(www.error);
+        }
+
+        CallbackResult?.Invoke(Result);
+    }
+
+    public void StartFetchClassements(
+        string NomUtilisateur = null,
+        int Limit = 5,
+        Action<List<Joueur>> CallbackResult = null
+    )
+    {
+        this.StartCoroutine(this.FetchClassementsBG(NomUtilisateur, Limit, CallbackResult));
     }
 }

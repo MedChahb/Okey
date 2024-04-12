@@ -191,6 +191,7 @@ namespace LogiqueJeu.Joueur
                 var unmarshal = JsonUtility.FromJson<SelfJoueurAPIConnexionResponseDTO>(Response);
                 this.NomUtilisateur = unmarshal.userName;
                 this.TokenConnexion = unmarshal.token;
+                this.SaveXML();
                 this.LoadSelf(Behaviour);
             }
             else
