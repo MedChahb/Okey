@@ -7,6 +7,7 @@ namespace Okey.Game
     {
         private int id;
         private Joueur[] Joueurs = new Joueur[4];
+
         //private double MMR;
         private Stack<Tuile> pioche = new Stack<Tuile>();
         private bool etat; // false : in game
@@ -125,8 +126,6 @@ namespace Okey.Game
 
         public void AfficheChevaletJoueurs()
         {
-
-
             foreach (Joueur pl in this.Joueurs)
             {
                 pl.AfficheChevalet();
@@ -134,7 +133,18 @@ namespace Okey.Game
             }
         }
 
-        public void AfficheChevaletActuel() { if (JoueurActuel != null) this.JoueurActuel.AfficheChevalet(); }
+        public void AfficheChevaletActuel()
+        {
+            if (JoueurActuel != null)
+                this.JoueurActuel.AfficheChevalet();
+        }
+
+        public string StringChevaletActuel()
+        {
+            if (this.JoueurActuel == null)
+                return "";
+            return this.JoueurActuel.StringChevalet();
+        }
 
         public void AffichePiocheCentre()
         {
@@ -220,17 +230,21 @@ namespace Okey.Game
 
         public void PushPiocheCentre(Tuile? t)
         {
-            if (t == null) return;
+            if (t == null)
+                return;
             this.pioche.Push(t);
         }
+
         public void setJoueurActuel(Joueur j)
         {
             this.JoueurActuel = j;
         }
+
         public void JeuTermine()
         {
             this.etat = true;
         }
+
         static void ShuffleStack(Stack<Tuile> stack)
         {
             List<Tuile> list = stack.ToList();
@@ -251,6 +265,4 @@ namespace Okey.Game
             }
         }
     }
-
-
 }

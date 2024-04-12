@@ -241,7 +241,20 @@ public sealed class OkeyHub : Hub
     private async Task<string> CoordsRequest(string connectionId) =>
         await this
             ._hubContext.Clients.Client(connectionId)
-            .InvokeAsync<string>("ReceiveRequest", cancellationToken: CancellationToken.None);
+            .InvokeAsync<string>("CoordsActionRequest", cancellationToken: CancellationToken.None);
+
+    private async Task<string> CoordsGainRequest(string connectionId) =>
+        await this
+            ._hubContext.Clients.Client(connectionId)
+            .InvokeAsync<string>("CoordsGainRequest", cancellationToken: CancellationToken.None);
+
+    private async Task<string> FirstCoordsRequest(string connectionId) =>
+        await this
+            ._hubContext.Clients.Client(connectionId)
+            .InvokeAsync<string>(
+                "FirstCoordsActionRequest",
+                cancellationToken: CancellationToken.None
+            );
 
     /// <summary>
     /// Requete de pioche
@@ -294,37 +307,107 @@ public sealed class OkeyHub : Hub
         }
 
         var joueurStarter = jeu.getJoueurActuel();
-        this.SetPlayerTurn(joueurStarter.getName(), true);
-        await this.SendMpToPlayer(joueurStarter.getName(), jeu.StringChevaletActuel());
-        var coords = await this.CoordsRequest(joueurStarter.getName());
-        joueurStarter.JeterTuile(this.ReadCoords(coords), jeu);
-        this.SetPlayerTurn(joueurStarter.getName(), false);
-        this.SetPlayerTurn(jeu.getJoueurActuel().getName(), true);
-
-        while (!jeu.isTermine())
+        var playerName = string.Empty;
         {
-            var currentPlayer = jeu.getJoueurActuel();
-            if (this._isPlayerTurn[currentPlayer.getName()])
+            this.SetPlayerTurn(joueurStarter?.getName() ?? playerName, true);
+            if (joueurStarter != null)
             {
-                Console.WriteLine($"C'est le tour de {currentPlayer.getName()}");
-                await this.SendMpToPlayer(currentPlayer.getName(), "C'est votre tour");
-                await this.SendMpToPlayer(currentPlayer.getName(), jeu.StringChevaletActuel());
-
-                var pioche = await this.PiocheRequest(currentPlayer.getName());
-                if (pioche == "Move")
+                await this.SendMpToPlayer(joueurStarter.getName(), jeu.StringChevaletActuel());
+                var coords = await this.FirstCoordsRequest(joueurStarter.getName());
+                if (coords.Equals("Move", StringComparison.Ordinal))
                 {
-                    await this.MoveInLoop(currentPlayer, jeu);
-                    continue;
+                    // Faire le mouvement de tuiles
+                    // MoveInLoop(joueurStarter, j);
+                    // continue;
                 }
-                currentPlayer.PiocherTuile(pioche, jeu);
 
-                await this.SendMpToPlayer(currentPlayer.getName(), jeu.StringChevaletActuel());
+                joueurStarter.JeterTuile(this.ReadCoords(coords), jeu);
+                this.SetPlayerTurn(joueurStarter.getName(), false);
+            }
 
-                var coordinates = await this.CoordsRequest(currentPlayer.getName());
-                currentPlayer.JeterTuile(this.ReadCoords(coordinates), jeu);
+            this.SetPlayerTurn(
+                jeu.getJoueurActuel()?.getName() ?? throw new InvalidOperationException(),
+                true
+            );
 
-                this.SetPlayerTurn(currentPlayer.getName(), false);
-                this.SetPlayerTurn(jeu.getJoueurActuel().getName(), true);
+            while (!jeu.isTermine())
+            {
+                var currentPlayer = jeu.getJoueurActuel();
+                if (this._isPlayerTurn[currentPlayer?.getName() ?? playerName])
+                {
+                    if (currentPlayer != null)
+                    {
+                        Console.WriteLine($"C'est le tour de {currentPlayer.getName()}"); // Envoyer un signal a tout les autres clients
+                        await this.SendMpToPlayer(currentPlayer.getName(), "C'est votre tour");
+                        await this.SendMpToPlayer(
+                            currentPlayer.getName(),
+                            jeu.StringChevaletActuel()
+                        );
+
+                        var pioche = await this.PiocheRequest(currentPlayer.getName());
+                        if (pioche.Equals("Move", StringComparison.Ordinal))
+                        {
+                            await this.MoveInLoop(currentPlayer, jeu);
+                            continue;
+                        }
+
+                        if (
+                            string.Equals(pioche, "Centre", StringComparison.OrdinalIgnoreCase)
+                            || string.Equals(pioche, "Defausse", StringComparison.OrdinalIgnoreCase)
+                        )
+                        {
+                            currentPlayer.PiocherTuile(pioche, jeu);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+                        await this.SendMpToPlayer(
+                            currentPlayer.getName(),
+                            jeu.StringChevaletActuel()
+                        );
+
+                        var coordinates = await this.CoordsRequest(currentPlayer.getName());
+
+                        if (coordinates.Equals("gagner", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var coordsGain = await this.CoordsGainRequest(currentPlayer.getName());
+                            if (
+                                currentPlayer?.JeteTuilePourTerminer(
+                                    this.ReadCoords(coordsGain),
+                                    jeu
+                                ) == true
+                            )
+                            {
+                                // Le joueur gagne
+                                await this.BroadCastInRoom(
+                                    currentPlayer.getName(),
+                                    new PacketSignal
+                                    {
+                                        _message = $"{currentPlayer?.getName()} a gagné"
+                                    }
+                                );
+                            }
+
+                            if (currentPlayer != null)
+                            {
+                                await this.SendMpToPlayer(
+                                    currentPlayer.getName(),
+                                    "Vous n'avez pas de serie dans votre chevalet !"
+                                );
+                            }
+
+                            continue;
+                        }
+
+                        currentPlayer?.JeterTuile(this.ReadCoords(coordinates), jeu);
+
+                        this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
+                    }
+
+                    this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
+                }
             }
         }
     }

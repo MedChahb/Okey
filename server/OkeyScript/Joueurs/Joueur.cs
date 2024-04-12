@@ -33,16 +33,40 @@ namespace Okey.Joueurs
                 }
             }
         }
-        protected int Id { get => id; set => id = value; }
-        protected string Name { get => name; set => name = value; }
-        protected List<List<Tuile?>> Chevalet { get => chevalet; set => chevalet = value; }
-        protected bool Tour { get => tour; set => tour = value; }
-        protected bool Gagnant { get => gagnant; set => gagnant = value; }
-        protected Stack<Tuile> Defausse { get => defausse; set => defausse = value; }
+
+        protected int Id
+        {
+            get => id;
+            set => id = value;
+        }
+        protected string Name
+        {
+            get => name;
+            set => name = value;
+        }
+        protected List<List<Tuile?>> Chevalet
+        {
+            get => chevalet;
+            set => chevalet = value;
+        }
+        protected bool Tour
+        {
+            get => tour;
+            set => tour = value;
+        }
+        protected bool Gagnant
+        {
+            get => gagnant;
+            set => gagnant = value;
+        }
+        protected Stack<Tuile> Defausse
+        {
+            get => defausse;
+            set => defausse = value;
+        }
 
         public abstract void Gagne();
         public abstract void UpdateElo();
-
 
         public void EstPlusTour()
         {
@@ -71,13 +95,13 @@ namespace Okey.Joueurs
 
         public void JeterTuile(Coord c, Jeu j)
         {
-            if (this == null) return;
+            if (this == null)
+                return;
             //bloquer la pioche (condition lors de l'appel en Jeu.cs)
             //gerer le timer
 
             int x = c.getX();
             int y = c.getY();
-
 
             if ((x >= 0 && x < tuilesDansEtage) && (y >= 0 || y < etage))
             {
@@ -98,7 +122,11 @@ namespace Okey.Joueurs
 
         public void PiocherTuile(String? OuPiocher, Jeu j)
         {
-            if (OuPiocher == null) { Console.WriteLine("ouPiocher est null"); return; }
+            if (OuPiocher == null)
+            {
+                Console.WriteLine("ouPiocher est null");
+                return;
+            }
 
             if (string.Equals(OuPiocher, "Centre", StringComparison.OrdinalIgnoreCase))
             {
@@ -126,7 +154,6 @@ namespace Okey.Joueurs
                     this.AjoutTuileChevalet(tuilePiochee);
                 }
             }
-
         }
 
         public void JoueurJoue(String OuPiocher, Coord c, Jeu j)
@@ -136,13 +163,16 @@ namespace Okey.Joueurs
                 this.PiocherTuile(OuPiocher, j);
                 this.JeterTuile(c, j);
             }
-
         }
 
         //jete la 15eme tuile sur la pioche au milieu pour decalrer la victoire
-        public void JeteTuilePourTerminer(Coord c, Jeu j)
+        public bool JeteTuilePourTerminer(Coord c, Jeu j)
         {
-            if (this.CountTuileDansChevalet() == 14) { Console.WriteLine("Pioche une tuile!!"); return; }
+            if (this.CountTuileDansChevalet() == 14)
+            {
+                Console.WriteLine("Pioche une tuile!!");
+                return false;
+            }
 
             int x = c.getX();
             int y = c.getY();
@@ -155,13 +185,14 @@ namespace Okey.Joueurs
                 j.JeuTermine();
                 this.Gagne();
                 this.Gagnant = true;
+                return true;
             }
             else
             {
                 Console.WriteLine("Vous n'avez pas de serie dans votre chevalet !");
                 this.chevalet[y][x] = toThrow; // undo changes
+                return false;
             }
-
         }
 
         public void MoveTuileChevalet(Coord from, Coord to, Jeu j)
@@ -173,24 +204,26 @@ namespace Okey.Joueurs
 
             this.chevalet[yTo][xTo] = this.chevalet[yFrom][xFrom];
             this.chevalet[yFrom][xFrom] = tmpTuileTo;
-
         }
 
         private static bool Est_serie_de_meme_chiffre(List<Tuile> tuiles)
         {
-            if (tuiles.Count <= 2) return false;
+            if (tuiles.Count <= 2)
+                return false;
             List<CouleurTuile> CouleurVues = new List<CouleurTuile>();
 
             foreach (Tuile tuile in tuiles)
             {
-                if (tuile is Okay) continue;
-                if (tuiles[0].GetNum() != tuile.GetNum()) return false; // deux tuiles pas mm num -> false
+                if (tuile is Okay)
+                    continue;
+                if (tuiles[0].GetNum() != tuile.GetNum())
+                    return false; // deux tuiles pas mm num -> false
 
-                if (CouleurVues.Contains(tuile.GetCouleur())) return false; // deux tuile de mm couleur -> false
-                                                                            // renvoie false automatiquement si y a > 4 Tuiles
-                                                                            // car il ya que 4 couleurs
+                if (CouleurVues.Contains(tuile.GetCouleur()))
+                    return false; // deux tuile de mm couleur -> false
+                // renvoie false automatiquement si y a > 4 Tuiles
+                // car il ya que 4 couleurs
                 CouleurVues.Add(tuile.GetCouleur()); // on memorise la couleur vue
-
             }
 
             return true;
@@ -232,7 +265,6 @@ namespace Okey.Joueurs
                 {
                     partition.Add(t);
                 }
-
             }
             if (partition.Count != 0)
                 partitions.Add(partition);
@@ -246,12 +278,14 @@ namespace Okey.Joueurs
 
             foreach (List<Tuile> part in ParitionEtage1)
             {
-                if (!EstSerie(part)) return false;
+                if (!EstSerie(part))
+                    return false;
             }
 
             foreach (List<Tuile> part in ParitionEtage2)
             {
-                if (!EstSerie(part)) return false;
+                if (!EstSerie(part))
+                    return false;
             }
 
             return true;
@@ -289,7 +323,8 @@ namespace Okey.Joueurs
 
         public void JeteTuileDefausse(Tuile? t)
         {
-            if (t == null) return;
+            if (t == null)
+                return;
             this.defausse.Push(t);
         }
 
@@ -312,7 +347,9 @@ namespace Okey.Joueurs
         {
             return this.defausse;
         }
+
         public abstract override String ToString();
+
         public void AfficheDefausse()
         {
             if (this.isDefausseEmpty())
@@ -345,18 +382,38 @@ namespace Okey.Joueurs
             }
         }
 
+        public string StringChevalet()
+        {
+            var buff = "";
+            for (int i = 0; i < etage; i++)
+            {
+                for (int j = 0; j < tuilesDansEtage; j++)
+                {
+                    Tuile? t = this.chevalet[i][j];
+                    if (t != null)
+                        buff += "|" + t;
+                    else
+                        buff += "|(         )";
+                }
+                buff += "|\n";
+            }
+            return buff;
+        }
+
         //pour tester VerifChevalet()
         public void setChevalet(List<List<Tuile?>> chev)
         {
             this.chevalet = chev;
         }
 
-        public String getName() { return this.Name; }
+        public String getName()
+        {
+            return this.Name;
+        }
 
         public List<List<Tuile?>> GetChevalet()
         {
             return this.chevalet;
         }
-
     }
 }
