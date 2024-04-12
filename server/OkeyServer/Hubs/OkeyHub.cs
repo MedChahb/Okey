@@ -8,6 +8,7 @@ using Okey;
 using Okey.Game;
 using Okey.Joueurs;
 using Packets;
+using Packets.Dtos;
 using Security;
 
 /// <summary>
@@ -243,6 +244,25 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<string>("CoordsActionRequest", cancellationToken: CancellationToken.None);
 
+    private async Task SendRoomsRequest()
+    {
+        var listToSend = new List<RoomDto>();
+
+        foreach (var room in this._roomManager.GetRooms().Values)
+        {
+            var r = new RoomDto
+            {
+                Name = room.Name,
+                Capacity = room.Capacity,
+                Players = room.Players
+            };
+            listToSend.Add(r);
+        }
+        await this
+            ._hubContext.Clients.Group("Hub")
+            .SendAsync("UpdateRoomsRequest", new RoomsPacket { ListRooms = listToSend });
+    }
+
     private async Task<string> CoordsGainRequest(string connectionId) =>
         await this
             ._hubContext.Clients.Client(connectionId)
@@ -429,14 +449,12 @@ public sealed class OkeyHub : Hub
     /// <summary>
     /// Permet d'envoyer le nouvel etat des rooms au clients dans le Hub.
     /// </summary>
-    private async Task SendRoomListUpdate()
-    {
+    private async Task SendRoomListUpdate() => await this.SendRoomsRequest();
+    /*
         var roomsInfo = this._roomManager.GetRoomsInfo();
         await this
             ._hubContext.Clients.Group("Hub")
-            .SendAsync("ReceiveMessage", new PacketSignal { _message = roomsInfo });
-    }
-
+            .SendAsync("ReceiveMessage", new PacketSignal { _message = roomsInfo });*/
     /* test pruposes only
     public async Task getAllAssociations()
     {
