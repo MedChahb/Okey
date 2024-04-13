@@ -281,6 +281,17 @@ public sealed class OkeyHub : Hub
         await this.BroadCastTuileInRoom(roomName, tuilePacket);
     }
 
+    private async Task SendTuileJetee(string roomName, Tuile tuileJetee)
+    {
+        var tuilePacket = new TuilePacket
+        {
+            Num = tuileJetee.GetNum(),
+            Couleur = tuileJetee.GetCouleur()
+        };
+
+        await BroadCastTuileInRoom(roomName, tuilePacket);
+    }
+
     private async Task<string> CoordsGainRequest(string connectionId) =>
         await this
             ._hubContext.Clients.Client(connectionId)
@@ -344,7 +355,6 @@ public sealed class OkeyHub : Hub
         {
             this.SetPlayerTurn(t.getName(), false);
         }
-
 
         var joueurStarter = jeu.getJoueurActuel();
         var playerName = string.Empty;
@@ -442,6 +452,8 @@ public sealed class OkeyHub : Hub
                         }
 
                         currentPlayer?.JeterTuile(this.ReadCoords(coordinates), jeu);
+                        //envoi de la tuile jetee
+                        await SendTuileJetee(roomName, this.ReadCoords(coordinates));
 
                         this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
                     }
@@ -471,8 +483,7 @@ public sealed class OkeyHub : Hub
     /// </summary>
     private async Task SendRoomListUpdate() => await this.SendRoomsRequest();
 
-
-    private async Task SendRoomTuileCentre() => await this.SendRoomTuileCentre();
+    //private async Task SendRoomTuileCentre() => await this.SendRoomTuileCentre();
     /*
         var roomsInfo = this._roomManager.GetRoomsInfo();
         await this
