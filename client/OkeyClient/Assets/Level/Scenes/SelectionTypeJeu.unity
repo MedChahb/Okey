@@ -420,8 +420,8 @@ RectTransform:
   m_Children:
   - {fileID: 1847187020}
   - {fileID: 1878747873}
-  - {fileID: 31012455}
   - {fileID: 1234134176}
+  - {fileID: 31012455}
   - {fileID: 165244817}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -915,7 +915,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1246947194
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1066,7 +1066,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 80}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1367975279
@@ -1213,6 +1213,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backBtn: {fileID: 1234134177}
   joinLobbyBtn: {fileID: 31012457}
+  room1: {fileID: 1367975279}
   partieSimpleTxt: {fileID: 2056424586}
   showRooms: {fileID: 165244816}
   SceneId: 0

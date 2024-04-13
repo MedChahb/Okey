@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class LobbyManager : MonoBehaviour
@@ -7,7 +8,10 @@ public class LobbyManager : MonoBehaviour
     // Ref SignalRConnector component
     public SignalRConnector signalRConnector;
 
+    //public RoomsPacket rooms;
+
     public bool connectionStarted = false;
+    public bool rommsListFilled = false;
 
     private void Awake()
     {
@@ -61,16 +65,30 @@ public class LobbyManager : MonoBehaviour
         signalRConnector.InitializeConnection();
     }
 
-    public void JoinRoom()
+    public async void JoinRoom()
     {
-        if (signalRConnector == null)
-        {
-            Debug.LogError("SignalRConnector is not set on LobbyManager");
-            connectionStarted = false;
-            return;
-        }
-        Debug.Log("Joining Room");
-        signalRConnector.JoinRoom("ddsss");
+        //if (signalRConnector == null)
+        //{
+        //    Debug.LogError("SignalRConnector is not set on LobbyManager");
+        //    connectionStarted = false;
+        //    return;
+        //}
+
+        //if (rooms == null || rooms.listRooms == null || rooms.listRooms.Count == 0)
+        //{
+        //    Debug.LogError("Rooms data is not initialized properly or the list is empty.");
+        //    return;
+        //}
+
+        //RoomDto firstRoom = rooms.listRooms[0];
+        //if (firstRoom == null)
+        //{
+        //    Debug.LogError("The first room in the list is null.");
+        //    return;
+        //}
+
+        //Debug.Log("Joining Room: " + firstRoom.Name);
+        await signalRConnector.JoinRoom(); // Awaiting the async operation
     }
 
     public void SetConnectionStatus(bool value)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
+using UnityEditor;
 using UnityEngine;
 
 public class PacketSignal
@@ -32,13 +33,15 @@ public class SignalRConnector : MonoBehaviour
 
     public async void InitializeConnection()
     {
-        hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:3030/OkeyHub").Build(); // Update this URL accordingly
+        this.hubConnection = new HubConnectionBuilder()
+            .WithUrl("http://localhost:3030/OkeyHub")
+            .Build(); // Update this URL accordingly
 
-        ConfigureHubEvents();
+        this.ConfigureHubEvents();
 
         try
         {
-            await hubConnection.StartAsync();
+            await this.hubConnection.StartAsync();
             Debug.Log("SignalR connection established.");
             LobbyManager.Instance.SetConnectionStatus(true);
         }
@@ -50,21 +53,32 @@ public class SignalRConnector : MonoBehaviour
 
     private void ConfigureHubEvents()
     {
-        hubConnection.On<RoomsPacket>(
-            "UpdateRoomList",
-            roomsPacket =>
+        this.hubConnection.On<RoomsPacket>(
+            "UpdateRoomsRequest",
+            (rooms) =>
             {
-                Debug.Log("Received room list update.");
-                foreach (var room in roomsPacket.listRooms)
+                Debug.Log("Affichage des rooms");
+                //Afficher les rooms
+                foreach (var room in rooms.listRooms)
                 {
-                    Debug.Log(
-                        $"Room: {room.Name}, Capacity: {room.Capacity}, Players: {string.Join(", ", room.Players)}"
-                    );
+                    if (room == null)
+                    {
+                        Debug.Log("Null");
+                    }
+                    Debug.Log($"Nom de room: {room.Name}");
+                    Debug.Log($"Nom de room: {room.Capacity}");
+                    Debug.Log($"Nom de room {room.Players.Count}");
+
+                    if (rooms.listRooms.Count > 0)
+                    {
+                        LobbyManager.Instance.rommsListFilled = true;
+                        Debug.Log("list is filled");
+                    }
                 }
             }
         );
 
-        hubConnection.On<PacketSignal>(
+        this.hubConnection.On<PacketSignal>(
             "ReceiveMessage",
             message =>
             {
@@ -73,18 +87,87 @@ public class SignalRConnector : MonoBehaviour
         );
     }
 
-    public async Task JoinRoom(string roomName)
+    //private void ConfigureHubEvents()
+    //{
+    //    Debug.Log("Configuring hub events.");
+    //    this.hubConnection.On<RoomsPacket>("UpdateRoomsRequest", (rooms) =>
+    //    {
+    //        Debug.Log("Received rooms data, updating LobbyManager.");
+
+    //        // Check if the LobbyManager instance is ready
+    //        if (LobbyManager.Instance != null)
+    //        {
+    //            Debug.Log("Updating rooms in LobbyManager.");
+
+    //            // Directly updating rooms in LobbyManager
+    //            LobbyManager.Instance.rooms = rooms;
+    //            Debug.Log("Rooms updated successfully with " + rooms.listRooms.Count + " rooms.");
+
+    //            // Optionally log details of received rooms
+    //            foreach (var room in rooms.listRooms)
+    //            {
+    //                Debug.Log($"Room received: {room.Name}, Capacity: {room.Capacity}, Players: {string.Join(", ", room.Players)}");
+    //            }
+    //        }
+    //        else
+    //        {
+    //            Debug.LogError("LobbyManager instance is null when trying to update rooms.");
+    //        }
+    //    });
+
+    //    this.hubConnection.On<PacketSignal>("ReceiveMessage", message =>
+    //    {
+    //        Debug.Log("Received message: " + message._message);
+    //    });
+    //}
+
+
+
+    //public void updateRooms(RoomsPacket newRooms)
+    //{
+    //    rooms = newRooms;
+    //    if (rooms.listRooms.Count > 0)
+    //    {
+    //        Debug.Log("Rooms updated successfully with " + rooms.listRooms.Count + " rooms.");
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("Rooms data is not initialized properly or the list is empty.");
+    //    }
+    //}
+
+
+
+
+    public async Task JoinRoom() // takes parameter roomName
     {
-        if (hubConnection != null && hubConnection.State == HubConnectionState.Connected)
+        //if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
+        //{
+        //    try
+        //    {
+        //        await this.hubConnection.SendAsync("JoinRoom", roomName);
+        //        Debug.Log($"Request to join room '{roomName}' sent.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.LogError($"Failed to join room '{roomName}': {ex.Message}");
+        //    }
+        //}
+        //else
+        //{
+        //    Debug.LogError("Cannot join room. Hub connection is not established.");
+        //}
+
+        if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
         {
             try
             {
-                await hubConnection.SendAsync("JoinRoom", roomName);
-                Debug.Log($"Request to join room '{roomName}' sent.");
+                await hubConnection.SendAsync("LobbyConnection", "room1");
+                Debug.Log($"Request to join room 1 sent.");
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Failed to join room '{roomName}': {ex.Message}");
+                Debug.LogError($"Failed to join room 1: {ex.Message}");
             }
         }
         else
@@ -95,21 +178,21 @@ public class SignalRConnector : MonoBehaviour
 
     private async void OnDestroy()
     {
-        if (hubConnection != null && hubConnection.State == HubConnectionState.Connected)
+        if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
         {
-            await hubConnection.StopAsync();
-            await hubConnection.DisposeAsync();
+            await this.hubConnection.StopAsync();
+            await this.hubConnection.DisposeAsync();
         }
     }
 
     public async void SendBoardState(TuileData[,] boardState)
     {
         // Ensure the connection is open before attempting to send a message
-        if (hubConnection != null && hubConnection.State == HubConnectionState.Connected)
+        if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
         {
             try
             {
-                await hubConnection.InvokeAsync("SendBoardState", boardState);
+                await this.hubConnection.InvokeAsync("SendBoardState", boardState);
                 Debug.Log("Board state sent successfully.");
             }
             catch (Exception ex)
