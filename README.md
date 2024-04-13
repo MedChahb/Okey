@@ -20,6 +20,7 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 * [Cahier des charges](https://docs.google.com/document/d/1Rsr_0wPjUDgFJGwcGmsh3udF6GZKAEvckagoF2dQsZc/edit?usp=sharing)
 * [Team log](https://docs.google.com/spreadsheets/d/1c_RrIB0kDTPiEfFVfjjMwCOlqc8TLVP4LDvLlRVz5Ng/edit?usp=sharing) (ancien)
 * [Team log](https://docs.google.com/spreadsheets/d/1Lx6XSw-6TPpPX6M-f2ByZmqWlIIDPr0a4ye2qn6C0Tg/edit?usp=sharing)
+* [Seafile partagé](https://seafile.unistra.fr/smart-link/2ab30c65-6f80-4575-a26b-90b170481569/)
 
 ### Backend
 
@@ -40,7 +41,6 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 
 ### Commun entre backend et frontend
 
-* [Seafile partagé](https://seafile.unistra.fr/smart-link/2ab30c65-6f80-4575-a26b-90b170481569/)
 * [Spécification des communications](https://docs.google.com/document/d/1m7YraiAPQxlpeK8IJXncBgzjGUizkMRcMqzwSLpFpZ8/edit?usp=sharing)
 
 ## Environnement de développement
