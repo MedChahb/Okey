@@ -7,6 +7,7 @@ using Misc;
 using Okey;
 using Okey.Game;
 using Okey.Joueurs;
+using Okey.Tuiles;
 using Packets;
 using Packets.Dtos;
 using Security;
@@ -224,6 +225,9 @@ public sealed class OkeyHub : Hub
     private async Task BroadCastInRoom(string roomName, PacketSignal message) =>
         await this._hubContext.Clients.Group(roomName).SendAsync("ReceiveMessage", message);
 
+    private async Task BroadCastTuileInRoom(string roomName, TuilePacket tuilePacket) =>
+        await this._hubContext.Clients.Group(roomName).SendAsync("ReceiveTuile", tuilePacket);
+
     /// <summary>
     /// Envoie un message a tout un utilisateur d'un groupe
     /// </summary>
@@ -261,6 +265,20 @@ public sealed class OkeyHub : Hub
         await this
             ._hubContext.Clients.Group("Hub")
             .SendAsync("UpdateRoomsRequest", new RoomsPacket { ListRooms = listToSend });
+    }
+
+    private async Task SendTuileCentre(string roomName, Jeu jeu)
+    {
+        // Récupérer les informations de la tuile du centre
+        var tuileCentre = jeu.GetTuileCentre();
+        var tuilePacket = new TuilePacket
+        {
+            Num = tuileCentre.GetNum(),
+            Couleur = tuileCentre.GetCouleur()
+        };
+
+        // Envoyer la tuile du centre via le système de diffusion
+        await this.BroadCastTuileInRoom(roomName, tuilePacket);
     }
 
     private async Task<string> CoordsGainRequest(string connectionId) =>
@@ -327,14 +345,6 @@ public sealed class OkeyHub : Hub
             this.SetPlayerTurn(t.getName(), false);
         }
 
-        // Sérialiser la tuile du centre en JSON
-        string tuileCentreJson = jeu.GetTuileCentre().ToJSON();
-
-        // Envoyer la tuile du centre sérialisée en JSON
-        await this.BroadCastInRoom(
-            roomName,
-            new PacketSignal { _message = $"La tuile du centre est : {tuileCentreJson}" }
-        );
 
         var joueurStarter = jeu.getJoueurActuel();
         var playerName = string.Empty;
@@ -460,6 +470,9 @@ public sealed class OkeyHub : Hub
     /// Permet d'envoyer le nouvel etat des rooms au clients dans le Hub.
     /// </summary>
     private async Task SendRoomListUpdate() => await this.SendRoomsRequest();
+
+
+    private async Task SendRoomTuileCentre() => await this.SendRoomTuileCentre();
     /*
         var roomsInfo = this._roomManager.GetRoomsInfo();
         await this

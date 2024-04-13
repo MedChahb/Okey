@@ -66,15 +66,6 @@ namespace Okey.Tuiles
             return this.dansPioche;
         }
 
-        private string ToJSON(Tuile tuile)
-        {
-            // Créer une chaîne JSON à partir de la tuile
-            string jsonString = JsonSerializer.Serialize(tuile);
-
-            // Retourner la chaîne JSON
-            return jsonString;
-        }
-
         public CouleurTuile GetCouleur()
         {
             return this.couleur;

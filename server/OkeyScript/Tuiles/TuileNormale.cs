@@ -1,5 +1,7 @@
-﻿namespace Okey.Tuiles
+namespace Okey.Tuiles
 {
+    using System.Text.Json;
+
     public class TuileNormale : Tuile
     {
         public TuileNormale(CouleurTuile couleur, int num, bool dansPioche) : base(couleur, num, dansPioche)
@@ -16,6 +18,7 @@
         {
             return this.Num + 1 == t.GetNum() || (this.Num == 13 && t.GetNum() == 1);
         }
+
 
         public override string ToString()
         {
