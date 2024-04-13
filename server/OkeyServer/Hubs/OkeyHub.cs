@@ -189,7 +189,7 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Group(lobbyName)
             .SendAsync(
                 "ReceiveMessage",
-                new PacketSignalSendRoomsRequest
+                new PacketSignal
                 {
                     _message = $"Player {this.Context.ConnectionId} left the lobby."
                 }
@@ -281,15 +281,20 @@ public sealed class OkeyHub : Hub
         await this.BroadCastTuileInRoom(roomName, tuilePacket);
     }
 
-    private async Task SendTuileJetee(string roomName, Tuile tuileJetee)
+    private async Task SendTuileJetee(string roomName, Tuile? tuileJetee)
     {
+        if (tuileJetee == null)
+        {
+            //throw exception ??
+            return;
+        }
         var tuilePacket = new TuilePacket
         {
             Num = tuileJetee.GetNum(),
             Couleur = tuileJetee.GetCouleur()
         };
 
-        await BroadCastTuileInRoom(roomName, tuilePacket);
+        await this.BroadCastTuileInRoom(roomName, tuilePacket);
     }
 
     private async Task<string> CoordsGainRequest(string connectionId) =>
@@ -451,9 +456,12 @@ public sealed class OkeyHub : Hub
                             continue;
                         }
 
-                        currentPlayer?.JeterTuile(this.ReadCoords(coordinates), jeu);
+                        var c = this.ReadCoords(coordinates);
+                        var tuileJetee = currentPlayer?.GetChevalet()[c.getY()][c.getX()];
+
+                        currentPlayer?.JeterTuile(c, jeu);
                         //envoi de la tuile jetee
-                        await SendTuileJetee(roomName, this.ReadCoords(coordinates));
+                        await this.SendTuileJetee(roomName, tuileJetee);
 
                         this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
                     }
