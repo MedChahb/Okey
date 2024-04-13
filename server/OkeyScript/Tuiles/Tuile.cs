@@ -56,6 +56,8 @@ namespace Okey.Tuiles
             this.defausse = true;
         }
 
+        public bool GetPioche() => this.dansPioche;
+
         public Boolean isDefausse()
         {
             return this.defausse;
@@ -81,5 +83,7 @@ namespace Okey.Tuiles
         public abstract bool estSuivant(Tuile t);
 
         public abstract override String ToString();
+
+        public abstract string GetName();
     }
 }

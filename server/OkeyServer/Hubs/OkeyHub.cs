@@ -8,6 +8,7 @@ using Misc;
 using Okey;
 using Okey.Game;
 using Okey.Joueurs;
+using Okey.Tuiles;
 using Packets;
 using Packets.Dtos;
 using Security;
@@ -189,10 +190,7 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Group(lobbyName)
             .SendAsync(
                 "ReceiveMessage",
-                new PacketSignal
-                {
-                    message = $"Player {this.Context.ConnectionId} left the lobby."
-                }
+                new PacketSignal { message = $"Player {this.Context.ConnectionId} left the lobby." }
             );
         await this.SendRoomListUpdate();
     }
@@ -208,7 +206,10 @@ public sealed class OkeyHub : Hub
                 "La chaîne de coordonnées doit contenir exactement deux parties."
             );
         }
-        return new Coord(int.Parse(parts[0], CultureInfo.InvariantCulture), int.Parse(parts[1], CultureInfo.InvariantCulture));
+        return new Coord(
+            int.Parse(parts[0], CultureInfo.InvariantCulture),
+            int.Parse(parts[1], CultureInfo.InvariantCulture)
+        );
     }
 
     /// <summary>
@@ -308,6 +309,80 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    private async Task SendChevalet(string connectionId, Joueur joueur)
+    {
+        var chevaletInit = joueur.GetChevalet();
+        var premiereRangee = new List<string>();
+        var secondeRangee = new List<string>();
+
+        for (int i = 0; i < 2; i++)
+        {
+            if (i == 0)
+            {
+                for (int j = 0; j < 14; j++)
+                {
+                    var val = chevaletInit[i][j];
+                    if (val == null)
+                    {
+                        premiereRangee.Add($"couleur=;num=;defausse=;dansPioche=;Nom=;");
+                    }
+                    else
+                    {
+                        premiereRangee.Add(
+                            $"couleur={this.FromEnumToString(chevaletInit[i][j]!.GetCouleur())};num={chevaletInit[i][j]!.GetNum()};defausse={chevaletInit[i][j]!.isDefausse()};dansPioche={chevaletInit[i][j]!.GetPioche()};Nom={chevaletInit[i][j]!.GetName()};"
+                        );
+                    }
+                }
+            }
+            else
+            {
+                for (int j = 0; j < 14; j++)
+                {
+                    var val = chevaletInit[i][j];
+                    if (val == null)
+                    {
+                        secondeRangee.Add($"couleur=;num=;defausse=;dansPioche=;Nom=;");
+                    }
+                    else
+                    {
+                        secondeRangee.Add(
+                            $"couleur={this.FromEnumToString(chevaletInit[i][j]!.GetCouleur())};num={chevaletInit[i][j]!.GetNum()};defausse={chevaletInit[i][j]!.isDefausse()};dansPioche={chevaletInit[i][j]!.GetPioche()};Nom={chevaletInit[i][j]!.GetName()};"
+                        );
+                    }
+                }
+            }
+        }
+        await this
+            ._hubContext.Clients.Client(connectionId)
+            .SendAsync(
+                "ReceiveChevalet",
+                new ChevaletPacket
+                {
+                    PremiereRangee = premiereRangee,
+                    SecondeRangee = secondeRangee
+                }
+            );
+    }
+
+    public string FromEnumToString(CouleurTuile col)
+    {
+        switch (col)
+        {
+            case CouleurTuile.J:
+                return "J";
+            case CouleurTuile.N:
+                return "N";
+            case CouleurTuile.R:
+                return "R";
+            case CouleurTuile.B:
+                return "B";
+            case CouleurTuile.M:
+                return "M";
+            default:
+                return "";
+        }
+    }
+
     /// <summary>
     /// Permet de definir l'etat du tour d'un joueur
     /// </summary>
@@ -316,16 +391,22 @@ public sealed class OkeyHub : Hub
     private void SetPlayerTurn(string playerName, bool isTurn) =>
         this._isPlayerTurn[playerName] = isTurn;
 
+    private async Task TuilesDistribueesSignal(string roomName) =>
+        await this.Clients.Group(roomName).SendAsync("TuilesDistribueesSignal");
+
+    private async Task StartGameSignal(string roomName) =>
+        await this.Clients.Group(roomName).SendAsync("StartGame");
+
+    private async Task PlayerWon(string roomName, string winner) =>
+        await this.Clients.Group(roomName).SendAsync("PlayerWon", winner); //TODO: Faire la distincion entre le gagnant et les autres
+
     /// <summary>
     /// Fonction se declanchant quand il y a assez de monde, lancement du jeu
     /// </summary>
     /// <param name="roomName">nom de la room qui accueille le jeu</param>
     public async Task StartGameForRoom(string roomName)
     {
-        await this.BroadCastInRoom(
-            roomName,
-            new PacketSignal { message = "La partie va commencer" } // Signal la partie va commencer
-        );
+        await this.StartGameSignal(roomName);
 
         var playerIds = this._roomManager.GetRooms()[roomName].GetPlayerIds();
         Joueur[] joueurs =
@@ -338,10 +419,8 @@ public sealed class OkeyHub : Hub
 
         var jeu = new Jeu(1, joueurs);
         jeu.DistibuerTuile();
-        await this.BroadCastInRoom(
-            roomName,
-            new PacketSignal { message = "Les tuiles ont été distribuees" } //
-        );
+
+        await this.TuilesDistribueesSignal(roomName);
 
         foreach (var t in joueurs)
         {
@@ -355,7 +434,7 @@ public sealed class OkeyHub : Hub
             await this.TourSignalRequest(roomName, joueurStarter?.getName());
             if (joueurStarter != null)
             {
-                await this.SendMpToPlayer(joueurStarter.getName(), jeu.StringChevaletActuel());
+                await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 var coords = await this.FirstCoordsRequest(joueurStarter.getName());
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
@@ -365,6 +444,7 @@ public sealed class OkeyHub : Hub
                 }
 
                 joueurStarter.JeterTuile(this.ReadCoords(coords), jeu);
+                await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 this.SetPlayerTurn(joueurStarter.getName(), false);
             }
 
@@ -381,15 +461,12 @@ public sealed class OkeyHub : Hub
                 {
                     if (currentPlayer != null)
                     {
-                        await this.SendMpToPlayer(
-                            currentPlayer.getName(),
-                            jeu.StringChevaletActuel()
-                        );
+                        await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
                         var pioche = await this.PiocheRequest(currentPlayer.getName());
                         if (pioche.Equals("Move", StringComparison.Ordinal))
                         {
-                            await this.MoveInLoop(currentPlayer, jeu);
+                            //await this.MoveInLoop(currentPlayer, jeu);
                             continue;
                         }
 
@@ -405,10 +482,7 @@ public sealed class OkeyHub : Hub
                             continue;
                         }
 
-                        await this.SendMpToPlayer(
-                            currentPlayer.getName(),
-                            jeu.StringChevaletActuel()
-                        );
+                        await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
                         var coordinates = await this.CoordsRequest(currentPlayer.getName());
 
@@ -423,13 +497,7 @@ public sealed class OkeyHub : Hub
                             )
                             {
                                 // Le joueur gagne
-                                await this.BroadCastInRoom(
-                                    currentPlayer.getName(),
-                                    new PacketSignal
-                                    {
-                                        message = $"{currentPlayer?.getName()} a gagné"
-                                    }
-                                );
+                                await this.PlayerWon(roomName, currentPlayer.getName());
                             }
 
                             if (currentPlayer != null)
@@ -444,8 +512,12 @@ public sealed class OkeyHub : Hub
                         }
 
                         currentPlayer?.JeterTuile(this.ReadCoords(coordinates), jeu);
+                        if (currentPlayer != null)
+                        {
+                            await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                        this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
+                            this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
+                        }
                     }
 
                     this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);

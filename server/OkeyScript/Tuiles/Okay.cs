@@ -1,8 +1,9 @@
-﻿namespace Okey.Tuiles
+namespace Okey.Tuiles
 {
     public class Okay : Tuile
     {
-        public Okay(bool dansPioche) : base(CouleurTuile.M, 0, dansPioche)
+        public Okay(bool dansPioche)
+            : base(CouleurTuile.M, 0, dansPioche)
         {
             //calculate value
         }
@@ -21,5 +22,7 @@
         {
             return String.Format(null, "({0:00}, {1}, {2})", this.Num, this.Couleur, "Ok");
         }
+
+        public override string GetName() => "Ok";
     }
 }

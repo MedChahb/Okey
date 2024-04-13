@@ -1,12 +1,12 @@
-﻿namespace Okey.Tuiles
+namespace Okey.Tuiles
 {
     public class Joker : Tuile
     {
-        public Joker(CouleurTuile couleur, int valeur, bool dansPioche) : base(couleur, valeur, dansPioche)
+        public Joker(CouleurTuile couleur, int valeur, bool dansPioche)
+            : base(couleur, valeur, dansPioche)
         {
             //calculate value
         }
-
 
         public override bool MemeCouleur(Tuile t)
         {
@@ -22,5 +22,7 @@
         {
             return String.Format(null, "({0:00}, {1}, {2})", this.Num, this.Couleur, "Jo");
         }
+
+        public override string GetName() => "Jo";
     }
 }
