@@ -1,6 +1,25 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using UnityEngine;
+
+public class PacketSignal
+{
+    public string _message { get; set; }
+}
+
+public class RoomDto
+{
+    public string Name { get; set; }
+    public int Capacity { get; set; }
+    public List<string> Players { get; set; }
+}
+
+public class RoomsPacket
+{
+    public List<RoomDto> listRooms { get; set; }
+}
 
 public class SignalRConnector : MonoBehaviour
 {
@@ -11,20 +30,17 @@ public class SignalRConnector : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    // This method should be called at the start of a game, initialize lobby ~ not sure when
     public async void InitializeConnection()
     {
-        // TODO: the url server isnt right check with backend
-        hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:5105/hub").Build(); // to be changed
+        hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:3030/OkeyHub").Build(); // Update this URL accordingly
 
-        // Setup event listeners, if any messages are expected from the server that is
         ConfigureHubEvents();
 
-        // Start the connection
         try
         {
             await hubConnection.StartAsync();
-            Debug.Log("SignalR connection started.");
+            Debug.Log("SignalR connection established.");
+            LobbyManager.Instance.SetConnectionStatus(true);
         }
         catch (Exception ex)
         {
@@ -34,42 +50,57 @@ public class SignalRConnector : MonoBehaviour
 
     private void ConfigureHubEvents()
     {
-        // TODO: Listen for a message from the server to test connection
-        hubConnection.On<string>(
-            "ReceiveMessage",
-            (message) =>
+        hubConnection.On<RoomsPacket>(
+            "UpdateRoomList",
+            roomsPacket =>
             {
-                Debug.Log($"Message received from server: {message}");
+                Debug.Log("Received room list update.");
+                foreach (var room in roomsPacket.listRooms)
+                {
+                    Debug.Log(
+                        $"Room: {room.Name}, Capacity: {room.Capacity}, Players: {string.Join(", ", room.Players)}"
+                    );
+                }
             }
         );
 
-        // TODO:
+        hubConnection.On<PacketSignal>(
+            "ReceiveMessage",
+            message =>
+            {
+                Debug.Log(message._message);
+            }
+        );
+    }
+
+    public async Task JoinRoom(string roomName)
+    {
+        if (hubConnection != null && hubConnection.State == HubConnectionState.Connected)
+        {
+            try
+            {
+                await hubConnection.SendAsync("JoinRoom", roomName);
+                Debug.Log($"Request to join room '{roomName}' sent.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to join room '{roomName}': {ex.Message}");
+            }
+        }
+        else
+        {
+            Debug.LogError("Cannot join room. Hub connection is not established.");
+        }
     }
 
     private async void OnDestroy()
     {
-        // GameObject is destroyed ? terminate
         if (hubConnection != null && hubConnection.State == HubConnectionState.Connected)
         {
             await hubConnection.StopAsync();
             await hubConnection.DisposeAsync();
         }
     }
-
-    // Send Board state as a message to the server
-    // TODO: Test this method
-    //public async void SendBoardState(TuileData[,] boardState)
-    //{
-    //    try
-    //    {
-    //        await hubConnection.InvokeAsync("SendBoardState", boardState); // for wait for confirmation ~
-    //        Debug.Log("Board state sent successfully."); // help notice
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Debug.LogError($"Failed to send board state: {ex.Message}"); // help notice
-    //    }
-    //}
 
     public async void SendBoardState(TuileData[,] boardState)
     {

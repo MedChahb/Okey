@@ -9,10 +9,13 @@ public class UIManagerPFormulaire : MonoBehaviour
     private Button backBtn;
 
     [SerializeField]
+    private Button joinLobbyBtn;
+
+    [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
 
     [SerializeField]
-    private Button joinLobbyBtn;
+    private GameObject showRooms;
 
     [SerializeField]
     private int SceneId;
@@ -34,6 +37,11 @@ public class UIManagerPFormulaire : MonoBehaviour
         else // Fr
         {
             partieSimpleTxt.text = "Partie Simple";
+        }
+
+        if (LobbyManager.Instance.GetConnectedStatus())
+        {
+            showRooms.SetActive(true);
         }
     }
 
