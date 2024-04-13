@@ -188,7 +188,7 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Group(lobbyName)
             .SendAsync(
                 "ReceiveMessage",
-                new PacketSignal
+                new PacketSignalSendRoomsRequest
                 {
                     _message = $"Player {this.Context.ConnectionId} left the lobby."
                 }
@@ -298,6 +298,7 @@ public sealed class OkeyHub : Hub
     /// Fonction se declanchant quand il y a assez de monde, lancement du jeu
     /// </summary>
     /// <param name="roomName">nom de la room qui accueille le jeu</param>
+
     public async Task StartGameForRoom(string roomName)
     {
         await this.BroadCastInRoom(
@@ -325,6 +326,15 @@ public sealed class OkeyHub : Hub
         {
             this.SetPlayerTurn(t.getName(), false);
         }
+
+        // Sérialiser la tuile du centre en JSON
+        string tuileCentreJson = jeu.GetTuileCentre().ToJSON();
+
+        // Envoyer la tuile du centre sérialisée en JSON
+        await this.BroadCastInRoom(
+            roomName,
+            new PacketSignal { _message = $"La tuile du centre est : {tuileCentreJson}" }
+        );
 
         var joueurStarter = jeu.getJoueurActuel();
         var playerName = string.Empty;
