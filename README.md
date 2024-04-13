@@ -29,9 +29,14 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 ### Frontend
 
 * [Tâches frontend](https://docs.google.com/document/d/1juRMyaspqpbGG-6astmrf9sYpfhF4I-d_2sC1IXX4jM/edit?usp=sharing)
-* [Figma](https://www.figma.com/file/ZTVmviAU1qUqfNIfh04j1V/Untitled?type=design&node-id=0%3A1&mode=design&t=2wq9oDEamRp9MzS5-1)
 * [UML](https://drive.google.com/file/d/1YIBEHZWpCWMH5IgFtIi-53_cFjVEIpYE/view?usp=sharing_eip_m&ts=65d4c787)
 * [Diagramme d'activités](https://drive.google.com/file/d/1TDauPSD0wWvksGSJn-EX9Y7hbyhopGBx/view?ts=65de1e74)
+
+#### IHM
+
+* [Figma](https://www.figma.com/file/ZTVmviAU1qUqfNIfh04j1V/Untitled?type=design&node-id=0%3A1&mode=design&t=2wq9oDEamRp9MzS5-1)
+* [Wireframes](https://drive.google.com/file/d/1QMwPXv768F97Ix5pabN3Do9hoXsxo5LF/view?usp=sharing)
+* [Tests utilisateur](https://docs.google.com/document/d/1pJDbbH8KoasmX3JDQduUXqLfxRmnVAhrXfWyx_RvB9Q/edit?usp=sharing)
 
 ### Commun entre backend et frontend
 
