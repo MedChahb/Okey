@@ -1,4 +1,5 @@
-﻿using Okey.Joueurs;
+using System.Text.Json;
+using Okey.Joueurs;
 
 namespace Okey.Tuiles
 {
@@ -8,8 +9,9 @@ namespace Okey.Tuiles
         N, //Noir
         R, //Rouge
         B, //Bleu
-        M  //Mult
+        M //Mult
     }
+
     public abstract class Tuile
     {
         private CouleurTuile couleur;
@@ -26,15 +28,31 @@ namespace Okey.Tuiles
         }
 
         // Protected properties to allow access to private fields from child classes
-        protected CouleurTuile Couleur { get => couleur; set => couleur = value; }
-        protected int Num { get => num; set => num = value; }
-        protected bool Defausse { get => defausse; set => defausse = value; }
-        protected bool DansPioche { get => dansPioche; set => dansPioche = value; }
-
+        protected CouleurTuile Couleur
+        {
+            get => couleur;
+            set => couleur = value;
+        }
+        protected int Num
+        {
+            get => num;
+            set => num = value;
+        }
+        protected bool Defausse
+        {
+            get => defausse;
+            set => defausse = value;
+        }
+        protected bool DansPioche
+        {
+            get => dansPioche;
+            set => dansPioche = value;
+        }
 
         public void SetDefause()
         {
-            if (this == null) return;
+            if (this == null)
+                return;
             this.defausse = true;
         }
 
@@ -48,13 +66,29 @@ namespace Okey.Tuiles
             return this.dansPioche;
         }
 
-        public CouleurTuile GetCouleur() { return this.couleur; }
-        public int GetNum() { return this.num; }
+        private string ToJSON(Tuile tuile)
+        {
+            // Créer une chaîne JSON à partir de la tuile
+            string jsonString = JsonSerializer.Serialize(tuile);
+
+            // Retourner la chaîne JSON
+            return jsonString;
+        }
+
+        public CouleurTuile GetCouleur()
+        {
+            return this.couleur;
+        }
+
+        public int GetNum()
+        {
+            return this.num;
+        }
 
         public abstract bool MemeCouleur(Tuile t);
 
         public abstract bool estSuivant(Tuile t);
 
-        public override abstract String ToString();
+        public abstract override String ToString();
     }
 }
