@@ -1,6 +1,7 @@
 namespace OkeyServer.Hubs;
 
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
@@ -58,7 +59,7 @@ public sealed class OkeyHub : Hub
                     "ReceiveMessage",
                     new PacketSignal
                     {
-                        _message = $"Player {this.Context.ConnectionId} has left the lobby."
+                        message = $"Player {this.Context.ConnectionId} has left the lobby."
                     }
                 );
         }
@@ -128,7 +129,7 @@ public sealed class OkeyHub : Hub
         {
             await this
                 .Clients.Group(lobbyName)
-                .SendAsync("ReceiveMessage", new PacketSignal { _message = message });
+                .SendAsync("ReceiveMessage", new PacketSignal { message = message });
         }
         catch (Exception e)
         {
@@ -157,7 +158,7 @@ public sealed class OkeyHub : Hub
                     "ReceiveMessage",
                     new PacketSignal
                     {
-                        _message = $"Player {this.Context.ConnectionId} joined {lobbyName}"
+                        message = $"Player {this.Context.ConnectionId} joined {lobbyName}"
                     }
                 );
 
@@ -172,7 +173,7 @@ public sealed class OkeyHub : Hub
                 ._hubContext.Clients.Client(this.Context.ConnectionId)
                 .SendAsync(
                     "ReceiveMessage",
-                    new PacketSignal { _message = "Unable to join the room. It may be full." }
+                    new PacketSignal { message = "Unable to join the room. It may be full." }
                 );
         }
     }
@@ -190,7 +191,7 @@ public sealed class OkeyHub : Hub
                 "ReceiveMessage",
                 new PacketSignal
                 {
-                    _message = $"Player {this.Context.ConnectionId} left the lobby."
+                    message = $"Player {this.Context.ConnectionId} left the lobby."
                 }
             );
         await this.SendRoomListUpdate();
@@ -207,7 +208,7 @@ public sealed class OkeyHub : Hub
                 "La chaîne de coordonnées doit contenir exactement deux parties."
             );
         }
-        return new Coord(int.Parse(parts[0]), int.Parse(parts[1]));
+        return new Coord(int.Parse(parts[0], CultureInfo.InvariantCulture), int.Parse(parts[1], CultureInfo.InvariantCulture));
     }
 
     /// <summary>
@@ -232,7 +233,7 @@ public sealed class OkeyHub : Hub
     private async Task SendMpToPlayer(string userId, string message) =>
         await this
             ._hubContext.Clients.Client(userId)
-            .SendAsync("ReceiveMessage", new PacketSignal { _message = message });
+            .SendAsync("ReceiveMessage", new PacketSignal { message = message });
 
     /// <summary>
     /// Requete de coordoonnees
@@ -323,7 +324,7 @@ public sealed class OkeyHub : Hub
     {
         await this.BroadCastInRoom(
             roomName,
-            new PacketSignal { _message = "La partie va commencer" } // Signal la partie va commencer
+            new PacketSignal { message = "La partie va commencer" } // Signal la partie va commencer
         );
 
         var playerIds = this._roomManager.GetRooms()[roomName].GetPlayerIds();
@@ -339,7 +340,7 @@ public sealed class OkeyHub : Hub
         jeu.DistibuerTuile();
         await this.BroadCastInRoom(
             roomName,
-            new PacketSignal { _message = "Les tuiles ont été distribuees" } //
+            new PacketSignal { message = "Les tuiles ont été distribuees" } //
         );
 
         foreach (var t in joueurs)
@@ -426,7 +427,7 @@ public sealed class OkeyHub : Hub
                                     currentPlayer.getName(),
                                     new PacketSignal
                                     {
-                                        _message = $"{currentPlayer?.getName()} a gagné"
+                                        message = $"{currentPlayer?.getName()} a gagné"
                                     }
                                 );
                             }
@@ -475,7 +476,7 @@ public sealed class OkeyHub : Hub
         var roomsInfo = this._roomManager.GetRoomsInfo();
         await this
             ._hubContext.Clients.Group("Hub")
-            .SendAsync("ReceiveMessage", new PacketSignal { _message = roomsInfo });*/
+            .SendAsync("ReceiveMessage", new PacketSignal { message = roomsInfo });*/
     /* test pruposes only
     public async Task getAllAssociations()
     {
