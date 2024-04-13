@@ -7,7 +7,6 @@ using Misc;
 using Okey;
 using Okey.Game;
 using Okey.Joueurs;
-using Okey.Tuiles;
 using Packets;
 using Packets.Dtos;
 using Security;
@@ -225,9 +224,6 @@ public sealed class OkeyHub : Hub
     private async Task BroadCastInRoom(string roomName, PacketSignal message) =>
         await this._hubContext.Clients.Group(roomName).SendAsync("ReceiveMessage", message);
 
-    private async Task BroadCastTuileInRoom(string roomName, TuilePacket tuilePacket) =>
-        await this._hubContext.Clients.Group(roomName).SendAsync("ReceiveTuile", tuilePacket);
-
     /// <summary>
     /// Envoie un message a tout un utilisateur d'un groupe
     /// </summary>
@@ -267,36 +263,6 @@ public sealed class OkeyHub : Hub
             .SendAsync("UpdateRoomsRequest", new RoomsPacket { ListRooms = listToSend });
     }
 
-    private async Task SendTuileCentre(string roomName, Jeu jeu)
-    {
-        // Récupérer les informations de la tuile du centre
-        var tuileCentre = jeu.GetTuileCentre();
-        var tuilePacket = new TuilePacket
-        {
-            Num = tuileCentre.GetNum(),
-            Couleur = tuileCentre.GetCouleur()
-        };
-
-        // Envoyer la tuile du centre via le système de diffusion
-        await this.BroadCastTuileInRoom(roomName, tuilePacket);
-    }
-
-    private async Task SendTuileJetee(string roomName, Tuile? tuileJetee)
-    {
-        if (tuileJetee == null)
-        {
-            //throw exception ??
-            return;
-        }
-        var tuilePacket = new TuilePacket
-        {
-            Num = tuileJetee.GetNum(),
-            Couleur = tuileJetee.GetCouleur()
-        };
-
-        await this.BroadCastTuileInRoom(roomName, tuilePacket);
-    }
-
     private async Task<string> CoordsGainRequest(string connectionId) =>
         await this
             ._hubContext.Clients.Client(connectionId)
@@ -320,6 +286,27 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<string>("PiocheRequest", cancellationToken: CancellationToken.None);
 
+    private async Task TourSignalRequest(string roomName, string? connectionId)
+    {
+        foreach (var player in this._roomManager.GetRooms()[roomName].GetPlayerIds())
+        {
+            if (player.Equals(connectionId, StringComparison.Ordinal))
+            {
+                await this._hubContext.Clients.Client(player).SendAsync("YourTurnSignal");
+            }
+            else
+            {
+                await this
+                    ._hubContext.Clients.Client(player)
+                    .SendAsync(
+                        "TurnSignal",
+                        connectionId,
+                        cancellationToken: CancellationToken.None
+                    );
+            }
+        }
+    }
+
     /// <summary>
     /// Permet de definir l'etat du tour d'un joueur
     /// </summary>
@@ -332,12 +319,11 @@ public sealed class OkeyHub : Hub
     /// Fonction se declanchant quand il y a assez de monde, lancement du jeu
     /// </summary>
     /// <param name="roomName">nom de la room qui accueille le jeu</param>
-
     public async Task StartGameForRoom(string roomName)
     {
         await this.BroadCastInRoom(
             roomName,
-            new PacketSignal { _message = "La partie va commencer" }
+            new PacketSignal { _message = "La partie va commencer" } // Signal la partie va commencer
         );
 
         var playerIds = this._roomManager.GetRooms()[roomName].GetPlayerIds();
@@ -353,7 +339,7 @@ public sealed class OkeyHub : Hub
         jeu.DistibuerTuile();
         await this.BroadCastInRoom(
             roomName,
-            new PacketSignal { _message = "Les tuiles ont été distribuees" }
+            new PacketSignal { _message = "Les tuiles ont été distribuees" } //
         );
 
         foreach (var t in joueurs)
@@ -365,6 +351,7 @@ public sealed class OkeyHub : Hub
         var playerName = string.Empty;
         {
             this.SetPlayerTurn(joueurStarter?.getName() ?? playerName, true);
+            await this.TourSignalRequest(roomName, joueurStarter?.getName());
             if (joueurStarter != null)
             {
                 await this.SendMpToPlayer(joueurStarter.getName(), jeu.StringChevaletActuel());
@@ -388,12 +375,11 @@ public sealed class OkeyHub : Hub
             while (!jeu.isTermine())
             {
                 var currentPlayer = jeu.getJoueurActuel();
+                await this.TourSignalRequest(roomName, currentPlayer?.getName());
                 if (this._isPlayerTurn[currentPlayer?.getName() ?? playerName])
                 {
                     if (currentPlayer != null)
                     {
-                        Console.WriteLine($"C'est le tour de {currentPlayer.getName()}"); // Envoyer un signal a tout les autres clients
-                        await this.SendMpToPlayer(currentPlayer.getName(), "C'est votre tour");
                         await this.SendMpToPlayer(
                             currentPlayer.getName(),
                             jeu.StringChevaletActuel()
@@ -456,12 +442,7 @@ public sealed class OkeyHub : Hub
                             continue;
                         }
 
-                        var c = this.ReadCoords(coordinates);
-                        var tuileJetee = currentPlayer?.GetChevalet()[c.getY()][c.getX()];
-
-                        currentPlayer?.JeterTuile(c, jeu);
-                        //envoi de la tuile jetee
-                        await this.SendTuileJetee(roomName, tuileJetee);
+                        currentPlayer?.JeterTuile(this.ReadCoords(coordinates), jeu);
 
                         this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
                     }
@@ -490,8 +471,6 @@ public sealed class OkeyHub : Hub
     /// Permet d'envoyer le nouvel etat des rooms au clients dans le Hub.
     /// </summary>
     private async Task SendRoomListUpdate() => await this.SendRoomsRequest();
-
-    //private async Task SendRoomTuileCentre() => await this.SendRoomTuileCentre();
     /*
         var roomsInfo = this._roomManager.GetRoomsInfo();
         await this
