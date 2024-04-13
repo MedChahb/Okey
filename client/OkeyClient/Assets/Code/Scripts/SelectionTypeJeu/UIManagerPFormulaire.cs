@@ -56,6 +56,11 @@ public class UIManagerPFormulaire : MonoBehaviour
         SceneManager.LoadScene(SceneId);
     }
 
+    public void onLoadBtnClicked()
+    {
+        SceneManager.LoadScene(2); // Charge la scène `PlateauInit`
+    }
+
     public void onJoinLobbyButtonPressed()
     {
         if (LobbyManager.Instance == null)
