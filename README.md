@@ -40,6 +40,7 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 
 ### Commun entre backend et frontend
 
+* [Seafile partagé](https://seafile.unistra.fr/smart-link/2ab30c65-6f80-4575-a26b-90b170481569/)
 * [Spécification des communications](https://docs.google.com/document/d/1m7YraiAPQxlpeK8IJXncBgzjGUizkMRcMqzwSLpFpZ8/edit?usp=sharing)
 
 ## Environnement de développement
