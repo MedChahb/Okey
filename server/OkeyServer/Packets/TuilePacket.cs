@@ -1,9 +1,7 @@
 namespace OkeyServer.Packets;
 
-using Okey.Tuiles;
-
 public class TuilePacket
 {
-    public int Num { get; set; }
-    public CouleurTuile Couleur { get; set; }
+    public string? X { get; set; }
+    public string? Y { get; set; }
 }
