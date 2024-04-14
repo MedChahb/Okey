@@ -383,6 +383,17 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    private async Task SendChevalets(List<string> connectionIds, List<Joueur> joueurs)
+    {
+        foreach (var connectionId in connectionIds)
+        {
+            await this.SendChevalet(
+                connectionId,
+                joueurs.Find(x => x.getName().Equals(connectionId, StringComparison.Ordinal))!
+            );
+        }
+    }
+
     private async Task SendChevalet(string connectionId, Joueur joueur)
     {
         var chevaletInit = joueur.GetChevalet();
@@ -508,7 +519,8 @@ public sealed class OkeyHub : Hub
             await this.TourSignalRequest(roomName, joueurStarter?.getName());
             if (joueurStarter != null)
             {
-                await this.SendChevalet(joueurStarter.getName(), joueurStarter);
+                //await this.SendChevalet(joueurStarter.getName(), joueurStarter);
+                await this.SendChevalets(playerIds, joueurs.ToList());
                 var coords = await this.FirstJeterRequest(joueurStarter.getName());
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
