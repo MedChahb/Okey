@@ -1,7 +1,7 @@
 namespace OkeyServer.Packets;
 
-public class TuilePacket
+public class PiochePacket
 {
-    public string? Centre { get; set; }
-    public string? Defausse { get; set; }
+    public bool? Centre { get; set; }
+    public bool? Defausse { get; set; }
 }

@@ -270,6 +270,7 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<string>("CoordsGainRequest", cancellationToken: CancellationToken.None);
 
+    /* Pour debug
     private async Task<string> FirstCoordsRequest(string connectionId) =>
         await this
             ._hubContext.Clients.Client(connectionId)
@@ -287,6 +288,28 @@ public sealed class OkeyHub : Hub
         await this
             ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<string>("PiocheRequest", cancellationToken: CancellationToken.None);
+    */
+    public async Task<string> PiochePacketRequest(string connectionId)
+    {
+        var pioche = await this
+            ._hubContext.Clients.Client(connectionId)
+            .InvokeAsync<PiochePacket>(
+                "PiochePacketRequest",
+                cancellationToken: CancellationToken.None
+            );
+        if (pioche.Centre == true && pioche.Defausse == false)
+        {
+            return "Centre";
+        }
+        else if (pioche.Centre == false && pioche.Defausse == true)
+        {
+            return "Defausse";
+        }
+        else
+        {
+            throw new ArgumentException("Le packet n'est pas conforme");
+        }
+    }
 
     /// <summary>
     /// Requete de jeter
@@ -487,7 +510,7 @@ public sealed class OkeyHub : Hub
                     {
                         await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                        var pioche = await this.PiocheRequest(currentPlayer.getName());
+                        var pioche = await this.PiochePacketRequest(currentPlayer.getName());
                         if (pioche.Equals("Move", StringComparison.Ordinal))
                         {
                             //await this.MoveInLoop(currentPlayer, jeu);
