@@ -43,6 +43,7 @@ public class UIManagerPAcceuil : MonoBehaviour
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
         connexionBtn.onClick.AddListener(onLoginClicked);
+        manager.SelfJoueurChangeEvent.AddListener(updateAvatar);
     }
 
     // Update is called once per frame
@@ -65,18 +66,6 @@ public class UIManagerPAcceuil : MonoBehaviour
                 connexionBtn.gameObject.SetActive(true);
                 connexionBtnTxt.text = "Connexion";
             }
-        }
-        if (connected)
-        {
-            PanelAvatar.SetActive(true);
-            PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
-                .GetSelfJoueur()
-                .NomUtilisateur;
-            connexionBtn.gameObject.SetActive(false);
-        }
-        else
-        {
-            PanelAvatar.SetActive(false);
         }
     }
 
@@ -117,5 +106,14 @@ public class UIManagerPAcceuil : MonoBehaviour
     public void setConnected(bool isConnected)
     {
         this.connected = isConnected;
+    }
+
+    public void updateAvatar()
+    {
+        PanelAvatar.SetActive(true);
+            PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
+                .GetSelfJoueur()
+                .NomUtilisateur;
+        connexionBtn.gameObject.SetActive(false);
     }
 }

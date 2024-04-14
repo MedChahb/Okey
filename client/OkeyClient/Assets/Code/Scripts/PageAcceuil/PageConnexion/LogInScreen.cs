@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LogInScreen : MonoBehaviour
@@ -27,7 +24,6 @@ public class LogInScreen : MonoBehaviour
     [SerializeField]
     private Button backButton;
 
-    [SerializeField]
     private JoueurManager manager;
 
     [SerializeField]
@@ -39,6 +35,8 @@ public class LogInScreen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.manager = JoueurManager.Instance;
+
         Password.contentType = TMP_InputField.ContentType.Password;
         // Ajoute un écouteur au bouton "Créer"
         connexionButton.onClick.AddListener(OnConnexionClicked);

@@ -168,12 +168,12 @@ public class JoueurManager : MonoBehaviour
 
     public List<Joueur> GetOtherJoueurs()
     {
-        return this.Joueurs.ConvertAll<Joueur>(Joueur => (Joueur)Joueur.Clone());
+        return this.Joueurs.ConvertAll(Joueur => (Joueur)Joueur.Clone());
     }
 
     public List<Joueur> GetAllJoueurs()
     {
-        var res = this.Joueurs.ConvertAll<Joueur>(Joueur => (Joueur)Joueur.Clone());
+        var res = this.Joueurs.ConvertAll(Joueur => (Joueur)Joueur.Clone());
         res.Insert(0, (Joueur)this.SoiMeme.Clone());
         return res;
     }

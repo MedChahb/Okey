@@ -101,24 +101,6 @@ public class SignalRConnector : MonoBehaviour
 
     public async Task JoinRoom() // takes parameter roomName
     {
-        //if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
-        //{
-        //    try
-        //    {
-        //        await this.hubConnection.SendAsync("JoinRoom", roomName);
-        //        Debug.Log($"Request to join room '{roomName}' sent.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.LogError($"Failed to join room '{roomName}': {ex.Message}");
-        //    }
-        //}
-        //else
-        //{
-        //    Debug.LogError("Cannot join room. Hub connection is not established.");
-        //}
-
-
         if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
         {
             try

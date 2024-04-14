@@ -12,9 +12,6 @@ public class UIManagerPFormulaire : MonoBehaviour
     private Button joinLobbyBtn;
 
     [SerializeField]
-    private Button room1;
-
-    [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
 
     [SerializeField]
@@ -23,15 +20,12 @@ public class UIManagerPFormulaire : MonoBehaviour
     [SerializeField]
     private int SceneId;
 
-    // Start is called before the first frame update
     void Start()
     {
         backBtn.onClick.AddListener(onBackBtnClicked);
         joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
-        room1.onClick.AddListener(() => onJoinRoomPressed());
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (UIManager.singleton.language) // En
@@ -54,6 +48,11 @@ public class UIManagerPFormulaire : MonoBehaviour
         SceneManager.LoadScene(SceneId);
     }
 
+    public void onLoadBtnClicked()
+    {
+        SceneManager.LoadScene(2); // Charge la scène `PlateauInit`
+    }
+
     public void onJoinLobbyButtonPressed()
     {
         if (LobbyManager.Instance == null)
@@ -62,22 +61,5 @@ public class UIManagerPFormulaire : MonoBehaviour
             return;
         }
         LobbyManager.Instance.InitializeConnection();
-    }
-
-    public void onJoinRoomPressed()
-    {
-        if (LobbyManager.Instance == null)
-        {
-            Debug.LogError("LobbyManager instance is null.");
-            return;
-        }
-        //while (!LobbyManager.Instance.rommsListFilled)
-        //{ };
-
-        //var c = rooms.listRooms.Count;
-
-
-        //Debug.Log("count list : " + c);
-        LobbyManager.Instance.JoinRoom();
     }
 }

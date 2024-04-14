@@ -148,13 +148,13 @@ public class Chevalet : MonoBehaviour
         }
     }
 
-    public void draw(bool pioche)
+    public void draw(bool piocheDroite)
     {
         if (
             getTilesNumber() == 14 /* et c'est mon tour*/
         )
         {
-            if (pioche)
+            if (piocheDroite)
             {
                 pileGauchePlaceHolder
                     .transform.GetChild(0)
@@ -175,6 +175,7 @@ public class Chevalet : MonoBehaviour
                     newChild.GetComponent<Tuile>().SetIsInStack(true);
                     newChild.GetComponent<Tuile>().SetIsDeplacable(false);
                 }
+                //ToDo : Envoyer "Pioche à Droite"
             }
             else
             {
@@ -189,17 +190,39 @@ public class Chevalet : MonoBehaviour
                 pilePioche.Pop();
                 if (pilePioche.Count > 0) 
                 {
-                    GameObject newChild = Instantiate(pilePioche.Peek().gameObject, pilePiochePlaceHolder.transform);
+                    GameObject newChild = Instantiate(
+                        pilePioche.Peek().gameObject, 
+                        pilePiochePlaceHolder.transform
+                    );
                     newChild.transform.localPosition = Vector3.zero;
                     newChild.GetComponent<Tuile>().SetIsInStack(true);
                     newChild.GetComponent<Tuile>().SetIsDeplacable(false);
                 }
+                //ToDo : Envoyer "Pioche au centre"
             }
         }
     }
 
     public void throwTile(Tuile tuile) {
         pileDroite.Push(tuile);
+        TuileData tuileData = new TuileData(
+            ConvertToFrontendColorToBackendEnumName(
+                tuile.GetCouleur()
+            ), tuile.GetValeur(), tuile.GetIsJoker()
+        );
+        //ToDo : Envoyer TuileData + Défausse droite
+    }
+
+    public void throwTileToWin(Tuile tuile) {
+        TuileData tuileData = new TuileData(
+            ConvertToFrontendColorToBackendEnumName(
+                tuile.GetCouleur()
+            ), tuile.GetValeur(), tuile.GetIsJoker()
+        );
+        //ToDo : Envoyer TuileData + Pile Pioche + tuiles2D
+        //Attendre Vérif 
+        //Et communiquer le résultat 
+        //pilePioche.Push(tuile);
     }
 
     // Fonction auxiliaire pour extraire le numéro du placeholder à partir de son nom

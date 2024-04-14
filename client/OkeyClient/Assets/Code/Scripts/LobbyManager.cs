@@ -13,22 +13,7 @@ public class LobbyManager : MonoBehaviour
     public bool connectionStarted = false;
     public bool rommsListFilled = false;
 
-    private void Awake()
-    {
-        //Debug.Log("[LobbyManager] Awake called.");
-
-        //if (Instance == null)
-        //{
-        //    Instance = this;
-        //    DontDestroyOnLoad(gameObject);
-        //    Debug.Log("[LobbyManager] Instance set and marked as DontDestroyOnLoad.");
-        //}
-        //else if (Instance != this)
-        //{
-        //    Debug.LogWarning("[LobbyManager] Duplicate instance detected, destroying this one.");
-        //    Destroy(gameObject);
-        //}
-    }
+    private void Awake() { }
 
     void Start()
     {

@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class DisplayRooms : MonoBehaviour
 {
@@ -10,6 +9,11 @@ public class DisplayRooms : MonoBehaviour
 
     [SerializeField]
     private TextMeshProUGUI lobbyCountLabel;
+
+    public GameObject playerNumberCounter;
+
+    [SerializeField]
+    private Button room1;
 
     private int numberOfUsersInFirstRoom;
     RoomsPacket rooms;
@@ -26,10 +30,22 @@ public class DisplayRooms : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start() { }
+    void Start()
+    {
+        room1.onClick.AddListener(() => onJoinRoomPressed());
+    }
 
-    // Update is called once per frame
+    public void onJoinRoomPressed()
+    {
+        if (LobbyManager.Instance == null)
+        {
+            Debug.LogError("LobbyManager instance is null.");
+            return;
+        }
+
+        LobbyManager.Instance.JoinRoom();
+        playerNumberCounter.SetActive(true);
+    }
 
     void UpdateLobbyCountDisplay()
     {
