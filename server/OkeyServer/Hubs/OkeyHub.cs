@@ -64,15 +64,16 @@ public sealed class OkeyHub : Hub
                     }
                 );
         }
-
+        _clientServeur.TryRemove(this.Context.ConnectionId, out _);
         await base.OnDisconnectedAsync(exception);
     }
 
     /// <summary>
     /// Quand le joueur fourni un JWT Token lie la session de connxion au nom d'utilisateur
+    /// Une transmission AccountLinkResult est envoyé au client indiquant comment c'est passé la tentative d'association
     /// </summary>
     /// <param name="token">JWT token</param>
-    public Task ConnectAccount(string token)
+    public async Task ConnectAccount(string token)
     {
         // Premièrement on vérifie la validité du token
         if (JWTCheck.CheckToken(token))
@@ -90,33 +91,39 @@ public sealed class OkeyHub : Hub
                     var claimValue = claim.Value;
                     try
                     {
-                        //on ajoute ou on update le lien entre le connexion_id et l'username
-                        _clientServeur.AddOrUpdate(
-                            this.Context.ConnectionId,
-                            cle => claimValue,
-                            (cle, ancienneValeur) => claimValue.ToString()
-                        );
+                        // on ajoute ou on update le lien entre le connexion_id et l'username
+                        _clientServeur[this.Context.ConnectionId] = claimValue.ToString();
                         //Console.WriteLine("user : "+ claimValue + " associé à l'id : " + this.Context.ConnectionId );
+                        // 0 = bon déroulement
+                        await this.Clients.Caller.SendAsync("AccountLinkResult", 0);
                     }
                     catch (Exception e)
                     {
                         Console.WriteLine(e);
+                        // 4 = exception lors de l'ajout ou de l'envoi du bon déroulement
+                        await this.Clients.Caller.SendAsync("AccountLinkResult", 4);
                         throw;
                     }
                 }
                 else
                 {
-                    // a remplacer par une exception
-                    Console.WriteLine("No given_name in the token");
+                    // 3 = l'attribut given_name n'est pas présent dans le token
+                    await this.Clients.Caller.SendAsync("AccountLinkResult", 3);
+                    // Console.WriteLine("No given_name in the token");
                 }
             }
             else
             {
-                // a remplacer par une exception
-                Console.WriteLine("Invalid JWT token format.");
+                // 2 = le token a été mal lu ou un token au format invalide à été transmis
+                await this.Clients.Caller.SendAsync("AccountLinkResult", 2);
+                // Console.WriteLine("Invalid JWT token format.");
             }
         }
-        return Task.CompletedTask;
+        else
+        {
+            // 1 = la vérification du token à échouée
+            await this.Clients.Caller.SendAsync("AccountLinkResult", 1);
+        }
     }
 
     /// <summary>
