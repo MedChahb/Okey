@@ -324,6 +324,11 @@ public sealed class OkeyHub : Hub
         return TuileObtenue.Y + ";" + TuileObtenue.X;
     }
 
+    /// <summary>
+    /// Requete de jet pour le premier joueur, ne pas remplacer !!!! (thread conditions)
+    /// </summary>
+    /// <param name="connectionId"></param>
+    /// <returns>coordonnes sous la forme y;x</returns>
     private async Task<string> FirstJeterRequest(string connectionId)
     {
         var TuileObtenueSend = await this
