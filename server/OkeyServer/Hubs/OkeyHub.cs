@@ -288,6 +288,19 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<string>("PiocheRequest", cancellationToken: CancellationToken.None);
 
+    /// <summary>
+    /// Requete de jeter
+    /// </summary>
+    /// <param name="connectionId"></param>
+    /// <returns>coordonnées</returns>
+     private async Task<string> JeterRequest(string connectionId){
+        var TuileObtenue = await this
+            ._hubContext.Clients.Client(connectionId)
+            .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: CancellationToken.None);
+        return TuileObtenue.Y + ";" + TuileObtenue.X
+    }
+
+
     private async Task TourSignalRequest(string roomName, string? connectionId)
     {
         foreach (var player in this._roomManager.GetRooms()[roomName].GetPlayerIds())
@@ -435,7 +448,7 @@ public sealed class OkeyHub : Hub
             if (joueurStarter != null)
             {
                 await this.SendChevalet(joueurStarter.getName(), joueurStarter);
-                var coords = await this.FirstCoordsRequest(joueurStarter.getName());
+                var coords = await this.JeterRequest(joueurStarter.getName());
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
                     // Faire le mouvement de tuiles
@@ -484,7 +497,7 @@ public sealed class OkeyHub : Hub
 
                         await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                        var coordinates = await this.CoordsRequest(currentPlayer.getName());
+                        var coordinates = await this.JeterRequest(currentPlayer.getName());
 
                         if (coordinates.Equals("gagner", StringComparison.OrdinalIgnoreCase))
                         {
