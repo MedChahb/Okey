@@ -265,10 +265,20 @@ public sealed class OkeyHub : Hub
             .SendAsync("UpdateRoomsRequest", new RoomsPacket { ListRooms = listToSend });
     }
 
-    private async Task<string> CoordsGainRequest(string connectionId) =>
-        await this
+    private async Task<string> CoordsGainRequest(string connectionId)
+    {
+        var tuile = await this
             ._hubContext.Clients.Client(connectionId)
-            .InvokeAsync<string>("CoordsGainRequest", cancellationToken: CancellationToken.None);
+            .InvokeAsync<TuilePacket>(
+                "CoordsGainRequest",
+                cancellationToken: CancellationToken.None
+            );
+        if (tuile.gagner == true)
+        {
+            return "gagner";
+        }
+        return tuile.Y + ";" + tuile.X;
+    }
 
     /* Pour debug
     private async Task<string> FirstCoordsRequest(string connectionId) =>
@@ -321,6 +331,11 @@ public sealed class OkeyHub : Hub
         var TuileObtenue = await this
             ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: CancellationToken.None);
+        if (TuileObtenue.gagner == true)
+        {
+            return "gagner";
+        }
+
         return TuileObtenue.Y + ";" + TuileObtenue.X;
     }
 
@@ -538,7 +553,7 @@ public sealed class OkeyHub : Hub
 
                         var coordinates = await this.JeterRequest(currentPlayer.getName());
 
-                        if (coordinates.Equals("gagner", StringComparison.OrdinalIgnoreCase))
+                        if (coordinates.Equals("gagner", StringComparison.Ordinal))
                         {
                             var coordsGain = await this.CoordsGainRequest(currentPlayer.getName());
                             if (
