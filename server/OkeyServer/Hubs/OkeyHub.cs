@@ -301,6 +301,17 @@ public sealed class OkeyHub : Hub
         return TuileObtenue.Y + ";" + TuileObtenue.X;
     }
 
+    private async Task<string> FirstJeterRequest(string connectionId)
+    {
+        var TuileObtenueSend = await this
+            ._hubContext.Clients.Client(connectionId)
+            .InvokeAsync<TuilePacket>(
+                "FirstJeterActionRequest",
+                cancellationToken: CancellationToken.None
+            );
+        return TuileObtenueSend.Y + ";" + TuileObtenueSend.X;
+    }
+
     private async Task TourSignalRequest(string roomName, string? connectionId)
     {
         foreach (var player in this._roomManager.GetRooms()[roomName].GetPlayerIds())
@@ -448,7 +459,7 @@ public sealed class OkeyHub : Hub
             if (joueurStarter != null)
             {
                 await this.SendChevalet(joueurStarter.getName(), joueurStarter);
-                var coords = await this.JeterRequest(joueurStarter.getName());
+                var coords = await this.FirstJeterRequest(joueurStarter.getName());
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
                     // Faire le mouvement de tuiles
