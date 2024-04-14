@@ -23,8 +23,6 @@ public class UIManagerPFormulaire : MonoBehaviour
     [SerializeField]
     private int SceneId;
 
-    RoomsPacket rooms;
-
     // Start is called before the first frame update
     void Start()
     {

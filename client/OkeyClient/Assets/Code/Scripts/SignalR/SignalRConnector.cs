@@ -33,9 +33,7 @@ public class SignalRConnector : MonoBehaviour
 
     public async void InitializeConnection()
     {
-        this.hubConnection = new HubConnectionBuilder()
-            .WithUrl("http://localhost:3030/OkeyHub")
-            .Build(); // Update this URL accordingly
+        this.hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build(); // Update this URL accordingly
 
         this.ConfigureHubEvents();
 
@@ -57,24 +55,26 @@ public class SignalRConnector : MonoBehaviour
             "UpdateRoomsRequest",
             (rooms) =>
             {
-                Debug.Log("Affichage des rooms");
-                //Afficher les rooms
+                Debug.Log("Received room update request.");
                 foreach (var room in rooms.listRooms)
                 {
                     if (room == null)
                     {
                         Debug.Log("Null");
+                        continue;
                     }
                     Debug.Log($"Nom de room: {room.Name}");
                     Debug.Log($"Nom de room: {room.Capacity}");
                     Debug.Log($"Nom de room {room.Players.Count}");
-
-                    if (rooms.listRooms.Count > 0)
-                    {
-                        LobbyManager.Instance.rommsListFilled = true;
-                        Debug.Log("list is filled");
-                    }
                 }
+
+                if (rooms.listRooms.Count > 0)
+                {
+                    LobbyManager.Instance.rommsListFilled = true;
+                    Debug.Log("list is filled");
+                    Debug.Log("rooms count ----> " + rooms.listRooms.Count);
+                }
+                UpdateRoomDisplay(rooms);
             }
         );
 
@@ -87,57 +87,17 @@ public class SignalRConnector : MonoBehaviour
         );
     }
 
-    //private void ConfigureHubEvents()
-    //{
-    //    Debug.Log("Configuring hub events.");
-    //    this.hubConnection.On<RoomsPacket>("UpdateRoomsRequest", (rooms) =>
-    //    {
-    //        Debug.Log("Received rooms data, updating LobbyManager.");
-
-    //        // Check if the LobbyManager instance is ready
-    //        if (LobbyManager.Instance != null)
-    //        {
-    //            Debug.Log("Updating rooms in LobbyManager.");
-
-    //            // Directly updating rooms in LobbyManager
-    //            LobbyManager.Instance.rooms = rooms;
-    //            Debug.Log("Rooms updated successfully with " + rooms.listRooms.Count + " rooms.");
-
-    //            // Optionally log details of received rooms
-    //            foreach (var room in rooms.listRooms)
-    //            {
-    //                Debug.Log($"Room received: {room.Name}, Capacity: {room.Capacity}, Players: {string.Join(", ", room.Players)}");
-    //            }
-    //        }
-    //        else
-    //        {
-    //            Debug.LogError("LobbyManager instance is null when trying to update rooms.");
-    //        }
-    //    });
-
-    //    this.hubConnection.On<PacketSignal>("ReceiveMessage", message =>
-    //    {
-    //        Debug.Log("Received message: " + message._message);
-    //    });
-    //}
-
-
-
-    //public void updateRooms(RoomsPacket newRooms)
-    //{
-    //    rooms = newRooms;
-    //    if (rooms.listRooms.Count > 0)
-    //    {
-    //        Debug.Log("Rooms updated successfully with " + rooms.listRooms.Count + " rooms.");
-    //    }
-    //    else
-    //    {
-    //        Debug.LogError("Rooms data is not initialized properly or the list is empty.");
-    //    }
-    //}
-
-
-
+    public void UpdateRoomDisplay(RoomsPacket roomsPacket)
+    {
+        if (DisplayRooms.Instance != null)
+        {
+            DisplayRooms.Instance.SetRooms(roomsPacket);
+        }
+        else
+        {
+            Debug.LogError("DisplayRooms instance is not found.");
+        }
+    }
 
     public async Task JoinRoom() // takes parameter roomName
     {
@@ -157,6 +117,7 @@ public class SignalRConnector : MonoBehaviour
         //{
         //    Debug.LogError("Cannot join room. Hub connection is not established.");
         //}
+
 
         if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
         {
