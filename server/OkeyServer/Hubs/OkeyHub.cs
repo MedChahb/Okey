@@ -293,13 +293,13 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="connectionId"></param>
     /// <returns>coordonnées</returns>
-     private async Task<string> JeterRequest(string connectionId){
+    private async Task<string> JeterRequest(string connectionId)
+    {
         var TuileObtenue = await this
             ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: CancellationToken.None);
-        return TuileObtenue.Y + ";" + TuileObtenue.X
+        return TuileObtenue.Y + ";" + TuileObtenue.X;
     }
-
 
     private async Task TourSignalRequest(string roomName, string? connectionId)
     {
