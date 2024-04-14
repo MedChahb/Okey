@@ -38,6 +38,8 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 * [Figma](https://www.figma.com/file/ZTVmviAU1qUqfNIfh04j1V/Untitled?type=design&node-id=0%3A1&mode=design&t=2wq9oDEamRp9MzS5-1)
 * [Wireframes](https://drive.google.com/file/d/1QMwPXv768F97Ix5pabN3Do9hoXsxo5LF/view?usp=sharing)
 * [Tests utilisateur](https://docs.google.com/document/d/1pJDbbH8KoasmX3JDQduUXqLfxRmnVAhrXfWyx_RvB9Q/edit?usp=sharing)
+* [Rapport](https://docs.google.com/document/d/1x1iIONVdpiXbn-6ELFCDypHQmns6L7V6RnVef9CDmJQ/edit?usp=sharing)
+* [Diapos présentation](https://docs.google.com/presentation/d/1MKXBnuf_UoWBcwFtAfpA_6QPDyTrWNaL0IsEf4Jm96U/edit?usp=sharing)
 
 ### Commun entre backend et frontend
 
