@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UIManagerPFormulaire : MonoBehaviour
 {
+    public static UIManagerPFormulaire Instance { get; private set; }
+
     [SerializeField]
     private Button backBtn;
 
@@ -20,10 +22,24 @@ public class UIManagerPFormulaire : MonoBehaviour
     [SerializeField]
     private int SceneId;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
         backBtn.onClick.AddListener(onBackBtnClicked);
         joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
+
+        showRooms.SetActive(false);
     }
 
     void Update()
@@ -62,4 +78,44 @@ public class UIManagerPFormulaire : MonoBehaviour
         }
         LobbyManager.Instance.InitializeConnection();
     }
+
+    //public void UpdateLobbyCountDisplay(RoomsPacket rooms)
+    //{
+    //    buttonLabel.text = LobbyManager.Instance.playerCount.ToString();
+    //    //if (rooms != null && rooms.listRooms.Count > 0)
+    //    //{
+    //    //    RoomDto firstRoom = rooms.listRooms[0];
+    //    //    if (firstRoom != null && firstRoom.Players != null)
+    //    //    {
+    //    //        numberOfUsersInFirstRoom = firstRoom.Players.Count;
+    //    //        buttonLabel.text = "Room1: " + numberOfUsersInFirstRoom.ToString() + "/4";
+    //    //        //buttonLabel.text = DisplayRooms.Instance.messageLogs.Count.ToString();
+    //    //    }
+    //    //    else
+    //    //    {
+    //    //        buttonLabel.text = "No Players"; // Default or error text if no players
+    //    //    }
+    //    //}
+    //    //else
+    //    //{
+    //    //    Debug.Log("Room data unavailable");
+    //    //}
+    //    //Debug.Log("Finished updating lobby count");
+    //}
+
+
+
+    //public void setRooms(RoomsPacket roomsPacket)
+    //{
+    //    Debug.Log("here");
+    //    rooms = roomsPacket;
+    //    UpdateLobbyCountDisplay(rooms);
+    //}
+
+
+    //public void changeLabel(RoomsPacket rooms)
+    //{
+    //    buttonLabel.text = $"Rejoindre Room 1 {rooms.listRooms[0].Players.Count}/{rooms.listRooms[0].Capacity}";
+
+    //}
 }

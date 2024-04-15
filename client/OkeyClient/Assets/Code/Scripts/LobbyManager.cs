@@ -5,13 +5,13 @@ public class LobbyManager : MonoBehaviour
 {
     public static LobbyManager Instance;
 
-    // Ref SignalRConnector component
     public SignalRConnector signalRConnector;
 
     //public RoomsPacket rooms;
 
     public bool connectionStarted = false;
     public bool rommsListFilled = false;
+    public int playerCount;
 
     private void Awake() { }
 
@@ -56,6 +56,12 @@ public class LobbyManager : MonoBehaviour
     public void SetConnectionStatus(bool value)
     {
         connectionStarted = value;
+    }
+
+    public void setRoomCount(int count)
+    {
+        playerCount = count;
+        DisplayRooms.Instance.updateLabel();
     }
 
     public bool GetConnectedStatus()
