@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,15 +9,10 @@ public class DisplayRooms : MonoBehaviour
     public static DisplayRooms Instance { get; private set; }
 
     [SerializeField]
-    private TextMeshProUGUI lobbyCountLabel;
-
-    public GameObject playerNumberCounter;
-
-    [SerializeField]
     private Button room1;
 
-    private int numberOfUsersInFirstRoom;
-    RoomsPacket rooms;
+    public TextMeshProUGUI label;
+    public List<string> messageLogs;
 
     private void Awake()
     {
@@ -42,38 +38,13 @@ public class DisplayRooms : MonoBehaviour
             Debug.LogError("LobbyManager instance is null.");
             return;
         }
-
         LobbyManager.Instance.JoinRoom();
-        playerNumberCounter.SetActive(true);
     }
 
-    void UpdateLobbyCountDisplay()
+    public void updateLabel()
     {
-        if (rooms != null && rooms.listRooms.Count > 0)
-        {
-            RoomDto firstRoom = rooms.listRooms[0];
-            if (firstRoom != null && firstRoom.Players != null)
-            {
-                numberOfUsersInFirstRoom = firstRoom.Players.Count;
-                Debug.Log("number of users in lobby ----> " + numberOfUsersInFirstRoom);
-                lobbyCountLabel.text = numberOfUsersInFirstRoom.ToString() + "/4";
-            }
-            else
-            {
-                lobbyCountLabel.text = "0/4"; // Default or error text if no players
-            }
-        }
-        else
-        {
-            Debug.Log("Room data unavailable");
-        }
-    }
-
-    public void SetRooms(RoomsPacket newRooms)
-    {
-        Debug.Log("SetRooms called.");
-        this.rooms = newRooms;
-        this.UpdateLobbyCountDisplay();
+        label.text = LobbyManager.Instance.playerCount.ToString() + "/4";
+        Debug.Log("Player Count: " + LobbyManager.Instance.playerCount);
     }
 
     void Update()

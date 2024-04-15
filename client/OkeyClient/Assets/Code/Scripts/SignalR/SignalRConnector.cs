@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class PacketSignal
 {
-    public string _message { get; set; }
+    public string? message { get; set; }
 }
 
 public class RoomDto
@@ -33,7 +33,7 @@ public class SignalRConnector : MonoBehaviour
 
     public async void InitializeConnection()
     {
-        this.hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build(); // Update this URL accordingly
+        this.hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
 
         this.ConfigureHubEvents();
 
@@ -63,18 +63,14 @@ public class SignalRConnector : MonoBehaviour
                         Debug.Log("Null");
                         continue;
                     }
-                    Debug.Log($"Nom de room: {room.Name}");
-                    Debug.Log($"Nom de room: {room.Capacity}");
-                    Debug.Log($"Nom de room {room.Players.Count}");
+                    Debug.Log($"Room: {room.Name}, Players: {room.Players.Count}/{room.Capacity}");
                 }
 
                 if (rooms.listRooms.Count > 0)
                 {
                     LobbyManager.Instance.rommsListFilled = true;
-                    Debug.Log("list is filled");
-                    Debug.Log("rooms count ----> " + rooms.listRooms.Count);
+                    LobbyManager.Instance.setRoomCount(rooms.listRooms[0].Players.Count);
                 }
-                UpdateRoomDisplay(rooms);
             }
         );
 
@@ -82,24 +78,38 @@ public class SignalRConnector : MonoBehaviour
             "ReceiveMessage",
             message =>
             {
-                Debug.Log(message._message);
+                Debug.Log(message.message);
+                DisplayRooms.Instance.messageLogs.Add(message.message);
             }
         );
     }
 
-    public void UpdateRoomDisplay(RoomsPacket roomsPacket)
-    {
-        if (DisplayRooms.Instance != null)
-        {
-            DisplayRooms.Instance.SetRooms(roomsPacket);
-        }
-        else
-        {
-            Debug.LogError("DisplayRooms instance is not found.");
-        }
-    }
+    //public static void UpdateRoomDisplay(RoomsPacket roomsPacket)
+    //{
+    //    //if (PlayerInLobbyProgressScreen.Instance != null)
+    //    //{
+    //    //    PlayerInLobbyProgressScreen.Instance.SetRooms(roomsPacket);
+    //    //}
+    //    //else
+    //    //{
+    //    //    Debug.LogError("PlayerInLobbyProgressScreen instance is not found.");
+    //    //}
 
-    public async Task JoinRoom() // takes parameter roomName
+    //    if (DisplayRooms.Instance != null)
+    //    {
+    //        DisplayRooms.Instance.changeLabel(roomsPacket);
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("DisplayRooms instance is not found.");
+    //    }
+
+    //}
+
+
+
+
+    public async Task JoinRoom() // takes parameter roomName in future
     {
         if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
         {
@@ -116,15 +126,6 @@ public class SignalRConnector : MonoBehaviour
         else
         {
             Debug.LogError("Cannot join room. Hub connection is not established.");
-        }
-    }
-
-    private async void OnDestroy()
-    {
-        if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
-        {
-            await this.hubConnection.StopAsync();
-            await this.hubConnection.DisposeAsync();
         }
     }
 
@@ -146,6 +147,15 @@ public class SignalRConnector : MonoBehaviour
         else
         {
             Debug.LogError("Hub connection is not established.");
+        }
+    }
+
+    private async void OnDestroy()
+    {
+        if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
+        {
+            await this.hubConnection.StopAsync();
+            await this.hubConnection.DisposeAsync();
         }
     }
 }
