@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LogInScreen : MonoBehaviour
+public class CreatAccountScreen : MonoBehaviour
 {
     public GameObject Panel;
 
@@ -16,7 +16,7 @@ public class LogInScreen : MonoBehaviour
     private TMP_InputField Password;
 
     [SerializeField]
-    private Button connexionButton;
+    private TMP_InputField PasswordValidation;
 
     [SerializeField]
     private Button createButton;
@@ -32,17 +32,14 @@ public class LogInScreen : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI erreurTxt;
 
-    [SerializeField]
-    private GameObject createAccountView;
-
     // Start is called before the first frame update
     void Start()
     {
         this.manager = JoueurManager.Instance;
 
         Password.contentType = TMP_InputField.ContentType.Password;
-        // Ajoute un écouteur au bouton "Créer"
-        connexionButton.onClick.AddListener(OnConnexionClicked);
+
+        PasswordValidation.contentType = TMP_InputField.ContentType.Password;
 
         createButton.onClick.AddListener(OnCreateClicked);
 
@@ -53,30 +50,26 @@ public class LogInScreen : MonoBehaviour
 
         Password.onValueChanged.AddListener(OnInputChanged);
 
+        PasswordValidation.onValueChanged.AddListener(OnInputChanged);
+
         erreurTxt.gameObject.SetActive(false);
     }
 
-    // Méthode appelée lors du clic sur le bouton "Créer"
-    void OnConnexionClicked()
+    void OnCreateClicked()
     {
         string username = Username.text.Trim();
         string password = Password.text.Trim();
+        string passwordValidation = PasswordValidation.text.Trim();
 
-        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password) && !string.IsNullOrEmpty(passwordValidation))
         {
-            manager.StartConnexionSelfJoueur(username, password, UpdateWithConnection);
+            manager.StartCreationCompteSelfJoueur(username, password, UpdateWithConnection);
         }
         else
         {
             erreurTxt.text = "Veuillez remplir tous les champs !";
             erreurTxt.gameObject.SetActive(true);
         }
-    }
-
-    void OnCreateClicked()
-    {
-        Panel.SetActive(false);
-        createAccountView.SetActive(true);
     }
 
     // Méthode pour charger la scène précédente
@@ -100,7 +93,7 @@ public class LogInScreen : MonoBehaviour
         }
         else
         {
-            erreurTxt.text = "Identifiant ou mot de passe invalide";
+            erreurTxt.text = "La création de votre compte a échouée";
             erreurTxt.gameObject.SetActive(true);
         }
     }
