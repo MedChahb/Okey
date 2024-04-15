@@ -8,7 +8,10 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
       <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+      <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
     </ItemGroup>
@@ -21,5 +24,17 @@
 
     <ItemGroup>
       <Folder Include="Packets\Signals\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\OkeyApi\Data\ApplicationDBContext.cs">
+        <Link>Data\ApplicationDBContext.cs</Link>
+      </Compile>
+      <Compile Include="..\OkeyApi\Models\Achievements.cs">
+        <Link>Models\Achievements.cs</Link>
+      </Compile>
+      <Compile Include="..\OkeyApi\Models\Utilisateur.cs">
+        <Link>Models\Utilisateur.cs</Link>
+      </Compile>
     </ItemGroup>
 </Project>

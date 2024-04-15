@@ -19,7 +19,7 @@ using Security;
 
 public sealed class OkeyHub : Hub
 {
-    private static ConcurrentDictionary<string, string> _clientServeur =
+    private static ConcurrentDictionary<string, string> _idToUsername =
         new ConcurrentDictionary<string, string>();
     private readonly IRoomManager _roomManager;
     private readonly IHubContext<OkeyHub> _hubContext;
@@ -64,7 +64,7 @@ public sealed class OkeyHub : Hub
                     }
                 );
         }
-        _clientServeur.TryRemove(this.Context.ConnectionId, out _);
+        _idToUsername.TryRemove(this.Context.ConnectionId, out _);
         await base.OnDisconnectedAsync(exception);
     }
 
@@ -92,7 +92,7 @@ public sealed class OkeyHub : Hub
                     try
                     {
                         // on ajoute ou on update le lien entre le connexion_id et l'username
-                        _clientServeur[this.Context.ConnectionId] = claimValue.ToString();
+                        _idToUsername[this.Context.ConnectionId] = claimValue.ToString();
                         //Console.WriteLine("user : "+ claimValue + " associé à l'id : " + this.Context.ConnectionId );
                         // 0 = bon déroulement
                         await this.Clients.Caller.SendAsync("AccountLinkResult", 0);
