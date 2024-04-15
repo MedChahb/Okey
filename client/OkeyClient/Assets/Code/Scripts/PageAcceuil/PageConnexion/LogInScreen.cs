@@ -72,7 +72,7 @@ public class LogInScreen : MonoBehaviour
 
     void OnCreateClicked()
     {
-        /*string username = Username.text.Trim();
+        string username = Username.text.Trim();
         string password = Password.text.Trim();
 
         if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
@@ -83,8 +83,7 @@ public class LogInScreen : MonoBehaviour
         {
             erreurTxt.text = "Veuillez remplir tous les champs !";
             erreurTxt.gameObject.SetActive(true);
-        }*/
-        //Passer à l'écran de création de compte
+        }
     }
 
     // Méthode pour charger la scène précédente
