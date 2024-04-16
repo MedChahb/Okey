@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
+using Exceptions;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
 using Okey;
@@ -96,7 +97,7 @@ public sealed class OkeyHub : Hub
                     {
                         var httpClient = new HttpClient();
                         var url =
-                            $"\"https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-0/okeyapi/compte/watch/{username}";
+                            $"https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-0/okeyapi/compte/watch/{username}";
                         httpClient.DefaultRequestHeaders.Authorization =
                             new AuthenticationHeaderValue("Bearer", token);
                         // on récupère les infos de l'utilisateur
@@ -106,6 +107,18 @@ public sealed class OkeyHub : Hub
                         {
                             var rep = await response.Content.ReadAsStringAsync();
                             var jsonData = new PublicWatchJsonDeserializer(rep).Deserialize();
+                            if (jsonData == null)
+                            {
+                                // 4 = exception lors de la recuperation des données depuis l'API
+                                await this.Clients.Caller.SendAsync("AccountLinkResult", 5);
+                                throw new ConnectAccountAPICallException(
+                                    "The API Call returned  a null dataset"
+                                );
+                            }
+                            _connectedUsers[this.Context.ConnectionId] = new PlayerDatas(
+                                jsonData.username,
+                                jsonData.elo
+                            );
                         }
 
                         //Console.WriteLine("user : "+ claimValue + " associé à l'id : " + this.Context.ConnectionId );
@@ -645,18 +658,20 @@ public sealed class OkeyHub : Hub
     /// Permet d'envoyer le nouvel etat des rooms au clients dans le Hub.
     /// </summary>
     private async Task SendRoomListUpdate() => await this.SendRoomsRequest();
+
     /*
         var roomsInfo = this._roomManager.GetRoomsInfo();
         await this
             ._hubContext.Clients.Group("Hub")
             .SendAsync("ReceiveMessage", new PacketSignal { message = roomsInfo });*/
-    /* test pruposes only
-    public async Task getAllAssociations()
+    /*
+    public bool getAllAssociations()
     {
-        foreach (var elmt in _clientServeur)
+        foreach (var elmt in _connectedUsers)
         {
-            Console.WriteLine($"Key: {elmt.Key}, Value: {elmt.Value}");
+            Console.WriteLine($"Key: {elmt.Key}, Value: " + elmt.Value);
         }
+        return true;
     }
     */
 }

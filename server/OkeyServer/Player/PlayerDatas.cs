@@ -25,4 +25,9 @@ public class PlayerDatas
         this.Elo = this.Elo + value;
         // TODO envoyer à la BDD la mise à jour
     }
+
+    public override string ToString()
+    {
+        return this.Username + " " + this.Elo;
+    }
 }
