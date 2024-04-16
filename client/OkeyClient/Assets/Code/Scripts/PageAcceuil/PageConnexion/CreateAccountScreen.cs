@@ -78,7 +78,11 @@ public class CreatAccountScreen : MonoBehaviour
         string password = Password.text.Trim();
         string passwordValidation = PasswordValidation.text.Trim();
 
-        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password) && !string.IsNullOrEmpty(passwordValidation))
+        if (
+            !string.IsNullOrEmpty(username)
+            && !string.IsNullOrEmpty(password)
+            && !string.IsNullOrEmpty(passwordValidation)
+        )
         {
             manager.StartCreationCompteSelfJoueur(username, password, UpdateWithConnection);
         }
