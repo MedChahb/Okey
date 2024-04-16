@@ -4,14 +4,25 @@ using System.Collections.Concurrent;
 
 public class PlayerDatas
 {
-    private string _username;
-
-    //private int _elo;
+    private string Username { get; set; }
+    private int Elo { get; set; }
     private ConcurrentDictionary<string, bool> _achievements;
 
-    public PlayerDatas(string username)
+    public PlayerDatas(string username, int elo)
     {
-        this._username = username;
+        this.Username = username;
+        this.Elo = elo;
         this._achievements = new ConcurrentDictionary<string, bool>();
+    }
+
+    public bool CheckAchievement(string achievement)
+    {
+        return this._achievements[achievement];
+    }
+
+    public void UpdateElo(int value)
+    {
+        this.Elo = this.Elo + value;
+        // TODO envoyer à la BDD la mise à jour
     }
 }

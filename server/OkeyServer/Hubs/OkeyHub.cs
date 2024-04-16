@@ -3,14 +3,17 @@ namespace OkeyServer.Hubs;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
 using Okey;
+using Okey.AppelsAPI.Deserializer;
 using Okey.Game;
 using Okey.Joueurs;
 using Okey.Tuiles;
 using Packets;
 using Packets.Dtos;
+using Player;
 using Security;
 
 /// <summary>
@@ -19,8 +22,8 @@ using Security;
 
 public sealed class OkeyHub : Hub
 {
-    private static ConcurrentDictionary<string, string> _idToUsername =
-        new ConcurrentDictionary<string, string>();
+    private static ConcurrentDictionary<string, PlayerDatas> _connectedUsers =
+        new ConcurrentDictionary<string, PlayerDatas>();
     private readonly IRoomManager _roomManager;
     private readonly IHubContext<OkeyHub> _hubContext;
     private static readonly char[] Separator = new char[] { ';' };
@@ -64,7 +67,7 @@ public sealed class OkeyHub : Hub
                     }
                 );
         }
-        _idToUsername.TryRemove(this.Context.ConnectionId, out _);
+        _connectedUsers.TryRemove(this.Context.ConnectionId, out _);
         await base.OnDisconnectedAsync(exception);
     }
 
@@ -88,11 +91,23 @@ public sealed class OkeyHub : Hub
                 if (claim != null)
                 {
                     // on récupère le string
-                    var claimValue = claim.Value;
+                    var username = claim.Value;
                     try
                     {
-                        // on ajoute ou on update le lien entre le connexion_id et l'username
-                        _idToUsername[this.Context.ConnectionId] = claimValue.ToString();
+                        var httpClient = new HttpClient();
+                        var url =
+                            $"\"https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-0/okeyapi/compte/watch/{username}";
+                        httpClient.DefaultRequestHeaders.Authorization =
+                            new AuthenticationHeaderValue("Bearer", token);
+                        // on récupère les infos de l'utilisateur
+
+                        var response = await httpClient.GetAsync(url);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var rep = await response.Content.ReadAsStringAsync();
+                            var jsonData = new PublicWatchJsonDeserializer(rep).Deserialize();
+                        }
+
                         //Console.WriteLine("user : "+ claimValue + " associé à l'id : " + this.Context.ConnectionId );
                         // 0 = bon déroulement
                         await this.Clients.Caller.SendAsync("AccountLinkResult", 0);
