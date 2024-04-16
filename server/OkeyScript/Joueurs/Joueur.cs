@@ -131,8 +131,9 @@ namespace Okey.Joueurs
             if (string.Equals(OuPiocher, "Centre", StringComparison.OrdinalIgnoreCase))
             {
                 if (j.isPiocheCentreEmpty())
-                {
-                    Console.WriteLine("La pile au centre est vide, impossible a piocher");
+                {   
+                    Console.WriteLine("La pile au centre est vide, impossible de piocher. Fin du jeu.");
+                    j.JeuTermine();// to check.
                 }
                 else
                 {
