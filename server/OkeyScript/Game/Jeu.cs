@@ -161,15 +161,6 @@ namespace Okey.Game
             }
         }
 
-        public void SignalChangementTour(Joueur joueurTour)
-        {
-            foreach (var joueur in Joueurs)
-            {
-                // Envoie un message au joueur indiquant si c'est son tour
-                joueur.EnvoyerMessageTour(joueur == joueurTour);
-            }
-        }
-
         public List<Tuile> GetPacketTuile()
         {
             return this.PacketTuile;

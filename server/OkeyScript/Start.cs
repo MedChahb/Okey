@@ -1,12 +1,11 @@
 using Okey.Game;
 using Okey.Joueurs;
-using System.Timers;
 
 namespace Okey
 {
     public class Start
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             Joueur[] Joueurs =
             {
@@ -16,13 +15,6 @@ namespace Okey
                 new Bot(50)
             };
             Jeu j = new Jeu(1, Joueurs);
-
-            static Timer timer;
-            static bool isRunning = false;
-            timer = new Timer(30000);
-
-            // Définir l'événement à déclencher lorsque le timer expire
-            timer.Elapsed += TimerElapsed;
 
             j.DistibuerTuile(); // on commence
             Console.WriteLine("Tuiles distribués.\n");
@@ -41,10 +33,8 @@ namespace Okey
                 action = Console.ReadLine();
             }
 
-
             Coord coords = readCoord(action);
             joueurStarter?.JeterTuile(coords, j);
-
 
             bool doitJete = false;
 
@@ -52,64 +42,61 @@ namespace Okey
             {
                 Joueur? joueurActuel = j.getJoueurActuel();
 
-                // Démarrer le timer
-                StartTimer();
-
                 Console.WriteLine($"\nc'est le tour de {joueurActuel?.getName()}:");
                 j.AfficheChevaletActuel();
-
 
                 //le joueur pioche
                 if (!doitJete)
                 {
                     Console.Write("choisis de où piocher ('Centre' ou 'Defausse') ou 'Move': ");
-                    String? ouPiocher = Console.ReadLine();
+                    String? ouPiocher = await GetUserInputAsync();
 
-
-                    if(timer==0){
-                        ouPiocher = "Centre";
+                    if (ouPiocher == null)
+                    {
+                        Console.WriteLine("\nTime elapsed, Tuile piochée du Centre!");
+                        joueurActuel?.PiocherTuile("Centre", j);
+                        Console.WriteLine("\nmaintenant vous devez jeter une tuile.");
                     }
-
-                    if (string.Equals(ouPiocher, "move", StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(ouPiocher, "move", StringComparison.OrdinalIgnoreCase))
                     {
                         MoveInLoop(joueurActuel, j);
                         continue;
                     }
-
-                    if (string.Equals(ouPiocher, "Centre", StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(ouPiocher, "Defausse", StringComparison.OrdinalIgnoreCase))
+                    else if (
+                        string.Equals(ouPiocher, "Centre", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(ouPiocher, "Defausse", StringComparison.OrdinalIgnoreCase)
+                    )
                     {
                         joueurActuel?.PiocherTuile(ouPiocher, j);
                         Console.WriteLine("\nmaintenant vous devez jeter une tuile.");
-                        j.AfficheChevaletActuel();
                     }
                     else
                     { // s'il a pas taper centre ou defausse
                         continue;
                     }
                 }
-
+                j.AfficheChevaletActuel();
                 //le joueur jete
-                ResetTimer();
 
-                Console.Write("choisis la tuile à jeter (donner ces coords y x) ou taper 'Move' ou 'Gagner': ");
-                String? coordStr = Console.ReadLine();
+                Console.Write(
+                    "choisis la tuile à jeter (donner ces coords y x) ou taper 'Move' ou 'Gagner': "
+                );
+                String? coordStr = await GetUserInputAsync();
 
-                //si le timer finit on jete une tuile aleatoire
-                if(timer ==0){
-                    Coord JeterTuileAlea =joueurActuel?.GetRandomTuileCoords();
+                if (coordStr == null)
+                {
+                    Coord JeterTuileAlea = joueurActuel?.GetRandomTuileCoords();
                     joueurActuel?.JeterTuile(JeterTuileAlea, j);
-                    Console.Write("Tuile aleatoire jetee");
-                    Console.Write($"Tuile jetee de coordonnees : ({JeterTuileAlea.GetY()}, {JeterTuileAlea.GetX()})");
+                    Console.Write("\nTuile aleatoire jetee");
+                    Console.WriteLine($"Tuile jetee de coordonnees : {JeterTuileAlea} !");
                 }
-
-                if (string.Equals(coordStr, "move", StringComparison.OrdinalIgnoreCase))
+                else if (string.Equals(coordStr, "move", StringComparison.OrdinalIgnoreCase))
                 {
                     MoveInLoop(joueurActuel, j);
                     doitJete = true;
                     continue;
                 }
-                if (string.Equals(coordStr, "gagner", StringComparison.OrdinalIgnoreCase))
+                else if (string.Equals(coordStr, "gagner", StringComparison.OrdinalIgnoreCase))
                 {
                     Console.Write("donner les coords de la tuile que vous voulez finir avec : ");
                     String? coordsToFinish = Console.ReadLine();
@@ -123,21 +110,23 @@ namespace Okey
                     Coord coordos = readCoord(coordStr);
                     joueurActuel?.JeterTuile(coordos, j);
                 }
-                StopTimer();
                 doitJete = false;
-
             }
         }
 
         internal static readonly char[] separator = new char[] { ' ' };
+
         public static Coord readCoord(String? str)
         {
-            if (str == null) return new Coord(-1, -1); // renvoie un error (on doit garantir qu'on passera jamais ici)
+            if (str == null)
+                return new Coord(-1, -1); // renvoie un error (on doit garantir qu'on passera jamais ici)
 
             string[] parts = str.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
-            return new Coord(int.Parse(parts[0], System.Globalization.CultureInfo.InvariantCulture),
-                             int.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture));
+            return new Coord(
+                int.Parse(parts[0], System.Globalization.CultureInfo.InvariantCulture),
+                int.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture)
+            );
         }
 
         public static void MoveInLoop(Joueur? pl, Jeu j)
@@ -149,40 +138,18 @@ namespace Okey
             pl?.MoveTuileChevalet(from, to, j);
         }
 
-    }
-    public static void StartTimer()
-    {
-        if (!isRunning)
+        static async Task<string> GetUserInputAsync()
         {
-            timer.Start();
-            isRunning = true;
-            Console.WriteLine("Timer started.");
+            Task<string> userInputTask = Task.Run(() => Console.ReadLine()); // Run Console.ReadLine asynchronously
+
+            // Wait for either user input or 5 seconds timeout
+            await Task.WhenAny(userInputTask, Task.Delay(20000));
+
+            // If userInputTask completed before timeout, return its result
+            if (userInputTask.IsCompleted)
+                return userInputTask.Result;
+            else
+                return null; // Timeout occurred
         }
     }
-
-    public static void StopTimer()
-    {
-        if (isRunning)
-        {
-            timer.Stop();
-            isRunning = false;
-            Console.WriteLine("Timer stopped.");
-        }
-    }
-    public static void ResetTimer()
-    {
-        StopTimer();
-        timer.Dispose(); // Libérer les ressources du timer existant
-        timer = new Timer(30000); // Recréer le timer avec la même durée
-        timer.Elapsed += TimerElapsed; // Réattacher l'événement Elapsed
-        StartTimer(); // Redémarrer le timer
-    }
-
-    public static void TimerElapsed(object sender, ElapsedEventArgs e)
-    {
-        // Action à effectuer lorsque le timer expire
-        Console.WriteLine("Timer expired after 30 seconds.");
-        StopTimer();
-    }
-
 }
