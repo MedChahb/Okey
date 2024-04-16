@@ -21,20 +21,4 @@
         <HintPath>References\Okey.dll</HintPath>
       </Reference>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Packets\Signals\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Include="..\OkeyApi\Data\ApplicationDBContext.cs">
-        <Link>Data\ApplicationDBContext.cs</Link>
-      </Compile>
-      <Compile Include="..\OkeyApi\Models\Achievements.cs">
-        <Link>Models\Achievements.cs</Link>
-      </Compile>
-      <Compile Include="..\OkeyApi\Models\Utilisateur.cs">
-        <Link>Models\Utilisateur.cs</Link>
-      </Compile>
-    </ItemGroup>
 </Project>
