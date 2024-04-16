@@ -1,3 +1,4 @@
+using System;
 using Okey.Game;
 using Okey.Tuiles;
 
@@ -14,6 +15,8 @@ namespace Okey.Joueurs
 
         static readonly int etage = 2;
         static readonly int tuilesDansEtage = 14; //14
+
+        private Random random = new Random();
 
         public Joueur(int id, String Name)
         {
@@ -132,13 +135,18 @@ namespace Okey.Joueurs
             {
                 if (j.isPiocheCentreEmpty())
                 {   
-                    Console.WriteLine("La pile au centre est vide, impossible de piocher. Fin du jeu.");
-                    j.JeuTermine();// to check.
+                    Console.WriteLine("La pile au centre est vide, impossible de piocher.");
                 }
                 else
                 {
                     Tuile tuilePiochee = j.PopPiocheCentre();
                     this.AjoutTuileChevalet(tuilePiochee);
+                    //on recheck l'etat dela pioche
+                    if (j.isPiocheCentreEmpty())
+                    {
+                        Console.WriteLine("Plus de tuile dans la pioche. Fin de la partie.");
+                        j.JeuTermine();
+                    }
                 }
             }
             else if (string.Equals(OuPiocher, "Defausse", StringComparison.OrdinalIgnoreCase))
@@ -155,15 +163,7 @@ namespace Okey.Joueurs
                     this.AjoutTuileChevalet(tuilePiochee);
                 }
             }
-        }
 
-        public void JoueurJoue(String OuPiocher, Coord c, Jeu j)
-        {
-            if (this.Tour)
-            {
-                this.PiocherTuile(OuPiocher, j);
-                this.JeterTuile(c, j);
-            }
         }
 
         //jete la 15eme tuile sur la pioche au milieu pour decalrer la victoire
@@ -308,19 +308,20 @@ namespace Okey.Joueurs
             return res;
         }
 
-        public void EnvoyerMessage(string message)
+        public Coord GetRandomTuileCoords()
         {
-            // Utilisez ici votre mécanisme réel de communication avec le client Unity (WebSocket, HTTP, etc.)
-            Console.WriteLine($"Envoi du message au joueur {id}: {message}");
-            // Exemple avec WebSocket :
-            // webSocketConnection.Send(message);
+            int etageRand = -1, tuileDansEtageRand = -1;
+
+            do
+            {
+                etageRand = random.Next(0, etage - 1);
+                tuileDansEtageRand = random.Next(0, tuilesDansEtage - 1);
+
+            } while (this.chevalet[etageRand][tuileDansEtageRand] == null);
+
+            return new Coord(etageRand, tuileDansEtageRand);
         }
 
-        public void EnvoyerMessageTour(bool TourActuel)
-        {
-            string message = TourActuel ? "C'est votre tour." : "Ce n'est pas votre tour.";
-            EnvoyerMessage(message);
-        }
 
         public void JeteTuileDefausse(Tuile? t)
         {
