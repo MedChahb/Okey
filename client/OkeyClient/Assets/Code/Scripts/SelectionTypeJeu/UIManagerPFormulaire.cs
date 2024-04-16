@@ -85,12 +85,12 @@ public class UIManagerPFormulaire : MonoBehaviour
         SceneManager.LoadScene(SceneId);
     }
 
-    public void onPublicLobbyClicked() 
+    public void onPublicLobbyClicked()
     {
         lobbyPlayerWaiting.SetActive(true);
     }
 
-    public void onPrivateLobbyClicked() 
+    public void onPrivateLobbyClicked()
     {
         lobbyPrivateConfig.SetActive(true);
     }

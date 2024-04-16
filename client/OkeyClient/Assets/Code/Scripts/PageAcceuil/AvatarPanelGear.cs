@@ -6,6 +6,7 @@ public class AvatarPanelGear : MonoBehaviour
 {
     public GameObject Avatar;
     public GameObject InfoPanel;
+    public GameObject ClassementPanel;
 
     public void showConnexionPage()
     {
@@ -32,5 +33,17 @@ public class AvatarPanelGear : MonoBehaviour
     public void ShowParamPanel()
     {
         Avatar.SetActive(false);
+    }
+
+    public void ShowPageAcceuil2()
+    {
+        ClassementPanel.SetActive(false);
+        Avatar.SetActive(true);
+    }
+
+    public void ShowClasPanel()
+    {
+        Avatar.SetActive(false);
+        ClassementPanel.SetActive(true);
     }
 }
