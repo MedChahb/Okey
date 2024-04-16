@@ -11,13 +11,28 @@ public class UIManagerPFormulaire : MonoBehaviour
     private Button backBtn;
 
     [SerializeField]
-    private Button joinLobbyBtn;
+    private Button backBtnPublic;
+
+    [SerializeField]
+    private Button backBtnPrivate;
+
+    [SerializeField]
+    private Button joinPrivateLobbyBtn;
+
+    [SerializeField]
+    private Button joinPublicLobbyBtn;
 
     [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
 
     [SerializeField]
     private GameObject showRooms;
+
+    [SerializeField]
+    private GameObject lobbyPrivateConfig;
+
+    [SerializeField]
+    private GameObject lobbyPlayerWaiting;
 
     [SerializeField]
     private int SceneId;
@@ -36,32 +51,48 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     void Start()
     {
+        backBtnPrivate.onClick.AddListener(onBackBtnClicked);
+        backBtnPublic.onClick.AddListener(onBackBtnClicked);
         backBtn.onClick.AddListener(onBackBtnClicked);
-        joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
+        //joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
+        joinPublicLobbyBtn.onClick.AddListener(onPublicLobbyClicked);
+        joinPrivateLobbyBtn.onClick.AddListener(onPrivateLobbyClicked);
 
         showRooms.SetActive(false);
+        lobbyPlayerWaiting.SetActive(false);
+        lobbyPrivateConfig.SetActive(false);
     }
 
     void Update()
     {
-        if (UIManager.singleton.language) // En
+        /*if (UIManager.singleton.language) // En
         {
             partieSimpleTxt.text = "Texte en anglais";
         }
         else // Fr
         {
-            partieSimpleTxt.text = "Partie Simple";
+            partieSimpleTxt.text = "Lobby Public";
         }
 
         if (LobbyManager.Instance.GetConnectedStatus())
         {
             showRooms.SetActive(true);
-        }
+        }*/
     }
 
     void onBackBtnClicked()
     {
         SceneManager.LoadScene(SceneId);
+    }
+
+    public void onPublicLobbyClicked() 
+    {
+        lobbyPlayerWaiting.SetActive(true);
+    }
+
+    public void onPrivateLobbyClicked() 
+    {
+        lobbyPrivateConfig.SetActive(true);
     }
 
     public void onLoadBtnClicked()
