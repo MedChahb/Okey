@@ -19,7 +19,19 @@ public class CreatAccountScreen : MonoBehaviour
     private TMP_InputField PasswordValidation;
 
     [SerializeField]
+    private TMP_InputField DayInput;
+
+    [SerializeField]
+    private TMP_InputField MonthInput;
+
+    [SerializeField]
+    private TMP_InputField YearInput;
+
+    [SerializeField]
     private Button createButton;
+
+    [SerializeField]
+    private Button connectionButton;
 
     [SerializeField]
     private Button backButton;
@@ -28,6 +40,9 @@ public class CreatAccountScreen : MonoBehaviour
 
     [SerializeField]
     private UIManagerPAcceuil accueil;
+
+    [SerializeField]
+    private GameObject logInScreen;
 
     [SerializeField]
     private TextMeshProUGUI erreurTxt;
@@ -42,6 +57,8 @@ public class CreatAccountScreen : MonoBehaviour
         PasswordValidation.contentType = TMP_InputField.ContentType.Password;
 
         createButton.onClick.AddListener(OnCreateClicked);
+
+        connectionButton.onClick.AddListener(onBackBtnClicked);
 
         // Ajoute un écouteur au bouton "Retour"
         backButton.onClick.AddListener(onBackBtnClicked);
@@ -76,6 +93,7 @@ public class CreatAccountScreen : MonoBehaviour
     private void onBackBtnClicked()
     {
         Panel.SetActive(false);
+        logInScreen.SetActive(true);
     }
 
     void Update()
