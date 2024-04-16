@@ -1,6 +1,5 @@
 using Okey.Game;
 using Okey.Joueurs;
-using Okey.Tuiles;
 
 namespace Okey
 {
