@@ -107,15 +107,56 @@ public class ClassementController : ControllerBase
         }
     }
 
+    [HttpGet("{pagination:int}")]
+    public async Task<IActionResult> GetPaginate([FromRoute] int pagination)
+    {
+        try
+        {
+            if (pagination <= 0)
+            {
+                return this.StatusCode(400, "La valeur de pagination doit être supérieure à zéro.");
+            }
+
+            var usersPerPage = 30;
+
+            var utilisateurs = await this._utilisateurRepo.GetAllAsync();
+
+            var classement = utilisateurs
+                .Select(u => new ClassementDto { Username = u.UserName, Elo = u.Elo })
+                .OrderByDescending(s => s.Elo)
+                .ToList();
+
+            var startIndex = (pagination - 1) * usersPerPage;
+            var count = Math.Min(usersPerPage, classement.Count - startIndex);
+
+            var paginatedClassement = classement.Skip(startIndex).Take(count).ToList();
+
+            for (var i = 0; i < paginatedClassement.Count; i++)
+            {
+                paginatedClassement[i].Classement = startIndex + i + 1;
+            }
+
+            return this.StatusCode(200, paginatedClassement);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return this.StatusCode(
+                500,
+                "Une erreur s'est produite lors de la récupération du classement."
+            );
+        }
+    }
+
     /// <summary>
     /// Route GET de l'API permettant d'obtenir le top n (n un entier naturel supérieur à 0) général.
     /// </summary>
     /// <param name="pagination">Entier supérieur à 0</param>
     /// <returns>Retourne le contrat représentant l'action de la méthode, géré par le framework.</returns>
-    [HttpGet("{pagination:int}")]
-    public async Task<IActionResult> GetPaginate([FromRoute] int pagination)
+    [HttpGet("top/{topn:int}")]
+    public async Task<IActionResult> GetTopN([FromRoute] int topn)
     {
-        if (pagination > 0)
+        if (topn > 0)
         {
             try
             {
@@ -135,7 +176,7 @@ public class ClassementController : ControllerBase
                     classement[i].Classement = i + 1;
                 }
 
-                return this.Ok(classement.Take(pagination));
+                return this.Ok(classement.Take(topn));
             }
             catch (Exception e)
             {
@@ -146,6 +187,6 @@ public class ClassementController : ControllerBase
                 );
             }
         }
-        return this.StatusCode(500, "La pagination doit être supérieur à 0.");
+        return this.StatusCode(500, "Le top doit être supérieur à 0.");
     }
 }
