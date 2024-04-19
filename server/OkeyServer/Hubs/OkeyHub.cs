@@ -1,6 +1,7 @@
 namespace OkeyServer.Hubs;
 
 using System.Collections.Concurrent;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
@@ -23,6 +24,8 @@ using Security;
 
 public sealed class OkeyHub : Hub
 {
+    private static readonly int time = 20000;
+
     private static ConcurrentDictionary<string, PlayerDatas> _connectedUsers =
         new ConcurrentDictionary<string, PlayerDatas>();
     private readonly IRoomManager _roomManager;
@@ -336,23 +339,35 @@ public sealed class OkeyHub : Hub
     */
     public async Task<string> PiochePacketRequest(string connectionId)
     {
-        var pioche = await this
-            ._hubContext.Clients.Client(connectionId)
+        var invokeTask = this._hubContext.Clients.Client(connectionId)
             .InvokeAsync<PiochePacket>(
                 "PiochePacketRequest",
                 cancellationToken: CancellationToken.None
             );
-        if (pioche.Centre == true && pioche.Defausse == false)
+
+        var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
+
+        if (completedTask != invokeTask)
         {
+            //notifier l'action
             return "Centre";
         }
-        else if (pioche.Centre == false && pioche.Defausse == true)
-        {
-            return "Defausse";
-        }
+
         else
         {
-            throw new ArgumentException("Le packet n'est pas conforme");
+            var pioche = await invokeTask;
+            if (pioche.Centre == true && pioche.Defausse == false)
+            {
+                return "Centre";
+            }
+            else if (pioche.Centre == false && pioche.Defausse == true)
+            {
+                return "Defausse";
+            }
+            else
+            {
+                throw new ArgumentException("Le packet n'est pas conforme");
+            }
         }
     }
 
@@ -361,17 +376,33 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="connectionId"></param>
     /// <returns>coordonnées</returns>
-    private async Task<string> JeterRequest(string connectionId)
+    private async Task<string> JeterRequest(Joueur pl)
     {
-        var TuileObtenue = await this
-            ._hubContext.Clients.Client(connectionId)
+        var invokeTask = /*await*/ this
+            ._hubContext.Clients.Client(pl.getName())
             .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: CancellationToken.None);
-        if (TuileObtenue.gagner == true)
+
+        // attend soit la saisie du client, soit les 20sec
+        // si le client saisie alors    completedTask <- invokeTask
+        // sinon                        completedTask <- Task.Delay()
+        var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
+
+        if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
         {
-            return "gagner";
+            Coord RandTuileCoord = pl.GetRandomTuileCoords();
+            return RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
         }
 
-        return TuileObtenue.Y + ";" + TuileObtenue.X;
+        else
+        {
+            var TuileObtenue = await invokeTask;
+            if (TuileObtenue.gagner == true)
+            {
+                return "gagner";
+            }
+
+            return TuileObtenue.Y + ";" + TuileObtenue.X;
+        }
     }
 
     /// <summary>
@@ -379,15 +410,27 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="connectionId"></param>
     /// <returns>coordonnes sous la forme y;x</returns>
-    private async Task<string> FirstJeterRequest(string connectionId)
+    private async Task<string> FirstJeterRequest(Joueur pl)
     {
-        var TuileObtenueSend = await this
-            ._hubContext.Clients.Client(connectionId)
+        var invokeTask = this
+            ._hubContext.Clients.Client(pl.getName())
             .InvokeAsync<TuilePacket>(
                 "FirstJeterActionRequest",
                 cancellationToken: CancellationToken.None
             );
-        return TuileObtenueSend.Y + ";" + TuileObtenueSend.X;
+
+        var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));  
+
+        if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
+        {
+            Coord RandTuileCoord = pl.GetRandomTuileCoords();
+            return RandTuileCoord.getY() + ";" + RandTuileCoord.getX(); // return random coords
+        }
+        else
+        {
+            var TuileObtenueSend = await invokeTask;
+            return TuileObtenueSend.Y + ";" + TuileObtenueSend.X;
+        }
     }
 
     private async Task TourSignalRequest(string roomName, string? connectionId)
@@ -407,6 +450,16 @@ public sealed class OkeyHub : Hub
                         connectionId,
                         cancellationToken: CancellationToken.None
                     );
+
+                //like we sent "TurnSignal" , we send "TimerStartSignal"
+                await this
+                    ._hubContext.Clients.Client(player)
+                    .SendAsync(
+                        "TimerStartSignal",
+                        connectionId,
+                        cancellationToken: CancellationToken.None
+                    );
+
             }
         }
     }
@@ -549,7 +602,7 @@ public sealed class OkeyHub : Hub
             {
                 //await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 await this.SendChevalets(playerIds, joueurs.ToList());
-                var coords = await this.FirstJeterRequest(joueurStarter.getName());
+                var coords = await this.FirstJeterRequest(joueurStarter); // to add timer (do timer in while first)
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
                     // Faire le mouvement de tuiles
@@ -577,7 +630,7 @@ public sealed class OkeyHub : Hub
                     {
                         await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                        var pioche = await this.PiochePacketRequest(currentPlayer.getName());
+                        var pioche = await this.PiochePacketRequest(currentPlayer.getName()); // to add timer
                         if (pioche.Equals("Move", StringComparison.Ordinal))
                         {
                             //await this.MoveInLoop(currentPlayer, jeu);
@@ -598,7 +651,7 @@ public sealed class OkeyHub : Hub
 
                         await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                        var coordinates = await this.JeterRequest(currentPlayer.getName());
+                        var coordinates = await this.JeterRequest(currentPlayer); // to add timer
 
                         if (coordinates.Equals("gagner", StringComparison.Ordinal))
                         {
