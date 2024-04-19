@@ -146,7 +146,6 @@ public class ClassementController : ControllerBase
                 );
             }
         }
-
         return this.StatusCode(500, "La pagination doit être supérieur à 0.");
     }
 }
