@@ -45,7 +45,7 @@ public class Builder
         }
         else
         {
-            PlayerSettings.bundleVersion = "0.0.1";
+            PlayerSettings.bundleVersion = "0.0.0";
         }
     }
 
@@ -90,7 +90,7 @@ public class Builder
         SetTestSettings();
 
         // Save path for the build relative to the Unity project root
-        var RelativeSaveLocation = "Builds/Android/OkeyTest.app";
+        var RelativeSaveLocation = "Builds/Android/OkeyTest";
 
         // Build the player
         var buildPlayerOptions = new BuildPlayerOptions
@@ -126,7 +126,7 @@ public class Builder
         SetTestSettings();
 
         // Save path for the build relative to the Unity project root
-        var RelativeSaveLocation = "Builds/iOS/OkeyTest.app";
+        var RelativeSaveLocation = "Builds/iOS/OkeyTest";
 
         // Build the player
         var buildPlayerOptions = new BuildPlayerOptions
@@ -162,7 +162,7 @@ public class Builder
         SetTestSettings();
 
         // Save path for the build relative to the Unity project root
-        var RelativeSaveLocation = "Builds/Linux/OkeyTest.app";
+        var RelativeSaveLocation = "Builds/Linux/OkeyTest";
 
         // Build the player
         var buildPlayerOptions = new BuildPlayerOptions
@@ -210,8 +210,7 @@ public class Builder
                 BuildOptions.Development
                 | BuildOptions.AllowDebugging
                 | BuildOptions.EnableDeepProfilingSupport
-                | BuildOptions.DetailedBuildReport
-                | BuildOptions.CleanBuildCache,
+                | BuildOptions.DetailedBuildReport,
             extraScriptingDefines = new[] { "DEBUG" }
         };
 
@@ -266,7 +265,7 @@ public class Builder
         SetTestSettings();
 
         // Save path for the build relative to the Unity project root
-        var RelativeSaveLocation = "Builds/Windows/OkeyTest.app";
+        var RelativeSaveLocation = "Builds/Windows/OkeyTest.exe";
 
         // Build the player
         var buildPlayerOptions = new BuildPlayerOptions
