@@ -62,15 +62,15 @@ public class Chevalet : MonoBehaviour
         pileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
         pilePiochePlaceHolder = GameObject.Find("PiochePlaceHolder");
         jokerPlaceHolder = GameObject.Find("Okey");
-        pileGauche.Push(pileGauchePlaceHolder
-            .transform.GetChild(0)
-            .gameObject.GetComponent<Tuile>());
-        pileGauche.Push(pileGauchePlaceHolder
-            .transform.GetChild(0)
-            .gameObject.GetComponent<Tuile>());
-        pilePioche.Push(pilePiochePlaceHolder
-            .transform.GetChild(0)
-            .gameObject.GetComponent<Tuile>());
+        pileGauche.Push(
+            pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
+        );
+        pileGauche.Push(
+            pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
+        );
+        pilePioche.Push(
+            pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
+        );
         pileGauchePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
@@ -218,21 +218,23 @@ public class Chevalet : MonoBehaviour
         }
     }
 
-    public void throwTile(Tuile tuile) {
+    public void throwTile(Tuile tuile)
+    {
         pileDroite.Push(tuile);
         TuileData tuileData = new TuileData(
-            ConvertToFrontendColorToBackendEnumName(
-                tuile.GetCouleur()
-            ), tuile.GetValeur(), tuile.GetIsJoker()
+            ConvertToFrontendColorToBackendEnumName(tuile.GetCouleur()),
+            tuile.GetValeur(),
+            tuile.GetIsJoker()
         );
         //ToDo : Envoyer TuileData + Défausse droite
     }
 
-    public void throwTileToWin(Tuile tuile) {
+    public void throwTileToWin(Tuile tuile)
+    {
         TuileData tuileData = new TuileData(
-            ConvertToFrontendColorToBackendEnumName(
-                tuile.GetCouleur()
-            ), tuile.GetValeur(), tuile.GetIsJoker()
+            ConvertToFrontendColorToBackendEnumName(tuile.GetCouleur()),
+            tuile.GetValeur(),
+            tuile.GetIsJoker()
         );
         //ToDo : Envoyer TuileData + Pile Pioche + tuiles2D
         //Attendre Vérif

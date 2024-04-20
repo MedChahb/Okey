@@ -111,9 +111,9 @@ public class UIManagerPAcceuil : MonoBehaviour
     public void updateAvatar()
     {
         PanelAvatar.SetActive(true);
-            PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
-                .GetSelfJoueur()
-                .NomUtilisateur;
+        PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
+            .GetSelfJoueur()
+            .NomUtilisateur;
         connexionBtn.gameObject.SetActive(false);
     }
 }

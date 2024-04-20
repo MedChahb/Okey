@@ -96,7 +96,7 @@ public class Tuile : MonoBehaviour
                     else
                     {
                         deplacable = false;
-                        if(closestPlaceholder == Chevalet.pileDroitePlaceHolder)
+                        if (closestPlaceholder == Chevalet.pileDroitePlaceHolder)
                         {
                             this.chevalet.throwTile(this);
                         }
