@@ -8,7 +8,7 @@ public class Chevalet : MonoBehaviour
 {
     public static GameObject[] placeholders = new GameObject[28]; // Tableau des 28 Placeholders (la grille)
 
-    private TuileData[,] tuiles2D = new TuileData[2, 14];
+    public TuileData[,] tuiles2D = new TuileData[2, 14];
     private Stack<Tuile> pileGauche = new Stack<Tuile>();
     private Stack<Tuile> pileDroite = new Stack<Tuile>();
     private Stack<Tuile> pilePioche = new Stack<Tuile>();
@@ -17,6 +17,21 @@ public class Chevalet : MonoBehaviour
 
     public static GameObject pileDroitePlaceHolder;
     public static GameObject jokerPlaceHolder;
+
+    public static Chevalet Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
 
     void Start()
     {
@@ -188,10 +203,10 @@ public class Chevalet : MonoBehaviour
                     .gameObject.GetComponent<Tuile>()
                     .SetIsInPioche(false);
                 pilePioche.Pop();
-                if (pilePioche.Count > 0) 
+                if (pilePioche.Count > 0)
                 {
                     GameObject newChild = Instantiate(
-                        pilePioche.Peek().gameObject, 
+                        pilePioche.Peek().gameObject,
                         pilePiochePlaceHolder.transform
                     );
                     newChild.transform.localPosition = Vector3.zero;
@@ -220,8 +235,8 @@ public class Chevalet : MonoBehaviour
             ), tuile.GetValeur(), tuile.GetIsJoker()
         );
         //ToDo : Envoyer TuileData + Pile Pioche + tuiles2D
-        //Attendre Vérif 
-        //Et communiquer le résultat 
+        //Attendre Vérif
+        //Et communiquer le résultat
         //pilePioche.Push(tuile);
     }
 
