@@ -44,6 +44,7 @@ Assurez vous d'être réglé avec les bonnes versions des dépendances de premie
 Cette liste indique les versions minimales recommandées ou des versions exactes (sur certains) des outils nécessaires pour travailler sur ce projet. Si vous ne respectez pas ces versions votre environnement de développement risque de ne pas fonctionner correctement. Mais surtout, vous serez en décalage avec le reste de l'équipe et vous risquez de rencontrer des problèmes lors de votre implémentation (vieille version .NET ou mauvaise version Unity par exemple) qui ne sera plus compatible avec le projet.
 
 * [Git](https://git-scm.com/) récent
+* [Git LFS](https://git-lfs.com/) récent
 * [Python](https://www.python.org/) >= 3.9 stable (3.10.13 recommandé)
   * [pre-commit](https://pre-commit.com/) >= 3.6.1
   * [python-gitlab](https://python-gitlab.readthedocs.io/en/v4.4.0/) >= 4.4.0
@@ -120,6 +121,9 @@ pip install -r requirements.txt  # Installez les packages Python
 Finalement, configurez les hooks Git (une fois Python est réglé) :
 
 ```sh
+rm -rf .git/hooks  # Supprimez les hooks git par défaut
+git lfs install
+git config --local lfs.https://git.unistra.fr/okaybytes/okey.git/info/lfs.locksverify true
 pre-commit install  # Installez les hooks git
 pre-commit run -a  # Lancez les hooks git pour la toute première fois
 ```
