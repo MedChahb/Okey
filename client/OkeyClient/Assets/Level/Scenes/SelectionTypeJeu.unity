@@ -469,7 +469,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1fc3fe02419b17d43bc05848b148c389, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0cc8b9892b6b946f98cf93c24f10384f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2393,7 +2393,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1fc3fe02419b17d43bc05848b148c389, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0cc8b9892b6b946f98cf93c24f10384f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5934,8 +5934,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backBtn: {fileID: 1234134177}
-  backBtnPublic: {fileID: 0}
-  backBtnPrivate: {fileID: 0}
+  backBtnPublic: {fileID: 670195797}
+  backBtnPrivate: {fileID: 40716801}
   joinPrivateLobbyBtn: {fileID: 1552995243}
   joinPublicLobbyBtn: {fileID: 31012457}
   partieSimpleTxt: {fileID: 2056424586}

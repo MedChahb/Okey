@@ -191,6 +191,7 @@ public class Chevalet : MonoBehaviour
                     newChild.GetComponent<Tuile>().SetIsDeplacable(false);
                 }
                 //ToDo : Envoyer "Pioche à Droite"
+                //
             }
             else
             {

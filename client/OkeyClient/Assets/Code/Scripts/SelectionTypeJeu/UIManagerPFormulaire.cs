@@ -51,8 +51,8 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     void Start()
     {
-        backBtnPrivate.onClick.AddListener(onBackBtnClicked);
-        backBtnPublic.onClick.AddListener(onBackBtnClicked);
+        backBtnPrivate.onClick.AddListener(onBackPrivateLobbyClicked);
+        backBtnPublic.onClick.AddListener(onBackPublicLobbyClicked);
         backBtn.onClick.AddListener(onBackBtnClicked);
         //joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
         joinPublicLobbyBtn.onClick.AddListener(onPublicLobbyClicked);
@@ -98,6 +98,16 @@ public class UIManagerPFormulaire : MonoBehaviour
     public void onLoadBtnClicked()
     {
         SceneManager.LoadScene(2); // Charge la scène `PlateauInit`
+    }
+
+    public void onBackPrivateLobbyClicked()
+    {
+        lobbyPrivateConfig.SetActive(false);
+    }
+
+    public void onBackPublicLobbyClicked()
+    {
+        lobbyPlayerWaiting.SetActive(false);
     }
 
     public void onJoinLobbyButtonPressed()
