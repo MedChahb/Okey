@@ -116,6 +116,10 @@ namespace Okey.Joueurs
                 j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour an next joueur
 
                 Console.WriteLine($"{this.Name} a jeté la tuile {t}\n");
+
+                //ajout de la tuile jete a la liste de tuile defausse
+                //(fonctionnalités)
+                j.ListeDefausse.Add(t);
             }
             else
             {
@@ -134,7 +138,7 @@ namespace Okey.Joueurs
             if (string.Equals(OuPiocher, "Centre", StringComparison.OrdinalIgnoreCase))
             {
                 if (j.isPiocheCentreEmpty())
-                {   
+                {
                     Console.WriteLine("La pile au centre est vide, impossible de piocher.");
                 }
                 else
@@ -163,7 +167,6 @@ namespace Okey.Joueurs
                     this.AjoutTuileChevalet(tuilePiochee);
                 }
             }
-
         }
 
         //jete la 15eme tuile sur la pioche au milieu pour decalrer la victoire
@@ -310,18 +313,17 @@ namespace Okey.Joueurs
 
         public Coord GetRandomTuileCoords()
         {
-            int etageRand = -1, tuileDansEtageRand = -1;
+            int etageRand = -1,
+                tuileDansEtageRand = -1;
 
             do
             {
                 etageRand = random.Next(0, etage - 1);
                 tuileDansEtageRand = random.Next(0, tuilesDansEtage - 1);
-
             } while (this.chevalet[etageRand][tuileDansEtageRand] == null);
 
             return new Coord(etageRand, tuileDansEtageRand);
         }
-
 
         public void JeteTuileDefausse(Tuile? t)
         {
