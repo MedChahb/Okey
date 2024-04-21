@@ -11,5 +11,5 @@ UPLOAD_URL="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${CLIENT
 
 curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "$ARCHIVE_PATH" "$UPLOAD_URL"
 
-echo "${PACKAGE_PLATFORM}_LINK_NAME=$PACKAGE_HEADER" >>$ENV_FILE # asset link name
-echo "${PACKAGE_PLATFORM}_LINK_URL=$UPLOAD_URL" >>$ENV_FILE      # asset link URL
+echo "${PACKAGE_PLATFORM}_LINK_NAME=$PACKAGE_HEADER" >>"$ENV_FILE" # asset link name
+echo "${PACKAGE_PLATFORM}_LINK_URL=$UPLOAD_URL" >>"$ENV_FILE"      # asset link URL

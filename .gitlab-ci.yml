@@ -244,6 +244,8 @@ unity-linux-release:
     - export ARCHIVE_PATH="Okey_Linux_x86-64_${OKEY_BUILD_VERSION}.tar.xz"
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.LinuxReleaseBuild
     - tar cJf "$ARCHIVE_PATH" ${BUILD_PATH}/Okey ${BUILD_PATH}/Okey_Data ${BUILD_PATH}/UnityPlayer.so
+    - mkdir -p public/
+    - cp "$ARCHIVE_PATH" public/
     - if [ "$CI_COMMIT_TAG" ]; then scripts/unity-upload-package.sh; fi
   after_script:
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
@@ -257,7 +259,7 @@ unity-linux-release:
   artifacts:
     name: "unity-linux-release-build"
     paths:
-      - "$ARCHIVE_PATH"
+      - public
     expire_in: 30 days
     reports:
       dotenv: $ENV_FILE
@@ -282,6 +284,8 @@ unity-mac-release:
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.MacReleaseBuild
     - chmod a+x ${BUILD_PATH}/Okey.app/Contents/MacOS/Okey
     - tar cJf "$ARCHIVE_PATH" ${BUILD_PATH}/Okey.app
+    - mkdir -p public/
+    - cp "$ARCHIVE_PATH" public/
     - if [ "$CI_COMMIT_TAG" ]; then scripts/unity-upload-package.sh; fi
   after_script:
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
@@ -295,7 +299,7 @@ unity-mac-release:
   artifacts:
     name: "unity-mac-release-build"
     paths:
-      - "$ARCHIVE_PATH"
+      - public
     expire_in: 30 days
     reports:
       dotenv: $ENV_FILE
@@ -319,6 +323,8 @@ unity-windows-release:
     - export ARCHIVE_PATH="Okey_Windows_x86-64_${OKEY_BUILD_VERSION}.tar.xz"
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.WindowsReleaseBuild
     - tar cJf "$ARCHIVE_PATH" ${BUILD_PATH}/Okey.exe ${BUILD_PATH}/Okey_Data ${BUILD_PATH}/UnityPlayer.dll ${BUILD_PATH}/UnityCrashHandler64.exe ${BUILD_PATH}/MonoBleedingEdge
+    - mkdir -p public/
+    - cp "$ARCHIVE_PATH" public/
     - if [ "$CI_COMMIT_TAG" ]; then scripts/unity-upload-package.sh; fi
   after_script:
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
@@ -332,7 +338,7 @@ unity-windows-release:
   artifacts:
     name: "unity-windows-release-build"
     paths:
-      - "$ARCHIVE_PATH"
+      - public
     expire_in: 30 days
     reports:
       dotenv: $ENV_FILE
