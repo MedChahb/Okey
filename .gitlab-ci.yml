@@ -18,6 +18,7 @@ stages:
 variables:
   PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
   RELEASE_TAG: '/^v\d+\.\d+\.\d+\.*$/'
+  CLIENT_PACKAGE_NAME: "Unity-Client"
 test 1/2:
   stage: test
   dependencies: []
@@ -154,7 +155,7 @@ unity-linux-test:
         - client/OkeyClient/**/*
       when: always
   artifacts:
-    name: "unity-build"
+    name: "unity-linux-test-build"
     paths:
       - public
     expire_in: 30 days
@@ -187,7 +188,7 @@ unity-mac-test:
         - client/OkeyClient/**/*
       when: always
   artifacts:
-    name: "unity-build"
+    name: "unity-mac-test-build"
     paths:
       - public
     expire_in: 30 days
@@ -219,10 +220,122 @@ unity-windows-test:
         - client/OkeyClient/**/*
       when: always
   artifacts:
-    name: "unity-build"
+    name: "unity-windows-test-build"
     paths:
       - public
     expire_in: 30 days
+  tags:
+    - kubernetes
+unity-linux-release:
+  image:
+    name: unityci/editor:ubuntu-2022.3.19f1-base-3.0.1
+  stage: build
+  needs:
+    - job: unity-windows-test
+      artifacts: false
+  variables:
+    BUILD_PATH: client/OkeyClient/Builds/Linux
+    ENV_FILE: unity-linux-release.env
+  before_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+  script:
+    - export OKEY_BUILD_VERSION=$(scripts/generate_unity_build_version.sh)
+    - export ARCHIVE_PATH="Okey_Linux_x86-64_${OKEY_BUILD_VERSION}.tar.xz"
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.LinuxReleaseBuild
+    - tar cJf "$ARCHIVE_PATH" ${BUILD_PATH}/Okey ${BUILD_PATH}/Okey_Data ${BUILD_PATH}/UnityPlayer.so
+    - if [ "$CI_COMMIT_TAG" ]; then scripts/unity-upload-package.sh; fi
+  after_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "front-end"
+      changes:
+        - client/OkeyClient/**/*
+      when: always
+    - if: $CI_COMMIT_TAG =~ $RELEASE_TAG
+      when: always
+  artifacts:
+    name: "unity-linux-release-build"
+    paths:
+      - "$ARCHIVE_PATH"
+    expire_in: 30 days
+    reports:
+      dotenv: $ENV_FILE
+  tags:
+    - kubernetes
+unity-mac-release:
+  image:
+    name: unityci/editor:ubuntu-2022.3.19f1-mac-mono-3.0.1
+  stage: build
+  needs:
+    - job: unity-linux-release
+      artifacts: false
+  variables:
+    BUILD_PATH: client/OkeyClient/Builds/Mac
+    ENV_FILE: unity-mac-release.env
+  before_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+  script:
+    - export OKEY_BUILD_VERSION=$(scripts/generate_unity_build_version.sh)
+    - export ARCHIVE_PATH="Okey_Mac_Universal_${OKEY_BUILD_VERSION}.tar.xz"
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.MacReleaseBuild
+    - chmod a+x ${BUILD_PATH}/Okey.app/Contents/MacOS/Okey
+    - tar cJf "$ARCHIVE_PATH" ${BUILD_PATH}/Okey.app
+    - if [ "$CI_COMMIT_TAG" ]; then scripts/unity-upload-package.sh; fi
+  after_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "front-end"
+      changes:
+        - client/OkeyClient/**/*
+      when: always
+    - if: $CI_COMMIT_TAG =~ $RELEASE_TAG
+      when: always
+  artifacts:
+    name: "unity-mac-release-build"
+    paths:
+      - "$ARCHIVE_PATH"
+    expire_in: 30 days
+    reports:
+      dotenv: $ENV_FILE
+  tags:
+    - kubernetes
+unity-windows-release:
+  image:
+    name: unityci/editor:ubuntu-2022.3.19f1-windows-mono-3.0.1
+  stage: build
+  needs:
+    - job: unity-mac-release
+      artifacts: false
+  variables:
+    BUILD_PATH: client/OkeyClient/Builds/Windows
+    ENV_FILE: unity-windows-release.env
+  before_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+  script:
+    - export OKEY_BUILD_VERSION=$(scripts/generate_unity_build_version.sh)
+    - export ARCHIVE_PATH="Okey_Windows_x86-64_${OKEY_BUILD_VERSION}.tar.xz"
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.WindowsReleaseBuild
+    - tar cJf "$ARCHIVE_PATH" ${BUILD_PATH}/Okey.exe ${BUILD_PATH}/Okey_Data ${BUILD_PATH}/UnityPlayer.dll ${BUILD_PATH}/UnityCrashHandler64.exe ${BUILD_PATH}/MonoBleedingEdge
+    - if [ "$CI_COMMIT_TAG" ]; then scripts/unity-upload-package.sh; fi
+  after_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "front-end"
+      changes:
+        - client/OkeyClient/**/*
+      when: always
+    - if: $CI_COMMIT_TAG =~ $RELEASE_TAG
+      when: always
+  artifacts:
+    name: "unity-windows-release-build"
+    paths:
+      - "$ARCHIVE_PATH"
+    expire_in: 30 days
+    reports:
+      dotenv: $ENV_FILE
   tags:
     - kubernetes
 pages:
@@ -240,7 +353,7 @@ pages:
     - kubernetes
 release_job:
   stage: deploy
-  dependencies: []
+  dependencies: ["unity-linux-release", "unity-mac-release", "unity-windows-release"]
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   rules:
     - if: '$CI_COMMIT_TAG =~ $RELEASE_TAG' # Run this job when a release tag is created
@@ -255,5 +368,16 @@ release_job:
     tag_name: $CI_COMMIT_TAG
     name: 'Release $CI_COMMIT_TAG'
     description: './RELEASE_NOTES.md'
+    assets:
+      links:
+        - name: "$Linux_LINK_NAME"
+          url: "$Linux_LINK_URL"
+          link_type: 'package'
+        - name: "$Mac_LINK_NAME"
+          url: "$Mac_LINK_URL"
+          link_type: 'package'
+        - name: "$Windows_LINK_NAME"
+          url: "$Windows_LINK_URL"
+          link_type: 'package'
   tags:
     - kubernetes
