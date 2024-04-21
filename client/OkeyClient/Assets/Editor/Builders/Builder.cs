@@ -191,6 +191,37 @@ public class Builder
         );
     }
 
+    [MenuItem("MyTools/Release Build/Linux x86_64 Release Build")]
+    public static void LinuxReleaseBuild()
+    {
+        SetBaseSettings();
+        SetReleaseSettings();
+
+        // Save path for the build relative to the Unity project root
+        var RelativeSaveLocation = "Builds/Linux/Okey";
+
+        // Build the player
+        var buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = GetEditorScenes().ToArray(),
+            locationPathName = RelativeSaveLocation,
+            target = BuildTarget.StandaloneLinux64,
+            options = BuildOptions.None
+        };
+
+        BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        EditorUtility.DisplayDialog(
+            "Build Complete",
+            "Linux x86_64 Release Build Complete\n\nSaved to: "
+                + Path.Join(
+                    Directory.GetParent(Application.dataPath).ToString(),
+                    RelativeSaveLocation
+                ),
+            "OK"
+        );
+    }
+
     [MenuItem("MyTools/Test Build/Mac Universal Test Build")]
     public static void MacTestBuild()
     {
@@ -286,6 +317,37 @@ public class Builder
         EditorUtility.DisplayDialog(
             "Build Complete",
             "Windows x86_64 Test Build Complete\n\nSaved to: "
+                + Path.Join(
+                    Directory.GetParent(Application.dataPath).ToString(),
+                    RelativeSaveLocation
+                ),
+            "OK"
+        );
+    }
+
+    [MenuItem("MyTools/Release Build/Windows x86_64 Release Build")]
+    public static void WindowsReleaseBuild()
+    {
+        SetBaseSettings();
+        SetReleaseSettings();
+
+        // Save path for the build relative to the Unity project root
+        var RelativeSaveLocation = "Builds/Windows/Okey.exe";
+
+        // Build the player
+        var buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = GetEditorScenes().ToArray(),
+            locationPathName = RelativeSaveLocation,
+            target = BuildTarget.StandaloneWindows64,
+            options = BuildOptions.None
+        };
+
+        BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        EditorUtility.DisplayDialog(
+            "Build Complete",
+            "Windows x86_64 Release Build Complete\n\nSaved to: "
                 + Path.Join(
                     Directory.GetParent(Application.dataPath).ToString(),
                     RelativeSaveLocation
