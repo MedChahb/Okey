@@ -20,6 +20,7 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 * [Cahier des charges](https://docs.google.com/document/d/1Rsr_0wPjUDgFJGwcGmsh3udF6GZKAEvckagoF2dQsZc/edit?usp=sharing)
 * [Team log](https://docs.google.com/spreadsheets/d/1c_RrIB0kDTPiEfFVfjjMwCOlqc8TLVP4LDvLlRVz5Ng/edit?usp=sharing) (ancien)
 * [Team log](https://docs.google.com/spreadsheets/d/1Lx6XSw-6TPpPX6M-f2ByZmqWlIIDPr0a4ye2qn6C0Tg/edit?usp=sharing)
+* [Seafile partagé](https://seafile.unistra.fr/smart-link/33f285ba-d099-4a13-bcc1-9ae342a50738/)
 
 ### Backend
 
@@ -29,9 +30,20 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 ### Frontend
 
 * [Tâches frontend](https://docs.google.com/document/d/1juRMyaspqpbGG-6astmrf9sYpfhF4I-d_2sC1IXX4jM/edit?usp=sharing)
-* [Figma](https://www.figma.com/file/ZTVmviAU1qUqfNIfh04j1V/Untitled?type=design&node-id=0%3A1&mode=design&t=2wq9oDEamRp9MzS5-1)
 * [UML](https://drive.google.com/file/d/1YIBEHZWpCWMH5IgFtIi-53_cFjVEIpYE/view?usp=sharing_eip_m&ts=65d4c787)
 * [Diagramme d'activités](https://drive.google.com/file/d/1TDauPSD0wWvksGSJn-EX9Y7hbyhopGBx/view?ts=65de1e74)
+
+#### IHM
+
+* [Figma](https://www.figma.com/file/ZTVmviAU1qUqfNIfh04j1V/Untitled?type=design&node-id=0%3A1&mode=design&t=2wq9oDEamRp9MzS5-1)
+* [Wireframes](https://drive.google.com/file/d/1QMwPXv768F97Ix5pabN3Do9hoXsxo5LF/view?usp=sharing)
+* [Tests utilisateur](https://docs.google.com/document/d/1pJDbbH8KoasmX3JDQduUXqLfxRmnVAhrXfWyx_RvB9Q/edit?usp=sharing)
+* [Rapport](https://docs.google.com/document/d/1x1iIONVdpiXbn-6ELFCDypHQmns6L7V6RnVef9CDmJQ/edit?usp=sharing)
+* [Diapos présentation](https://docs.google.com/presentation/d/1MKXBnuf_UoWBcwFtAfpA_6QPDyTrWNaL0IsEf4Jm96U/edit?usp=sharing)
+
+### Commun entre backend et frontend
+
+* [Spécification des communications](https://docs.google.com/document/d/1m7YraiAPQxlpeK8IJXncBgzjGUizkMRcMqzwSLpFpZ8/edit?usp=sharing)
 
 ## Environnement de développement
 
