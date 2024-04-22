@@ -116,6 +116,10 @@ namespace Okey.Joueurs
                 j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour an next joueur
 
                 Console.WriteLine($"{this.Name} a jeté la tuile {t}\n");
+
+                //ajout de la tuile jete a la liste de tuile defausse
+                //(fonctionnalités)
+                j.ListeDefausse.Add(t);
             }
             else
             {

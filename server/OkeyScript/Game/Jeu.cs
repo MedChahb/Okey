@@ -17,6 +17,9 @@ namespace Okey.Game
         private readonly Tuile TuileCentre;
         private Joueur? JoueurActuel;
 
+        //Liste qui affichera toutes les tuiles jetés
+        public List<Tuile> ListeDefausse { get; private set; }
+
         public Jeu(int id, Joueur[] joueurs)
         {
             this.id = id;
@@ -24,6 +27,7 @@ namespace Okey.Game
             //this.MMR = CalculMMR();
             this.etat = false;
             (this.PacketTuile, this.TuileCentre) = GenererPacketTuiles();
+            this.ListeDefausse = new List<Tuile>();
         }
 
         /*private double CalculMMR()
