@@ -1,4 +1,4 @@
-﻿namespace Okey
+namespace Okey
 {
     public class Coord
     {
@@ -11,8 +11,14 @@
             this.x = x;
         }
 
-        public int getX() { return x; }
-        public int getY() { return y; }
+        public int getX()
+        {
+            return x;
+        }
 
+        public int getY()
+        {
+            return y;
+        }
     }
 }
