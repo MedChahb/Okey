@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/zsh,latex,python,node,deno,git,linux,macos,windows,ruby,fish,jetbrains+all,visualstudio,visualstudiocode,vim,sublimetext,tex,docfx,notepadpp
-# Edit at https://www.toptal.com/developers/gitignore?templates=zsh,latex,python,node,deno,git,linux,macos,windows,ruby,fish,jetbrains+all,visualstudio,visualstudiocode,vim,sublimetext,tex,docfx,notepadpp
+# Created by https://www.toptal.com/developers/gitignore/api/zsh,latex,python,node,deno,git,linux,macos,windows,ruby,fish,jetbrains+all,visualstudio,visualstudiocode,vim,sublimetext,tex,docfx,notepadpp,executable
+# Edit at https://www.toptal.com/developers/gitignore?templates=zsh,latex,python,node,deno,git,linux,macos,windows,ruby,fish,jetbrains+all,visualstudio,visualstudiocode,vim,sublimetext,tex,docfx,notepadpp,executable
 
 ### Deno ###
 /.idea/
@@ -1510,7 +1510,19 @@ FodyWeavers.xsd
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
-# End of https://www.toptal.com/developers/gitignore/api/zsh,latex,python,node,deno,git,linux,macos,windows,ruby,fish,jetbrains+all,visualstudio,visualstudiocode,vim,sublimetext,tex,docfx,notepadpp
+### Executable ###
+*.app
+*.bat
+*.cgi
+*.com
+*.exe
+*.gadget
+*.jar
+*.pif
+*.vb
+*.wsf
+
+# End of https://www.toptal.com/developers/gitignore/api/zsh,latex,python,node,deno,git,linux,macos,windows,ruby,fish,jetbrains+all,visualstudio,visualstudiocode,vim,sublimetext,tex,docfx,notepadpp,executable
 
 
 /.config/**
