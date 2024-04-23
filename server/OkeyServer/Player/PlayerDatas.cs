@@ -5,17 +5,17 @@ using Data;
 using Exceptions;
 
 /// <summary>
-/// Classe contenant toutes les données d'un utilisateur connecté
+/// Classe contenant toutes les données d'un utilisateur connecté !!!! WIP !!!!
 /// </summary>
 public class PlayerDatas
 {
-    private string _username;
-    private int _elo;
-    private int _photo;
-    private DateTime _dateInscription;
-    private int _experience;
-    private int _nombreParties;
-    private int _nombrePartiesGagnees;
+    private string Username { get; set; }
+    private int Elo { get; set; }
+    private int Photo { get; set; }
+    private DateTime DateInscription { get; set; }
+    private int Experience { get; set; }
+    private int NombreParties { get; set; }
+    private int NombrePartiesGagnees { get; set; }
     private ConcurrentDictionary<string, bool> _achievements;
     private readonly ServerDbContext _dbContext;
 
@@ -27,18 +27,18 @@ public class PlayerDatas
     public PlayerDatas(ServerDbContext dbContext, string username)
     {
         this._dbContext = dbContext;
-        this._username = username;
-
+        this.Username = username;
+        // on cherche dans la base de donnée la ligne de la tablke correspondate au username fourni
         var player = this._dbContext.Users.FirstOrDefault(user => user.UserName == username);
 
         if (player != null)
         {
-            this._elo = player.Elo;
-            this._photo = player.Photo;
-            this._experience = player.Experience;
-            this._nombreParties = player.NombreParties;
-            this._nombrePartiesGagnees = player.NombrePartiesGagnees;
-            this._dateInscription = player.DateInscription;
+            this.Elo = player.Elo;
+            this.Photo = player.Photo;
+            this.Experience = player.Experience;
+            this.NombreParties = player.NombreParties;
+            this.NombrePartiesGagnees = player.NombrePartiesGagnees;
+            this.DateInscription = player.DateInscription;
 
             /// partie Achievements :
             this._achievements = new ConcurrentDictionary<string, bool>();
@@ -72,7 +72,7 @@ public class PlayerDatas
                 {
                     /// exception aaucune ligne achievements correspondat à l'utilisateur n'à été trouvée
                     throw new UserAchievementsNotFoundException(
-                        "Couldn't find " + this._username + " achievements"
+                        "Couldn't find " + this.Username + " achievements"
                     );
                 }
             }
@@ -85,7 +85,7 @@ public class PlayerDatas
         else
         {
             /// le joueur avec cet username n'a pas été trouvé dans la base de donnée
-            throw new UserAchievementsNotFoundException("Couldn't find user : " + this._username);
+            throw new UserAchievementsNotFoundException("Couldn't find user : " + this.Username);
         }
     }
 
@@ -93,7 +93,7 @@ public class PlayerDatas
     /// renvoi un booléen indiquant si le succès
     /// </summary>
     /// <param name="achievement"></param>
-    /// <returns></returns>
+    /// <returns> booléen vrai si l'achievement est débloqué </returns>
     public bool CheckAchievement(string achievement)
     {
         return this._achievements[achievement];
@@ -113,40 +113,40 @@ public class PlayerDatas
         bool nbParties = true
     )
     {
-        this._elo += elo;
-        this._experience += experience;
+        this.Elo += elo;
+        this.Experience += experience;
         if (nbParties)
         {
-            this._nombreParties++;
+            this.NombreParties++;
         }
         if (nbPartiesGagnees)
         {
-            this._nombrePartiesGagnees++;
+            this.NombrePartiesGagnees++;
         }
-        var userUpdate = this._dbContext.Users.SingleOrDefault(u => u.UserName == this._username);
+        var userUpdate = this._dbContext.Users.SingleOrDefault(u => u.UserName == this.Username);
         if (userUpdate != null)
         {
-            userUpdate.Elo = this._elo;
-            userUpdate.Experience = this._experience;
-            userUpdate.NombreParties = this._nombreParties;
-            userUpdate.NombrePartiesGagnees = this._nombrePartiesGagnees;
+            userUpdate.Elo = this.Elo;
+            userUpdate.Experience = this.Experience;
+            userUpdate.NombreParties = this.NombreParties;
+            userUpdate.NombrePartiesGagnees = this.NombrePartiesGagnees;
             await this._dbContext.SaveChangesAsync();
         }
         else
         {
-            this._elo -= elo;
-            this._experience -= experience;
+            this.Elo -= elo;
+            this.Experience -= experience;
             if (nbParties)
             {
-                this._nombreParties--;
+                this.NombreParties--;
             }
             if (nbPartiesGagnees)
             {
-                this._nombrePartiesGagnees--;
+                this.NombrePartiesGagnees--;
             }
             /// exception erreur lors de la recuperation du profil
             throw new UserUpdateException(
-                "Couldn't fetch user :" + this._username + " from the database"
+                "Couldn't fetch user :" + this.Username + " from the database"
             );
         }
     }
@@ -167,7 +167,7 @@ public class PlayerDatas
             var achievements = achievDbContext.FirstOrDefault(ach =>
                 ach.Utilisateur != null
                 && ach.Utilisateur.UserName != null
-                && ach.Utilisateur.UserName.Equals(this._username, StringComparison.Ordinal)
+                && ach.Utilisateur.UserName.Equals(this.Username, StringComparison.Ordinal)
             );
             if (achievements != null)
             {
@@ -185,7 +185,7 @@ public class PlayerDatas
                         "Couldn't find the achievement : "
                             + achievement
                             + " in the user : "
-                            + this._username
+                            + this.Username
                             + " achievements collection"
                     );
                 }
@@ -196,7 +196,7 @@ public class PlayerDatas
             {
                 /// exception aaucune ligne achievements correspondat à l'utilisateur n'à été trouvée
                 throw new UserAchievementsNotFoundException(
-                    "Couldn't find " + this._username + " achievements"
+                    "Couldn't find " + this.Username + " achievements"
                 );
             }
         }
@@ -210,18 +210,18 @@ public class PlayerDatas
     public override string ToString()
     {
         return "username : "
-            + this._username
+            + this.Username
             + " elo : "
-            + this._elo
+            + this.Elo
             + " date d'inscription : "
-            + this._dateInscription
+            + this.DateInscription
             + " photo : "
-            + this._photo
+            + this.Photo
             + " exp : "
-            + this._experience
+            + this.Experience
             + " nb parties jouées : "
-            + this._nombreParties
+            + this.NombreParties
             + " nb parties gagnées : "
-            + this._nombrePartiesGagnees;
+            + this.NombrePartiesGagnees;
     }
 }

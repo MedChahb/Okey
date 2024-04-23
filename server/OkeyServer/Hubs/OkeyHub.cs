@@ -3,13 +3,11 @@ namespace OkeyServer.Hubs;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
 using Data;
 using Exceptions;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
 using Okey;
-using Okey.AppelsAPI.Deserializer;
 using Okey.Game;
 using Okey.Joueurs;
 using Okey.Tuiles;
@@ -77,13 +75,22 @@ public sealed class OkeyHub : Hub
                     }
                 );
         }
-        _connectedUsers.TryRemove(this.Context.ConnectionId, out _);
+
+        if (!_connectedUsers.TryRemove(this.Context.ConnectionId, out _))
+        {
+            throw new ConnectedUSerDictionnaryRemoveException(
+                "Couldn't remove the user : "
+                    + _connectedUsers[this.Context.ConnectionId]
+                    + " from the connected users"
+            );
+        }
+
         await base.OnDisconnectedAsync(exception);
     }
 
     /// <summary>
     /// Quand le joueur fourni un JWT Token lie la session de connxion au nom d'utilisateur
-    /// Une transmission AccountLinkResult est envoyé au client indiquant comment c'est passé la tentative d'association
+    /// Une transmission AccountLinkResult est envoyé au client indiquant comment s'est passée la tentative d'association
     /// </summary>
     /// <param name="token">JWT token</param>
     public async Task ConnectAccount(string token)
@@ -104,33 +111,11 @@ public sealed class OkeyHub : Hub
                     var username = claim.Value;
                     try
                     {
-                        var httpClient = new HttpClient();
-                        var url =
-                            $"https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-0/okeyapi/compte/watch/{username}";
-                        httpClient.DefaultRequestHeaders.Authorization =
-                            new AuthenticationHeaderValue("Bearer", token);
-                        // on récupère les infos de l'utilisateur
-
-                        var response = await httpClient.GetAsync(url);
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var rep = await response.Content.ReadAsStringAsync();
-                            var jsonData = new PublicWatchJsonDeserializer(rep).Deserialize();
-                            if (jsonData == null)
-                            {
-                                // 4 = exception lors de la recuperation des données depuis l'API
-                                await this.Clients.Caller.SendAsync("AccountLinkResult", 5);
-                                throw new ConnectAccountAPICallException(
-                                    "The API Call returned  a null dataset"
-                                );
-                            }
-
-                            _connectedUsers[this.Context.ConnectionId] = new PlayerDatas(
-                                this._dbContext,
-                                jsonData.username
-                            );
-                        }
-
+                        // récuperation et stockage des données utilisateurs dans le dictionnaire concurrent
+                        _connectedUsers[this.Context.ConnectionId] = new PlayerDatas(
+                            this._dbContext,
+                            username
+                        );
                         //Console.WriteLine("user : "+ claimValue + " associé à l'id : " + this.Context.ConnectionId );
                         // 0 = bon déroulement
                         await this.Clients.Caller.SendAsync("AccountLinkResult", 0);
@@ -723,7 +708,7 @@ public sealed class OkeyHub : Hub
         await this
             ._hubContext.Clients.Group("Hub")
             .SendAsync("ReceiveMessage", new PacketSignal { message = roomsInfo });*/
-    /*
+
     public bool getAllAssociations()
     {
         foreach (var elmt in _connectedUsers)
@@ -732,5 +717,4 @@ public sealed class OkeyHub : Hub
         }
         return true;
     }
-    */
 }
