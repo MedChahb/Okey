@@ -88,7 +88,8 @@ public class AccountController : ControllerBase
         return this.Ok(
             new NewUtilisateurDto
             {
-                UserName = user.UserName,
+                Username = user.UserName,
+                Photo = user.Photo,
                 Token = this._tokenService.CreateToken(user)
             }
         );
@@ -109,52 +110,64 @@ public class AccountController : ControllerBase
                 return this.BadRequest(this.ModelState);
             }
 
-            var utilisateur = new Utilisateur { UserName = registerDto.Username };
-            if (registerDto.Password != null)
+            if (registerDto.Photo >= 1 && registerDto.Photo <= 4)
             {
-                var createUtilisateur = await this._utilisateurManager.CreateAsync(
-                    utilisateur,
-                    registerDto.Password
-                );
-                if (createUtilisateur.Succeeded)
+                var utilisateur = new Utilisateur
                 {
-                    var roleResult = await this._utilisateurManager.AddToRoleAsync(
+                    UserName = registerDto.Username,
+                    Photo = registerDto.Photo
+                };
+                if (registerDto.Password != null)
+                {
+                    var createUtilisateur = await this._utilisateurManager.CreateAsync(
                         utilisateur,
-                        "USER"
+                        registerDto.Password
                     );
-                    if (roleResult.Succeeded)
+                    if (createUtilisateur.Succeeded)
                     {
-                        try
-                        {
-                            var achievement = new Achievements
-                            {
-                                UserId = utilisateur.Id,
-                                Utilisateur = utilisateur
-                            };
-                            var dbContextAchievements = this._dbContext.Achievements;
-                            if (dbContextAchievements != null)
-                            {
-                                dbContextAchievements.Add(achievement);
-                            }
-
-                            await this._dbContext.SaveChangesAsync();
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                            throw;
-                        }
-                        return this.Ok(
-                            new NewUtilisateurDto
-                            {
-                                UserName = utilisateur.UserName,
-                                Token = this._tokenService.CreateToken(utilisateur)
-                            }
+                        var roleResult = await this._utilisateurManager.AddToRoleAsync(
+                            utilisateur,
+                            "USER"
                         );
+                        if (roleResult.Succeeded)
+                        {
+                            try
+                            {
+                                var achievement = new Achievements
+                                {
+                                    UserId = utilisateur.Id,
+                                    Utilisateur = utilisateur
+                                };
+                                var dbContextAchievements = this._dbContext.Achievements;
+                                if (dbContextAchievements != null)
+                                {
+                                    dbContextAchievements.Add(achievement);
+                                }
+
+                                await this._dbContext.SaveChangesAsync();
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                                throw;
+                            }
+                            return this.Ok(
+                                new NewUtilisateurDto
+                                {
+                                    Username = utilisateur.UserName,
+                                    Photo = utilisateur.Photo,
+                                    Token = this._tokenService.CreateToken(utilisateur)
+                                }
+                            );
+                        }
+                        return this.StatusCode(500, roleResult.Errors);
                     }
-                    return this.StatusCode(500, roleResult.Errors);
+                    return this.StatusCode(500, createUtilisateur.Errors);
                 }
-                return this.StatusCode(500, createUtilisateur.Errors);
+            }
+            else
+            {
+                return this.StatusCode(500, "La photo n'est pas disponnible.");
             }
         }
         catch (Exception e)
@@ -227,8 +240,12 @@ public class AccountController : ControllerBase
                         new PrivateUtilisateurDto
                         {
                             Username = utilisateur.Result.Username,
+                            Photo = utilisateur.Result.Photo,
+                            Experience = utilisateur.Result.Experience,
                             Elo = utilisateur.Result.Elo,
-                            Achievements = list
+                            Achievements = list,
+                            NombreParties = utilisateur.Result.NombreParties,
+                            NombrePartiesGagnees = utilisateur.Result.NombrePartiesGagnees
                         }
                     );
                 }
