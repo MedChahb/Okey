@@ -1,7 +1,6 @@
 namespace OkeyServer.Hubs;
 
 using System.Collections.Concurrent;
-using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
@@ -339,7 +338,8 @@ public sealed class OkeyHub : Hub
     */
     public async Task<string> PiochePacketRequest(string connectionId)
     {
-        var invokeTask = this._hubContext.Clients.Client(connectionId)
+        var invokeTask = this
+            ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<PiochePacket>(
                 "PiochePacketRequest",
                 cancellationToken: CancellationToken.None
@@ -352,7 +352,6 @@ public sealed class OkeyHub : Hub
             //notifier l'action
             return "Centre";
         }
-
         else
         {
             var pioche = await invokeTask;
@@ -378,7 +377,8 @@ public sealed class OkeyHub : Hub
     /// <returns>coordonnées</returns>
     private async Task<string> JeterRequest(Joueur pl)
     {
-        var invokeTask = /*await*/ this
+        var invokeTask = /*await*/
+        this
             ._hubContext.Clients.Client(pl.getName())
             .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: CancellationToken.None);
 
@@ -392,7 +392,6 @@ public sealed class OkeyHub : Hub
             Coord RandTuileCoord = pl.GetRandomTuileCoords();
             return RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
         }
-
         else
         {
             var TuileObtenue = await invokeTask;
@@ -419,7 +418,7 @@ public sealed class OkeyHub : Hub
                 cancellationToken: CancellationToken.None
             );
 
-        var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));  
+        var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
 
         if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
         {
@@ -459,7 +458,6 @@ public sealed class OkeyHub : Hub
                         connectionId,
                         cancellationToken: CancellationToken.None
                     );
-
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace Okey
+namespace Okey
 {
     public class Classement
     {
