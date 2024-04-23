@@ -344,6 +344,7 @@ public sealed class OkeyHub : Hub
         if (completedTask != invokeTask)
         {
             //notifier l'action
+            await this.SendMpToPlayer(connectionId, "Temps écoulé, tuile piochée du centre.");
             return "Centre";
         }
         else
@@ -371,8 +372,7 @@ public sealed class OkeyHub : Hub
     /// <returns>coordonnées</returns>
     private async Task<string> JeterRequest(Joueur pl)
     {
-        var invokeTask = /*await*/
-        this
+        var invokeTask = this
             ._hubContext.Clients.Client(pl.getName())
             .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: CancellationToken.None);
 
@@ -383,7 +383,13 @@ public sealed class OkeyHub : Hub
 
         if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
         {
-            Coord RandTuileCoord = pl.GetRandomTuileCoords();
+            var RandTuileCoord = pl.GetRandomTuileCoords();
+            var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
+
+            await this.SendMpToPlayer(
+                pl.getName(),
+                $"Temps écoulé. La tuile ({coord}) a etait jetée aléatoirement."
+            );
             return RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
         }
         else
@@ -416,7 +422,14 @@ public sealed class OkeyHub : Hub
 
         if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
         {
-            Coord RandTuileCoord = pl.GetRandomTuileCoords();
+            var RandTuileCoord = pl.GetRandomTuileCoords();
+            var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
+
+            //notifier l'action au joueur.
+            await this.SendMpToPlayer(
+                pl.getName(),
+                $"Temps écoulé. La tuile ({coord}) a etait jetée aléatoirement."
+            );
             return RandTuileCoord.getY() + ";" + RandTuileCoord.getX(); // return random coords
         }
         else
@@ -473,11 +486,11 @@ public sealed class OkeyHub : Hub
         var premiereRangee = new List<string>();
         var secondeRangee = new List<string>();
 
-        for (int i = 0; i < 2; i++)
+        for (var i = 0; i < 2; i++)
         {
             if (i == 0)
             {
-                for (int j = 0; j < 14; j++)
+                for (var j = 0; j < 14; j++)
                 {
                     var val = chevaletInit[i][j];
                     if (val == null)
@@ -494,7 +507,7 @@ public sealed class OkeyHub : Hub
             }
             else
             {
-                for (int j = 0; j < 14; j++)
+                for (var j = 0; j < 14; j++)
                 {
                     var val = chevaletInit[i][j];
                     if (val == null)
@@ -546,17 +559,25 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="playerName">Nom du joueur</param>
     /// <param name="isTurn">Booleen: vrai -> c'est son tour ; false => ce n'est pas son tour</param>
-    private void SetPlayerTurn(string playerName, bool isTurn) =>
+    private void SetPlayerTurn(string playerName, bool isTurn)
+    {
         this._isPlayerTurn[playerName] = isTurn;
+    }
 
-    private async Task TuilesDistribueesSignal(string roomName) =>
+    private async Task TuilesDistribueesSignal(string roomName)
+    {
         await this.Clients.Group(roomName).SendAsync("TuilesDistribueesSignal");
+    }
 
-    private async Task StartGameSignal(string roomName) =>
+    private async Task StartGameSignal(string roomName)
+    {
         await this.Clients.Group(roomName).SendAsync("StartGame");
+    }
 
-    private async Task PlayerWon(string roomName, string winner) =>
+    private async Task PlayerWon(string roomName, string winner)
+    {
         await this.Clients.Group(roomName).SendAsync("PlayerWon", winner); //TODO: Faire la distincion entre le gagnant et les autres
+    }
 
     /// <summary>
     /// Fonction se declanchant quand il y a assez de monde, lancement du jeu
@@ -688,21 +709,24 @@ public sealed class OkeyHub : Hub
     /// <summary>
     /// Permet de bouger une tuile sur son chevalet
     /// </summary>
-    /// <param name="pl"></param>
-    /// <param name="j"></param>
-    public async Task MoveInLoop(Joueur pl, Jeu j)
+    /// <param name="Pl"></param>
+    /// <param name="J"></param>
+    public async Task MoveInLoop(Joueur Pl, Jeu J)
     {
         Console.Write("Donner les coords de la tuile à deplacer (y x): ");
-        var from = await this.CoordsRequest(pl.getName());
+        var from = await this.CoordsRequest(Pl.getName());
         Console.Write("Donner les coords d'où la mettre (y x): ");
-        var to = await this.CoordsRequest(pl.getName());
-        pl.MoveTuileChevalet(this.ReadCoords(from), this.ReadCoords(to), j);
+        var to = await this.CoordsRequest(Pl.getName());
+        Pl.MoveTuileChevalet(this.ReadCoords(from), this.ReadCoords(to), J);
     }
 
     /// <summary>
     /// Permet d'envoyer le nouvel etat des rooms au clients dans le Hub.
     /// </summary>
-    private async Task SendRoomListUpdate() => await this.SendRoomsRequest();
+    private async Task SendRoomListUpdate()
+    {
+        await this.SendRoomsRequest();
+    }
 
     /*
         var roomsInfo = this._roomManager.GetRoomsInfo();
@@ -710,7 +734,7 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Group("Hub")
             .SendAsync("ReceiveMessage", new PacketSignal { message = roomsInfo });*/
 
-    public bool getAllAssociations()
+    public bool GetAllAssociations()
     {
         foreach (var elmt in _connectedUsers)
         {
