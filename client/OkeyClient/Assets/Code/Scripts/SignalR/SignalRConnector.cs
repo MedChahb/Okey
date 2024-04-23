@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Code.Scripts.SignalR.Packets;
@@ -66,12 +67,21 @@ public class SignalRConnector : MonoBehaviour
                     }
                     Debug.Log($"Room: {room.Name}, Players: {room.Players.Count}/{room.Capacity}");
                 }
-
-                if (rooms.listRooms.Count > 0)
+                // UpdateRoomDisplay(rooms)
+                MainThreadDispatcher.Enqueue(() =>
                 {
-                    LobbyManager.Instance.rommsListFilled = true;
-                    LobbyManager.Instance.setRoomCount(rooms.listRooms[0].Players.Count);
-                }
+                    if (UIManagerPFormulaire.Instance != null)
+                    {
+                        UIManagerPFormulaire.Instance.setActiveShowRooms();
+                        LobbyManager.Instance.rommsListFilled = true;
+                        LobbyManager.Instance.playerCount = rooms.listRooms[0].Players.Count;
+                        DisplayRooms.Instance.updateLabel();
+                    }
+                    else
+                    {
+                        Debug.LogError("UIManagerPFormulaire instance is null.");
+                    }
+                });
             }
         );
 
@@ -80,7 +90,7 @@ public class SignalRConnector : MonoBehaviour
             message =>
             {
                 Debug.Log(message.message);
-                DisplayRooms.Instance.messageLogs.Add(message.message);
+                // DisplayRooms.Instance.messageLogs.Add(message.message);
             }
         );
 
@@ -364,6 +374,11 @@ public class SignalRConnector : MonoBehaviour
             try
             {
                 await hubConnection.SendAsync("LobbyConnection", "room1");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    UIManagerPFormulaire.Instance.showRooms.SetActive(false);
+                    UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
+                });
                 Debug.Log($"Request to join room 1 sent.");
             }
             catch (Exception ex)
@@ -406,4 +421,17 @@ public class SignalRConnector : MonoBehaviour
             await this.hubConnection.DisposeAsync();
         }
     }
+
+    // private IEnumerator ActivateShowRooms()
+    // {
+    //     yield return new WaitForEndOfFrame();
+
+    //     if (UIManagerPFormulaire.Instance == null)
+    //     {
+    //         Debug.LogError("UIManagerPFormulaire instance is null.");
+    //         yield break;
+    //     }
+    //     Debug.Log("setActiveShowRooms");
+    //     UIManagerPFormulaire.Instance.setActiveShowRooms();
+    // }
 }

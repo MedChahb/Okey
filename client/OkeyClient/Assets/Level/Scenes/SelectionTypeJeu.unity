@@ -945,7 +945,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &192637323
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5941,7 +5941,7 @@ MonoBehaviour:
   partieSimpleTxt: {fileID: 2056424586}
   showRooms: {fileID: 442716332}
   lobbyPrivateConfig: {fileID: 845544427}
-  lobbyPlayerWaiting: {fileID: 192637322}
+  lobbyPlayerWaiting: {fileID: 23177965}
   SceneId: 0
 --- !u!1 &1855976781
 GameObject:
