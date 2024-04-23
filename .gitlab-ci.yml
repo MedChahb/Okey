@@ -150,9 +150,11 @@ unity-linux-test:
   after_script:
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
   rules:
-    - if: $CI_COMMIT_BRANCH == "front-end" || $CI_COMMIT_TAG =~ $RELEASE_TAG
+    - if: $CI_COMMIT_BRANCH == "front-end"
       changes:
         - client/OkeyClient/**/*
+      when: always
+    - if: $CI_COMMIT_TAG =~ $RELEASE_TAG
       when: always
   artifacts:
     name: "unity-linux-test-build"
@@ -165,9 +167,7 @@ unity-mac-test:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-mac-mono-3.0.1
   stage: build
-  needs:
-    - job: unity-linux-test
-      artifacts: false
+  dependencies: []
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Mac
   before_script:
@@ -183,9 +183,11 @@ unity-mac-test:
   after_script:
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
   rules:
-    - if: $CI_COMMIT_BRANCH == "front-end" || $CI_COMMIT_TAG =~ $RELEASE_TAG
+    - if: $CI_COMMIT_BRANCH == "front-end"
       changes:
         - client/OkeyClient/**/*
+      when: always
+    - if: $CI_COMMIT_TAG =~ $RELEASE_TAG
       when: always
   artifacts:
     name: "unity-mac-test-build"
@@ -198,9 +200,7 @@ unity-windows-test:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-windows-mono-3.0.1
   stage: build
-  needs:
-    - job: unity-mac-test
-      artifacts: false
+  dependencies: []
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Windows
   before_script:
@@ -215,9 +215,11 @@ unity-windows-test:
   after_script:
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
   rules:
-    - if: $CI_COMMIT_BRANCH == "front-end" || $CI_COMMIT_TAG =~ $RELEASE_TAG
+    - if: $CI_COMMIT_BRANCH == "front-end"
       changes:
         - client/OkeyClient/**/*
+      when: always
+    - if: $CI_COMMIT_TAG =~ $RELEASE_TAG
       when: always
   artifacts:
     name: "unity-windows-test-build"
@@ -230,9 +232,7 @@ unity-linux-release:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-base-3.0.1
   stage: build
-  needs:
-    - job: unity-windows-test
-      artifacts: false
+  dependencies: []
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Linux
     ENV_FILE: unity-linux-release.env
@@ -269,9 +269,7 @@ unity-mac-release:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-mac-mono-3.0.1
   stage: build
-  needs:
-    - job: unity-linux-release
-      artifacts: false
+  dependencies: []
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Mac
     ENV_FILE: unity-mac-release.env
@@ -309,9 +307,7 @@ unity-windows-release:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-windows-mono-3.0.1
   stage: build
-  needs:
-    - job: unity-mac-release
-      artifacts: false
+  dependencies: []
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Windows
     ENV_FILE: unity-windows-release.env
