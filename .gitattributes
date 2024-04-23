@@ -192,6 +192,7 @@ client/OkeyClient/Assets/Plugins/**       linguist-vendored
 *.avi                   lfs
 *.flv                   lfs
 *.mov                   lfs
+*.MOV                   lfs
 *.mp4                   lfs
 *.m4v                   lfs
 *.mpeg                  lfs
