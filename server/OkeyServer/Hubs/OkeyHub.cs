@@ -2,7 +2,6 @@ namespace OkeyServer.Hubs;
 
 using System.Collections.Concurrent;
 using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using Exceptions;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
@@ -13,7 +12,6 @@ using Okey.Tuiles;
 using Packets;
 using Packets.Dtos;
 using Player;
-using Security;
 
 /// <summary>
 /// Hub de communication entre les clients et le serveur
@@ -89,6 +87,7 @@ public sealed class OkeyHub : Hub
         await base.OnDisconnectedAsync(exception);
     }
 
+    /*
     /// <summary>
     /// Quand le joueur fourni un JWT Token lie la session de connxion au nom d'utilisateur
     /// Une transmission AccountLinkResult est envoyé au client indiquant comment s'est passée la tentative d'association
@@ -149,6 +148,7 @@ public sealed class OkeyHub : Hub
             await this.Clients.Caller.SendAsync("AccountLinkResult", 1);
         }
     }
+    */
 
     /// <summary>
     /// Envoi un message à tous lees membres d'un groupe
