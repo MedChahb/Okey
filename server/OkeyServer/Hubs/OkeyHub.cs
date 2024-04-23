@@ -2,7 +2,6 @@ namespace OkeyServer.Hubs;
 
 using System.Collections.Concurrent;
 using System.Globalization;
-using Exceptions;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
 using Okey;
@@ -74,7 +73,7 @@ public sealed class OkeyHub : Hub
                     }
                 );
         }
-
+        /*
         if (!_connectedUsers.TryRemove(this.Context.ConnectionId, out _))
         {
             throw new ConnectedUSerDictionnaryRemoveException(
@@ -83,6 +82,7 @@ public sealed class OkeyHub : Hub
                     + " from the connected users"
             );
         }
+        */
 
         await base.OnDisconnectedAsync(exception);
     }
