@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class ClassementManager : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
+        //Test .....;
+        Debug.Log("Fetching classements...");
         // Appel pour récupérer les 5 meilleurs joueurs
         JoueurManager.Instance.StartFetchClassements(null, 5, OnClassementsReceived);
     }
@@ -20,7 +21,7 @@ public class ClassementManager : MonoBehaviour
             foreach (var joueur in joueurs)
             {
                 Debug.Log(
-                    $"Nom d'utilisateur: {joueur.NomUtilisateur}, Classement: {joueur.Classement}"
+                    $"Nom d'utilisateur: {joueur.NomUtilisateur}, Classement: {joueur.Classement}, Elo: {joueur.Elo}"
                 );
             }
         }
