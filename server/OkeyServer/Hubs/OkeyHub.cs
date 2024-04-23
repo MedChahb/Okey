@@ -3,7 +3,6 @@ namespace OkeyServer.Hubs;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
-using Data;
 using Exceptions;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
@@ -29,23 +28,25 @@ public sealed class OkeyHub : Hub
     private readonly IRoomManager _roomManager;
     private readonly IHubContext<OkeyHub> _hubContext;
     private static readonly char[] Separator = new char[] { ';' };
-    private readonly ServerDbContext _dbContext;
+
+    //private readonly ServerDbContext _dbContext;
     private ConcurrentDictionary<string, bool> _isPlayerTurn;
 
     public OkeyHub(
         IHubContext<OkeyHub> hubContext,
-        IRoomManager roomManager,
-        ServerDbContext dbContext
+        IRoomManager roomManager
+    //ServerDbContext dbContext
     )
     {
         this._roomManager = roomManager;
         this._hubContext = hubContext;
-        this._dbContext = dbContext;
+        //this._dbContext = dbContext;
         this._isPlayerTurn = new ConcurrentDictionary<string, bool>();
     }
 
     /// <summary>
     /// On ajoute automatiquement le client au groupe Hub,
+    /// ce groupe contient tous les clients qui ne sont pas dans une partie
     /// ce groupe contient tous les clients qui ne sont pas dans une partie
     /// </summary>
     public override async Task OnConnectedAsync()
