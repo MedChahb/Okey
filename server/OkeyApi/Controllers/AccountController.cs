@@ -243,6 +243,7 @@ public class AccountController : ControllerBase
                             Photo = utilisateur.Result.Photo,
                             Experience = utilisateur.Result.Experience,
                             Elo = utilisateur.Result.Elo,
+                            DateInscription = utilisateur.Result.DateInscription,
                             Achievements = list,
                             NombreParties = utilisateur.Result.NombreParties,
                             NombrePartiesGagnees = utilisateur.Result.NombrePartiesGagnees
