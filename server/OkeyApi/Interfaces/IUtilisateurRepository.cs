@@ -21,5 +21,6 @@ public interface IUtilisateurRepository
     Task<Utilisateur?> GetByUsername(string username);
 
     Task UpdatePhotoAsync(string username, int photo);
-    Task UpdateUsernameAsync(string username, string new_username);
+    Task UpdateUsernameAsync(string username, string? new_username);
+    Task UpdatePasswordAsync(string username, string old_password, string new_password);
 }

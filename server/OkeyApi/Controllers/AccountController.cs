@@ -263,33 +263,22 @@ public class AccountController : ControllerBase
         {
             return this.BadRequest(this.ModelState);
         }
-
-        if (PhotoDto is { username: not null })
-        {
-            var user = await this._utilisateurRepository.GetByUsername(PhotoDto.username);
-            if (user == null)
-            {
-                return this.NotFound();
-            }
-        }
-
+        var user = this.GetCurrentUser();
         var userIdentity = this.User.Identity;
         if (userIdentity is { IsAuthenticated: true })
         {
-            // Ici on fait les modifications
-            if (PhotoDto.username != null)
+            if (PhotoDto.photo is >= 1 and <= 4)
             {
-                if (PhotoDto.photo >= 1 && PhotoDto.photo <= 4)
+                if (user.Result.Username != null)
                 {
                     await this._utilisateurRepository.UpdatePhotoAsync(
-                        PhotoDto.username,
+                        user.Result.Username,
                         PhotoDto.photo
                     );
-                    return this.Ok("La photo a bien été modifié");
                 }
-
-                return this.StatusCode(400, "La photo doit etre comprise entre 1 et 4.");
+                return this.Ok("La photo a bien été modifié");
             }
+            return this.StatusCode(400, "La photo doit etre comprise entre 1 et 4.");
         }
 
         return this.StatusCode(
@@ -306,52 +295,31 @@ public class AccountController : ControllerBase
             return this.BadRequest(this.ModelState);
         }
 
-        if (UsernameDto is { username: not null })
-        {
-            var user = await this._utilisateurRepository.GetByUsername(UsernameDto.username);
-            if (user == null)
-            {
-                return this.NotFound();
-            }
-        }
-
         var userIdentity = this.User.Identity;
         if (userIdentity is { IsAuthenticated: true })
         {
-            // Ici on fait les modifications
-            if (UsernameDto is { username: not null, new_username: not null })
-            {
-                try
-                {
-                    if (
-                        UsernameDto.username.Equals(
-                            UsernameDto.new_username,
-                            StringComparison.Ordinal
-                        )
-                    )
-                    {
-                        return this.StatusCode(
-                            400,
-                            "Le nouveau nom doit être différent de l'actuel."
-                        );
-                    }
-                    else
-                    {
-                        await this._utilisateurRepository.UpdateUsernameAsync(
-                            UsernameDto.username,
-                            UsernameDto.new_username
-                        );
-                        return this.Ok("Le nom d'utilisateur a bien été modifié");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    return this.StatusCode(400, "Le nouveau nom d'utilisateur choisi existe déjà");
-                }
-            }
+            var user = this.GetCurrentUser();
+            await this._utilisateurRepository.UpdateUsernameAsync(
+                user.Result.Username!,
+                UsernameDto.new_username
+            );
 
-            return this.StatusCode(400, "Le nom d'utilisateur n'est pas valide");
+            var newUser = this._utilisateurManager.Users.FirstOrDefaultAsync(s =>
+                (s.UserName != null)
+                && s.UserName.Equals(UsernameDto.new_username, StringComparison.Ordinal)
+            );
+
+            if (newUser.Result != null)
+            {
+                return this.Ok(
+                    new NewUtilisateurDto
+                    {
+                        Username = newUser.Result.UserName,
+                        Photo = newUser.Result.Photo,
+                        Token = this._tokenService.CreateToken(newUser.Result)
+                    }
+                );
+            }
         }
 
         return this.StatusCode(
@@ -361,24 +329,35 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut("password")]
-    public async Task<IActionResult> PostChangePassword([FromBody] UsernameDto UsernameDto)
+    public async Task<IActionResult> PostChangePassword([FromBody] PasswordDto PasswordDto)
     {
         if (!this.ModelState.IsValid)
         {
             return this.BadRequest(this.ModelState);
         }
 
-        if (UsernameDto is { username: not null })
+        var user = this.GetCurrentUser();
+        var userIdentity = this.User.Identity;
+        if (userIdentity is { IsAuthenticated: true })
         {
-            var user = await this._utilisateurRepository.GetByUsername(UsernameDto.username);
-            if (user == null)
+            try
             {
-                return this.NotFound();
+                if (user.Result.Username != null)
+                {
+                    await this._utilisateurRepository.UpdatePasswordAsync(
+                        user.Result.Username,
+                        PasswordDto.old_password,
+                        PasswordDto.new_password
+                    );
+                }
+                return this.Ok("Mot de passe modifié");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return this.StatusCode(400, "Le mot de passe est mauvais");
             }
         }
-
-        var userIdentity = this.User.Identity;
-        if (userIdentity is { IsAuthenticated: true }) { }
 
         return this.StatusCode(
             500,

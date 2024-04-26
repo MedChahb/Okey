@@ -2,6 +2,7 @@ namespace OkeyApi.Repository;
 
 using Data;
 using Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Models;
 
@@ -11,6 +12,11 @@ using Models;
 public class UtilisateurRepository : IUtilisateurRepository
 {
     /// <summary>
+    /// Manager de l'utilisateur, utilisé pour la gestion de mot de passe
+    /// </summary>
+    private readonly UserManager<Utilisateur> _userManager;
+
+    /// <summary>
     /// Contexte de la base de donnée
     /// </summary>
     private readonly ApplicationDbContext _context;
@@ -19,7 +25,11 @@ public class UtilisateurRepository : IUtilisateurRepository
     /// Constructeur de la classe
     /// </summary>
     /// <param name="context">Contexte Base de Donnée</param>
-    public UtilisateurRepository(ApplicationDbContext context) => this._context = context;
+    public UtilisateurRepository(ApplicationDbContext context, UserManager<Utilisateur> userManager)
+    {
+        this._context = context;
+        this._userManager = userManager;
+    }
 
     /// <summary>
     /// Récupération asynchrone de tout les utilisateurs en Base de Donnée
@@ -42,36 +52,64 @@ public class UtilisateurRepository : IUtilisateurRepository
         var user = await this._context.Users.FirstOrDefaultAsync(s =>
             s.UserName != null && s.UserName.Equals(username, StringComparison.Ordinal)
         );
+
         if (user != null)
         {
-            user.Photo = photo;
+            try
+            {
+                user.Photo = photo;
+
+                await this._context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine($"Echec de changement de la photo de '{username}': {ex.Message}");
+                throw;
+            }
         }
-        await this._context.SaveChangesAsync();
     }
 
-    public async Task UpdateUsernameAsync(string username, string new_username)
+    public async Task UpdateUsernameAsync(string username, string? new_username)
     {
+        if (string.IsNullOrEmpty(new_username))
+        {
+            throw new ArgumentException(
+                "Le nom d'utilisateur ne peut pas etre null ou vide.",
+                nameof(new_username)
+            );
+        }
+
         var user = await this._context.Users.FirstOrDefaultAsync(s =>
             s.UserName != null && s.UserName.Equals(username, StringComparison.Ordinal)
         );
 
-        var existinguser = await this._context.Users.FirstOrDefaultAsync(s =>
-            s.UserName != null && s.UserName.Equals(new_username, StringComparison.Ordinal)
+        if (user != null)
+        {
+            try
+            {
+                await this._userManager.SetUserNameAsync(user, new_username);
+
+                await this._context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine(
+                    $"Echec de changement du nom d'utilisateur de '{username}': {ex.Message}"
+                );
+                throw;
+            }
+        }
+    }
+
+    public async Task UpdatePasswordAsync(string username, string old_password, string new_password)
+    {
+        var user = await this._context.Users.FirstOrDefaultAsync(s =>
+            s.UserName != null && s.UserName.Equals(username, StringComparison.Ordinal)
         );
         if (user != null)
         {
-            if (existinguser == null)
-            {
-                user.UserName = new_username;
-                user.NormalizedUserName = new_username.ToUpper(
-                    System.Globalization.CultureInfo.CurrentCulture
-                );
-                await this._context.SaveChangesAsync();
-            }
-            else
-            {
-                throw new Exception("Utilisateur existant");
-            }
+            await this._userManager.ChangePasswordAsync(user, old_password, new_password);
+            await this._context.SaveChangesAsync();
         }
     }
 }
