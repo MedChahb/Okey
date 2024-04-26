@@ -18,41 +18,27 @@ public class Chevalet : MonoBehaviour
     public static GameObject pileDroitePlaceHolder;
     public static GameObject jokerPlaceHolder;
 
-    private static Chevalet _instance;
-
-    public static Chevalet Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<Chevalet>();
-                if (_instance == null)
-                {
-                    Debug.LogError("Chevalet instance is null. Make sure the Chevalet script is attached to a GameObject in the scene.");
-                }
-            }
-            return _instance;
-        }
-    }
+    public static Chevalet Instance { get; set; }
 
     private void Awake()
     {
-        if (_instance == null)
+        if (Instance != null && Instance != this)
         {
-            _instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            Debug.Log("Destroying duplicate instance of Chevalet.");
+            Destroy(this.gameObject);
         }
         else
         {
-            Destroy(this.gameObject);
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+            Debug.Log("Chevalet instance set.");
         }
     }
 
     void Start()
     {
-        InitPlaceholders();
-        this.InitializeBoardFromPlaceholders();
+        //InitPlaceholders();
+        //this.InitializeBoardFromPlaceholders();
         this.Print2DMatrix();
 
         //PrintTuilesArray();
@@ -487,6 +473,18 @@ public class Chevalet : MonoBehaviour
 
         Debug.Log(sb.ToString());
     }
+
+    public void ClearChevalet()
+    {
+        // Iterate over each placeholder
+        foreach (var placeholder in placeholders)
+        {
+            // Check if the placeholder has a child (Tuile GameObject)
+            Destroy(placeholder);
+        }
+    }
+
+
 
     public int getTilesNumber()
     {
