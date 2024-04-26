@@ -18,13 +18,29 @@ public class Chevalet : MonoBehaviour
     public static GameObject pileDroitePlaceHolder;
     public static GameObject jokerPlaceHolder;
 
-    public static Chevalet Instance { get; private set; }
+    private static Chevalet _instance;
+
+    public static Chevalet Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<Chevalet>();
+                if (_instance == null)
+                {
+                    Debug.LogError("Chevalet instance is null. Make sure the Chevalet script is attached to a GameObject in the scene.");
+                }
+            }
+            return _instance;
+        }
+    }
 
     private void Awake()
     {
-        if (Instance == null)
+        if (_instance == null)
         {
-            Instance = this;
+            _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
         else
@@ -391,7 +407,7 @@ public class Chevalet : MonoBehaviour
         Print2DMatrix();
     }
 
-    private void Print2DMatrix() //Really useful to visualize tiles placement matrix
+    public void Print2DMatrix() //Really useful to visualize tiles placement matrix
     {
         // Initialize a string to store the table
         string table = "";
@@ -415,6 +431,11 @@ public class Chevalet : MonoBehaviour
 
         // Print the table
         Debug.Log(table);
+    }
+
+    public void SetTuiles(TuileData[,] tuiles)
+    {
+        this.tuiles2D = tuiles;
     }
 
     //public void SetTuile(int x, int y, TuileData tuile)

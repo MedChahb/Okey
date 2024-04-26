@@ -6,6 +6,7 @@ using Code.Scripts.SignalR.Packets;
 using Microsoft.AspNetCore.SignalR.Client;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PacketSignal
 {
@@ -98,7 +99,12 @@ public class SignalRConnector : MonoBehaviour
             "StartGame",
             () =>
             {
-                Console.WriteLine($"Le jeu a commence");
+                Debug.Log($"Le jeu a commence");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    SceneManager.LoadScene("PlateauInit");
+                });
+
             }
         );
 
@@ -106,7 +112,7 @@ public class SignalRConnector : MonoBehaviour
             "TurnSignal",
             (playerName) =>
             {
-                Console.WriteLine($"C'est le tour de {playerName}");
+                Debug.Log($"C'est le tour de {playerName}");
             }
         );
 
@@ -114,7 +120,7 @@ public class SignalRConnector : MonoBehaviour
             "YourTurnSignal",
             () =>
             {
-                Console.WriteLine($"C'est votre tour");
+                Debug.Log($"C'est votre tour");
             }
         );
 
@@ -122,9 +128,9 @@ public class SignalRConnector : MonoBehaviour
             "JeterRequest",
             () =>
             {
+                Debug.Log("Ok il faut jeter une tuile");
                 var tuile = new TuilePacket();
 
-                // Remplir la tuile
 
                 return tuile;
             }
@@ -134,7 +140,7 @@ public class SignalRConnector : MonoBehaviour
             "TuilesDistribueesSignal",
             () =>
             {
-                Console.WriteLine($"Les tuiles ont ete distribuees");
+                Debug.Log($"Les tuiles ont ete distribuees");
             }
         );
 
@@ -193,12 +199,14 @@ public class SignalRConnector : MonoBehaviour
                                 {
                                     continue;
                                 }
+
                                 var parts = pair.Split('=');
 
                                 if (parts.Length != 2)
                                 {
                                     continue;
                                 }
+
                                 var key = parts[0].Trim();
                                 var value = parts[1].Trim();
                                 switch (key)
@@ -223,6 +231,7 @@ public class SignalRConnector : MonoBehaviour
                                         break;
                                 }
                             }
+
                             var coul = new CouleurTuile();
                             switch (couleur)
                             {
@@ -244,9 +253,10 @@ public class SignalRConnector : MonoBehaviour
                                 default:
                                     throw new Exception();
                             }
-                            tuilesData[0, i].couleur = coul.ToString();
-                            tuilesData[0, i].num = num;
-                            tuilesData[0, i].isJoker =
+
+                            chevaletInstance.tuiles2D[0, i].couleur = coul.ToString();
+                            chevaletInstance.tuiles2D[0, i].num = num;
+                            chevaletInstance.tuiles2D[0, i].isJoker =
                                 nom != null && nom.Equals("Jo", StringComparison.Ordinal);
                             i++;
                         }
@@ -329,14 +339,13 @@ public class SignalRConnector : MonoBehaviour
                                     throw new Exception();
                             }*/
 
-                            tuilesData[1, i].couleur = couleur;
-                            tuilesData[1, i].num = num;
-                            tuilesData[1, i].isJoker =
+                            chevaletInstance.tuiles2D[1, i].couleur = couleur;
+                            chevaletInstance.tuiles2D[1, i].num = num;
+                            chevaletInstance.tuiles2D[1, i].isJoker =
                                 nom != null && nom.Equals("Jo", StringComparison.Ordinal);
                             i++;
                         }
                     }
-                    chevaletInstance.tuiles2D = tuilesData;
                 }
             }
         );
