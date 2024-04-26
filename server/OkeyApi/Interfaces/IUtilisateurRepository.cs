@@ -19,4 +19,7 @@ public interface IUtilisateurRepository
     /// <param name="username">Nom d'utilisateur de l'utilisateur intéressé</param>
     /// <returns>Contrat permettant de notifier le systeme de l'execution de la fonction</returns>
     Task<Utilisateur?> GetByUsername(string username);
+
+    Task UpdatePhotoAsync(string username, int photo);
+    Task UpdateUsernameAsync(string username, string new_username);
 }

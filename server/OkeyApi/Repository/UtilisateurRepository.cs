@@ -36,4 +36,42 @@ public class UtilisateurRepository : IUtilisateurRepository
         await this._context.Users.FirstOrDefaultAsync(s =>
             s.UserName != null && s.UserName.Equals(username, StringComparison.Ordinal)
         );
+
+    public async Task UpdatePhotoAsync(string username, int photo)
+    {
+        var user = await this._context.Users.FirstOrDefaultAsync(s =>
+            s.UserName != null && s.UserName.Equals(username, StringComparison.Ordinal)
+        );
+        if (user != null)
+        {
+            user.Photo = photo;
+        }
+        await this._context.SaveChangesAsync();
+    }
+
+    public async Task UpdateUsernameAsync(string username, string new_username)
+    {
+        var user = await this._context.Users.FirstOrDefaultAsync(s =>
+            s.UserName != null && s.UserName.Equals(username, StringComparison.Ordinal)
+        );
+
+        var existinguser = await this._context.Users.FirstOrDefaultAsync(s =>
+            s.UserName != null && s.UserName.Equals(new_username, StringComparison.Ordinal)
+        );
+        if (user != null)
+        {
+            if (existinguser == null)
+            {
+                user.UserName = new_username;
+                user.NormalizedUserName = new_username.ToUpper(
+                    System.Globalization.CultureInfo.CurrentCulture
+                );
+                await this._context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception("Utilisateur existant");
+            }
+        }
+    }
 }

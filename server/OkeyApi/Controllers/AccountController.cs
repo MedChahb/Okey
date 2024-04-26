@@ -2,6 +2,7 @@ namespace OkeyApi.Controllers;
 
 using Data;
 using Dtos.Compte;
+using Dtos.PutsDtos;
 using Interfaces;
 using Mappers;
 using Microsoft.AspNetCore.Identity;
@@ -253,6 +254,136 @@ public class AccountController : ControllerBase
             }
         }
         return this.Ok(user.ToPublicUtilisateurDto());
+    }
+
+    [HttpPut("photo")]
+    public async Task<IActionResult> PostChangePhoto([FromBody] PhotoDto PhotoDto)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.BadRequest(this.ModelState);
+        }
+
+        if (PhotoDto is { username: not null })
+        {
+            var user = await this._utilisateurRepository.GetByUsername(PhotoDto.username);
+            if (user == null)
+            {
+                return this.NotFound();
+            }
+        }
+
+        var userIdentity = this.User.Identity;
+        if (userIdentity is { IsAuthenticated: true })
+        {
+            // Ici on fait les modifications
+            if (PhotoDto.username != null)
+            {
+                if (PhotoDto.photo >= 1 && PhotoDto.photo <= 4)
+                {
+                    await this._utilisateurRepository.UpdatePhotoAsync(
+                        PhotoDto.username,
+                        PhotoDto.photo
+                    );
+                    return this.Ok("La photo a bien été modifié");
+                }
+
+                return this.StatusCode(400, "La photo doit etre comprise entre 1 et 4.");
+            }
+        }
+
+        return this.StatusCode(
+            500,
+            "Veuillez vous connecter au compte pour pouvoir changer ces attributs."
+        );
+    }
+
+    [HttpPut("username")]
+    public async Task<IActionResult> PostChangeUsername([FromBody] UsernameDto UsernameDto)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.BadRequest(this.ModelState);
+        }
+
+        if (UsernameDto is { username: not null })
+        {
+            var user = await this._utilisateurRepository.GetByUsername(UsernameDto.username);
+            if (user == null)
+            {
+                return this.NotFound();
+            }
+        }
+
+        var userIdentity = this.User.Identity;
+        if (userIdentity is { IsAuthenticated: true })
+        {
+            // Ici on fait les modifications
+            if (UsernameDto is { username: not null, new_username: not null })
+            {
+                try
+                {
+                    if (
+                        UsernameDto.username.Equals(
+                            UsernameDto.new_username,
+                            StringComparison.Ordinal
+                        )
+                    )
+                    {
+                        return this.StatusCode(
+                            400,
+                            "Le nouveau nom doit être différent de l'actuel."
+                        );
+                    }
+                    else
+                    {
+                        await this._utilisateurRepository.UpdateUsernameAsync(
+                            UsernameDto.username,
+                            UsernameDto.new_username
+                        );
+                        return this.Ok("Le nom d'utilisateur a bien été modifié");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return this.StatusCode(400, "Le nouveau nom d'utilisateur choisi existe déjà");
+                }
+            }
+
+            return this.StatusCode(400, "Le nom d'utilisateur n'est pas valide");
+        }
+
+        return this.StatusCode(
+            500,
+            "Veuillez vous connecter au compte pour pouvoir changer ces attributs."
+        );
+    }
+
+    [HttpPut("password")]
+    public async Task<IActionResult> PostChangePassword([FromBody] UsernameDto UsernameDto)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.BadRequest(this.ModelState);
+        }
+
+        if (UsernameDto is { username: not null })
+        {
+            var user = await this._utilisateurRepository.GetByUsername(UsernameDto.username);
+            if (user == null)
+            {
+                return this.NotFound();
+            }
+        }
+
+        var userIdentity = this.User.Identity;
+        if (userIdentity is { IsAuthenticated: true }) { }
+
+        return this.StatusCode(
+            500,
+            "Veuillez vous connecter au compte pour pouvoir changer ces attributs."
+        );
     }
 
     /// <summary>
