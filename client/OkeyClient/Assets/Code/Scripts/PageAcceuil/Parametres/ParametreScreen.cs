@@ -66,7 +66,7 @@ public class ParametreScreen : MonoBehaviour
         }
         else
         {
-            //titleCard.text = "Parametres";
+            titleCard.text = "Parametres";
             soundEffects.text = "Effet Sonores";
             music.text = "Ambiance Musique";
             language.text = "Language";
