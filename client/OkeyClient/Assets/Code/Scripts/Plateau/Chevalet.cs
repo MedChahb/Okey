@@ -385,57 +385,19 @@ public class Chevalet : MonoBehaviour
             {
                 placeholder.GetComponent<Tuile>().SetValeur(this.tuiles2D[x,y].num);
                 placeholder.GetComponent<Tuile>().SetCouleur(this.tuiles2D[x,y].couleur);
-                //if (placeholder.transform.childCount > 0)
-                //{
-                    //var child = placeholder.transform.GetChild(0);
-                    /*if (child != null)
-                    {
-                        var childGameObject = child.gameObject;
-                        var c = childGameObject.GetComponent<SpriteRenderer>();
-                        Debug.Log(fromTuileToSpriteName(this.tuiles2D[x,y]));
-                        c.sprite = spritesDic[fromTuileToSpriteName(this.tuiles2D[x,y])];
-
-                    }*/
-
-                    var childObject = new GameObject("SpriteChild");
-                    childObject.transform.SetParent(placeholder.transform);
-
-                    var spriteRen = childObject.AddComponent<SpriteRenderer>();
-
-                    // Ajouter le shader !!!
-
-                    var mat = new Material(Shader.Find("Sprites/Default"));
-                    mat.color = new Color(0.9529411764705882f, 0.9411764705882353f, 0.8156862745098039f);
-
-                    spriteRen.material = mat;
-
-                    spriteRen.sprite = spritesDic[fromTuileToSpriteName(this.tuiles2D[x,y])];
-
-
-                    spriteRen.sortingOrder = 3;
-                    spriteRen.transform.localPosition = new Vector3(0, 0, 0);
-                    spriteRen.transform.localScale = new Vector3(1, 1, 1);
-
-                    childObject.AddComponent<Tuile>();
-                    var collider2D = childObject.AddComponent<BoxCollider2D>();
-                    collider2D.size = new Vector2((float)0.875, (float)1.25);
-                    /*
-
-                    var spriteRen = placeholder.AddComponent<SpriteRenderer>();
-                    spriteRen.transform.SetParent(placeholder.transform);
-                    //spriteRen.ResetBounds();
-                    if (placeholder.transform.childCount > 0)
-                    {
-                        var childGameObject = placeholder.transform.GetChild(0).gameObject;
-                        var s = childGameObject.GetComponent<SpriteRenderer>();
-                        s.sprite = spritesDic["Black_1"];
-                        Debug.Log("Ajout de fait");
-                    }
-                    else
-                    {
-                        Debug.Log("ref en null");
-                    }*/
-                    //}
+                var childObject = new GameObject("SpriteChild");
+                childObject.transform.SetParent(placeholder.transform);
+                var spriteRen = childObject.AddComponent<SpriteRenderer>();
+                var mat = new Material(Shader.Find("Sprites/Default"));
+                mat.color = new Color(0.9529411764705882f, 0.9411764705882353f, 0.8156862745098039f);
+                spriteRen.material = mat;
+                spriteRen.sprite = spritesDic[fromTuileToSpriteName(this.tuiles2D[x,y])];
+                spriteRen.sortingOrder = 3;
+                spriteRen.transform.localPosition = new Vector3(0, 0, 0);
+                spriteRen.transform.localScale = new Vector3(1, 1, 1);
+                childObject.AddComponent<Tuile>();
+                var collider2D = childObject.AddComponent<BoxCollider2D>();
+                collider2D.size = new Vector2((float)0.875, (float)1.25);
             }
         }
     }
