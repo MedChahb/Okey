@@ -316,9 +316,9 @@ public class SignalRConnector : MonoBehaviour
                                     break;
                             }
                         }
-                        /* A effacer apres les tests / ! \
-                        var coul = new CouleurTuile();
-                        switch(couleur){
+                        CouleurTuile coul;
+                        switch (couleur)
+                        {
                             case "J":
                                 coul = CouleurTuile.J;
                                 break;
@@ -336,18 +336,17 @@ public class SignalRConnector : MonoBehaviour
                                 break;
                             default:
                                 throw new Exception();
-                        }*/
+                        }
 
-                        tuilesData[1, i].couleur = couleur;
-                        tuilesData[1, i].num = num;
-                        tuilesData[1, i].isJoker =
-                            nom != null && nom.Equals("Jo", StringComparison.Ordinal);
+                        tuilesData[1, i] = new TuileData(coul, num,
+                            nom != null && nom.Equals("Jo", StringComparison.Ordinal));
                         i++;
                     }
                 }
                 chevaletInstance.SetTuiles(tuilesData);
                 Debug.Log("Logique serveur");
                 chevaletInstance.Print2DMatrix();
+                chevaletInstance.Init();
                 });
             });
     }
