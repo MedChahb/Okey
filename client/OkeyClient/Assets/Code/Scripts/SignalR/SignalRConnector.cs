@@ -128,9 +128,22 @@ public class SignalRConnector : MonoBehaviour
             "JeterRequest",
             () =>
             {
+                var chevaletInstance = Chevalet.Instance;
                 Debug.Log("Ok il faut jeter une tuile");
-                var tuile = new TuilePacket();
+                var tuile = new TuilePacket
+                {
+                    X = "0",
+                    Y = "0",
+                    gagner = false
+                };
 
+                while (chevaletInstance.isJete == false) {}
+                Debug.Log("La tuile vient d'etre jetee");
+
+                if (chevaletInstance.tuileJete != null)
+                {
+                    return chevaletInstance.tuileJete;
+                }
 
                 return tuile;
             }
@@ -148,7 +161,7 @@ public class SignalRConnector : MonoBehaviour
             "FirstJeterActionRequest",
             () =>
             {
-                var tuile = new TuilePacket();
+                var tuile = new TuilePacket{X = "0", Y = "0", gagner = false};
 
                 return tuile;
             }
@@ -158,8 +171,11 @@ public class SignalRConnector : MonoBehaviour
             "PiochePacketRequest",
             () =>
             {
-                var tuile = new PiochePacket();
-
+                var tuile = new PiochePacket
+                {
+                    Centre = false,
+                    Defausse = true
+                };
                 return tuile;
             }
         );
@@ -168,9 +184,10 @@ public class SignalRConnector : MonoBehaviour
             "ReceiveChevalet",
             async (chevalet) =>
             {
+                var chevaletInstance = Chevalet.Instance;
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    var chevaletInstance = Chevalet.Instance;
+
                 while (chevaletInstance == null)
                 {
                     chevaletInstance = Chevalet.Instance;
@@ -343,10 +360,20 @@ public class SignalRConnector : MonoBehaviour
                         i++;
                     }
                 }
-                chevaletInstance.SetTuiles(tuilesData);
-                Debug.Log("Logique serveur");
-                chevaletInstance.Print2DMatrix();
-                chevaletInstance.Init();
+
+                if (Chevalet.neverReceivedChevalet)
+                {
+                    chevaletInstance.SetTuiles(tuilesData);
+                    chevaletInstance.tuilesPack = tuilesData;
+                    chevaletInstance.Print2DMatrix();
+                    chevaletInstance.Init();
+                    Chevalet.neverReceivedChevalet = false;
+                }
+                else
+                {
+                    chevaletInstance.tuilesPack = tuilesData;
+                }
+
                 });
             });
     }
@@ -382,7 +409,7 @@ public class SignalRConnector : MonoBehaviour
         {
             try
             {
-                await hubConnection.SendAsync("LobbyConnection", "room1");
+                await this.hubConnection.SendAsync("LobbyConnection", "room1");
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     UIManagerPFormulaire.Instance.showRooms.SetActive(false);
