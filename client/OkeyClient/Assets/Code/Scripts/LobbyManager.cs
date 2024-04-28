@@ -13,6 +13,8 @@ public class LobbyManager : MonoBehaviour
     public bool rommsListFilled = false;
     public int playerCount;
 
+    public bool myTurn = false;
+
     private void Awake() { }
 
     void Start()
