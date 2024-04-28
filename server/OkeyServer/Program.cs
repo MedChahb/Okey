@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using OkeyServer.Hubs;
 using OkeyServer.Misc;
 using OkeyServer.Security;
