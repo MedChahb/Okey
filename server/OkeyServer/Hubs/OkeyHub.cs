@@ -554,7 +554,7 @@ public sealed class OkeyHub : Hub
                     ListeDefausseSend.Add(tuileString);
                 }
 
-                await _hubContext
+                await this._hubContext
                     .Clients.Client(connectionId)
                     .SendAsync(
                         "ReceiveListeDefausse",
@@ -570,6 +570,26 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    private async Task EnvoyerEmoteAll(List<string> ConnectionIds, string EmoteName)
+    {
+        foreach (var connectionId in ConnectionIds)
+        {
+            try
+            {
+                await this._hubContext
+                        .Clients.Client(connectionId)
+                        .SendAsync(
+                            "ReceiveEmote",
+                            new EmotePacket { EmoteName = EmoteName }
+                        );
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+    }
     public string FromEnumToString(CouleurTuile col)
     {
         switch (col)
@@ -651,13 +671,20 @@ public sealed class OkeyHub : Hub
                 //await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 await this.SendChevalets(playerIds, joueurs.ToList());
                 await this.SendListeDefausseToAll(playerIds, jeu);
-                var coords = await this.FirstJeterRequest(joueurStarter); // to add timer (do timer in while first)
+                var coords = await this.FirstJeterRequest(joueurStarter);
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
                     // Faire le mouvement de tuiles
                     // MoveInLoop(joueurStarter, j);
                     // continue;
                 }
+
+                // si il veut envoyer un emote (:emote_name: [string])
+                /*if (coords.StartsWith(":", StringComparison.OrdinalIgnoreCase) && coords.EndsWith(":", StringComparison.OrdinalIgnoreCase))
+                {
+                    await this.EnvoyerEmote(playerIds, coords);
+                    continue;
+                }*/
 
                 joueurStarter.JeterTuile(this.ReadCoords(coords), jeu);
                 await this.SendChevalet(joueurStarter.getName(), joueurStarter);
@@ -679,7 +706,7 @@ public sealed class OkeyHub : Hub
                     {
                         await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                        var pioche = await this.PiochePacketRequest(currentPlayer.getName()); // to add timer
+                        var pioche = await this.PiochePacketRequest(currentPlayer.getName());
                         if (pioche.Equals("Move", StringComparison.Ordinal))
                         {
                             //await this.MoveInLoop(currentPlayer, jeu);
@@ -693,6 +720,14 @@ public sealed class OkeyHub : Hub
                         {
                             currentPlayer.PiocherTuile(pioche, jeu);
                         }
+
+                        // si sous forme :emote_name:
+                        else if (pioche.StartsWith(":", StringComparison.OrdinalIgnoreCase) && pioche.EndsWith(":", StringComparison.OrdinalIgnoreCase))
+                        {
+                            await this.EnvoyerEmoteAll(playerIds, pioche);
+                            continue;
+                        }
+
                         else
                         {
                             continue;
@@ -700,7 +735,7 @@ public sealed class OkeyHub : Hub
 
                         await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                        var coordinates = await this.JeterRequest(currentPlayer); // to add timer
+                        var coordinates = await this.JeterRequest(currentPlayer);
 
                         if (coordinates.Equals("gagner", StringComparison.Ordinal))
                         {
