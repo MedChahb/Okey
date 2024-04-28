@@ -104,7 +104,6 @@ public class SignalRConnector : MonoBehaviour
                 {
                     SceneManager.LoadScene("PlateauInit");
                 });
-
             }
         );
 
@@ -113,6 +112,10 @@ public class SignalRConnector : MonoBehaviour
             (playerName) =>
             {
                 Debug.Log($"C'est le tour de {playerName}");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    LobbyManager.myTurn = false;
+                });
             }
         );
 
@@ -121,6 +124,10 @@ public class SignalRConnector : MonoBehaviour
             () =>
             {
                 Debug.Log($"C'est votre tour");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    LobbyManager.myTurn = true;
+                });
             }
         );
 
@@ -137,6 +144,7 @@ public class SignalRConnector : MonoBehaviour
                     gagner = false
                 };
 
+<<<<<<< HEAD
                 while (chevaletInstance.isJete == false) {}
                 Debug.Log("La tuile vient d'etre jetee");
 
@@ -145,6 +153,8 @@ public class SignalRConnector : MonoBehaviour
                     return chevaletInstance.tuileJete;
                 }
 
+=======
+>>>>>>> 27aa3911c46b22b65c7f62f7a7c26091415a731d
                 return tuile;
             }
         );
@@ -187,6 +197,7 @@ public class SignalRConnector : MonoBehaviour
                 var chevaletInstance = Chevalet.Instance;
                 MainThreadDispatcher.Enqueue(() =>
                 {
+<<<<<<< HEAD
 
                 while (chevaletInstance == null)
                 {
@@ -203,162 +214,188 @@ public class SignalRConnector : MonoBehaviour
                             StringComparison.Ordinal
                         )
                     )
+=======
+                    var chevaletInstance = Chevalet.Instance;
+                    while (chevaletInstance == null)
+>>>>>>> 27aa3911c46b22b65c7f62f7a7c26091415a731d
                     {
-                        var keyValuePairs = tuileStr.Split(';');
-                        string couleur = null;
-                        var num = 0;
-                        var defausse = false;
-                        var dansPioche = false;
-                        string nom = null;
-
-                        foreach (var pair in keyValuePairs)
-                        {
-                            if (string.IsNullOrWhiteSpace(pair))
-                            {
-                                continue;
-                            }
-
-                            var parts = pair.Split('=');
-
-                            if (parts.Length != 2)
-                            {
-                                continue;
-                            }
-
-                            var key = parts[0].Trim();
-                            var value = parts[1].Trim();
-                            switch (key)
-                            {
-                                case "couleur":
-                                    couleur = value;
-                                    break;
-                                case "num":
-                                    int.TryParse(value, out num);
-                                    break;
-                                case "defausse":
-                                    bool.TryParse(value, out defausse);
-                                    break;
-                                case "dansPioche":
-                                    bool.TryParse(value, out dansPioche);
-                                    break;
-                                case "Nom":
-                                    nom = value;
-                                    break;
-                                default:
-                                    // Handle unknown keys (if needed)
-                                    break;
-                            }
-                        }
-
-                        CouleurTuile coul;
-                        switch (couleur)
-                        {
-                            case "J":
-                                coul = CouleurTuile.J;
-                                break;
-                            case "N":
-                                coul = CouleurTuile.N;
-                                break;
-                            case "R":
-                                coul = CouleurTuile.R;
-                                break;
-                            case "B":
-                                coul = CouleurTuile.B;
-                                break;
-                            case "M":
-                                coul = CouleurTuile.M;
-                                break;
-                            default:
-                                throw new Exception();
-                        }
-
-                        tuilesData[0, i] = new TuileData(coul, num,
-                            nom != null && nom.Equals("Jo", StringComparison.Ordinal));
-                        i++;
+                        chevaletInstance = Chevalet.Instance;
                     }
-                }
 
-                i = 0;
-                foreach (var tuileStr in chevalet.SecondeRangee)
-                {
-                    if (
-                        !tuileStr.Equals(
-                            "couleur=;num=;defausse=;dansPioche=;Nom=;",
-                            StringComparison.Ordinal
+                    var tuilesData = new TuileData[2, 14];
+                    var i = 0;
+                    foreach (var tuileStr in chevalet.PremiereRangee)
+                    {
+                        if (
+                            !tuileStr.Equals(
+                                "couleur=;num=;defausse=;dansPioche=;Nom=;",
+                                StringComparison.Ordinal
+                            )
                         )
-                    )
-                    {
-                        var keyValuePairs = tuileStr.Split(';');
-
-                        string couleur = null;
-                        var num = 0;
-                        var defausse = false;
-                        var dansPioche = false;
-                        string nom = null;
-
-                        foreach (var pair in keyValuePairs)
                         {
-                            if (string.IsNullOrWhiteSpace(pair))
+                            var keyValuePairs = tuileStr.Split(';');
+                            string couleur = null;
+                            var num = 0;
+                            var defausse = false;
+                            var dansPioche = false;
+                            string nom = null;
+
+                            foreach (var pair in keyValuePairs)
                             {
-                                continue;
+                                if (string.IsNullOrWhiteSpace(pair))
+                                {
+                                    continue;
+                                }
+
+                                var parts = pair.Split('=');
+
+                                if (parts.Length != 2)
+                                {
+                                    continue;
+                                }
+
+                                var key = parts[0].Trim();
+                                var value = parts[1].Trim();
+                                switch (key)
+                                {
+                                    case "couleur":
+                                        couleur = value;
+                                        break;
+                                    case "num":
+                                        int.TryParse(value, out num);
+                                        break;
+                                    case "defausse":
+                                        bool.TryParse(value, out defausse);
+                                        break;
+                                    case "dansPioche":
+                                        bool.TryParse(value, out dansPioche);
+                                        break;
+                                    case "Nom":
+                                        nom = value;
+                                        break;
+                                    default:
+                                        // Handle unknown keys (if needed)
+                                        break;
+                                }
                             }
 
-                            var parts = pair.Split('=');
-
-                            if (parts.Length != 2)
+                            CouleurTuile coul;
+                            switch (couleur)
                             {
-                                continue;
-                            }
-
-                            var key = parts[0].Trim();
-                            var value = parts[1].Trim();
-                            switch (key)
-                            {
-                                case "couleur":
-                                    couleur = value;
+                                case "J":
+                                    coul = CouleurTuile.J;
                                     break;
-                                case "num":
-                                    int.TryParse(value, out num);
+                                case "N":
+                                    coul = CouleurTuile.N;
                                     break;
-                                case "defausse":
-                                    bool.TryParse(value, out defausse);
+                                case "R":
+                                    coul = CouleurTuile.R;
                                     break;
-                                case "dansPioche":
-                                    bool.TryParse(value, out dansPioche);
+                                case "B":
+                                    coul = CouleurTuile.B;
                                     break;
-                                case "Nom":
-                                    nom = value;
+                                case "M":
+                                    coul = CouleurTuile.M;
                                     break;
                                 default:
-                                    break;
+                                    throw new Exception();
                             }
-                        }
-                        CouleurTuile coul;
-                        switch (couleur)
-                        {
-                            case "J":
-                                coul = CouleurTuile.J;
-                                break;
-                            case "N":
-                                coul = CouleurTuile.N;
-                                break;
-                            case "R":
-                                coul = CouleurTuile.R;
-                                break;
-                            case "B":
-                                coul = CouleurTuile.B;
-                                break;
-                            case "M":
-                                coul = CouleurTuile.M;
-                                break;
-                            default:
-                                throw new Exception();
-                        }
 
-                        tuilesData[1, i] = new TuileData(coul, num,
-                            nom != null && nom.Equals("Jo", StringComparison.Ordinal));
-                        i++;
+                            tuilesData[0, i] = new TuileData(
+                                coul,
+                                num,
+                                nom != null && nom.Equals("Jo", StringComparison.Ordinal)
+                            );
+                            i++;
+                        }
                     }
+
+                    i = 0;
+                    foreach (var tuileStr in chevalet.SecondeRangee)
+                    {
+                        if (
+                            !tuileStr.Equals(
+                                "couleur=;num=;defausse=;dansPioche=;Nom=;",
+                                StringComparison.Ordinal
+                            )
+                        )
+                        {
+                            var keyValuePairs = tuileStr.Split(';');
+
+                            string couleur = null;
+                            var num = 0;
+                            var defausse = false;
+                            var dansPioche = false;
+                            string nom = null;
+
+                            foreach (var pair in keyValuePairs)
+                            {
+                                if (string.IsNullOrWhiteSpace(pair))
+                                {
+                                    continue;
+                                }
+
+                                var parts = pair.Split('=');
+
+                                if (parts.Length != 2)
+                                {
+                                    continue;
+                                }
+
+                                var key = parts[0].Trim();
+                                var value = parts[1].Trim();
+                                switch (key)
+                                {
+                                    case "couleur":
+                                        couleur = value;
+                                        break;
+                                    case "num":
+                                        int.TryParse(value, out num);
+                                        break;
+                                    case "defausse":
+                                        bool.TryParse(value, out defausse);
+                                        break;
+                                    case "dansPioche":
+                                        bool.TryParse(value, out dansPioche);
+                                        break;
+                                    case "Nom":
+                                        nom = value;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            CouleurTuile coul;
+                            switch (couleur)
+                            {
+                                case "J":
+                                    coul = CouleurTuile.J;
+                                    break;
+                                case "N":
+                                    coul = CouleurTuile.N;
+                                    break;
+                                case "R":
+                                    coul = CouleurTuile.R;
+                                    break;
+                                case "B":
+                                    coul = CouleurTuile.B;
+                                    break;
+                                case "M":
+                                    coul = CouleurTuile.M;
+                                    break;
+                                default:
+                                    throw new Exception();
+                            }
+
+                            tuilesData[1, i] = new TuileData(
+                                coul,
+                                num,
+                                nom != null && nom.Equals("Jo", StringComparison.Ordinal)
+                            );
+                            i++;
+                        }
+                    }
+<<<<<<< HEAD
                 }
 
                 if (Chevalet.neverReceivedChevalet)
@@ -374,8 +411,15 @@ public class SignalRConnector : MonoBehaviour
                     chevaletInstance.tuilesPack = tuilesData;
                 }
 
+=======
+                    chevaletInstance.SetTuiles(tuilesData);
+                    Debug.Log("Logique serveur");
+                    chevaletInstance.Print2DMatrix();
+                    chevaletInstance.Init();
+>>>>>>> 27aa3911c46b22b65c7f62f7a7c26091415a731d
                 });
-            });
+            }
+        );
     }
 
     //public static void UpdateRoomDisplay(RoomsPacket roomsPacket)
