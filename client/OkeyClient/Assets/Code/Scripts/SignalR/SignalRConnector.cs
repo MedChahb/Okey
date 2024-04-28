@@ -104,7 +104,6 @@ public class SignalRConnector : MonoBehaviour
                 {
                     SceneManager.LoadScene("PlateauInit");
                 });
-
             }
         );
 
@@ -113,6 +112,10 @@ public class SignalRConnector : MonoBehaviour
             (playerName) =>
             {
                 Debug.Log($"C'est le tour de {playerName}");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    LobbyManager.myTurn = false;
+                });
             }
         );
 
@@ -121,6 +124,10 @@ public class SignalRConnector : MonoBehaviour
             () =>
             {
                 Debug.Log($"C'est votre tour");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    LobbyManager.myTurn = true;
+                });
             }
         );
 
@@ -130,7 +137,6 @@ public class SignalRConnector : MonoBehaviour
             {
                 Debug.Log("Ok il faut jeter une tuile");
                 var tuile = new TuilePacket();
-
 
                 return tuile;
             }
