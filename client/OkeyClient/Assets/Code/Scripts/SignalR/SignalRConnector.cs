@@ -76,6 +76,8 @@ public class SignalRConnector : MonoBehaviour
                         UIManagerPFormulaire.Instance.setActiveShowRooms();
                         LobbyManager.Instance.rommsListFilled = true;
                         LobbyManager.Instance.playerCount = rooms.listRooms[0].Players.Count;
+                        LobbyManager.Instance.SetPlayers(rooms.listRooms[0].Players);
+
                         DisplayRooms.Instance.updateLabel();
                     }
                     else
@@ -114,7 +116,7 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est le tour de {playerName}");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    LobbyManager.myTurn = false;
+                    LobbyManager.Instance.myTurn = false;
                 });
             }
         );
@@ -126,7 +128,7 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est votre tour");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    LobbyManager.myTurn = true;
+                    LobbyManager.Instance.SetMyTurn(true);
                 });
             }
         );
@@ -144,8 +146,7 @@ public class SignalRConnector : MonoBehaviour
                     gagner = false
                 };
 
-<<<<<<< HEAD
-                while (chevaletInstance.isJete == false) {}
+                while (chevaletInstance.isJete == false) { }
                 Debug.Log("La tuile vient d'etre jetee");
 
                 if (chevaletInstance.tuileJete != null)
@@ -153,8 +154,6 @@ public class SignalRConnector : MonoBehaviour
                     return chevaletInstance.tuileJete;
                 }
 
-=======
->>>>>>> 27aa3911c46b22b65c7f62f7a7c26091415a731d
                 return tuile;
             }
         );
@@ -171,7 +170,12 @@ public class SignalRConnector : MonoBehaviour
             "FirstJeterActionRequest",
             () =>
             {
-                var tuile = new TuilePacket{X = "0", Y = "0", gagner = false};
+                var tuile = new TuilePacket
+                {
+                    X = "0",
+                    Y = "0",
+                    gagner = false
+                };
 
                 return tuile;
             }
@@ -181,11 +185,7 @@ public class SignalRConnector : MonoBehaviour
             "PiochePacketRequest",
             () =>
             {
-                var tuile = new PiochePacket
-                {
-                    Centre = false,
-                    Defausse = true
-                };
+                var tuile = new PiochePacket { Centre = false, Defausse = true };
                 return tuile;
             }
         );
@@ -197,27 +197,7 @@ public class SignalRConnector : MonoBehaviour
                 var chevaletInstance = Chevalet.Instance;
                 MainThreadDispatcher.Enqueue(() =>
                 {
-<<<<<<< HEAD
-
-                while (chevaletInstance == null)
-                {
-                    chevaletInstance = Chevalet.Instance;
-                }
-
-                var tuilesData = new TuileData[2, 14];
-                var i = 0;
-                foreach (var tuileStr in chevalet.PremiereRangee)
-                {
-                    if (
-                        !tuileStr.Equals(
-                            "couleur=;num=;defausse=;dansPioche=;Nom=;",
-                            StringComparison.Ordinal
-                        )
-                    )
-=======
-                    var chevaletInstance = Chevalet.Instance;
                     while (chevaletInstance == null)
->>>>>>> 27aa3911c46b22b65c7f62f7a7c26091415a731d
                     {
                         chevaletInstance = Chevalet.Instance;
                     }
@@ -395,28 +375,19 @@ public class SignalRConnector : MonoBehaviour
                             i++;
                         }
                     }
-<<<<<<< HEAD
-                }
 
-                if (Chevalet.neverReceivedChevalet)
-                {
-                    chevaletInstance.SetTuiles(tuilesData);
-                    chevaletInstance.tuilesPack = tuilesData;
-                    chevaletInstance.Print2DMatrix();
-                    chevaletInstance.Init();
-                    Chevalet.neverReceivedChevalet = false;
-                }
-                else
-                {
-                    chevaletInstance.tuilesPack = tuilesData;
-                }
-
-=======
-                    chevaletInstance.SetTuiles(tuilesData);
-                    Debug.Log("Logique serveur");
-                    chevaletInstance.Print2DMatrix();
-                    chevaletInstance.Init();
->>>>>>> 27aa3911c46b22b65c7f62f7a7c26091415a731d
+                    if (Chevalet.neverReceivedChevalet)
+                    {
+                        chevaletInstance.SetTuiles(tuilesData);
+                        chevaletInstance.tuilesPack = tuilesData;
+                        chevaletInstance.Print2DMatrix();
+                        chevaletInstance.Init();
+                        Chevalet.neverReceivedChevalet = false;
+                    }
+                    else
+                    {
+                        chevaletInstance.tuilesPack = tuilesData;
+                    }
                 });
             }
         );
