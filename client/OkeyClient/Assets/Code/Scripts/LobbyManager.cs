@@ -1,3 +1,4 @@
+using System.Collections.Generic; // Add this line
 using System.Linq;
 using UnityEngine;
 
@@ -14,6 +15,11 @@ public class LobbyManager : MonoBehaviour
     public int playerCount;
 
     public bool myTurn = false;
+
+    public List<string> players;
+    public string player2;
+    public string player3;
+    public string player4;
 
     private void Awake() { }
 
@@ -76,5 +82,20 @@ public class LobbyManager : MonoBehaviour
         // Gameloop here
         // requests
         // all checks
+    }
+
+    public void SetMyTurn(bool value)
+    {
+        myTurn = value;
+        PlateauSignals.Instance.SetMainPlayerTurnSignal(value);
+    }
+
+    public void SetPlayers(List<string> players)
+    {
+        this.players = players.ToList();
+        player2 = players[0];
+        player3 = players[1];
+        player4 = players[2];
+        Debug.Log("Players set: " + player2 + " " + player3 + " " + player4);
     }
 }

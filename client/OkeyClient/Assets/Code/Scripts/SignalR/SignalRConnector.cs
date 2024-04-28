@@ -76,6 +76,8 @@ public class SignalRConnector : MonoBehaviour
                         UIManagerPFormulaire.Instance.setActiveShowRooms();
                         LobbyManager.Instance.rommsListFilled = true;
                         LobbyManager.Instance.playerCount = rooms.listRooms[0].Players.Count;
+                        // LobbyManager.Instance.players = rooms.listRooms[0].Players;
+                        LobbyManager.Instance.SetPlayers(rooms.listRooms[0].Players);
                         DisplayRooms.Instance.updateLabel();
                     }
                     else
@@ -114,7 +116,7 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est le tour de {playerName}");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    LobbyManager.myTurn = false;
+                    LobbyManager.Instance.myTurn = false;
                 });
             }
         );
@@ -126,7 +128,7 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est votre tour");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    LobbyManager.myTurn = true;
+                    LobbyManager.Instance.SetMyTurn(true);
                 });
             }
         );
