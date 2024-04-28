@@ -135,9 +135,26 @@ public class SignalRConnector : MonoBehaviour
             "JeterRequest",
             () =>
             {
+                var chevaletInstance = Chevalet.Instance;
                 Debug.Log("Ok il faut jeter une tuile");
-                var tuile = new TuilePacket();
+                var tuile = new TuilePacket
+                {
+                    X = "0",
+                    Y = "0",
+                    gagner = false
+                };
 
+<<<<<<< HEAD
+                while (chevaletInstance.isJete == false) {}
+                Debug.Log("La tuile vient d'etre jetee");
+
+                if (chevaletInstance.tuileJete != null)
+                {
+                    return chevaletInstance.tuileJete;
+                }
+
+=======
+>>>>>>> 27aa3911c46b22b65c7f62f7a7c26091415a731d
                 return tuile;
             }
         );
@@ -154,7 +171,7 @@ public class SignalRConnector : MonoBehaviour
             "FirstJeterActionRequest",
             () =>
             {
-                var tuile = new TuilePacket();
+                var tuile = new TuilePacket{X = "0", Y = "0", gagner = false};
 
                 return tuile;
             }
@@ -164,8 +181,11 @@ public class SignalRConnector : MonoBehaviour
             "PiochePacketRequest",
             () =>
             {
-                var tuile = new PiochePacket();
-
+                var tuile = new PiochePacket
+                {
+                    Centre = false,
+                    Defausse = true
+                };
                 return tuile;
             }
         );
@@ -174,10 +194,30 @@ public class SignalRConnector : MonoBehaviour
             "ReceiveChevalet",
             async (chevalet) =>
             {
+                var chevaletInstance = Chevalet.Instance;
                 MainThreadDispatcher.Enqueue(() =>
                 {
+<<<<<<< HEAD
+
+                while (chevaletInstance == null)
+                {
+                    chevaletInstance = Chevalet.Instance;
+                }
+
+                var tuilesData = new TuileData[2, 14];
+                var i = 0;
+                foreach (var tuileStr in chevalet.PremiereRangee)
+                {
+                    if (
+                        !tuileStr.Equals(
+                            "couleur=;num=;defausse=;dansPioche=;Nom=;",
+                            StringComparison.Ordinal
+                        )
+                    )
+=======
                     var chevaletInstance = Chevalet.Instance;
                     while (chevaletInstance == null)
+>>>>>>> 27aa3911c46b22b65c7f62f7a7c26091415a731d
                     {
                         chevaletInstance = Chevalet.Instance;
                     }
@@ -355,10 +395,28 @@ public class SignalRConnector : MonoBehaviour
                             i++;
                         }
                     }
+<<<<<<< HEAD
+                }
+
+                if (Chevalet.neverReceivedChevalet)
+                {
+                    chevaletInstance.SetTuiles(tuilesData);
+                    chevaletInstance.tuilesPack = tuilesData;
+                    chevaletInstance.Print2DMatrix();
+                    chevaletInstance.Init();
+                    Chevalet.neverReceivedChevalet = false;
+                }
+                else
+                {
+                    chevaletInstance.tuilesPack = tuilesData;
+                }
+
+=======
                     chevaletInstance.SetTuiles(tuilesData);
                     Debug.Log("Logique serveur");
                     chevaletInstance.Print2DMatrix();
                     chevaletInstance.Init();
+>>>>>>> 27aa3911c46b22b65c7f62f7a7c26091415a731d
                 });
             }
         );
@@ -395,7 +453,7 @@ public class SignalRConnector : MonoBehaviour
         {
             try
             {
-                await hubConnection.SendAsync("LobbyConnection", "room1");
+                await this.hubConnection.SendAsync("LobbyConnection", "room1");
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     UIManagerPFormulaire.Instance.showRooms.SetActive(false);
