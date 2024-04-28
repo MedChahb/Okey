@@ -650,6 +650,7 @@ public sealed class OkeyHub : Hub
             {
                 //await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 await this.SendChevalets(playerIds, joueurs.ToList());
+                await this.SendListeDefausseToAll(playerIds, jeu);
                 var coords = await this.FirstJeterRequest(joueurStarter); // to add timer (do timer in while first)
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
@@ -730,7 +731,7 @@ public sealed class OkeyHub : Hub
                         if (currentPlayer != null)
                         {
                             await this.SendChevalet(currentPlayer.getName(), currentPlayer);
-
+                            await this.SendListeDefausseToAll(playerIds, jeu);
                             this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
                         }
                     }
