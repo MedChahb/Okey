@@ -16,6 +16,8 @@ public class LobbyManager : MonoBehaviour
 
     public bool myTurn = false;
 
+    public string currentPlayerTurn;
+
     public List<string> players;
     public string player2;
     public string player3;
@@ -87,15 +89,40 @@ public class LobbyManager : MonoBehaviour
     public void SetMyTurn(bool value)
     {
         myTurn = value;
-        PlateauSignals.Instance.SetMainPlayerTurnSignal(value);
+        PlateauSignals.Instance.SetMainPlayerTurnSignal();
     }
 
     public void SetPlayers(List<string> players)
     {
-        this.players = players.ToList();
-        player2 = players[0];
-        player3 = players[1];
-        player4 = players[2];
-        Debug.Log("Players set: " + player2 + " " + player3 + " " + player4);
+        if (players.Count >= 3)
+        {
+            this.players = players.ToList();
+            player2 = players[0];
+            player3 = players[1];
+            player4 = players[2];
+            Debug.Log(
+                "Players set: "
+                    + "player 2:  "
+                    + player2
+                    + ", "
+                    + "player 3: "
+                    + player3
+                    + ", "
+                    + "player 4: "
+                    + player4
+            );
+        }
+        else
+        {
+            Debug.LogError(
+                "Insufficient players provided. Expected at least 3, received " + players.Count
+            );
+        }
+    }
+
+    public void SetCurrentPlayerTurn(string currentPlayerTurn)
+    {
+        this.currentPlayerTurn = currentPlayerTurn;
+        PlateauSignals.Instance.SetPlayerSignal(currentPlayerTurn);
     }
 }
