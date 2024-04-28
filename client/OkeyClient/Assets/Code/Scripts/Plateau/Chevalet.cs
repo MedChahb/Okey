@@ -280,19 +280,25 @@ public class Chevalet : MonoBehaviour
             {
                 for (var y = 0; y < 14; y++)
                 {
-                    if (t.GetCouleur().Equals("V", StringComparison.Ordinal) ||
-                        t.GetCouleur().Equals("J", StringComparison.Ordinal))
+                    if (
+                        t.GetCouleur().Equals("V", StringComparison.Ordinal)
+                        || t.GetCouleur().Equals("J", StringComparison.Ordinal)
+                    )
                     {
-                        if (this.tuilesPack[x, y].couleur.Equals("V", StringComparison.Ordinal) ||
-                            this.tuilesPack[x, y].couleur.Equals("J", StringComparison.Ordinal))
+                        if (
+                            this.tuilesPack[x, y].couleur.Equals("V", StringComparison.Ordinal)
+                            || this.tuilesPack[x, y].couleur.Equals("J", StringComparison.Ordinal)
+                        )
                         {
-                            if (t.GetValeur() == this.tuilesPack[x, y].num &&
-                                t.GetIsJoker() == this.tuilesPack[x, y].isJoker)
+                            if (
+                                t.GetValeur() == this.tuilesPack[x, y].num
+                                && t.GetIsJoker() == this.tuilesPack[x, y].isJoker
+                            )
                             {
                                 return new TuilePacket
                                 {
-                                    X = ""+y,
-                                    Y = ""+x,
+                                    X = "" + y,
+                                    Y = "" + x,
                                     gagner = false
                                 };
                             }
@@ -300,17 +306,20 @@ public class Chevalet : MonoBehaviour
                     }
                     else
                     {
-                        if (t.GetCouleur().Equals(this.tuilesPack[x, y].couleur, StringComparison.Ordinal) && t.GetValeur() == this.tuilesPack[x, y].num)
+                        if (
+                            t.GetCouleur()
+                                .Equals(this.tuilesPack[x, y].couleur, StringComparison.Ordinal)
+                            && t.GetValeur() == this.tuilesPack[x, y].num
+                        )
                         {
                             return new TuilePacket
                             {
-                                X = ""+y,
-                                Y = ""+x,
+                                X = "" + y,
+                                Y = "" + x,
                                 gagner = false
                             };
                         }
                     }
-
                 }
             }
         }
@@ -384,10 +393,13 @@ public class Chevalet : MonoBehaviour
         }
     }
 
-
     private static string fromTuileToSpriteName(TuileData tuile)
     {
-        if (tuile.isJoker || tuile.couleur.Equals("M", StringComparison.Ordinal) || tuile.couleur.Equals("X", StringComparison.Ordinal))
+        if (
+            tuile.isJoker
+            || tuile.couleur.Equals("M", StringComparison.Ordinal)
+            || tuile.couleur.Equals("X", StringComparison.Ordinal)
+        )
         {
             return "Fake Joker_1";
         }
@@ -414,19 +426,18 @@ public class Chevalet : MonoBehaviour
 
     private void InitializeBoardFromTuiles()
     {
-
         var sprites = Resources.LoadAll<Sprite>("Tiles");
 
         var spritesDic = new Dictionary<string, Sprite>();
 
         for (var i = 0; i < 13; i++)
         {
-            spritesDic.Add($"Black_{i+1}", sprites[i]);
+            spritesDic.Add($"Black_{i + 1}", sprites[i]);
         }
 
         for (var i = 13; i < 26; i++)
         {
-            spritesDic.Add($"Blue_{(i+1) - 13}", sprites[i]);
+            spritesDic.Add($"Blue_{(i + 1) - 13}", sprites[i]);
         }
 
         spritesDic.Add("Fake Joker_1", sprites[26]);
@@ -434,14 +445,14 @@ public class Chevalet : MonoBehaviour
 
         for (var i = 28; i < 41; i++)
         {
-            spritesDic.Add($"Green_{(i+1) - 28}", sprites[i]);
+            spritesDic.Add($"Green_{(i + 1) - 28}", sprites[i]);
         }
 
         spritesDic.Add($"Pioche", sprites[41]);
 
         for (var i = 42; i < 55; i++)
         {
-            spritesDic.Add($"Red_{(i+1) - 42}", sprites[i]);
+            spritesDic.Add($"Red_{(i + 1) - 42}", sprites[i]);
         }
 
         for (var i = 0; i < placeholders.Length; i++)
@@ -455,9 +466,13 @@ public class Chevalet : MonoBehaviour
                 childObject.transform.SetParent(placeholder.transform);
                 var spriteRen = childObject.AddComponent<SpriteRenderer>();
                 var mat = new Material(Shader.Find("Sprites/Default"));
-                mat.color = new Color(0.9529411764705882f, 0.9411764705882353f, 0.8156862745098039f);
+                mat.color = new Color(
+                    0.9529411764705882f,
+                    0.9411764705882353f,
+                    0.8156862745098039f
+                );
                 spriteRen.material = mat;
-                spriteRen.sprite = spritesDic[fromTuileToSpriteName(this.tuiles2D[x,y])];
+                spriteRen.sprite = spritesDic[fromTuileToSpriteName(this.tuiles2D[x, y])];
                 spriteRen.sortingOrder = 3;
                 spriteRen.transform.localPosition = new Vector3(0, 0, 0);
                 spriteRen.transform.localScale = new Vector3(1, 1, 1);
@@ -465,9 +480,9 @@ public class Chevalet : MonoBehaviour
                 var collider2D = childObject.AddComponent<BoxCollider2D>();
                 collider2D.size = new Vector2((float)0.875, (float)1.25);
 
-                placeholder.GetComponent<Tuile>().SetValeur(this.tuiles2D[x,y].num);
-                placeholder.GetComponent<Tuile>().SetCouleur(this.tuiles2D[x,y].couleur);
-                placeholder.GetComponent<Tuile>().SetIsJoker(this.tuiles2D[x,y].isJoker);
+                placeholder.GetComponent<Tuile>().SetValeur(this.tuiles2D[x, y].num);
+                placeholder.GetComponent<Tuile>().SetCouleur(this.tuiles2D[x, y].couleur);
+                placeholder.GetComponent<Tuile>().SetIsJoker(this.tuiles2D[x, y].isJoker);
             }
         }
     }
@@ -518,7 +533,6 @@ public class Chevalet : MonoBehaviour
 
             tuile.SetCouleur(null);
             tuile.SetValeur(0);
-
         }
         //cas de tirage : pioche ou pile gauche -> Chevalet
         else if (
@@ -559,7 +573,6 @@ public class Chevalet : MonoBehaviour
             this.tuiles2D[prv_ph_pos.Item1, prv_ph_pos.Item2] = null;
 
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece jeté
-
         }
         else //cas derreur
         {
@@ -649,6 +662,7 @@ public class Chevalet : MonoBehaviour
 
         Debug.Log(sb.ToString());
     }
+
     public int getTilesNumber()
     {
         int num = 0;

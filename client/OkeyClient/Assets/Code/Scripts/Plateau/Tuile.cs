@@ -120,8 +120,6 @@ public class Tuile : MonoBehaviour
         // Detach tile from current parent (if any)
         transform.parent = null;
 
-
-
         // Set tile position to placeholder position
         transform.localPosition = placeholder.transform.position;
 
