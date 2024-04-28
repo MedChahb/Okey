@@ -535,16 +535,31 @@ public sealed class OkeyHub : Hub
             );
     }
 
-    private static async Task SendListeDefausseToAll(
-        List<string> connectionIds,
-        List<Joueur> joueurs
-    )
+    private async Task SendListeDefausseToAll(List<string> connectionIds, Jeu jeu)
     {
         foreach (var connectionId in connectionIds)
         {
             try
             {
-                await SendListeDefausse(connectionId, joueurs);
+                var ListeDefausseSend = new List<string>();
+
+                foreach (var tuile in jeu.ListeDefausse)
+                {
+                    // Construire la chaîne de caractères représentant la tuile( pas besoin d'envoyer defausse est DansPioche mais je fais qd meme)
+                    string tuileString =
+                        $"couleur={FromEnumToString(tuile.GetCouleur())};num={tuile.GetNum()};defausse=\"true\";dansPioche=\"false\";Nom={tuile.GetName()}";
+                    //pour la sécurité récupérer les isDefausse et isPioche
+
+                    // Ajouter la chaîne de caractères à ListeDefausseSend
+                    ListeDefausseSend.Add(tuileString);
+                }
+
+                await _hubContext
+                    .Clients.Client(connectionId)
+                    .SendAsync(
+                        "ReceiveListeDefausse",
+                        new LstDefaussePacket { Defausse = ListeDefausseSend }
+                    );
             }
             catch (Exception ex)
             {
@@ -553,28 +568,6 @@ public sealed class OkeyHub : Hub
                 );
             }
         }
-    }
-
-    private async Task SendListeDefausse(string connectionId, Jeu j)
-    {
-        var ListeDefausseSend = new List<string>();
-
-        foreach (var tuile in j.ListeDefausse)
-        {
-            // Construire la chaîne de caractères représentant la tuile( pas besoin d'envoyer defause est DansPioche mais je fais qd meme)
-            string tuileString =
-                $"couleur={this.FromEnumToString(tuile.GetCouleur())};num={tuile.GetNum()};defausse=\"true\";dansPioche=\"false\";Nom={tuile.GetName()}";
-            //pour la sécurité récupérer les isDefausse et isPioche
-
-            // Ajouter la chaîne de caractères à ListeDefausseSend
-            ListeDefausseSend.Add(tuileString);
-        }
-        await _hubContext
-            .Clients.Client(connectionId)
-            .SendAsync(
-                "ReceiveListeDefausse",
-                new LstDefaussePacket { Defausse = ListeDefausseSend }
-            );
     }
 
     public string FromEnumToString(CouleurTuile col)
