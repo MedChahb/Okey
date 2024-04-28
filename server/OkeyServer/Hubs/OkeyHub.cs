@@ -535,6 +535,48 @@ public sealed class OkeyHub : Hub
             );
     }
 
+    private static async Task SendListeDefausseToAll(
+        List<string> connectionIds,
+        List<Joueur> joueurs
+    )
+    {
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                await SendListeDefausse(connectionId, joueurs);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi de la liste de défaites au client {connectionId}: {ex.Message}"
+                );
+            }
+        }
+    }
+
+    private static async Task SendListeDefausse(string connectionId, Jeu j)
+    {
+        var ListeDefausseSend = new List<string>();
+
+        foreach (var tuile in j.ListeDefausse)
+        {
+            // Construire la chaîne de caractères représentant la tuile( pas besoin d'envoyer defause est DansPioche mais je fais qd meme)
+            string tuileString =
+                $"couleur={this.FromEnumToString(tuile.GetCouleur())};num={tuile.GetNum()};defausse=\"true\";dansPioche=\"false\";Nom={tuile.GetName()}";
+            //pour la sécurité récupérer les isDefausse et isPioche
+
+            // Ajouter la chaîne de caractères à ListeDefausseSend
+            ListeDefausseSend.Add(tuileString);
+        }
+        await _hubContext
+            .Clients.Client(connectionId)
+            .SendAsync(
+                "ReceiveListeDefausse",
+                new LstDefaussePacket { Defausse = ListeDefausseSend }
+            );
+    }
+
     public string FromEnumToString(CouleurTuile col)
     {
         switch (col)
