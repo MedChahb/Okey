@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Tuile : MonoBehaviour
@@ -98,7 +99,7 @@ public class Tuile : MonoBehaviour
                         deplacable = false;
                         if (closestPlaceholder == Chevalet.pileDroitePlaceHolder)
                         {
-                            this.chevalet.throwTile(this);
+                            this.chevalet.throwTile(this.PreviousPlaceHolder.GetComponent<Tuile>());
                         }
                     }
                 }
@@ -118,6 +119,8 @@ public class Tuile : MonoBehaviour
     {
         // Detach tile from current parent (if any)
         transform.parent = null;
+
+
 
         // Set tile position to placeholder position
         transform.localPosition = placeholder.transform.position;
@@ -151,6 +154,13 @@ public class Tuile : MonoBehaviour
     public int GetValeur()
     {
         return this.valeur;
+    }
+
+    public void SetTileData(TuileData t)
+    {
+        this.SetCouleur(t.couleur);
+        this.SetIsJoker(t.isJoker);
+        this.SetValeur(t.num);
     }
 
     public void SetValeur(int val)

@@ -25,14 +25,12 @@ public class UIManagerPFormulaire : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
 
-    [SerializeField]
-    private GameObject showRooms;
+    public GameObject showRooms;
 
     [SerializeField]
     private GameObject lobbyPrivateConfig;
 
-    [SerializeField]
-    private GameObject lobbyPlayerWaiting;
+    public GameObject lobbyPlayerWaiting;
 
     [SerializeField]
     private int SceneId;
@@ -51,8 +49,8 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     void Start()
     {
-        backBtnPrivate.onClick.AddListener(onBackPrivateLobbyClicked);
-        backBtnPublic.onClick.AddListener(onBackPublicLobbyClicked);
+        backBtnPrivate.onClick.AddListener(onBackBtnClicked);
+        backBtnPublic.onClick.AddListener(onBackBtnClicked);
         backBtn.onClick.AddListener(onBackBtnClicked);
         //joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
         joinPublicLobbyBtn.onClick.AddListener(onPublicLobbyClicked);
@@ -87,7 +85,8 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     public void onPublicLobbyClicked()
     {
-        lobbyPlayerWaiting.SetActive(true);
+        // lobbyPlayerWaiting.SetActive(true);
+        onJoinLobbyButtonPressed();
     }
 
     public void onPrivateLobbyClicked()
@@ -98,16 +97,6 @@ public class UIManagerPFormulaire : MonoBehaviour
     public void onLoadBtnClicked()
     {
         SceneManager.LoadScene(2); // Charge la scène `PlateauInit`
-    }
-
-    public void onBackPrivateLobbyClicked()
-    {
-        lobbyPrivateConfig.SetActive(false);
-    }
-
-    public void onBackPublicLobbyClicked()
-    {
-        lobbyPlayerWaiting.SetActive(false);
     }
 
     public void onJoinLobbyButtonPressed()
@@ -159,4 +148,10 @@ public class UIManagerPFormulaire : MonoBehaviour
     //    buttonLabel.text = $"Rejoindre Room 1 {rooms.listRooms[0].Players.Count}/{rooms.listRooms[0].Capacity}";
 
     //}
+
+    public void setActiveShowRooms()
+    {
+        Debug.Log("setActiveShowRooms");
+        showRooms.SetActive(true);
+    }
 }
