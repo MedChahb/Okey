@@ -37,6 +37,9 @@ public class UIManagerPAcceuil : MonoBehaviour
     [SerializeField]
     public JoueurManager manager;
 
+    [SerializeField]
+    public GameObject rankingNotConnected;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -88,6 +91,7 @@ public class UIManagerPAcceuil : MonoBehaviour
         {
             Debug.LogWarning("Parametres Image reference is not set!");
         }
+        rankingNotConnected.SetActive(false);
     }
 
     void onLoginClicked()
@@ -101,6 +105,7 @@ public class UIManagerPAcceuil : MonoBehaviour
         {
             Debug.LogWarning("Login Image reference is not set!");
         }
+        rankingNotConnected.SetActive(false);
     }
 
     public void setConnected(bool isConnected)
@@ -115,5 +120,6 @@ public class UIManagerPAcceuil : MonoBehaviour
             .GetSelfJoueur()
             .NomUtilisateur;
         connexionBtn.gameObject.SetActive(false);
+        rankingNotConnected.SetActive(false);
     }
 }
