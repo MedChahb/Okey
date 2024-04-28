@@ -69,22 +69,22 @@ public class SignalRConnector : MonoBehaviour
                     Debug.Log($"Room: {room.Name}, Players: {room.Players.Count}/{room.Capacity}");
                 }
                 // UpdateRoomDisplay(rooms)
-                MainThreadDispatcher.Enqueue(() =>
+
+                if (UIManagerPFormulaire.Instance != null)
                 {
-                    if (UIManagerPFormulaire.Instance != null)
+                    MainThreadDispatcher.Enqueue(() =>
                     {
                         UIManagerPFormulaire.Instance.setActiveShowRooms();
                         LobbyManager.Instance.rommsListFilled = true;
                         LobbyManager.Instance.playerCount = rooms.listRooms[0].Players.Count;
                         LobbyManager.Instance.SetPlayers(rooms.listRooms[0].Players);
-
                         DisplayRooms.Instance.updateLabel();
-                    }
-                    else
-                    {
-                        Debug.LogError("UIManagerPFormulaire instance is null.");
-                    }
-                });
+                    });
+                }
+                else
+                {
+                    Debug.LogError("UIManagerPFormulaire instance is null.");
+                }
             }
         );
 
@@ -116,7 +116,8 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est le tour de {playerName}");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    LobbyManager.Instance.myTurn = false;
+                    LobbyManager.Instance.SetMyTurn(false);
+                    LobbyManager.Instance.SetCurrentPlayerTurn(playerName);
                 });
             }
         );
@@ -154,6 +155,11 @@ public class SignalRConnector : MonoBehaviour
                     return chevaletInstance.tuileJete;
                 }
 
+                // add code here signal
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    LobbyManager.Instance.SetMyTurn(false);
+                });
                 return tuile;
             }
         );

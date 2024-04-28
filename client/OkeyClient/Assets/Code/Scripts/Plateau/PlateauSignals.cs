@@ -32,11 +32,38 @@ public class PlateauSignals : MonoBehaviour
         }
     }
 
-    public void SetMainPlayerTurnSignal(bool value)
+    public void SetMainPlayerTurnSignal()
     {
-        mainPlayerTurnSignal.gameObject.SetActive(value);
-        player2TurnSignal.gameObject.SetActive(!value);
-        player3TurnSignal.gameObject.SetActive(!value);
-        player4TurnSignal.gameObject.SetActive(!value);
+        mainPlayerTurnSignal.gameObject.SetActive(LobbyManager.Instance.myTurn);
+        player2TurnSignal.gameObject.SetActive(false);
+        player3TurnSignal.gameObject.SetActive(false);
+        player4TurnSignal.gameObject.SetActive(false);
+    }
+
+    public void SetPlayerSignal(string playerName)
+    {
+        if (LobbyManager.Instance.players.Count > 2)
+        {
+            player2TurnSignal.gameObject.SetActive(false);
+            player3TurnSignal.gameObject.SetActive(false);
+            player4TurnSignal.gameObject.SetActive(false);
+
+            if (playerName == LobbyManager.Instance.players[0])
+            {
+                player2TurnSignal.gameObject.SetActive(true);
+            }
+            else if (playerName == LobbyManager.Instance.players[1])
+            {
+                player3TurnSignal.gameObject.SetActive(true);
+            }
+            else if (playerName == LobbyManager.Instance.players[2])
+            {
+                player4TurnSignal.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            Debug.LogError("Not enough players to set signals.");
+        }
     }
 }
