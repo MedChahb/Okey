@@ -174,13 +174,14 @@ public class SignalRConnector : MonoBehaviour
             "ReceiveChevalet",
             async (chevalet) =>
             {
-                var chevaletInstance = Chevalet.Instance;
-                if (chevaletInstance == null)
+                MainThreadDispatcher.Enqueue(() =>
                 {
-                    Debug.LogError("Il n'y a pas de chevalet");
-                }
-                else
-                {
+                    var chevaletInstance = Chevalet.Instance;
+                    while (chevaletInstance == null)
+                    {
+                        chevaletInstance = Chevalet.Instance;
+                    }
+
                     var tuilesData = new TuileData[2, 14];
                     var i = 0;
                     foreach (var tuileStr in chevalet.PremiereRangee)
@@ -238,7 +239,7 @@ public class SignalRConnector : MonoBehaviour
                                 }
                             }
 
-                            var coul = new CouleurTuile();
+                            CouleurTuile coul;
                             switch (couleur)
                             {
                                 case "J":
@@ -260,10 +261,11 @@ public class SignalRConnector : MonoBehaviour
                                     throw new Exception();
                             }
 
-                            chevaletInstance.tuiles2D[0, i].couleur = coul.ToString();
-                            chevaletInstance.tuiles2D[0, i].num = num;
-                            chevaletInstance.tuiles2D[0, i].isJoker =
-                                nom != null && nom.Equals("Jo", StringComparison.Ordinal);
+                            tuilesData[0, i] = new TuileData(
+                                coul,
+                                num,
+                                nom != null && nom.Equals("Jo", StringComparison.Ordinal)
+                            );
                             i++;
                         }
                     }
@@ -323,9 +325,9 @@ public class SignalRConnector : MonoBehaviour
                                         break;
                                 }
                             }
-                            /* A effacer apres les tests / ! \
-                            var coul = new CouleurTuile();
-                            switch(couleur){
+                            CouleurTuile coul;
+                            switch (couleur)
+                            {
                                 case "J":
                                     coul = CouleurTuile.J;
                                     break;
@@ -343,16 +345,21 @@ public class SignalRConnector : MonoBehaviour
                                     break;
                                 default:
                                     throw new Exception();
-                            }*/
+                            }
 
-                            chevaletInstance.tuiles2D[1, i].couleur = couleur;
-                            chevaletInstance.tuiles2D[1, i].num = num;
-                            chevaletInstance.tuiles2D[1, i].isJoker =
-                                nom != null && nom.Equals("Jo", StringComparison.Ordinal);
+                            tuilesData[1, i] = new TuileData(
+                                coul,
+                                num,
+                                nom != null && nom.Equals("Jo", StringComparison.Ordinal)
+                            );
                             i++;
                         }
                     }
-                }
+                    chevaletInstance.SetTuiles(tuilesData);
+                    Debug.Log("Logique serveur");
+                    chevaletInstance.Print2DMatrix();
+                    chevaletInstance.Init();
+                });
             }
         );
     }

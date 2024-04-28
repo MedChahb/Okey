@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -18,42 +17,34 @@ public class Chevalet : MonoBehaviour
     public static GameObject pileDroitePlaceHolder;
     public static GameObject jokerPlaceHolder;
 
-    private static Chevalet _instance;
-
-    public static Chevalet Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<Chevalet>();
-                if (_instance == null)
-                {
-                    Debug.LogError("Chevalet instance is null. Make sure the Chevalet script is attached to a GameObject in the scene.");
-                }
-            }
-            return _instance;
-        }
-    }
+    public static Chevalet Instance { get; set; }
 
     private void Awake()
     {
-        if (_instance == null)
+        if (Instance != null && Instance != this)
         {
-            _instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            Debug.Log("Destroying duplicate instance of Chevalet.");
+            Destroy(this.gameObject);
         }
         else
         {
-            Destroy(this.gameObject);
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+            Debug.Log("Chevalet instance set.");
         }
+    }
+
+    public void Init()
+    {
+        this.InitPlaceholders();
+        this.InitializeBoardFromTuiles();
     }
 
     void Start()
     {
-        InitPlaceholders();
-        this.InitializeBoardFromPlaceholders();
-        this.Print2DMatrix();
+        this.InitPlaceholders();
+        //this.InitializeBoardFromPlaceholders();
+        //this.InitializeBoardFromTuiles();
 
         //PrintTuilesArray();
     }
@@ -323,6 +314,92 @@ public class Chevalet : MonoBehaviour
         }
     }
 
+
+    private static string fromTuileToSpriteName(TuileData tuile)
+    {
+        if (tuile.isJoker || tuile.couleur.Equals("M", StringComparison.Ordinal) || tuile.couleur.Equals("X", StringComparison.Ordinal))
+        {
+            return "Fake Joker_1";
+        }
+        var name = "";
+        switch (tuile.couleur)
+        {
+            case "B":
+                name = "Blue_";
+                break;
+            case "R":
+                name = "Red_";
+                break;
+            case "N":
+                name = "Black_";
+                break;
+            case "J":
+                name = "Green_";
+                break;
+        }
+
+        name += tuile.num;
+        return name;
+    }
+
+    private void InitializeBoardFromTuiles()
+    {
+
+        var sprites = Resources.LoadAll<Sprite>("Tiles");
+
+        var spritesDic = new Dictionary<string, Sprite>();
+
+        for (var i = 0; i < 13; i++)
+        {
+            spritesDic.Add($"Black_{i+1}", sprites[i]);
+        }
+
+        for (var i = 13; i < 26; i++)
+        {
+            spritesDic.Add($"Blue_{(i+1) - 13}", sprites[i]);
+        }
+
+        spritesDic.Add("Fake Joker_1", sprites[26]);
+        spritesDic.Add("Fake Joker_2", sprites[27]);
+
+        for (var i = 28; i < 41; i++)
+        {
+            spritesDic.Add($"Green_{(i+1) - 28}", sprites[i]);
+        }
+
+        spritesDic.Add($"Pioche", sprites[41]);
+
+        for (var i = 42; i < 55; i++)
+        {
+            spritesDic.Add($"Red_{(i+1) - 42}", sprites[i]);
+        }
+
+        for (var i = 0; i < placeholders.Length; i++)
+        {
+            var x = i / 14;
+            var y = i % 14;
+            var placeholder = placeholders[i];
+            if (this.tuiles2D[x, y] != null)
+            {
+                placeholder.GetComponent<Tuile>().SetValeur(this.tuiles2D[x,y].num);
+                placeholder.GetComponent<Tuile>().SetCouleur(this.tuiles2D[x,y].couleur);
+                var childObject = new GameObject("SpriteChild");
+                childObject.transform.SetParent(placeholder.transform);
+                var spriteRen = childObject.AddComponent<SpriteRenderer>();
+                var mat = new Material(Shader.Find("Sprites/Default"));
+                mat.color = new Color(0.9529411764705882f, 0.9411764705882353f, 0.8156862745098039f);
+                spriteRen.material = mat;
+                spriteRen.sprite = spritesDic[fromTuileToSpriteName(this.tuiles2D[x,y])];
+                spriteRen.sortingOrder = 3;
+                spriteRen.transform.localPosition = new Vector3(0, 0, 0);
+                spriteRen.transform.localScale = new Vector3(1, 1, 1);
+                childObject.AddComponent<Tuile>();
+                var collider2D = childObject.AddComponent<BoxCollider2D>();
+                collider2D.size = new Vector2((float)0.875, (float)1.25);
+            }
+        }
+    }
+
     private CouleurTuile ConvertToFrontendColorToBackendEnumName(string FrontendColor)
     {
         //Debug.Log(FrontendColor);
@@ -487,7 +564,6 @@ public class Chevalet : MonoBehaviour
 
         Debug.Log(sb.ToString());
     }
-
     public int getTilesNumber()
     {
         int num = 0;

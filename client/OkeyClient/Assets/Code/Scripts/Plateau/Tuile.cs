@@ -153,6 +153,13 @@ public class Tuile : MonoBehaviour
         return this.valeur;
     }
 
+    public void SetTileData(TuileData t)
+    {
+        this.SetCouleur(t.couleur);
+        this.SetIsJoker(t.isJoker);
+        this.SetValeur(t.num);
+    }
+
     public void SetValeur(int val)
     {
         this.valeur = val;
