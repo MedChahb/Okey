@@ -555,7 +555,7 @@ public sealed class OkeyHub : Hub
         }
     }
 
-    private static async Task SendListeDefausse(string connectionId, Jeu j)
+    private async Task SendListeDefausse(string connectionId, Jeu j)
     {
         var ListeDefausseSend = new List<string>();
 
