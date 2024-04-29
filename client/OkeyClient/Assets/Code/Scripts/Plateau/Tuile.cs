@@ -81,22 +81,22 @@ public class Tuile : MonoBehaviour
                 if (closestPlaceholder.transform.childCount == 0)
                 {
                     // Attach the tile to the new placeholder
-                    AttachToPlaceholder(closestPlaceholder);
+                    this.AttachToPlaceholder(closestPlaceholder);
                 }
                 else
                 {
-                    AttachToPlaceholder(closestPlaceholder);
+                    this.AttachToPlaceholder(closestPlaceholder);
                     if (
                         closestPlaceholder != Chevalet.PileDroitePlaceHolder
                         && closestPlaceholder != Chevalet.JokerPlaceHolder
                     )
                     {
                         // The placeholder countains already a Tile, we must update before insert
-                        chevalet.UpdateTiles(closestPlaceholder);
+                        this.chevalet.UpdateTiles(closestPlaceholder);
                     }
                     else
                     {
-                        deplacable = false;
+                        this.deplacable = false;
                         if (closestPlaceholder == Chevalet.PileDroitePlaceHolder)
                         {
                             this.chevalet.ThrowTile(this.PreviousPlaceHolder.GetComponent<Tuile>());
@@ -105,10 +105,10 @@ public class Tuile : MonoBehaviour
                 }
             }
 
-            chevalet.UpdateMatrixAfterMovement(PreviousPlaceHolder, closestPlaceholder); //placeholder ou la piece était avant le deplacement et le placeholder ou elle a été deplacé
+            this.chevalet.UpdateMatrixAfterMovement(this.PreviousPlaceHolder, closestPlaceholder); //placeholder ou la piece était avant le deplacement et le placeholder ou elle a été deplacé
             Debug.Log(
                 "Tile changed position from : "
-                    + PreviousPlaceHolder.name
+                    + this.PreviousPlaceHolder.name
                     + " to "
                     + closestPlaceholder.name
             );

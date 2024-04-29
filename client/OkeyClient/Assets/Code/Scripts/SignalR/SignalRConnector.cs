@@ -95,6 +95,8 @@ public class SignalRConnector : MonoBehaviour
             "TurnSignal",
             (PlayerName) =>
             {
+                Chevalet.Instance.IsJete = false;
+                Chevalet.Instance.TuileJete = null;
                 Debug.Log($"C'est le tour de {PlayerName}");
                 MainThreadDispatcher.Enqueue(() =>
                 {
@@ -246,7 +248,7 @@ public class SignalRConnector : MonoBehaviour
                             }
                         }
 
-                        // Remplir la defausse maintenant
+                        // Fonctionaliteé qui affiche les defausses, a implementer plus tard....
                     }
                 });
             }
@@ -264,14 +266,27 @@ public class SignalRConnector : MonoBehaviour
             "FirstJeterActionRequest",
             () =>
             {
-                var tuile = new TuilePacket
+                var chevaletInstance = Chevalet.Instance;
+                Debug.Log("Ok il faut jeter une tuile");
+
+                while (chevaletInstance.IsJete == false) { }
+                Debug.Log("La tuile vient d'etre jetee");
+
+                if (chevaletInstance.TuileJete != null)
+                {
+                    return chevaletInstance.TuileJete;
+                }
+
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    LobbyManager.Instance.SetMyTurn(false);
+                });
+                return new TuilePacket
                 {
                     X = "0",
                     Y = "0",
                     gagner = false
                 };
-
-                return tuile;
             }
         );
 

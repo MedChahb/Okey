@@ -242,26 +242,25 @@ public class Chevalet : MonoBehaviour
         this._pileDroite.Push(Tuile);
 
         Debug.Log($"Tuile recue {Tuile.GetCouleur()}");
-        var tuileData = this.GetTuilePacketFromChevalet(Tuile);
-        Debug.Log($"{tuileData.X}, {tuileData.Y}");
+        var tuileData = this.GetTuilePacketFromChevalet(Tuile, false);
+        Debug.Log($"{tuileData.Y}, {tuileData.X}");
         this.IsJete = true;
         this.TuileJete = tuileData;
     }
 
     public void ThrowTileToWin(Tuile Tuile)
     {
-        var tuileData = new TuileData(
-            this.ConvertToFrontendColorToBackendEnumName(Tuile.GetCouleur()),
-            Tuile.GetValeur(),
-            Tuile.GetIsJoker()
-        );
+        var tuileData = this.GetTuilePacketFromChevalet(Tuile, true);
+        Debug.Log($"{tuileData.Y}, {tuileData.X}");
+        this.IsJete = true;
+        this.TuileJete = tuileData;
         //ToDo : Envoyer TuileData + Pile Pioche + tuiles2D
         //Attendre Vérif
         //Et communiquer le résultat
         //pilePioche.Push(tuile);
     }
 
-    public TuilePacket GetTuilePacketFromChevalet(Tuile T)
+    public TuilePacket GetTuilePacketFromChevalet(Tuile T, bool gain)
     {
         if (T != null)
         {
@@ -288,7 +287,7 @@ public class Chevalet : MonoBehaviour
                                 {
                                     X = "" + y,
                                     Y = "" + x,
-                                    gagner = false
+                                    gagner = gain
                                 };
                             }
                         }
@@ -305,14 +304,14 @@ public class Chevalet : MonoBehaviour
                             {
                                 X = "" + y,
                                 Y = "" + x,
-                                gagner = false
+                                gagner = gain
                             };
                         }
                     }
                 }
             }
         }
-
+        Debug.Log("On jete une tuile nulle.");
         return new TuilePacket();
     }
 
@@ -354,6 +353,10 @@ public class Chevalet : MonoBehaviour
                         var num = int.Parse(properties[1]);
                         var isJoker = properties[0] == "FakeJoker";
                         this.Tuiles2D[x, y] = new TuileData(couleur, num, isJoker);
+                        var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                        tuilePlaceHolder.SetCouleur(couleur.ToString());
+                        tuilePlaceHolder.SetValeur(num);
+                        tuilePlaceHolder.SetIsJoker(isJoker);
                         //this.tuilesPack[x, y] = new TuileData(couleur, num, isJoker);
                         //Debug.Log("["+x+"]"+"["+y+"]"+" "+this.tuiles2D[x, y].couleur+ " " +this.tuiles2D[x, y].num+" "+this.tuiles2D[x, y].isJoker);
                     }
@@ -364,6 +367,9 @@ public class Chevalet : MonoBehaviour
                             $"Child sprite of placeholder at index {i} does not have a properly formatted name."
                         );
                         this.Tuiles2D[x, y] = null;
+                        var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                        tuilePlaceHolder.SetCouleur(null);
+                        tuilePlaceHolder.SetValeur(0);
                         //this.tuilesPack[x, y] = null;
                     }
                 }
@@ -371,6 +377,9 @@ public class Chevalet : MonoBehaviour
                 {
                     // If there is no SpriteRenderer component, set the corresponding array position to null
                     this.Tuiles2D[x, y] = null;
+                    var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                    tuilePlaceHolder.SetCouleur(null);
+                    tuilePlaceHolder.SetValeur(0);
                     //this.tuilesPack[x, y] = null;
                 }
             }
@@ -378,6 +387,9 @@ public class Chevalet : MonoBehaviour
             {
                 // If the placeholder is empty, set the corresponding array position to null
                 this.Tuiles2D[x, y] = null;
+                var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                tuilePlaceHolder.SetCouleur(null);
+                tuilePlaceHolder.SetValeur(0);
             }
         }
     }
@@ -511,16 +523,19 @@ public class Chevalet : MonoBehaviour
             && NextPlaceholder.transform.IsChildOf(chevaletFront.transform)
         )
         {
+            if (!PreviousPlaceHolder.name.Equals(NextPlaceholder.name, StringComparison.Ordinal))
+            {
+                var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+                var nt = NextPlaceholder.GetComponent<Tuile>();
+                nt.SetCouleur(tuile.GetCouleur());
+                nt.SetValeur(tuile.GetValeur());
+                nt.SetIsJoker(tuile.GetIsJoker());
+
+                tuile.SetCouleur(null);
+                tuile.SetValeur(0);
+                this.InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets pour recuperer les nouvelles position car il y'a le decalage des tuiles
+            }
             this.InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets pour recuperer les nouvelles position car il y'a le decalage des tuiles
-
-            var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
-            var nt = NextPlaceholder.GetComponent<Tuile>();
-            nt.SetCouleur(tuile.GetCouleur());
-            nt.SetValeur(tuile.GetValeur());
-            nt.SetIsJoker(tuile.GetIsJoker());
-
-            tuile.SetCouleur(null);
-            tuile.SetValeur(0);
         }
         //cas de tirage : pioche ou pile gauche -> Chevalet
         else if (
@@ -543,13 +558,10 @@ public class Chevalet : MonoBehaviour
             tuile.SetValeur(0);
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece pioché
         }
-        //cas de jet : Chevalet -> pile droite ou joker(gagné)
+        //cas de jet : Chevalet -> pile droite
         else if (
-            (
-                PreviousPlaceHolder.transform.IsChildOf(chevaletFront.transform)
-                && NextPlaceholder == PileDroitePlaceHolder
-            )
-            || NextPlaceholder == JokerPlaceHolder
+            PreviousPlaceHolder.transform.IsChildOf(chevaletFront.transform)
+            && NextPlaceholder == PileDroitePlaceHolder
         )
         {
             //enlever la piece jeté du chevalet
@@ -576,6 +588,14 @@ public class Chevalet : MonoBehaviour
             tuile.SetValeur(0);
 
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece jeté
+        }
+        //cas de jet : Chevalet -> tentative/gain
+        else if (
+            PreviousPlaceHolder.transform.IsChildOf(chevaletFront.transform)
+            && NextPlaceholder == JokerPlaceHolder
+        )
+        {
+            Debug.Log("Vous essayez de gagner");
         }
         else //cas derreur
         {
