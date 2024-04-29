@@ -2,6 +2,9 @@ namespace OkeyServer.Hubs;
 
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
+using Data;
+using Exceptions;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
 using Okey;
@@ -11,6 +14,7 @@ using Okey.Tuiles;
 using Packets;
 using Packets.Dtos;
 using Player;
+using Security;
 
 /// <summary>
 /// Hub de communication entre les clients et le serveur
@@ -25,19 +29,19 @@ public sealed class OkeyHub : Hub
     private readonly IRoomManager _roomManager;
     private readonly IHubContext<OkeyHub> _hubContext;
     private static readonly char[] Separator = new char[] { ';' };
+    private readonly ServerDbContext _dbContext;
 
-    //private readonly ServerDbContext _dbContext;
     private ConcurrentDictionary<string, bool> _isPlayerTurn;
 
     public OkeyHub(
         IHubContext<OkeyHub> hubContext,
-        IRoomManager roomManager
-    //ServerDbContext dbContext
+        IRoomManager roomManager,
+        ServerDbContext dbContext
     )
     {
         this._roomManager = roomManager;
         this._hubContext = hubContext;
-        //this._dbContext = dbContext;
+        this._dbContext = dbContext;
         this._isPlayerTurn = new ConcurrentDictionary<string, bool>();
     }
 
@@ -73,7 +77,7 @@ public sealed class OkeyHub : Hub
                     }
                 );
         }
-        /*
+
         if (!_connectedUsers.TryRemove(this.Context.ConnectionId, out _))
         {
             throw new ConnectedUSerDictionnaryRemoveException(
@@ -82,12 +86,10 @@ public sealed class OkeyHub : Hub
                     + " from the connected users"
             );
         }
-        */
 
         await base.OnDisconnectedAsync(exception);
     }
 
-    /*
     /// <summary>
     /// Quand le joueur fourni un JWT Token lie la session de connxion au nom d'utilisateur
     /// Une transmission AccountLinkResult est envoyé au client indiquant comment s'est passée la tentative d'association
@@ -148,7 +150,6 @@ public sealed class OkeyHub : Hub
             await this.Clients.Caller.SendAsync("AccountLinkResult", 1);
         }
     }
-    */
 
     /// <summary>
     /// Envoi un message à tous lees membres d'un groupe
