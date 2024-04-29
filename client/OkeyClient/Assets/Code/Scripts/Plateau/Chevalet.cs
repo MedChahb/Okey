@@ -454,11 +454,9 @@ public class Chevalet : MonoBehaviour
                 var childObject = new GameObject("SpriteChild");
                 childObject.transform.SetParent(placeholder.transform);
                 var spriteRen = childObject.AddComponent<SpriteRenderer>();
-                var mat = new Material(Shader.Find("Sprites/Default")) { color = new Color(
-                        0.9529411764705882f,
-                        0.9411764705882353f,
-                        0.8156862745098039f
-                    )
+                var mat = new Material(Shader.Find("Sprites/Default"))
+                {
+                    color = new Color(0.9529411764705882f, 0.9411764705882353f, 0.8156862745098039f)
                 };
                 spriteRen.material = mat;
                 spriteRen.sprite = spritesDic[FromTuileToSpriteName(this.Tuiles2D[x, y])];
@@ -527,8 +525,10 @@ public class Chevalet : MonoBehaviour
         //cas de tirage : pioche ou pile gauche -> Chevalet
         else if (
             PreviousPlaceHolder == PileGauchePlaceHolder
-            || (PreviousPlaceHolder == PilePiochePlaceHolder
-                && NextPlaceholder.transform.IsChildOf(chevaletFront.transform))
+            || (
+                PreviousPlaceHolder == PilePiochePlaceHolder
+                && NextPlaceholder.transform.IsChildOf(chevaletFront.transform)
+            )
         )
         {
             //ajouter la piece pioché au chevalet
@@ -545,8 +545,10 @@ public class Chevalet : MonoBehaviour
         }
         //cas de jet : Chevalet -> pile droite ou joker(gagné)
         else if (
-            (PreviousPlaceHolder.transform.IsChildOf(chevaletFront.transform)
-             && NextPlaceholder == PileDroitePlaceHolder)
+            (
+                PreviousPlaceHolder.transform.IsChildOf(chevaletFront.transform)
+                && NextPlaceholder == PileDroitePlaceHolder
+            )
             || NextPlaceholder == JokerPlaceHolder
         )
         {
