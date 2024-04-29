@@ -1,29 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Code.Scripts.SignalR.Packets;
+using Code.Scripts.SignalR.Packets.Rooms;
 using Microsoft.AspNetCore.SignalR.Client;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public class PacketSignal
-{
-    public string? message { get; set; }
-}
-
-public class RoomDto
-{
-    public string Name { get; set; }
-    public int Capacity { get; set; }
-    public List<string> Players { get; set; }
-}
-
-public class RoomsPacket
-{
-    public List<RoomDto> listRooms { get; set; }
-}
 
 public class SignalRConnector : MonoBehaviour
 {
@@ -56,10 +38,10 @@ public class SignalRConnector : MonoBehaviour
     {
         this.hubConnection.On<RoomsPacket>(
             "UpdateRoomsRequest",
-            (rooms) =>
+            Rooms =>
             {
                 Debug.Log("Received room update request.");
-                foreach (var room in rooms.listRooms)
+                foreach (var room in Rooms.listRooms)
                 {
                     if (room == null)
                     {
@@ -76,8 +58,8 @@ public class SignalRConnector : MonoBehaviour
                     {
                         UIManagerPFormulaire.Instance.setActiveShowRooms();
                         LobbyManager.Instance.rommsListFilled = true;
-                        LobbyManager.Instance.playerCount = rooms.listRooms[0].Players.Count;
-                        LobbyManager.Instance.SetPlayers(rooms.listRooms[0].Players);
+                        LobbyManager.Instance.playerCount = Rooms.listRooms[0].Players.Count;
+                        LobbyManager.Instance.SetPlayers(Rooms.listRooms[0].Players);
                         DisplayRooms.Instance.updateLabel();
                     });
                 }
@@ -90,9 +72,9 @@ public class SignalRConnector : MonoBehaviour
 
         this.hubConnection.On<PacketSignal>(
             "ReceiveMessage",
-            message =>
+            Message =>
             {
-                Debug.Log(message.message);
+                Debug.Log(Message.message);
                 // DisplayRooms.Instance.messageLogs.Add(message.message);
             }
         );
@@ -111,13 +93,13 @@ public class SignalRConnector : MonoBehaviour
 
         this.hubConnection.On<string>(
             "TurnSignal",
-            (playerName) =>
+            (PlayerName) =>
             {
-                Debug.Log($"C'est le tour de {playerName}");
+                Debug.Log($"C'est le tour de {PlayerName}");
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     LobbyManager.Instance.SetMyTurn(false);
-                    LobbyManager.Instance.SetCurrentPlayerTurn(playerName);
+                    LobbyManager.Instance.SetCurrentPlayerTurn(PlayerName);
                 });
             }
         );
@@ -163,6 +145,104 @@ public class SignalRConnector : MonoBehaviour
                 return tuile;
             }
         );
+
+        this.hubConnection.On<DefaussePacket>("ReceiveListeDefausse", (defausse) =>
+        {
+            MainThreadDispatcher.Enqueue(() =>
+            {
+                var tuilesList = new List<TuileData>();
+
+                if (defausse.Defausse != null)
+                {
+                    foreach (var tuileData in defausse.Defausse)
+                    {
+                        if (
+                            !tuileData.Equals(
+                                "couleur=;num=;defausse=;dansPioche=;Nom=;",
+                                StringComparison.Ordinal
+                            )
+                        )
+                        {
+                            var keyValuePairs = tuileData.Split(';');
+                            string couleur = null;
+                            var num = 0;
+                            var defausse = false;
+                            var dansPioche = false;
+                            string nom = null;
+
+                            foreach (var pair in keyValuePairs)
+                            {
+                                if (string.IsNullOrWhiteSpace(pair))
+                                {
+                                    continue;
+                                }
+
+                                var parts = pair.Split('=');
+
+                                if (parts.Length != 2)
+                                {
+                                    continue;
+                                }
+
+                                var key = parts[0].Trim();
+                                var value = parts[1].Trim();
+                                switch (key)
+                                {
+                                    case "couleur":
+                                        couleur = value;
+                                        break;
+                                    case "num":
+                                        int.TryParse(value, out num);
+                                        break;
+                                    case "defausse":
+                                        bool.TryParse(value, out defausse);
+                                        break;
+                                    case "dansPioche":
+                                        bool.TryParse(value, out dansPioche);
+                                        break;
+                                    case "Nom":
+                                        nom = value;
+                                        break;
+                                    default:
+                                        // Handle unknown keys (if needed)
+                                        break;
+                                }
+                            }
+
+                            CouleurTuile coul;
+                            switch (couleur)
+                            {
+                                case "J":
+                                    coul = CouleurTuile.J;
+                                    break;
+                                case "N":
+                                    coul = CouleurTuile.N;
+                                    break;
+                                case "R":
+                                    coul = CouleurTuile.R;
+                                    break;
+                                case "B":
+                                    coul = CouleurTuile.B;
+                                    break;
+                                case "M":
+                                    coul = CouleurTuile.M;
+                                    break;
+                                default:
+                                    throw new Exception();
+                            }
+                            tuilesList.Add(new TuileData(coul, num, nom != null && nom.Equals("Jo", StringComparison.Ordinal)));
+                        }
+                        else
+                        {
+                            tuilesList.Add(null);
+                        }
+                    }
+
+                    // Remplir la defausse maintenant
+
+                }
+            });
+        });
 
         this.hubConnection.On(
             "TuilesDistribueesSignal",
