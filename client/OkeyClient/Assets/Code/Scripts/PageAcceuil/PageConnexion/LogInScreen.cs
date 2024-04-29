@@ -80,7 +80,7 @@ public class LogInScreen : MonoBehaviour
     }
 
     // Méthode pour charger la scène précédente
-    private void onBackBtnClicked()
+    void onBackBtnClicked()
     {
         Panel.SetActive(false);
     }
