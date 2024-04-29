@@ -129,12 +129,12 @@ public class SignalRConnector : MonoBehaviour
                     gagner = false
                 };
 
-                while (chevaletInstance.isJete == false) { }
+                while (chevaletInstance.IsJete == false) { }
                 Debug.Log("La tuile vient d'etre jetee");
 
-                if (chevaletInstance.tuileJete != null)
+                if (chevaletInstance.TuileJete != null)
                 {
-                    return chevaletInstance.tuileJete;
+                    return chevaletInstance.TuileJete;
                 }
 
                 // add code here signal
@@ -465,14 +465,14 @@ public class SignalRConnector : MonoBehaviour
                     if (Chevalet.neverReceivedChevalet)
                     {
                         chevaletInstance.SetTuiles(tuilesData);
-                        chevaletInstance.tuilesPack = tuilesData;
+                        chevaletInstance.TuilesPack = tuilesData;
                         chevaletInstance.Print2DMatrix();
                         chevaletInstance.Init();
                         Chevalet.neverReceivedChevalet = false;
                     }
                     else
                     {
-                        chevaletInstance.tuilesPack = tuilesData;
+                        chevaletInstance.TuilesPack = tuilesData;
                     }
                 });
             }
