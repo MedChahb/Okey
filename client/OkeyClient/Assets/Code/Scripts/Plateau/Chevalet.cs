@@ -51,9 +51,10 @@ public class Chevalet : MonoBehaviour
         this.IsJete = false;
     }
 
-    void Start()
+    private void Start()
     {
         this.InitPlaceholders();
+        this.Awake();
         //this.InitializeBoardFromPlaceholders();
         //this.InitializeBoardFromTuiles();
 

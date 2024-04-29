@@ -9,22 +9,22 @@ using UnityEngine.SceneManagement;
 
 public class SignalRConnector : MonoBehaviour
 {
-    private HubConnection hubConnection;
+    private HubConnection _hubConnection;
 
-    void Awake()
+    private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this.gameObject);
     }
 
     public async void InitializeConnection()
     {
-        this.hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
+        this._hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
 
         this.ConfigureHubEvents();
 
         try
         {
-            await this.hubConnection.StartAsync();
+            await this._hubConnection.StartAsync();
             Debug.Log("SignalR connection established.");
             LobbyManager.Instance.SetConnectionStatus(true);
         }
@@ -36,7 +36,7 @@ public class SignalRConnector : MonoBehaviour
 
     private void ConfigureHubEvents()
     {
-        this.hubConnection.On<RoomsPacket>(
+        this._hubConnection.On<RoomsPacket>(
             "UpdateRoomsRequest",
             Rooms =>
             {
@@ -70,7 +70,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this.hubConnection.On<PacketSignal>(
+        this._hubConnection.On<PacketSignal>(
             "ReceiveMessage",
             Message =>
             {
@@ -79,7 +79,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this.hubConnection.On(
+        this._hubConnection.On(
             "StartGame",
             () =>
             {
@@ -91,7 +91,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this.hubConnection.On<string>(
+        this._hubConnection.On<string>(
             "TurnSignal",
             (PlayerName) =>
             {
@@ -106,7 +106,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this.hubConnection.On(
+        this._hubConnection.On(
             "YourTurnSignal",
             () =>
             {
@@ -118,7 +118,37 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this.hubConnection.On<TuilePacket>(
+        this._hubConnection.On<TuilePacket>(
+            "FirstJeterActionRequest",
+            () =>
+            {
+                var chevaletInstance = Chevalet.Instance;
+                Debug.Log("Ok il faut jeter une tuile");
+                var tuile = new TuilePacket
+                {
+                    X = "0",
+                    Y = "0",
+                    gagner = false
+                };
+
+                while (chevaletInstance.IsJete == false) { }
+                Debug.Log("La tuile vient d'etre jetee");
+
+                if (chevaletInstance.TuileJete != null)
+                {
+                    return chevaletInstance.TuileJete;
+                }
+
+                // add code here signal
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    LobbyManager.Instance.SetMyTurn(false);
+                });
+                return tuile;
+            }
+        );
+
+        this._hubConnection.On<TuilePacket>(
             "JeterRequest",
             () =>
             {
@@ -148,17 +178,17 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this.hubConnection.On<DefaussePacket>(
+        this._hubConnection.On<DefaussePacket>(
             "ReceiveListeDefausse",
-            (defausse) =>
+            (Defausse) =>
             {
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     var tuilesList = new List<TuileData>();
 
-                    if (defausse.Defausse != null)
+                    if (Defausse.Defausse != null)
                     {
-                        foreach (var tuileData in defausse.Defausse)
+                        foreach (var tuileData in Defausse.Defausse)
                         {
                             if (
                                 !tuileData.Equals(
@@ -170,8 +200,6 @@ public class SignalRConnector : MonoBehaviour
                                 var keyValuePairs = tuileData.Split(';');
                                 string couleur = null;
                                 var num = 0;
-                                var defausse = false;
-                                var dansPioche = false;
                                 string nom = null;
 
                                 foreach (var pair in keyValuePairs)
@@ -199,10 +227,10 @@ public class SignalRConnector : MonoBehaviour
                                             int.TryParse(value, out num);
                                             break;
                                         case "defausse":
-                                            bool.TryParse(value, out defausse);
+                                            bool.TryParse(value, out _);
                                             break;
                                         case "dansPioche":
-                                            bool.TryParse(value, out dansPioche);
+                                            bool.TryParse(value, out _);
                                             break;
                                         case "Nom":
                                             nom = value;
@@ -254,7 +282,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this.hubConnection.On(
+        this._hubConnection.On(
             "TuilesDistribueesSignal",
             () =>
             {
@@ -262,35 +290,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this.hubConnection.On<TuilePacket>(
-            "FirstJeterActionRequest",
-            () =>
-            {
-                var chevaletInstance = Chevalet.Instance;
-                Debug.Log("Ok il faut jeter une tuile");
-
-                while (chevaletInstance.IsJete == false) { }
-                Debug.Log("La tuile vient d'etre jetee");
-
-                if (chevaletInstance.TuileJete != null)
-                {
-                    return chevaletInstance.TuileJete;
-                }
-
-                MainThreadDispatcher.Enqueue(() =>
-                {
-                    LobbyManager.Instance.SetMyTurn(false);
-                });
-                return new TuilePacket
-                {
-                    X = "0",
-                    Y = "0",
-                    gagner = false
-                };
-            }
-        );
-
-        this.hubConnection.On<PiochePacket>(
+        this._hubConnection.On<PiochePacket>(
             "PiochePacketRequest",
             () =>
             {
@@ -299,9 +299,9 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this.hubConnection.On<ChevaletPacket>(
+        this._hubConnection.On<ChevaletPacket>(
             "ReceiveChevalet",
-            async (chevalet) =>
+            (chevalet) =>
             {
                 var chevaletInstance = Chevalet.Instance;
                 MainThreadDispatcher.Enqueue(() =>
@@ -325,8 +325,6 @@ public class SignalRConnector : MonoBehaviour
                             var keyValuePairs = tuileStr.Split(';');
                             string couleur = null;
                             var num = 0;
-                            var defausse = false;
-                            var dansPioche = false;
                             string nom = null;
 
                             foreach (var pair in keyValuePairs)
@@ -354,10 +352,10 @@ public class SignalRConnector : MonoBehaviour
                                         int.TryParse(value, out num);
                                         break;
                                     case "defausse":
-                                        bool.TryParse(value, out defausse);
+                                        bool.TryParse(value, out _);
                                         break;
                                     case "dansPioche":
-                                        bool.TryParse(value, out dansPioche);
+                                        bool.TryParse(value, out _);
                                         break;
                                     case "Nom":
                                         nom = value;
@@ -413,8 +411,6 @@ public class SignalRConnector : MonoBehaviour
 
                             string couleur = null;
                             var num = 0;
-                            var defausse = false;
-                            var dansPioche = false;
                             string nom = null;
 
                             foreach (var pair in keyValuePairs)
@@ -442,10 +438,10 @@ public class SignalRConnector : MonoBehaviour
                                         int.TryParse(value, out num);
                                         break;
                                     case "defausse":
-                                        bool.TryParse(value, out defausse);
+                                        bool.TryParse(value, out _);
                                         break;
                                     case "dansPioche":
-                                        bool.TryParse(value, out dansPioche);
+                                        bool.TryParse(value, out _);
                                         break;
                                     case "Nom":
                                         nom = value;
@@ -529,11 +525,14 @@ public class SignalRConnector : MonoBehaviour
 
     public async Task JoinRoom() // takes parameter roomName in future
     {
-        if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
+        if (
+            this._hubConnection != null
+            && this._hubConnection.State == HubConnectionState.Connected
+        )
         {
             try
             {
-                await this.hubConnection.SendAsync("LobbyConnection", "room1");
+                await this._hubConnection.SendAsync("LobbyConnection", "room1");
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     UIManagerPFormulaire.Instance.showRooms.SetActive(false);
@@ -552,14 +551,17 @@ public class SignalRConnector : MonoBehaviour
         }
     }
 
-    public async void SendBoardState(TuileData[,] boardState)
+    public async void SendBoardState(TuileData[,] BoardState)
     {
         // Ensure the connection is open before attempting to send a message
-        if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
+        if (
+            this._hubConnection != null
+            && this._hubConnection.State == HubConnectionState.Connected
+        )
         {
             try
             {
-                await this.hubConnection.InvokeAsync("SendBoardState", boardState);
+                await this._hubConnection.InvokeAsync("SendBoardState", BoardState);
                 Debug.Log("Board state sent successfully.");
             }
             catch (Exception ex)
@@ -575,10 +577,13 @@ public class SignalRConnector : MonoBehaviour
 
     private async void OnDestroy()
     {
-        if (this.hubConnection != null && this.hubConnection.State == HubConnectionState.Connected)
+        if (
+            this._hubConnection != null
+            && this._hubConnection.State == HubConnectionState.Connected
+        )
         {
-            await this.hubConnection.StopAsync();
-            await this.hubConnection.DisposeAsync();
+            await this._hubConnection.StopAsync();
+            await this._hubConnection.DisposeAsync();
         }
     }
 
