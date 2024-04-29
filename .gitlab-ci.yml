@@ -17,9 +17,10 @@ stages:
   - deploy
 variables:
   PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
-  RELEASE_TAG: '/^v\d+\.\d+\.\d+$/'
+  RELEASE_TAG: '/^v\d+\.\d+\.\d+\.*$/'
 test 1/2:
   stage: test
+  dependencies: []
   script:
     - dotnet restore server/OkeyApi
     - dotnet restore server/OkeyServer
@@ -31,6 +32,7 @@ test 1/2:
     - kubernetes
 test 2/2:
   stage: test
+  dependencies: []
   script:
     - dotnet docfx docs/docfx.json
     - cp -r docs/_site public
@@ -128,8 +130,104 @@ docker-server:
       when: always
   tags:
     - kubernetes
+unity-linux-test:
+  image:
+    name: unityci/editor:ubuntu-2022.3.19f1-base-3.0.1
+  stage: build
+  dependencies: []
+  variables:
+    BUILD_PATH: client/OkeyClient/Builds/Linux
+  before_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+  script:
+    - export OKEY_BUILD_VERSION=$(scripts/generate_unity_build_version.sh)
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.LinuxTestBuild
+    - tar cJf "OkeyTest_Linux_x86-64_${OKEY_BUILD_VERSION}.tar.xz" ${BUILD_PATH}/OkeyTest ${BUILD_PATH}/OkeyTest_s.debug ${BUILD_PATH}/OkeyTest_Data ${BUILD_PATH}/UnityPlayer.so ${BUILD_PATH}/UnityPlayer_s.debug
+    - mkdir -p public/
+    - mv "OkeyTest_Linux_x86-64_${OKEY_BUILD_VERSION}.tar.xz" public/
+  after_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "front-end" || $CI_COMMIT_TAG =~ $RELEASE_TAG
+      changes:
+        - client/OkeyClient/**/*
+      when: always
+  artifacts:
+    name: "unity-build"
+    paths:
+      - public
+    expire_in: 30 days
+  tags:
+    - kubernetes
+unity-mac-test:
+  image:
+    name: unityci/editor:ubuntu-2022.3.19f1-mac-mono-3.0.1
+  stage: build
+  needs:
+    - job: unity-linux-test
+      artifacts: false
+  variables:
+    BUILD_PATH: client/OkeyClient/Builds/Mac
+  before_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+  script:
+    - export OKEY_BUILD_VERSION=$(scripts/generate_unity_build_version.sh)
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.MacTestBuild
+    - chmod a+x ${BUILD_PATH}/OkeyTest.app/Contents/MacOS/Okey
+    - tar cJf "OkeyTest_Mac_Universal_${OKEY_BUILD_VERSION}.tar.xz" ${BUILD_PATH}/OkeyTest.app
+    - mkdir -p public/
+    - mv "OkeyTest_Mac_Universal_${OKEY_BUILD_VERSION}.tar.xz" public/
+  after_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "front-end" || $CI_COMMIT_TAG =~ $RELEASE_TAG
+      changes:
+        - client/OkeyClient/**/*
+      when: always
+  artifacts:
+    name: "unity-build"
+    paths:
+      - public
+    expire_in: 30 days
+  tags:
+    - kubernetes
+unity-windows-test:
+  image:
+    name: unityci/editor:ubuntu-2022.3.19f1-windows-mono-3.0.1
+  stage: build
+  needs:
+    - job: unity-mac-test
+      artifacts: false
+  variables:
+    BUILD_PATH: client/OkeyClient/Builds/Windows
+  before_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+  script:
+    - export OKEY_BUILD_VERSION=$(scripts/generate_unity_build_version.sh)
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.WindowsTestBuild
+    - tar cJf "OkeyTest_Windows_x86-64_${OKEY_BUILD_VERSION}.tar.xz" ${BUILD_PATH}/OkeyTest.exe ${BUILD_PATH}/OkeyTest_Data ${BUILD_PATH}/UnityPlayer.dll ${BUILD_PATH}/UnityCrashHandler64.exe ${BUILD_PATH}/WinPixEventRuntime.dll ${BUILD_PATH}/MonoBleedingEdge
+    - mkdir -p public/
+    - mv "OkeyTest_Windows_x86-64_${OKEY_BUILD_VERSION}.tar.xz" public/
+  after_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "front-end" || $CI_COMMIT_TAG =~ $RELEASE_TAG
+      changes:
+        - client/OkeyClient/**/*
+      when: always
+  artifacts:
+    name: "unity-build"
+    paths:
+      - public
+    expire_in: 30 days
+  tags:
+    - kubernetes
 pages:
   stage: deploy
+  dependencies: []
   script:
     - dotnet docfx docs/docfx.json
     - cp -r docs/_site public
@@ -142,6 +240,7 @@ pages:
     - kubernetes
 release_job:
   stage: deploy
+  dependencies: []
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   rules:
     - if: '$CI_COMMIT_TAG =~ $RELEASE_TAG' # Run this job when a release tag is created
@@ -151,6 +250,7 @@ release_job:
   script:
     - echo "Running release_job for $CI_COMMIT_TAG"
     - scripts/create_latest_release_description.sh > RELEASE_NOTES.md
+  after_script: ""
   release: # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
     tag_name: $CI_COMMIT_TAG
     name: 'Release $CI_COMMIT_TAG'
