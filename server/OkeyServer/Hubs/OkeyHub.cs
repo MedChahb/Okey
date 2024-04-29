@@ -554,8 +554,8 @@ public sealed class OkeyHub : Hub
                     ListeDefausseSend.Add(tuileString);
                 }
 
-                await this._hubContext
-                    .Clients.Client(connectionId)
+                await this
+                    ._hubContext.Clients.Client(connectionId)
                     .SendAsync(
                         "ReceiveListeDefausse",
                         new LstDefaussePacket { Defausse = ListeDefausseSend }
@@ -576,12 +576,9 @@ public sealed class OkeyHub : Hub
         {
             try
             {
-                await this._hubContext
-                        .Clients.Client(connectionId)
-                        .SendAsync(
-                            "ReceiveEmote",
-                            new EmotePacket { EmoteName = EmoteName }
-                        );
+                await this
+                    ._hubContext.Clients.Client(connectionId)
+                    .SendAsync("ReceiveEmote", new EmotePacket { EmoteName = EmoteName });
             }
             catch (Exception e)
             {
@@ -590,6 +587,7 @@ public sealed class OkeyHub : Hub
             }
         }
     }
+
     public string FromEnumToString(CouleurTuile col)
     {
         switch (col)
@@ -671,6 +669,7 @@ public sealed class OkeyHub : Hub
                 //await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 await this.SendChevalets(playerIds, joueurs.ToList());
                 await this.SendListeDefausseToAll(playerIds, jeu);
+                Thread.Sleep(500);
                 var coords = await this.FirstJeterRequest(joueurStarter);
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
@@ -720,14 +719,15 @@ public sealed class OkeyHub : Hub
                         {
                             currentPlayer.PiocherTuile(pioche, jeu);
                         }
-
                         // si sous forme :emote_name:
-                        else if (pioche.StartsWith(":", StringComparison.OrdinalIgnoreCase) && pioche.EndsWith(":", StringComparison.OrdinalIgnoreCase))
+                        else if (
+                            pioche.StartsWith(":", StringComparison.OrdinalIgnoreCase)
+                            && pioche.EndsWith(":", StringComparison.OrdinalIgnoreCase)
+                        )
                         {
                             await this.EnvoyerEmoteAll(playerIds, pioche);
                             continue;
                         }
-
                         else
                         {
                             continue;
