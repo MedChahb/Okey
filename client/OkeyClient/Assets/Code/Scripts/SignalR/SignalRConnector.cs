@@ -141,7 +141,7 @@ public class SignalRConnector : MonoBehaviour
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     LobbyManager.Instance.SetMyTurn(false);
-                });
+                }); 
                 return tuile;
             }
         );

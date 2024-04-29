@@ -48,11 +48,11 @@ public class Tuile : MonoBehaviour
     {
         if (isInStack)
         {
-            this.chevalet.draw(true);
+            this.chevalet.Draw(true);
         }
         if (isInPioche)
         {
-            this.chevalet.draw(false);
+            this.chevalet.Draw(false);
         }
         if (deplacable)
         {
@@ -87,8 +87,8 @@ public class Tuile : MonoBehaviour
                 {
                     AttachToPlaceholder(closestPlaceholder);
                     if (
-                        closestPlaceholder != Chevalet.pileDroitePlaceHolder
-                        && closestPlaceholder != Chevalet.jokerPlaceHolder
+                        closestPlaceholder != Chevalet.PileDroitePlaceHolder
+                        && closestPlaceholder != Chevalet.JokerPlaceHolder
                     )
                     {
                         // The placeholder countains already a Tile, we must update before insert
@@ -97,9 +97,9 @@ public class Tuile : MonoBehaviour
                     else
                     {
                         deplacable = false;
-                        if (closestPlaceholder == Chevalet.pileDroitePlaceHolder)
+                        if (closestPlaceholder == Chevalet.PileDroitePlaceHolder)
                         {
-                            this.chevalet.throwTile(this.PreviousPlaceHolder.GetComponent<Tuile>());
+                            this.chevalet.ThrowTile(this.PreviousPlaceHolder.GetComponent<Tuile>());
                         }
                     }
                 }
