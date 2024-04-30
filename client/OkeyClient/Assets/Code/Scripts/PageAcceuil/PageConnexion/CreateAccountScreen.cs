@@ -50,18 +50,18 @@ public class CreatAccountScreen : MonoBehaviour
     private int currentAvatarId = 0;
 
     [SerializeField]
-    private Button avatar0;
+    private GameObject avatar0;
 
     [SerializeField]
-    private Button avatar1;
+    private GameObject avatar1;
 
     [SerializeField]
-    private Button avatar2;
+    private GameObject avatar2;
 
     [SerializeField]
-    private Button avatar3;
+    private GameObject avatar3;
 
-    private float scaleFactor = 2f;
+    private float scaleFactor = 1.3f;
 
     // Start is called before the first frame update
     void Start()
@@ -87,19 +87,44 @@ public class CreatAccountScreen : MonoBehaviour
 
         erreurTxt.gameObject.SetActive(false);
 
-        avatar0.onClick.AddListener(() => OnAvatarButtonClick(0));
+        avatar0.transform.localScale *= scaleFactor;
+    }
 
-        avatar1.onClick.AddListener(() => OnAvatarButtonClick(1));
+    void Update()
+    {
+        if (UIManager.singleton.language) { }
+        else { }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
 
-        avatar2.onClick.AddListener(() => OnAvatarButtonClick(2));
-
-        avatar3.onClick.AddListener(() => OnAvatarButtonClick(3));
+            if (hit.collider != null)
+            {
+                if (hit.collider.gameObject == avatar0.gameObject)
+                {
+                    OnAvatarButtonClick(0);
+                }
+                else if (hit.collider.gameObject == avatar1.gameObject)
+                {
+                    OnAvatarButtonClick(1);
+                }
+                else if (hit.collider.gameObject == avatar2.gameObject)
+                {
+                    OnAvatarButtonClick(2);
+                }
+                else if (hit.collider.gameObject == avatar3.gameObject)
+                {
+                    OnAvatarButtonClick(3);
+                }
+            }
+        }
     }
 
     void OnAvatarButtonClick(int avatarId)
     {
+        ResetAvatarView();
         currentAvatarId = avatarId;
-        Debug.Log(currentAvatarId);
         switch (currentAvatarId)
         {
             case 0:
@@ -108,12 +133,30 @@ public class CreatAccountScreen : MonoBehaviour
             case 1:
                 avatar1.transform.localScale *= scaleFactor;
                 break;
-            // Ajouter d'autres cas si nécessaire
             case 2:
                 avatar2.transform.localScale *= scaleFactor;
                 break;
             case 3:
                 avatar3.transform.localScale *= scaleFactor;
+                break;
+        }
+    }
+
+    void ResetAvatarView()
+    {
+        switch (currentAvatarId)
+        {
+            case 0:
+                avatar0.transform.localScale /= scaleFactor;
+                break;
+            case 1:
+                avatar1.transform.localScale /= scaleFactor;
+                break;
+            case 2:
+                avatar2.transform.localScale /= scaleFactor;
+                break;
+            case 3:
+                avatar3.transform.localScale /= scaleFactor;
                 break;
         }
     }
@@ -144,12 +187,6 @@ public class CreatAccountScreen : MonoBehaviour
     {
         Panel.SetActive(false);
         logInScreen.SetActive(true);
-    }
-
-    void Update()
-    {
-        if (UIManager.singleton.language) { }
-        else { }
     }
 
     public void UpdateWithConnection(int code)
