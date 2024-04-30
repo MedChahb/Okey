@@ -298,6 +298,7 @@ public sealed class OkeyHub : Hub
 
     private async Task<string> CoordsGainRequest(string connectionId)
     {
+        Console.WriteLine("Le pb arrive ici");
         var tuile = await this
             ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<TuilePacket>(
@@ -370,7 +371,7 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="connectionId"></param>
     /// <returns>coordonnées</returns>
-    private async Task<string> JeterRequest(Joueur pl)
+    private async Task JeterRequest(Joueur pl, string roomName, Jeu jeu)
     {
         var invokeTask = this
             ._hubContext.Clients.Client(pl.getName())
@@ -381,26 +382,66 @@ public sealed class OkeyHub : Hub
         // sinon                        completedTask <- Task.Delay()
         var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
 
+        if (completedTask == invokeTask) // TODO: if non optimal du tout, discussion nécessaire
+        {
+            var coordinates = await invokeTask;
+
+            if (coordinates.gagner == true)
+            {
+                if (
+                    pl?.JeteTuilePourTerminer(
+                        this.ReadCoords(coordinates.Y + ";" + coordinates.X),
+                        jeu
+                    ) == true
+                )
+                {
+                    // Le joueur gagne
+                    await this.PlayerWon(roomName, pl.getName());
+                }
+
+                if (pl != null)
+                {
+                    await this.SendMpToPlayer(
+                        pl.getName(),
+                        "Vous n'avez pas de serie dans votre chevalet !"
+                    );
+                    var randTuileCoord = pl.GetRandomTuileCoords();
+                    var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
+
+                    await this.SendMpToPlayer(
+                        pl.getName(),
+                        $"Tentative de gain raté. La tuile ({coord}) a etait jetée aléatoirement."
+                    );
+
+                    pl?.JeterTuile(
+                        this.ReadCoords(randTuileCoord.getY() + ";" + randTuileCoord.getX()),
+                        jeu
+                    );
+                }
+            }
+            else
+            {
+                pl?.JeterTuile(this.ReadCoords(coordinates.Y + ";" + coordinates.X), jeu);
+            }
+        }
+
         if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
         {
-            var RandTuileCoord = pl.GetRandomTuileCoords();
-            var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
-
-            await this.SendMpToPlayer(
-                pl.getName(),
-                $"Temps écoulé. La tuile ({coord}) a etait jetée aléatoirement."
-            );
-            return RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
-        }
-        else
-        {
-            var TuileObtenue = await invokeTask;
-            if (TuileObtenue.gagner == true)
+            if (pl != null)
             {
-                return "gagner";
-            }
+                var RandTuileCoord = pl.GetRandomTuileCoords();
+                var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
 
-            return TuileObtenue.Y + ";" + TuileObtenue.X;
+                await this.SendMpToPlayer(
+                    pl.getName(),
+                    $"Temps écoulé. La tuile ({coord}) a etait jetée aléatoirement."
+                );
+
+                pl?.JeterTuile(
+                    this.ReadCoords(RandTuileCoord.getY() + ";" + RandTuileCoord.getX()),
+                    jeu
+                );
+            }
         }
     }
 
@@ -735,34 +776,8 @@ public sealed class OkeyHub : Hub
 
                         await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                        var coordinates = await this.JeterRequest(currentPlayer);
+                        await this.JeterRequest(currentPlayer, roomName, jeu);
 
-                        if (coordinates.Equals("gagner", StringComparison.Ordinal))
-                        {
-                            var coordsGain = await this.CoordsGainRequest(currentPlayer.getName());
-                            if (
-                                currentPlayer?.JeteTuilePourTerminer(
-                                    this.ReadCoords(coordsGain),
-                                    jeu
-                                ) == true
-                            )
-                            {
-                                // Le joueur gagne
-                                await this.PlayerWon(roomName, currentPlayer.getName());
-                            }
-
-                            if (currentPlayer != null)
-                            {
-                                await this.SendMpToPlayer(
-                                    currentPlayer.getName(),
-                                    "Vous n'avez pas de serie dans votre chevalet !"
-                                );
-                            }
-
-                            continue;
-                        }
-
-                        currentPlayer?.JeterTuile(this.ReadCoords(coordinates), jeu);
                         if (currentPlayer != null)
                         {
                             await this.SendChevalet(currentPlayer.getName(), currentPlayer);
