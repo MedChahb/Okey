@@ -166,6 +166,9 @@ public class SignalRConnector : MonoBehaviour
 
                 if (chevaletInstance.TuileJete != null)
                 {
+                    Debug.Log(
+                        $"Ok on envoie un truc non null {chevaletInstance.TuileJete.Y} {chevaletInstance.TuileJete.X}, {chevaletInstance.TuileJete.gagner}"
+                    );
                     return chevaletInstance.TuileJete;
                 }
 

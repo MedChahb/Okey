@@ -86,13 +86,13 @@ public class CreatAccountScreen : MonoBehaviour
         PasswordValidation.onValueChanged.AddListener(OnInputChanged);
 
         erreurTxt.gameObject.SetActive(false);
-        
+
         avatar0.onClick.AddListener(() => OnAvatarButtonClick(0));
-        
+
         avatar1.onClick.AddListener(() => OnAvatarButtonClick(1));
-        
+
         avatar2.onClick.AddListener(() => OnAvatarButtonClick(2));
-        
+
         avatar3.onClick.AddListener(() => OnAvatarButtonClick(3));
     }
 
@@ -100,7 +100,7 @@ public class CreatAccountScreen : MonoBehaviour
     {
         currentAvatarId = avatarId;
         Debug.Log(currentAvatarId);
-        switch(currentAvatarId)
+        switch (currentAvatarId)
         {
             case 0:
                 avatar0.transform.localScale *= scaleFactor;
@@ -117,8 +117,6 @@ public class CreatAccountScreen : MonoBehaviour
                 break;
         }
     }
-
-
 
     void OnCreateClicked()
     {

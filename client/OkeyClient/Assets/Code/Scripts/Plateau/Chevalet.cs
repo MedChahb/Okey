@@ -106,6 +106,7 @@ public class Chevalet : MonoBehaviour
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
             .SetIsDeplacable(false);
+
         PilePiochePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
@@ -141,11 +142,21 @@ public class Chevalet : MonoBehaviour
             PileDroitePlaceHolder.transform.position
         ); // Absolute position
 
+        var distanceJoker = Vector3.Distance(Position, JokerPlaceHolder.transform.position);
+
         // Determine closest placeholder based on distance and tile number
         if (distancePileDroite < closestDistance && GetTilesNumber() == 15)
         {
             closestDistance = distancePileDroite;
             closestPlaceholder = PileDroitePlaceHolder;
+        }
+        else if (
+            (distanceJoker < closestDistance && GetTilesNumber() == 15)
+            && (distanceJoker < distancePileDroite)
+        )
+        {
+            closestDistance = distanceJoker;
+            closestPlaceholder = JokerPlaceHolder;
         }
         else if (
             Position.y > 0
@@ -252,7 +263,7 @@ public class Chevalet : MonoBehaviour
     public void ThrowTileToWin(Tuile Tuile)
     {
         var tuileData = this.GetTuilePacketFromChevalet(Tuile, true);
-        Debug.Log($"{tuileData.Y}, {tuileData.X}");
+        Debug.Log($"{tuileData.Y}, {tuileData.X}, {tuileData.gagner}");
         this.IsJete = true;
         this.TuileJete = tuileData;
         //ToDo : Envoyer TuileData + Pile Pioche + tuiles2D
@@ -559,10 +570,10 @@ public class Chevalet : MonoBehaviour
             tuile.SetValeur(0);
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece pioché
         }
-        //cas de jet : Chevalet -> pile droite
+        //cas de jet : Chevalet -> pile droite / tentative de gain
         else if (
             PreviousPlaceHolder.transform.IsChildOf(chevaletFront.transform)
-            && NextPlaceholder == PileDroitePlaceHolder
+            && (NextPlaceholder == PileDroitePlaceHolder || NextPlaceholder == JokerPlaceHolder)
         )
         {
             //enlever la piece jeté du chevalet
@@ -590,17 +601,11 @@ public class Chevalet : MonoBehaviour
 
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece jeté
         }
-        //cas de jet : Chevalet -> tentative/gain
-        else if (
-            PreviousPlaceHolder.transform.IsChildOf(chevaletFront.transform)
-            && NextPlaceholder == JokerPlaceHolder
-        )
-        {
-            Debug.Log("Vous essayez de gagner");
-        }
         else //cas derreur
         {
-            Debug.Log("error updating matrix after movement");
+            Debug.LogError("error updating matrix after movement");
+
+            Debug.Log($"Source: {PreviousPlaceHolder.name}, Destination: {NextPlaceholder.name}");
         }
 
         this.Print2DMatrix();

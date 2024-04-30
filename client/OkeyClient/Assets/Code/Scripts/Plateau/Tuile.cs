@@ -101,10 +101,19 @@ public class Tuile : MonoBehaviour
                         {
                             this.chevalet.ThrowTile(this.PreviousPlaceHolder.GetComponent<Tuile>());
                         }
+                        else
+                        {
+                            Debug.LogWarning(
+                                $"On envoie le message {this.PreviousPlaceHolder.GetComponent<Tuile>()}"
+                            );
+                            this.chevalet.ThrowTileToWin(
+                                this.PreviousPlaceHolder.GetComponent<Tuile>()
+                            );
+                        }
                     }
                 }
             }
-
+            Debug.Log($"{this.PreviousPlaceHolder} {closestPlaceholder}");
             this.chevalet.UpdateMatrixAfterMovement(this.PreviousPlaceHolder, closestPlaceholder); //placeholder ou la piece était avant le deplacement et le placeholder ou elle a été deplacé
             Debug.Log(
                 "Tile changed position from : "
