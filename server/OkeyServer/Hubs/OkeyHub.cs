@@ -629,6 +629,65 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    //envoi pour  tuile jete donc isdefausse = true
+    private async Task SendTuileJeteToAll(List<string> connectionIds, Tuile tuile)
+    {
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                string couleurString = FromEnumToString(tuile.GetCouleur());
+                string numeroString = tuile.GetNum().ToString();
+
+                var tuileStringPacket = new TuileStringPacket
+                {
+                    Couleur = couleurString,
+                    numero = numeroString,
+                    isDefausse = "true"
+                };
+
+                await _hubContext
+                    .Clients.Client(connectionId)
+                    .SendAsync("ReceiveTuileJete", tuileStringPacket);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi de la tuile au client {connectionId}: {ex.Message}"
+                );
+            }
+        }
+    }
+
+    private async Task SendTuileCentreToAll(List<string> connectionIds, Tuile tuile)
+    {
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                string couleurString = FromEnumToString(tuile.GetCouleur());
+                string numeroString = tuile.GetNum().ToString();
+
+                var tuileStringPacket = new TuileStringPacket
+                {
+                    Couleur = couleurString,
+                    numero = numeroString,
+                    isDefausse = "false"
+                };
+
+                await _hubContext
+                    .Clients.Client(connectionId)
+                    .SendAsync("ReceiveTuileCentre", tuileStringPacket);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi de la tuile au client {connectionId}: {ex.Message}"
+                );
+            }
+        }
+    }
+
     public string FromEnumToString(CouleurTuile col)
     {
         switch (col)
@@ -693,6 +752,9 @@ public sealed class OkeyHub : Hub
         var jeu = new Jeu(1, joueurs);
         jeu.DistibuerTuile();
 
+        //envoie de la tuile du centre
+        await this.SendTuileCentreToAll(playerIds, jeu.GetTuileCentre());
+
         await this.TuilesDistribueesSignal(roomName);
 
         foreach (var t in joueurs)
@@ -727,6 +789,10 @@ public sealed class OkeyHub : Hub
                 }*/
 
                 joueurStarter.JeterTuile(this.ReadCoords(coords), jeu);
+
+                //envoi de la tuile jetee du joueur qui commence
+                await this.SendTuileJeteToAll(playerIds, joueurStarter.GetTeteDefausse());
+
                 await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 this.SetPlayerTurn(joueurStarter.getName(), false);
             }
@@ -781,6 +847,13 @@ public sealed class OkeyHub : Hub
                         if (currentPlayer != null)
                         {
                             await this.SendChevalet(currentPlayer.getName(), currentPlayer);
+
+                            //envoi de la tuile jetee
+                            await this.SendTuileJeteToAll(
+                                playerIds,
+                                currentPlayer.GetTeteDefausse()
+                            );
+
                             await this.SendListeDefausseToAll(playerIds, jeu);
                             this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
                         }
