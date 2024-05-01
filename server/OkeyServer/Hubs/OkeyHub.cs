@@ -773,9 +773,6 @@ public sealed class OkeyHub : Hub
         var jeu = new Jeu(1, joueurs);
         jeu.DistibuerTuile();
 
-        //envoie de la tuile du centre
-        await this.SendTuileCentreToAll(playerIds, jeu.GetTuileCentre());
-
         await this.TuilesDistribueesSignal(roomName);
 
         foreach (var t in joueurs)
@@ -792,8 +789,10 @@ public sealed class OkeyHub : Hub
             {
                 //await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 await this.SendChevalets(playerIds, joueurs.ToList());
+                //envoie de la tuile du centre
                 await this.SendListeDefausseToAll(playerIds, jeu);
                 Thread.Sleep(500);
+                await this.SendTuileCentreToAll(playerIds, jeu.GetTuileCentre());
                 var coords = await this.FirstJeterRequest(joueurStarter);
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
