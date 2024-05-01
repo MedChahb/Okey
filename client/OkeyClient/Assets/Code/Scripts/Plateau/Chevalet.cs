@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Code.Scripts.SignalR.Packets;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Chevalet : MonoBehaviour
@@ -19,10 +20,17 @@ public class Chevalet : MonoBehaviour
     public static GameObject PileDroitePlaceHolder;
     public static GameObject JokerPlaceHolder;
 
+    private static Dictionary<string, Sprite> spritesDic = new Dictionary<string, Sprite>();
+
     public bool IsJete { get; set; }
     public TuilePacket TuileJete { get; set; }
 
+    public bool IsPiochee { get; set; }
+
     public TuilePacket TuilePiochee = null;
+
+    public bool IsTireeHasard { get; set; }
+    public TuilePacket TuileTireeHasard = null;
 
     public static bool neverReceivedChevalet = true;
 
@@ -45,10 +53,40 @@ public class Chevalet : MonoBehaviour
 
     public void Init()
     {
+        var sprites = Resources.LoadAll<Sprite>("Tiles");
+
+        for (var i = 0; i < 13; i++)
+        {
+            spritesDic.Add($"Black_{i + 1}", sprites[i]);
+        }
+
+        for (var i = 13; i < 26; i++)
+        {
+            spritesDic.Add($"Blue_{(i + 1) - 13}", sprites[i]);
+        }
+
+        spritesDic.Add("Fake Joker_1", sprites[26]);
+        spritesDic.Add("Fake Joker_2", sprites[27]);
+
+        for (var i = 28; i < 41; i++)
+        {
+            spritesDic.Add($"Green_{(i + 1) - 28}", sprites[i]);
+        }
+
+        spritesDic.Add($"Pioche", sprites[41]);
+
+        for (var i = 42; i < 55; i++)
+        {
+            spritesDic.Add($"Red_{(i + 1) - 42}", sprites[i]);
+        }
+
         this.InitPlaceholders();
         this.InitializeBoardFromTuiles();
         this.TuileJete = null;
         this.IsJete = false;
+
+        this.IsTireeHasard = false;
+        this.TuileTireeHasard = null;
     }
 
     private void Start()
@@ -439,35 +477,6 @@ public class Chevalet : MonoBehaviour
 
     private void InitializeBoardFromTuiles()
     {
-        var sprites = Resources.LoadAll<Sprite>("Tiles");
-
-        var spritesDic = new Dictionary<string, Sprite>();
-
-        for (var i = 0; i < 13; i++)
-        {
-            spritesDic.Add($"Black_{i + 1}", sprites[i]);
-        }
-
-        for (var i = 13; i < 26; i++)
-        {
-            spritesDic.Add($"Blue_{(i + 1) - 13}", sprites[i]);
-        }
-
-        spritesDic.Add("Fake Joker_1", sprites[26]);
-        spritesDic.Add("Fake Joker_2", sprites[27]);
-
-        for (var i = 28; i < 41; i++)
-        {
-            spritesDic.Add($"Green_{(i + 1) - 28}", sprites[i]);
-        }
-
-        spritesDic.Add($"Pioche", sprites[41]);
-
-        for (var i = 42; i < 55; i++)
-        {
-            spritesDic.Add($"Red_{(i + 1) - 42}", sprites[i]);
-        }
-
         for (var i = 0; i < Placeholders.Length; i++)
         {
             var x = i / 14;
@@ -604,7 +613,6 @@ public class Chevalet : MonoBehaviour
             else
             {
                 var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
-                Debug.Log(this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2].couleur);
                 var nt = NextPlaceholder.GetComponent<Tuile>();
                 nt.SetCouleur(tuile.GetCouleur());
                 nt.SetValeur(tuile.GetValeur());
@@ -621,6 +629,93 @@ public class Chevalet : MonoBehaviour
         }
 
         this.Print2DMatrix();
+    }
+
+    public void MoveFromChevaletToDefausse(TuilePacket tuile)
+    {
+        Debug.LogWarning($"On rentre dans la methode");
+        var xS = int.Parse(tuile.X);
+        var yS = int.Parse(tuile.Y);
+        var xChevalet = 0;
+        var yChevalet = 0;
+        var tuileServ = this.TuilesPack[xS, yS];
+
+        // Trouver les coordonnes actuelles sur le chevalet
+        TuileData tuileChevalet;
+        for (var xC = 0; xC < 2; xC++)
+        {
+            for (var yC = 0; yC < 14; yC++)
+            {
+                if (this.Tuiles2D[xC, yC] != null)
+                {
+                    if (
+                        (this.Tuiles2D[xC, yC].num == tuileServ.num)
+                        && (
+                            tuileServ.couleur.Equals(
+                                this.Tuiles2D[xC, yC].couleur,
+                                StringComparison.Ordinal
+                            )
+                        )
+                    )
+                    {
+                        tuileChevalet = this.Tuiles2D[xC, yC];
+                        xChevalet = xC;
+                        yChevalet = yC;
+                    }
+                }
+            }
+        }
+
+        int coordPlaceHolder = 0;
+
+        if (xChevalet == 0)
+        {
+            coordPlaceHolder = yChevalet;
+        }
+        else
+        {
+            coordPlaceHolder = yChevalet + 15;
+        }
+
+        var sourceplaceHolder = Placeholders[coordPlaceHolder];
+
+        sourceplaceHolder.GetComponent<Tuile>().SetCouleur(null);
+        sourceplaceHolder.GetComponent<Tuile>().SetValeur(0);
+
+        var spriteToDelete = sourceplaceHolder.transform.GetChild(0);
+        spriteToDelete.transform.SetParent(PileDroitePlaceHolder.transform);
+        var transform1 = spriteToDelete.transform;
+        transform1.localPosition = new Vector3(0, 0, 0);
+        //Destroy(sourceplaceHolder.transform.GetChild(0).gameObject);
+
+
+        /*
+        // Bouger cette tuile sur la defausse
+
+        //this.Tuiles2D[xChevalet, yChevalet] = null;
+
+        int coordPlaceHolder = 0;
+
+        if (xChevalet == 0)
+        {
+            coordPlaceHolder = yChevalet;
+        }
+        else
+        {
+            coordPlaceHolder = yChevalet+15;
+        }
+
+        var SourceplaceHolder = Placeholders[coordPlaceHolder];
+        var pileDroite = PileDroitePlaceHolder;
+        var tuilePileDroite = pileDroite.GetComponent<Tuile>();
+        this._pileDroite.Push(SourceplaceHolder.GetComponent<Tuile>());
+        Debug.Log($"Voici ce que j'ai en push{this._pileDroite.Peek().GetCouleur()}");
+        tuilePileDroite.SetCouleur(tuileServ.couleur);
+        tuilePileDroite.SetValeur(tuileServ.num);
+        tuilePileDroite.SetIsJoker(tuileServ.isJoker);
+
+        this.IsTireeHasard = false;
+        this.TuileTireeHasard = null;*/
     }
 
     public void Print2DMatrix() //Really useful to visualize tiles placement matrix

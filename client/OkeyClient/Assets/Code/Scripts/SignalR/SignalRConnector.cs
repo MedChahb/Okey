@@ -119,6 +119,20 @@ public class SignalRConnector : MonoBehaviour
         );
 
         this._hubConnection.On<TuilePacket>(
+            "TuileJeteeAuto",
+            (Tuile) =>
+            {
+                Chevalet.Instance.IsTireeHasard = true;
+                Chevalet.Instance.TuileTireeHasard = Tuile;
+                Debug.Log($"La tuile jetee automatiquement a pour coord {Tuile.X} {Tuile.Y}");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    Chevalet.Instance.MoveFromChevaletToDefausse(Tuile);
+                });
+            }
+        );
+
+        this._hubConnection.On<TuilePacket>(
             "FirstJeterActionRequest",
             () =>
             {
