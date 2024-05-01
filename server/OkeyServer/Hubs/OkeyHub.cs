@@ -268,6 +268,14 @@ public sealed class OkeyHub : Hub
             .SendAsync("ReceiveMessage", new PacketSignal { message = message });
 
     /// <summary>
+    /// Envoie la tuile jetee dans le cas ou c'est fait automatiquement (delai depasse par exemple)
+    /// </summary>
+    /// <param name="userId">Nom d'utilisateur</param>
+    /// <param name="tuile">Tuile jetee automatiquement</param>
+    private async Task SendTuileJeteeToPlayer(string userId, TuilePacket tuile) =>
+        await this._hubContext.Clients.Client(userId).SendAsync("TuileJeteeAuto", tuile);
+
+    /// <summary>
     /// Requete de coordoonnees
     /// </summary>
     /// <param name="connectionId">Id de l'utilisateur</param>
@@ -408,9 +416,14 @@ public sealed class OkeyHub : Hub
                     var randTuileCoord = pl.GetRandomTuileCoords();
                     var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
 
-                    await this.SendMpToPlayer(
+                    await this.SendTuileJeteeToPlayer(
                         pl.getName(),
-                        $"Tentative de gain raté. La tuile ({coord}) a etait jetée aléatoirement."
+                        new TuilePacket
+                        {
+                            X = randTuileCoord.getY().ToString(),
+                            Y = randTuileCoord.getX().ToString(),
+                            gagner = null
+                        }
                     );
 
                     pl?.JeterTuile(
@@ -432,9 +445,14 @@ public sealed class OkeyHub : Hub
                 var RandTuileCoord = pl.GetRandomTuileCoords();
                 var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
 
-                await this.SendMpToPlayer(
+                await this.SendTuileJeteeToPlayer(
                     pl.getName(),
-                    $"Temps écoulé. La tuile ({coord}) a etait jetée aléatoirement."
+                    new TuilePacket
+                    {
+                        X = RandTuileCoord.getY().ToString(),
+                        Y = RandTuileCoord.getX().ToString(),
+                        gagner = null
+                    }
                 );
 
                 pl?.JeterTuile(
@@ -630,25 +648,28 @@ public sealed class OkeyHub : Hub
     }
 
     //envoi pour  tuile jete donc isdefausse = true
-    private async Task SendTuileJeteToAll(List<string> connectionIds, Tuile tuile)
+    private async Task SendTuileJeteToAll(List<string> connectionIds, Tuile? tuile)
     {
         foreach (var connectionId in connectionIds)
         {
             try
             {
-                string couleurString = FromEnumToString(tuile.GetCouleur());
-                string numeroString = tuile.GetNum().ToString();
-
-                var tuileStringPacket = new TuileStringPacket
+                if (tuile != null)
                 {
-                    Couleur = couleurString,
-                    numero = numeroString,
-                    isDefausse = "true"
-                };
+                    var couleurString = this.FromEnumToString(tuile.GetCouleur());
+                    var numeroString = tuile.GetNum().ToString();
 
-                await _hubContext
-                    .Clients.Client(connectionId)
-                    .SendAsync("ReceiveTuileJete", tuileStringPacket);
+                    var tuileStringPacket = new TuileStringPacket
+                    {
+                        Couleur = couleurString,
+                        numero = numeroString,
+                        isDefausse = "true"
+                    };
+
+                    await this
+                        ._hubContext.Clients.Client(connectionId)
+                        .SendAsync("ReceiveTuileJete", tuileStringPacket);
+                }
             }
             catch (Exception ex)
             {
@@ -858,7 +879,6 @@ public sealed class OkeyHub : Hub
                             this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
                         }
                     }
-
                     this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
                 }
             }
