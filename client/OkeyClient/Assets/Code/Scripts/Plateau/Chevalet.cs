@@ -589,15 +589,27 @@ public class Chevalet : MonoBehaviour
                     + this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2].isJoker
             );
 
-            this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
+            if (NextPlaceholder == PileDroitePlaceHolder)
+            {
+                this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
 
-            var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
-            var nt = NextPlaceholder.GetComponent<Tuile>();
-            nt.SetCouleur(tuile.GetCouleur());
-            nt.SetValeur(tuile.GetValeur());
-            nt.SetIsJoker(tuile.GetIsJoker());
-            tuile.SetCouleur(null);
-            tuile.SetValeur(0);
+                var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+                var nt = NextPlaceholder.GetComponent<Tuile>();
+                nt.SetCouleur(tuile.GetCouleur());
+                nt.SetValeur(tuile.GetValeur());
+                nt.SetIsJoker(tuile.GetIsJoker());
+                tuile.SetCouleur(null);
+                tuile.SetValeur(0);
+            }
+            else
+            {
+                var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+                Debug.Log(this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2].couleur);
+                var nt = NextPlaceholder.GetComponent<Tuile>();
+                nt.SetCouleur(tuile.GetCouleur());
+                nt.SetValeur(tuile.GetValeur());
+                nt.SetIsJoker(tuile.GetIsJoker());
+            }
 
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece jeté
         }
@@ -705,12 +717,6 @@ public class Chevalet : MonoBehaviour
         return num;
     }
 }
-
-
-
-
-
-
 
 
 /*

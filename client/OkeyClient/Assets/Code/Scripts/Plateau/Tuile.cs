@@ -125,6 +125,7 @@ public class Tuile : MonoBehaviour
                             }
                             else
                             {
+                                this.deplacable = true;
                                 Debug.LogWarning(
                                     $"On envoie le message {this.PreviousPlaceHolder.GetComponent<Tuile>()}"
                                 );
