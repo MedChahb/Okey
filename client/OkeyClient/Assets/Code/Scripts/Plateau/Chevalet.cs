@@ -144,7 +144,6 @@ public class Chevalet : MonoBehaviour
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
             .SetIsDeplacable(false);
-
         PilePiochePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
@@ -258,8 +257,6 @@ public class Chevalet : MonoBehaviour
                     newChild.GetComponent<Tuile>().SetIsInStack(true);
                     newChild.GetComponent<Tuile>().SetIsDeplacable(false);
                 }
-                //ToDo : Envoyer "Pioche à Droite"
-                //
             }
             else
             {
@@ -282,7 +279,6 @@ public class Chevalet : MonoBehaviour
                     newChild.GetComponent<Tuile>().SetIsInStack(true);
                     newChild.GetComponent<Tuile>().SetIsDeplacable(false);
                 }
-                //ToDo : Envoyer "Pioche au centre"
             }
         }
     }
@@ -304,10 +300,6 @@ public class Chevalet : MonoBehaviour
         Debug.Log($"{tuileData.Y}, {tuileData.X}, {tuileData.gagner}");
         this.IsJete = true;
         this.TuileJete = tuileData;
-        //ToDo : Envoyer TuileData + Pile Pioche + tuiles2D
-        //Attendre Vérif
-        //Et communiquer le résultat
-        //pilePioche.Push(tuile);
     }
 
     public TuilePacket GetTuilePacketFromChevalet(Tuile T, bool gain)
@@ -475,6 +467,33 @@ public class Chevalet : MonoBehaviour
         return name;
     }
 
+    private static CouleurTuile FromStringToCouleurTuile(string CouleurString)
+    {
+        CouleurTuile coul;
+        switch (CouleurString)
+        {
+            case "J":
+                coul = CouleurTuile.J;
+                break;
+            case "N":
+                coul = CouleurTuile.N;
+                break;
+            case "R":
+                coul = CouleurTuile.R;
+                break;
+            case "B":
+                coul = CouleurTuile.B;
+                break;
+            case "M":
+                coul = CouleurTuile.M;
+                break;
+            default:
+                throw new Exception();
+        }
+
+        return coul;
+    }
+
     private void InitializeBoardFromTuiles()
     {
         for (var i = 0; i < Placeholders.Length; i++)
@@ -609,6 +628,13 @@ public class Chevalet : MonoBehaviour
                 nt.SetIsJoker(tuile.GetIsJoker());
                 tuile.SetCouleur(null);
                 tuile.SetValeur(0);
+                for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
+                {
+                    PileDroitePlaceHolder
+                        .transform.GetChild(i)
+                        .GetComponent<SpriteRenderer>()
+                        .sortingOrder = i;
+                }
             }
             else
             {
@@ -633,7 +659,6 @@ public class Chevalet : MonoBehaviour
 
     public void MoveFromChevaletToDefausse(TuilePacket tuile)
     {
-        Debug.LogWarning($"On rentre dans la methode");
         var xS = int.Parse(tuile.X);
         var yS = int.Parse(tuile.Y);
         var xChevalet = 0;
@@ -686,36 +711,44 @@ public class Chevalet : MonoBehaviour
         spriteToDelete.transform.SetParent(PileDroitePlaceHolder.transform);
         var transform1 = spriteToDelete.transform;
         transform1.localPosition = new Vector3(0, 0, 0);
-        //Destroy(sourceplaceHolder.transform.GetChild(0).gameObject);
 
-
-        /*
-        // Bouger cette tuile sur la defausse
-
-        //this.Tuiles2D[xChevalet, yChevalet] = null;
-
-        int coordPlaceHolder = 0;
-
-        if (xChevalet == 0)
+        for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
         {
-            coordPlaceHolder = yChevalet;
+            PileDroitePlaceHolder
+                .transform.GetChild(i)
+                .GetComponent<SpriteRenderer>()
+                .sortingOrder = i;
         }
-        else
+    }
+
+    public void SetTuileCentre(TuileStringPacket tuile)
+    {
+        if (tuile.numero != null)
         {
-            coordPlaceHolder = yChevalet+15;
+            var tuileData = new TuileData(
+                FromStringToCouleurTuile(tuile.Couleur),
+                int.Parse(tuile.numero),
+                true
+            );
+
+            var childObject = new GameObject("SpriteChild");
+            childObject.transform.SetParent(JokerPlaceHolder.transform);
+            var spriteRen = childObject.AddComponent<SpriteRenderer>();
+            var mat = new Material(Shader.Find("Sprites/Default"))
+            {
+                color = new Color(0.9529411764705882f, 0.9411764705882353f, 0.8156862745098039f)
+            };
+            spriteRen.material = mat;
+            Debug.Log(FromTuileToSpriteName(tuileData));
+            spriteRen.sprite = spritesDic[FromTuileToSpriteName(tuileData)];
+            spriteRen.sortingOrder = 3;
+            var transform1 = spriteRen.transform;
+            transform1.localPosition = new Vector3(0, 0, 0);
+            transform1.localScale = new Vector3(1, 1, 1);
+            childObject.AddComponent<Tuile>();
+            var boxCollider2D = childObject.AddComponent<BoxCollider2D>();
+            boxCollider2D.size = new Vector2((float)0.875, (float)1.25);
         }
-
-        var SourceplaceHolder = Placeholders[coordPlaceHolder];
-        var pileDroite = PileDroitePlaceHolder;
-        var tuilePileDroite = pileDroite.GetComponent<Tuile>();
-        this._pileDroite.Push(SourceplaceHolder.GetComponent<Tuile>());
-        Debug.Log($"Voici ce que j'ai en push{this._pileDroite.Peek().GetCouleur()}");
-        tuilePileDroite.SetCouleur(tuileServ.couleur);
-        tuilePileDroite.SetValeur(tuileServ.num);
-        tuilePileDroite.SetIsJoker(tuileServ.isJoker);
-
-        this.IsTireeHasard = false;
-        this.TuileTireeHasard = null;*/
     }
 
     public void Print2DMatrix() //Really useful to visualize tiles placement matrix

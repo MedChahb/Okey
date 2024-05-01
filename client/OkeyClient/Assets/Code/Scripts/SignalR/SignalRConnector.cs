@@ -132,6 +132,17 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        this._hubConnection.On<TuileStringPacket>(
+            "ReceiveTuileCentre",
+            (tuile) =>
+            {
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    Chevalet.Instance.SetTuileCentre(tuile);
+                });
+            }
+        );
+
         this._hubConnection.On<TuilePacket>(
             "FirstJeterActionRequest",
             () =>
