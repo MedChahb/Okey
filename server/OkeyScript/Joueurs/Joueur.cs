@@ -311,6 +311,11 @@ namespace Okey.Joueurs
             return res;
         }
 
+        public int CountDefausse()
+        {
+            return this.defausse.Count;
+        }
+
         public Coord GetRandomTuileCoords()
         {
             int etageRand = -1,
@@ -418,6 +423,18 @@ namespace Okey.Joueurs
         public List<List<Tuile?>> GetChevalet()
         {
             return this.chevalet;
+        }
+
+        public Tuile? GetTeteDefausse()
+        {
+            if (defausse.Count > 0)
+            {
+                return defausse.Peek();
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

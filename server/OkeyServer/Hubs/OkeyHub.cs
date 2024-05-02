@@ -268,6 +268,14 @@ public sealed class OkeyHub : Hub
             .SendAsync("ReceiveMessage", new PacketSignal { message = message });
 
     /// <summary>
+    /// Envoie la tuile jetee dans le cas ou c'est fait automatiquement (delai depasse par exemple)
+    /// </summary>
+    /// <param name="userId">Nom d'utilisateur</param>
+    /// <param name="tuile">Tuile jetee automatiquement</param>
+    private async Task SendTuileJeteeToPlayer(string userId, TuilePacket tuile) =>
+        await this._hubContext.Clients.Client(userId).SendAsync("TuileJeteeAuto", tuile);
+
+    /// <summary>
     /// Requete de coordoonnees
     /// </summary>
     /// <param name="connectionId">Id de l'utilisateur</param>
@@ -298,6 +306,7 @@ public sealed class OkeyHub : Hub
 
     private async Task<string> CoordsGainRequest(string connectionId)
     {
+        Console.WriteLine("Le pb arrive ici");
         var tuile = await this
             ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<TuilePacket>(
@@ -370,7 +379,7 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="connectionId"></param>
     /// <returns>coordonnées</returns>
-    private async Task<string> JeterRequest(Joueur pl)
+    private async Task JeterRequest(Joueur pl, string roomName, Jeu jeu)
     {
         var invokeTask = this
             ._hubContext.Clients.Client(pl.getName())
@@ -381,26 +390,76 @@ public sealed class OkeyHub : Hub
         // sinon                        completedTask <- Task.Delay()
         var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
 
+        if (completedTask == invokeTask) // TODO: if non optimal du tout, discussion nécessaire
+        {
+            var coordinates = await invokeTask;
+
+            if (coordinates.gagner == true)
+            {
+                if (
+                    pl?.JeteTuilePourTerminer(
+                        this.ReadCoords(coordinates.Y + ";" + coordinates.X),
+                        jeu
+                    ) == true
+                )
+                {
+                    // Le joueur gagne
+                    await this.PlayerWon(roomName, pl.getName());
+                }
+
+                if (pl != null)
+                {
+                    await this.SendMpToPlayer(
+                        pl.getName(),
+                        "Vous n'avez pas de serie dans votre chevalet !"
+                    );
+                    var randTuileCoord = pl.GetRandomTuileCoords();
+                    var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
+
+                    await this.SendTuileJeteeToPlayer(
+                        pl.getName(),
+                        new TuilePacket
+                        {
+                            X = randTuileCoord.getY().ToString(),
+                            Y = randTuileCoord.getX().ToString(),
+                            gagner = null
+                        }
+                    );
+
+                    pl?.JeterTuile(
+                        this.ReadCoords(randTuileCoord.getY() + ";" + randTuileCoord.getX()),
+                        jeu
+                    );
+                }
+            }
+            else
+            {
+                pl?.JeterTuile(this.ReadCoords(coordinates.Y + ";" + coordinates.X), jeu);
+            }
+        }
+
         if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
         {
-            var RandTuileCoord = pl.GetRandomTuileCoords();
-            var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
-
-            await this.SendMpToPlayer(
-                pl.getName(),
-                $"Temps écoulé. La tuile ({coord}) a etait jetée aléatoirement."
-            );
-            return RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
-        }
-        else
-        {
-            var TuileObtenue = await invokeTask;
-            if (TuileObtenue.gagner == true)
+            if (pl != null)
             {
-                return "gagner";
-            }
+                var RandTuileCoord = pl.GetRandomTuileCoords();
+                var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
 
-            return TuileObtenue.Y + ";" + TuileObtenue.X;
+                await this.SendTuileJeteeToPlayer(
+                    pl.getName(),
+                    new TuilePacket
+                    {
+                        X = RandTuileCoord.getY().ToString(),
+                        Y = RandTuileCoord.getX().ToString(),
+                        gagner = null
+                    }
+                );
+
+                pl?.JeterTuile(
+                    this.ReadCoords(RandTuileCoord.getY() + ";" + RandTuileCoord.getX()),
+                    jeu
+                );
+            }
         }
     }
 
@@ -465,6 +524,172 @@ public sealed class OkeyHub : Hub
                         connectionId,
                         cancellationToken: CancellationToken.None
                     );
+            }
+        }
+    }
+
+    // broadcast la taille et la tete de la pioche au centre (pas besoin d'envoyer toute la pioche puisqu'on affiche que la tete)
+    private async Task SendPiocheInfosToAll(List<string> connectionIds, Jeu jeu)
+    {
+        var PiocheTete = jeu.GetPiocheHead();
+        var PiocheTeteString = new TuileStringPacket
+        {
+            numero =
+                (PiocheTete != null)
+                    ? PiocheTete.GetNum().ToString(CultureInfo.InvariantCulture)
+                    : "",
+            Couleur = (PiocheTete != null) ? this.FromEnumToString(PiocheTete.GetCouleur()) : "",
+            isDefausse = "false"
+        };
+
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                await this
+                    ._hubContext.Clients.Client(connectionId)
+                    .SendAsync(
+                        "ReceivePiocheUpdate",
+                        new PiocheInfosPacket
+                        {
+                            PiocheTete = PiocheTeteString,
+                            PiocheTaille = jeu.GetPiocheTaille()
+                        }
+                    );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi de la pioche au client {connectionId}: {ex.Message}"
+                );
+            }
+        }
+    }
+
+    // broadcast la tete et la taille de la defausse du joueur actuel
+    private async Task SendCurrentDefausseInfosToAll(List<string> connectionIds, Joueur pl)
+    {
+        var DefausseTete = pl.GetTeteDefausse();
+        var DefausseTeteString = new TuileStringPacket
+        {
+            numero =
+                (DefausseTete != null)
+                    ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture)
+                    : "",
+            Couleur =
+                (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
+            isDefausse = "true"
+        };
+
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                await this
+                    ._hubContext.Clients.Client(connectionId)
+                    .SendAsync(
+                        "ReceiveDefausseActuelleUpdate",
+                        new PiocheInfosPacket
+                        {
+                            PiocheTete = DefausseTeteString,
+                            PiocheTaille = pl.CountDefausse()
+                        }
+                    );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi des infos de la defausse au client {connectionId}: {ex.Message}"
+                );
+            }
+        }
+    }
+
+    //broadcast l'etat de a defausse du prochain joueur (call this function AFTER current player jete (not when win))
+    private async Task SendNextDefausseInfosToAll(List<string> connectionIds, Jeu j, Joueur pl)
+    {
+        var nextPlayer = j.getNextJoueur(pl);
+
+        var DefausseTete = nextPlayer.GetTeteDefausse();
+        var DefausseTeteString = new TuileStringPacket
+        {
+            numero =
+                (DefausseTete != null)
+                    ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture)
+                    : "",
+            Couleur =
+                (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
+            isDefausse = "true"
+        };
+
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                await this
+                    ._hubContext.Clients.Client(connectionId)
+                    .SendAsync(
+                        "ReceiveDefausseProchaineUpdate",
+                        new PiocheInfosPacket
+                        {
+                            PiocheTete = DefausseTeteString,
+                            PiocheTaille = nextPlayer.CountDefausse()
+                        }
+                    );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi des infos de la prochaine defausse au client {connectionId}: {ex.Message}"
+                );
+            }
+        }
+    }
+
+    //broadcast l'etat des defausses des autres joueurs (non pas actuel et prochain)
+    private async Task SendAutreDefausseInfosToAll(List<string> connectionIds, Jeu j, Joueur pl)
+    {
+        Joueur[] autreJoueur =
+        {
+            j.getNextJoueur(j.getNextJoueur(pl)),
+            j.getNextJoueur(j.getNextJoueur(j.getNextJoueur(pl)))
+        }; // [avant dernier joueur, dernier joueur]
+
+        foreach (var joueur in autreJoueur)
+        {
+            var DefausseTete = joueur.GetTeteDefausse();
+            var DefausseTeteString = new TuileStringPacket
+            {
+                numero =
+                    (DefausseTete != null)
+                        ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture)
+                        : "",
+                Couleur =
+                    (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
+                isDefausse = "true"
+            };
+
+            foreach (var connectionId in connectionIds)
+            {
+                try
+                {
+                    await this
+                        ._hubContext.Clients.Client(connectionId)
+                        .SendAsync(
+                            "ReceiveDefausseAutreUpdate",
+                            new PiocheInfosPacket
+                            {
+                                PiocheTete = DefausseTeteString,
+                                PiocheTaille = joueur.CountDefausse()
+                            }
+                        );
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"Erreur lors de l'envoi des infos de la defausse de {joueur.getName()} au client {connectionId}: {ex.Message}"
+                    );
+                }
             }
         }
     }
@@ -546,8 +771,8 @@ public sealed class OkeyHub : Hub
                 foreach (var tuile in jeu.ListeDefausse)
                 {
                     // Construire la chaîne de caractères représentant la tuile( pas besoin d'envoyer defausse est DansPioche mais je fais qd meme)
-                    string tuileString =
-                        $"couleur={FromEnumToString(tuile.GetCouleur())};num={tuile.GetNum()};defausse=\"true\";dansPioche=\"false\";Nom={tuile.GetName()}";
+                    var tuileString =
+                        $"couleur={this.FromEnumToString(tuile.GetCouleur())};num={tuile.GetNum()};defausse=\"true\";dansPioche=\"false\";Nom={tuile.GetName()}";
                     //pour la sécurité récupérer les isDefausse et isPioche
 
                     // Ajouter la chaîne de caractères à ListeDefausseSend
@@ -584,6 +809,68 @@ public sealed class OkeyHub : Hub
             {
                 Console.WriteLine(e.Message);
                 throw;
+            }
+        }
+    }
+
+    //envoi pour  tuile jete donc isdefausse = true
+    private async Task SendTuileJeteToAll(List<string> connectionIds, Tuile? tuile)
+    {
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                if (tuile != null)
+                {
+                    var couleurString = this.FromEnumToString(tuile.GetCouleur());
+                    var numeroString = tuile.GetNum().ToString(CultureInfo.InvariantCulture);
+
+                    var tuileStringPacket = new TuileStringPacket
+                    {
+                        Couleur = couleurString,
+                        numero = numeroString,
+                        isDefausse = "true"
+                    };
+
+                    await this
+                        ._hubContext.Clients.Client(connectionId)
+                        .SendAsync("ReceiveTuileJete", tuileStringPacket);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi de la tuile au client {connectionId}: {ex.Message}"
+                );
+            }
+        }
+    }
+
+    private async Task SendTuileCentreToAll(List<string> connectionIds, Tuile tuile)
+    {
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                var couleurString = this.FromEnumToString(tuile.GetCouleur());
+                var numeroString = tuile.GetNum().ToString(CultureInfo.InvariantCulture);
+
+                var tuileStringPacket = new TuileStringPacket
+                {
+                    Couleur = couleurString,
+                    numero = numeroString,
+                    isDefausse = "false"
+                };
+
+                await this
+                    ._hubContext.Clients.Client(connectionId)
+                    .SendAsync("ReceiveTuileCentre", tuileStringPacket);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi de la tuile au client {connectionId}: {ex.Message}"
+                );
             }
         }
     }
@@ -668,8 +955,11 @@ public sealed class OkeyHub : Hub
             {
                 //await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 await this.SendChevalets(playerIds, joueurs.ToList());
+                //envoie de la tuile du centre
                 await this.SendListeDefausseToAll(playerIds, jeu);
                 Thread.Sleep(500);
+                await this.SendTuileCentreToAll(playerIds, jeu.GetTuileCentre());
+                await this.SendPiocheInfosToAll(playerIds, jeu); // mohammed : broadcast l"etat de la pioche centre avant le debut de la partie
                 var coords = await this.FirstJeterRequest(joueurStarter);
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
@@ -686,6 +976,11 @@ public sealed class OkeyHub : Hub
                 }*/
 
                 joueurStarter.JeterTuile(this.ReadCoords(coords), jeu);
+
+                //envoi de la tuile jetee du joueur qui commence
+                await this.SendTuileJeteToAll(playerIds, joueurStarter.GetTeteDefausse());
+                await this.SendNextDefausseInfosToAll(playerIds, jeu, joueurStarter); // mohammed : update l'etat de la defausse du prochain joueur apres le jet
+
                 await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 this.SetPlayerTurn(joueurStarter.getName(), false);
             }
@@ -712,12 +1007,17 @@ public sealed class OkeyHub : Hub
                             continue;
                         }
 
-                        if (
-                            string.Equals(pioche, "Centre", StringComparison.OrdinalIgnoreCase)
-                            || string.Equals(pioche, "Defausse", StringComparison.OrdinalIgnoreCase)
+                        if (pioche.Equals("Centre", StringComparison.OrdinalIgnoreCase))
+                        {
+                            currentPlayer.PiocherTuile(pioche, jeu);
+                            await this.SendPiocheInfosToAll(playerIds, jeu);
+                        }
+                        else if (
+                            string.Equals(pioche, "Defausse", StringComparison.OrdinalIgnoreCase)
                         )
                         {
                             currentPlayer.PiocherTuile(pioche, jeu);
+                            await this.SendCurrentDefausseInfosToAll(playerIds, currentPlayer);
                         }
                         // si sous forme :emote_name:
                         else if (
@@ -735,42 +1035,24 @@ public sealed class OkeyHub : Hub
 
                         await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                        var coordinates = await this.JeterRequest(currentPlayer);
+                        await this.JeterRequest(currentPlayer, roomName, jeu);
 
-                        if (coordinates.Equals("gagner", StringComparison.Ordinal))
-                        {
-                            var coordsGain = await this.CoordsGainRequest(currentPlayer.getName());
-                            if (
-                                currentPlayer?.JeteTuilePourTerminer(
-                                    this.ReadCoords(coordsGain),
-                                    jeu
-                                ) == true
-                            )
-                            {
-                                // Le joueur gagne
-                                await this.PlayerWon(roomName, currentPlayer.getName());
-                            }
-
-                            if (currentPlayer != null)
-                            {
-                                await this.SendMpToPlayer(
-                                    currentPlayer.getName(),
-                                    "Vous n'avez pas de serie dans votre chevalet !"
-                                );
-                            }
-
-                            continue;
-                        }
-
-                        currentPlayer?.JeterTuile(this.ReadCoords(coordinates), jeu);
                         if (currentPlayer != null)
                         {
                             await this.SendChevalet(currentPlayer.getName(), currentPlayer);
+
+                            //envoi de la tuile jetee
+                            await this.SendTuileJeteToAll(
+                                playerIds,
+                                currentPlayer.GetTeteDefausse()
+                            );
+
+                            await this.SendNextDefausseInfosToAll(playerIds, jeu, currentPlayer); // mohammed : update l'etat de la defausse du prochain joueur apres le jet
+
                             await this.SendListeDefausseToAll(playerIds, jeu);
                             this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
                         }
                     }
-
                     this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
                 }
             }

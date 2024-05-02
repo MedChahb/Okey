@@ -218,9 +218,27 @@ namespace Okey.Game
             return this.pioche.Count == 0;
         }
 
-        public Tuile PopPiocheCentre()
+        public int GetPiocheTaille()
         {
+            return this.pioche.Count;
+        }
+
+        public Tuile? PopPiocheCentre()
+        {
+            if (this.isPiocheCentreEmpty())
+            {
+                return null;
+            }
             return this.pioche.Pop();
+        }
+
+        public Tuile? GetPiocheHead()
+        {
+            if (this.isPiocheCentreEmpty())
+            {
+                return null;
+            }
+            return this.pioche.Peek();
         }
 
         public void PushPiocheCentre(Tuile? t)
