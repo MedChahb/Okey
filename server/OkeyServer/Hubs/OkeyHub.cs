@@ -646,6 +646,46 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    //broadcast l'etat des defausses des autres joueurs (non pas actuel et prochain)
+    private async Task SendAutreDefausseInfosToAll(List<string> connectionIds, Jeu j, Joueur pl)
+    {
+        Joueur[] autreJoueur = { j.getNextJoueur(j.getNextJoueur(pl)), j.getNextJoueur(j.getNextJoueur(j.getNextJoueur(pl))) }; // [avant dernier joueur, dernier joueur]
+
+        foreach (var joueur in autreJoueur)
+        {
+            var DefausseTete = joueur.GetTeteDefausse();
+            var DefausseTeteString = new TuileStringPacket
+            {
+                numero  = (DefausseTete != null) ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture) : "",
+                Couleur = (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
+                isDefausse = "true"
+            };
+
+            foreach (var connectionId in connectionIds)
+            {
+                try
+                {
+                    await this
+                            ._hubContext.Clients.Client(connectionId)
+                            .SendAsync(
+                                "ReceiveDefausseAutreUpdate",
+                                new PiocheInfosPacket
+                                {
+                                    PiocheTete = DefausseTeteString,
+                                    PiocheTaille = joueur.CountDefausse()
+                                }
+                            );
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"Erreur lors de l'envoi des infos de la defausse de {joueur.getName()} au client {connectionId}: {ex.Message}"
+                    );
+                }
+            }
+        }
+    }
+
     private async Task SendChevalets(List<string> connectionIds, List<Joueur> joueurs)
     {
         foreach (var connectionId in connectionIds)
