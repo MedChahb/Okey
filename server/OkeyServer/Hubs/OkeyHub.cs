@@ -528,7 +528,7 @@ public sealed class OkeyHub : Hub
         }
     }
 
-    // envoie la taille et la tete (pas besoin d'envoyer toute la pioche puisqu'on affiche que la tete)
+    // broadcast la taille et la tete de la pioche au centre (pas besoin d'envoyer toute la pioche puisqu'on affiche que la tete)
     private async Task SendPiocheInfosToAll(List<string> connectionIds, Jeu jeu)
     {
         var PiocheTete = jeu.GetPiocheHead();
@@ -558,7 +558,43 @@ public sealed class OkeyHub : Hub
             catch (Exception ex)
             {
                 Console.WriteLine(
-                    $"Erreur lors de l'envoi de la tuile au client {connectionId}: {ex.Message}"
+                    $"Erreur lors de l'envoi de la pioche au client {connectionId}: {ex.Message}"
+                );
+            }
+        }
+    }
+
+    // broadcast la tete et la taille de la defausse du joueur actuel
+    private async Task SendCurrentDefausseInfosToAll(List<string> connectionIds, Joueur pl)
+    {
+        var DefausseTete = pl.GetTeteDefausse();
+        var DefausseTeteString = new TuileStringPacket
+        {
+            numero = (DefausseTete != null) ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture) : "",
+            Couleur = (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
+            isDefausse = "true"
+        };
+
+
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                await this
+                        ._hubContext.Clients.Client(connectionId)
+                        .SendAsync(
+                            "ReceivePiocheUpdate",
+                            new PiocheInfosPacket
+                            {
+                                PiocheTete = DefausseTeteString,
+                                PiocheTaille = pl.CountDefausse()
+                            }
+                        );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi des infos de la defausse au client {connectionId}: {ex.Message}"
                 );
             }
         }
@@ -829,6 +865,7 @@ public sealed class OkeyHub : Hub
                 await this.SendListeDefausseToAll(playerIds, jeu);
                 Thread.Sleep(500);
                 await this.SendTuileCentreToAll(playerIds, jeu.GetTuileCentre());
+                await this.SendPiocheInfosToAll(playerIds, jeu); // mohammed : broadcast l"etat de la pioche centre avant le debut de la partie
                 var coords = await this.FirstJeterRequest(joueurStarter);
                 if (coords.Equals("Move", StringComparison.Ordinal))
                 {
@@ -875,17 +912,16 @@ public sealed class OkeyHub : Hub
                             continue;
                         }
 
-                        if (
-                            string.Equals(pioche, "Centre", StringComparison.OrdinalIgnoreCase)
-                            || string.Equals(pioche, "Defausse", StringComparison.OrdinalIgnoreCase)
-                        )
+                        if (string.Equals(pioche, "Centre", StringComparison.OrdinalIgnoreCase))
                         {
                             currentPlayer.PiocherTuile(pioche, jeu);
-                            // on envoie l'update de la poiche si piocher du centre
-                            if (string.Equals(pioche, "Centre", StringComparison.OrdinalIgnoreCase))
-                                await this.SendPiocheInfosToAll(playerIds, jeu);
+                            await this.SendPiocheInfosToAll(playerIds, jeu);
+                        }
 
-
+                        if (string.Equals(pioche, "Defausse", StringComparison.OrdinalIgnoreCase))
+                        {
+                            currentPlayer.PiocherTuile(pioche, jeu);
+                            await this.SendCurrentDefausseInfosToAll(playerIds, currentPlayer);
                         }
                         // si sous forme :emote_name:
                         else if (
