@@ -13,14 +13,14 @@ public class Chevalet : MonoBehaviour
     public TuileData[,] TuilesPack = new TuileData[2, 14];
     private readonly Stack<Tuile> _pileGauche = new Stack<Tuile>();
     private Stack<Tuile> _pileDroite = new Stack<Tuile>();
-    private readonly Stack<Tuile> _pilePioche = new Stack<Tuile>();
+    public readonly Stack<Tuile> _pilePioche = new Stack<Tuile>();
     public static GameObject PileGauchePlaceHolder;
     public static GameObject PilePiochePlaceHolder;
 
     public static GameObject PileDroitePlaceHolder;
     public static GameObject JokerPlaceHolder;
 
-    private static Dictionary<string, Sprite> spritesDic = new Dictionary<string, Sprite>();
+    public static Dictionary<string, Sprite> spritesDic = new Dictionary<string, Sprite>();
 
     public bool IsJete { get; set; }
     public TuilePacket TuileJete { get; set; }
@@ -125,9 +125,9 @@ public class Chevalet : MonoBehaviour
         this._pileGauche.Push(
             PileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
         );
-        this._pilePioche.Push(
-            PilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
-        );
+        //this._pilePioche.Push(
+        //    PilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
+        //);
         PileGauchePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
@@ -144,6 +144,7 @@ public class Chevalet : MonoBehaviour
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
             .SetIsDeplacable(false);
+        /*
         PilePiochePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
@@ -151,7 +152,7 @@ public class Chevalet : MonoBehaviour
         PilePiochePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
-            .SetIsInPioche(true);
+            .SetIsInPioche(true);*/
     }
 
     public GameObject ClosestPlaceholder(Vector3 Position)
@@ -402,6 +403,32 @@ public class Chevalet : MonoBehaviour
                         //this.tuilesPack[x, y] = new TuileData(couleur, num, isJoker);
                         //Debug.Log("["+x+"]"+"["+y+"]"+" "+this.tuiles2D[x, y].couleur+ " " +this.tuiles2D[x, y].num+" "+this.tuiles2D[x, y].isJoker);
                     }
+                    else if (
+                        childSpriteRenderer.sprite.name.Equals("Pioche", StringComparison.Ordinal)
+                    )
+                    {
+                        var tuile = child.GetComponent<Tuile>();
+                        this.Tuiles2D[x, y] = new TuileData(
+                            FromStringToCouleurTuile(tuile.GetCouleur()),
+                            tuile.GetValeur(),
+                            tuile.GetIsJoker()
+                        );
+                        var mat = new Material(Shader.Find("Sprites/Default"))
+                        {
+                            color = new Color(
+                                0.9529411764705882f,
+                                0.9411764705882353f,
+                                0.8156862745098039f
+                            )
+                        };
+                        childSpriteRenderer.material = mat;
+                        childSpriteRenderer.sprite = spritesDic[
+                            FromTuileToSpriteName(this.Tuiles2D[x, y])
+                        ];
+                        var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                        tuilePlaceHolder.SetCouleur(tuile.GetCouleur());
+                        tuilePlaceHolder.SetValeur(tuile.GetValeur());
+                    }
                     else
                     {
                         // If the name does not contain both color and value, log an error or set as null
@@ -436,7 +463,7 @@ public class Chevalet : MonoBehaviour
         }
     }
 
-    private static string FromTuileToSpriteName(TuileData Tuile)
+    public static string FromTuileToSpriteName(TuileData Tuile)
     {
         if (
             Tuile.isJoker
@@ -467,7 +494,7 @@ public class Chevalet : MonoBehaviour
         return name;
     }
 
-    private static CouleurTuile FromStringToCouleurTuile(string CouleurString)
+    public static CouleurTuile FromStringToCouleurTuile(string CouleurString)
     {
         CouleurTuile coul;
         switch (CouleurString)
