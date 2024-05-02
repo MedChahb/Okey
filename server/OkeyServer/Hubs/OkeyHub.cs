@@ -534,26 +534,28 @@ public sealed class OkeyHub : Hub
         var PiocheTete = jeu.GetPiocheHead();
         var PiocheTeteString = new TuileStringPacket
         {
-            numero  = (PiocheTete != null) ? PiocheTete.GetNum().ToString(CultureInfo.InvariantCulture) : "",
+            numero =
+                (PiocheTete != null)
+                    ? PiocheTete.GetNum().ToString(CultureInfo.InvariantCulture)
+                    : "",
             Couleur = (PiocheTete != null) ? this.FromEnumToString(PiocheTete.GetCouleur()) : "",
             isDefausse = "false"
         };
-
 
         foreach (var connectionId in connectionIds)
         {
             try
             {
                 await this
-                        ._hubContext.Clients.Client(connectionId)
-                        .SendAsync(
-                            "ReceivePiocheUpdate",
-                            new PiocheInfosPacket
-                            {
-                                PiocheTete = PiocheTeteString,
-                                PiocheTaille = jeu.GetPiocheTaille()
-                            }
-                        );
+                    ._hubContext.Clients.Client(connectionId)
+                    .SendAsync(
+                        "ReceivePiocheUpdate",
+                        new PiocheInfosPacket
+                        {
+                            PiocheTete = PiocheTeteString,
+                            PiocheTaille = jeu.GetPiocheTaille()
+                        }
+                    );
             }
             catch (Exception ex)
             {
@@ -570,26 +572,29 @@ public sealed class OkeyHub : Hub
         var DefausseTete = pl.GetTeteDefausse();
         var DefausseTeteString = new TuileStringPacket
         {
-            numero = (DefausseTete != null) ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture) : "",
-            Couleur = (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
+            numero =
+                (DefausseTete != null)
+                    ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture)
+                    : "",
+            Couleur =
+                (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
             isDefausse = "true"
         };
-
 
         foreach (var connectionId in connectionIds)
         {
             try
             {
                 await this
-                        ._hubContext.Clients.Client(connectionId)
-                        .SendAsync(
-                            "ReceiveDefausseActuelleUpdate",
-                            new PiocheInfosPacket
-                            {
-                                PiocheTete = DefausseTeteString,
-                                PiocheTaille = pl.CountDefausse()
-                            }
-                        );
+                    ._hubContext.Clients.Client(connectionId)
+                    .SendAsync(
+                        "ReceiveDefausseActuelleUpdate",
+                        new PiocheInfosPacket
+                        {
+                            PiocheTete = DefausseTeteString,
+                            PiocheTaille = pl.CountDefausse()
+                        }
+                    );
             }
             catch (Exception ex)
             {
@@ -608,26 +613,29 @@ public sealed class OkeyHub : Hub
         var DefausseTete = nextPlayer.GetTeteDefausse();
         var DefausseTeteString = new TuileStringPacket
         {
-            numero = (DefausseTete != null) ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture) : "",
-            Couleur = (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
+            numero =
+                (DefausseTete != null)
+                    ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture)
+                    : "",
+            Couleur =
+                (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
             isDefausse = "true"
         };
-
 
         foreach (var connectionId in connectionIds)
         {
             try
             {
                 await this
-                        ._hubContext.Clients.Client(connectionId)
-                        .SendAsync(
-                            "ReceiveDefausseProchaineUpdate",
-                            new PiocheInfosPacket
-                            {
-                                PiocheTete = DefausseTeteString,
-                                PiocheTaille = nextPlayer.CountDefausse()
-                            }
-                        );
+                    ._hubContext.Clients.Client(connectionId)
+                    .SendAsync(
+                        "ReceiveDefausseProchaineUpdate",
+                        new PiocheInfosPacket
+                        {
+                            PiocheTete = DefausseTeteString,
+                            PiocheTaille = nextPlayer.CountDefausse()
+                        }
+                    );
             }
             catch (Exception ex)
             {
@@ -806,8 +814,8 @@ public sealed class OkeyHub : Hub
                     isDefausse = "false"
                 };
 
-                await this._hubContext
-                    .Clients.Client(connectionId)
+                await this
+                    ._hubContext.Clients.Client(connectionId)
                     .SendAsync("ReceiveTuileCentre", tuileStringPacket);
             }
             catch (Exception ex)
@@ -951,13 +959,14 @@ public sealed class OkeyHub : Hub
                             continue;
                         }
 
-                        if (string.Equals(pioche, "Centre", StringComparison.OrdinalIgnoreCase))
+                        if (pioche.Equals("Centre", StringComparison.OrdinalIgnoreCase))
                         {
                             currentPlayer.PiocherTuile(pioche, jeu);
                             await this.SendPiocheInfosToAll(playerIds, jeu);
                         }
-
-                        if (string.Equals(pioche, "Defausse", StringComparison.OrdinalIgnoreCase))
+                        else if (
+                            string.Equals(pioche, "Defausse", StringComparison.OrdinalIgnoreCase)
+                        )
                         {
                             currentPlayer.PiocherTuile(pioche, jeu);
                             await this.SendCurrentDefausseInfosToAll(playerIds, currentPlayer);
