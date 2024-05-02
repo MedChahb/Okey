@@ -923,6 +923,7 @@ public sealed class OkeyHub : Hub
 
                 //envoi de la tuile jetee du joueur qui commence
                 await this.SendTuileJeteToAll(playerIds, joueurStarter.GetTeteDefausse());
+                await this.SendNextDefausseInfosToAll(playerIds, jeu, joueurStarter); // mohammed : update l'etat de la defausse du prochain joueur apres le jet
 
                 await this.SendChevalet(joueurStarter.getName(), joueurStarter);
                 this.SetPlayerTurn(joueurStarter.getName(), false);
@@ -988,6 +989,8 @@ public sealed class OkeyHub : Hub
                                 playerIds,
                                 currentPlayer.GetTeteDefausse()
                             );
+
+                            await this.SendNextDefausseInfosToAll(playerIds, jeu, currentPlayer); // mohammed : update l'etat de la defausse du prochain joueur apres le jet
 
                             await this.SendListeDefausseToAll(playerIds, jeu);
                             this.SetPlayerTurn(currentPlayer?.getName() ?? playerName, false);
