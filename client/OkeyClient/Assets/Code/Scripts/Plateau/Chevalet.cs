@@ -408,6 +408,11 @@ public class Chevalet : MonoBehaviour
                     )
                     {
                         var tuile = child.GetComponent<Tuile>();
+
+                        var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                        tuilePlaceHolder.SetCouleur(tuile.GetCouleur());
+                        tuilePlaceHolder.SetValeur(tuile.GetValeur());
+
                         this.Tuiles2D[x, y] = new TuileData(
                             FromStringToCouleurTuile(tuile.GetCouleur()),
                             tuile.GetValeur(),
@@ -425,9 +430,6 @@ public class Chevalet : MonoBehaviour
                         childSpriteRenderer.sprite = spritesDic[
                             FromTuileToSpriteName(this.Tuiles2D[x, y])
                         ];
-                        var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
-                        tuilePlaceHolder.SetCouleur(tuile.GetCouleur());
-                        tuilePlaceHolder.SetValeur(tuile.GetValeur());
                     }
                     else
                     {
@@ -449,7 +451,6 @@ public class Chevalet : MonoBehaviour
                     var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
                     tuilePlaceHolder.SetCouleur(null);
                     tuilePlaceHolder.SetValeur(0);
-                    //this.tuilesPack[x, y] = null;
                 }
             }
             else //empty placeholder
@@ -514,10 +515,12 @@ public class Chevalet : MonoBehaviour
             case "M":
                 coul = CouleurTuile.M;
                 break;
+            case "X":
+                coul = CouleurTuile.X;
+                break;
             default:
                 throw new Exception();
         }
-
         return coul;
     }
 

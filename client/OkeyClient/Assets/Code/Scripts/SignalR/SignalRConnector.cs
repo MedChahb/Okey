@@ -140,6 +140,18 @@ public class SignalRConnector : MonoBehaviour
                 {
                     if (Pioche.PiocheTete != null)
                     {
+                        var piocheCentale = Chevalet.PilePiochePlaceHolder.GetComponent<Tuile>();
+
+                        if (piocheCentale.transform.childCount > 0)
+                        {
+                            for (int i = 0; i < piocheCentale.transform.childCount; i++)
+                            {
+                                Destroy(
+                                    Chevalet.PilePiochePlaceHolder.transform.GetChild(i).gameObject
+                                );
+                            }
+                        }
+
                         var piocheTuileData = new TuileData(
                             Chevalet.FromStringToCouleurTuile(Pioche.PiocheTete.Couleur),
                             int.Parse(Pioche.PiocheTete.numero),
@@ -155,23 +167,12 @@ public class SignalRConnector : MonoBehaviour
                                 )
                         );
 
-                        var piocheCentale = Chevalet.PilePiochePlaceHolder.GetComponent<Tuile>();
                         Chevalet
                             .PilePiochePlaceHolder.GetComponent<Tuile>()
                             .SetCouleur(piocheTuileData.couleur);
                         Chevalet
                             .PilePiochePlaceHolder.GetComponent<Tuile>()
                             .SetValeur(piocheTuileData.num);
-
-                        if (piocheCentale.transform.childCount > 0)
-                        {
-                            for (int i = 0; i < piocheCentale.transform.childCount; i++)
-                            {
-                                Destroy(
-                                    Chevalet.PilePiochePlaceHolder.transform.GetChild(i).gameObject
-                                );
-                            }
-                        }
 
                         var childObject = new GameObject("SpriteChild");
                         childObject.transform.SetParent(Chevalet.PilePiochePlaceHolder.transform);
