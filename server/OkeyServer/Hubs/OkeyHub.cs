@@ -528,6 +528,42 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    // envoie la taille et la tete (pas besoin d'envoyer toute la pioche puisqu'on affiche que la tete)
+    private async Task SendPiocheInfosToAll(List<string> connectionIds, Jeu jeu)
+    {
+        var PiocheTete = jeu.GetPiocheHead();
+        var PiocheTeteString = new TuileStringPacket
+        {
+            numero  = (PiocheTete != null) ? PiocheTete.GetNum().ToString(CultureInfo.InvariantCulture) : "",
+            Couleur = (PiocheTete != null) ? this.FromEnumToString(PiocheTete.GetCouleur()) : "",
+            isDefausse = "false"
+        };
+
+
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                await this
+                        ._hubContext.Clients.Client(connectionId)
+                        .SendAsync(
+                            "ReceivePiocheUpdate",
+                            new PiocheInfosPacket
+                            {
+                                PiocheTete = PiocheTeteString,
+                                PiocheTaille = jeu.GetPiocheTaille()
+                            }
+                        );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi de la tuile au client {connectionId}: {ex.Message}"
+                );
+            }
+        }
+    }
+
     private async Task SendChevalets(List<string> connectionIds, List<Joueur> joueurs)
     {
         foreach (var connectionId in connectionIds)
@@ -605,8 +641,8 @@ public sealed class OkeyHub : Hub
                 foreach (var tuile in jeu.ListeDefausse)
                 {
                     // Construire la chaîne de caractères représentant la tuile( pas besoin d'envoyer defausse est DansPioche mais je fais qd meme)
-                    string tuileString =
-                        $"couleur={FromEnumToString(tuile.GetCouleur())};num={tuile.GetNum()};defausse=\"true\";dansPioche=\"false\";Nom={tuile.GetName()}";
+                    var tuileString =
+                        $"couleur={this.FromEnumToString(tuile.GetCouleur())};num={tuile.GetNum()};defausse=\"true\";dansPioche=\"false\";Nom={tuile.GetName()}";
                     //pour la sécurité récupérer les isDefausse et isPioche
 
                     // Ajouter la chaîne de caractères à ListeDefausseSend
@@ -657,7 +693,7 @@ public sealed class OkeyHub : Hub
                 if (tuile != null)
                 {
                     var couleurString = this.FromEnumToString(tuile.GetCouleur());
-                    var numeroString = tuile.GetNum().ToString();
+                    var numeroString = tuile.GetNum().ToString(CultureInfo.InvariantCulture);
 
                     var tuileStringPacket = new TuileStringPacket
                     {
@@ -686,8 +722,8 @@ public sealed class OkeyHub : Hub
         {
             try
             {
-                string couleurString = FromEnumToString(tuile.GetCouleur());
-                string numeroString = tuile.GetNum().ToString();
+                var couleurString = this.FromEnumToString(tuile.GetCouleur());
+                var numeroString = tuile.GetNum().ToString(CultureInfo.InvariantCulture);
 
                 var tuileStringPacket = new TuileStringPacket
                 {
@@ -696,7 +732,7 @@ public sealed class OkeyHub : Hub
                     isDefausse = "false"
                 };
 
-                await _hubContext
+                await this._hubContext
                     .Clients.Client(connectionId)
                     .SendAsync("ReceiveTuileCentre", tuileStringPacket);
             }
@@ -845,6 +881,11 @@ public sealed class OkeyHub : Hub
                         )
                         {
                             currentPlayer.PiocherTuile(pioche, jeu);
+                            // on envoie l'update de la poiche si piocher du centre
+                            if (string.Equals(pioche, "Centre", StringComparison.OrdinalIgnoreCase))
+                                await this.SendPiocheInfosToAll(playerIds, jeu);
+
+
                         }
                         // si sous forme :emote_name:
                         else if (
