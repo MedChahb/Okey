@@ -48,7 +48,6 @@ public sealed class OkeyHub : Hub
     /// <summary>
     /// On ajoute automatiquement le client au groupe Hub,
     /// ce groupe contient tous les clients qui ne sont pas dans une partie
-    /// ce groupe contient tous les clients qui ne sont pas dans une partie
     /// </summary>
     public override async Task OnConnectedAsync()
     {
@@ -806,12 +805,58 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Group("Hub")
             .SendAsync("ReceiveMessage", new PacketSignal { message = roomsInfo });*/
 
-    public bool GetAllAssociations()
+    /// <summary>
+    /// affiche dans la console du serveur l'ensemble des utilisateurs actuellement connectés à celui-ci
+    /// </summary>
+    /// <returns></returns>
+    public async Task GetAllAssociations()
     {
+        string allconnection = "";
         foreach (var elmt in _connectedUsers)
         {
-            Console.WriteLine($"Key: {elmt.Key}, Value: " + elmt.Value);
+            allconnection += $"Key: {elmt.Key}, Value: " + elmt.Value + "\n";
         }
-        return true;
+
+        await this.Clients.Caller.SendAsync("ReceiveMessage", allconnection);
+    }
+
+    /// <summary>
+    ///  met à jour les valeurs de l'utilisateur appelant cette fonction, ici à titre d'exemple et à des fins de test
+    /// </summary>
+    /// <param name="Elo"></param>
+    /// <param name="Experience"></param>
+    /// <param name="PartieJouee"></param>
+    /// <param name="PartieGagnee"></param>
+    public async Task UpdatePlayerDatas(
+        int Elo,
+        int Experience,
+        bool PartieJouee,
+        bool PartieGagnee
+    )
+    {
+        var id = this.Context.ConnectionId;
+        await this.Clients.Caller.SendAsync("ReceiveStats", _connectedUsers[id].PlayerInfos());
+        await _connectedUsers[id]
+            .UpdateStats(this._dbContext, Elo, Experience, PartieGagnee, PartieJouee);
+        await this.Clients.Caller.SendAsync("ReceiveStats", _connectedUsers[id].PlayerInfos());
+    }
+
+    /// <summary>
+    /// met à jour la valeur de l'achievement passé en argument, avec le booléen fourni en argument ici a titre d'exemple sur els possiblités offertes par la gestion utilisateur
+    /// </summary>
+    /// <param name="Achievement"></param>
+    /// <param name="Value"></param>
+    public async Task UpdateAchievement(string Achievement, bool Value)
+    {
+        var id = this.Context.ConnectionId;
+        await this.Clients.Caller.SendAsync(
+            "ReceiveMessage",
+            _connectedUsers[id].AchievementsToString()
+        );
+        await _connectedUsers[id].UpdateAchievement(this._dbContext, Achievement, Value);
+        await this.Clients.Caller.SendAsync(
+            "ReceiveMessage",
+            _connectedUsers[id].AchievementsToString()
+        );
     }
 }

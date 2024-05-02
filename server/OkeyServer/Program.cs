@@ -6,12 +6,13 @@ using OkeyServer.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DbContext>(options =>
+builder.Services.AddDbContext<ServerDbContext>(options =>
+{
     options.UseMySQL(
         builder.Configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException()
-    )
-);
+    );
+});
 
 builder.Services.AddSignalR();
 
