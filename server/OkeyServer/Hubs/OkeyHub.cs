@@ -583,7 +583,7 @@ public sealed class OkeyHub : Hub
                 await this
                         ._hubContext.Clients.Client(connectionId)
                         .SendAsync(
-                            "ReceivePiocheUpdate",
+                            "ReceiveDefausseActuelleUpdate",
                             new PiocheInfosPacket
                             {
                                 PiocheTete = DefausseTeteString,
@@ -595,6 +595,44 @@ public sealed class OkeyHub : Hub
             {
                 Console.WriteLine(
                     $"Erreur lors de l'envoi des infos de la defausse au client {connectionId}: {ex.Message}"
+                );
+            }
+        }
+    }
+
+    //broadcast l'etat de a defausse du prochain joueur (call this function AFTER current player jete (not when win))
+    private async Task SendNextDefausseInfosToAll(List<string> connectionIds, Jeu j, Joueur pl)
+    {
+        var nextPlayer = j.getNextJoueur(pl);
+
+        var DefausseTete = nextPlayer.GetTeteDefausse();
+        var DefausseTeteString = new TuileStringPacket
+        {
+            numero = (DefausseTete != null) ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture) : "",
+            Couleur = (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
+            isDefausse = "true"
+        };
+
+
+        foreach (var connectionId in connectionIds)
+        {
+            try
+            {
+                await this
+                        ._hubContext.Clients.Client(connectionId)
+                        .SendAsync(
+                            "ReceiveDefausseProchaineUpdate",
+                            new PiocheInfosPacket
+                            {
+                                PiocheTete = DefausseTeteString,
+                                PiocheTaille = nextPlayer.CountDefausse()
+                            }
+                        );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    $"Erreur lors de l'envoi des infos de la prochaine defausse au client {connectionId}: {ex.Message}"
                 );
             }
         }
