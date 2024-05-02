@@ -311,6 +311,11 @@ namespace Okey.Joueurs
             return res;
         }
 
+        public int CountDefausse()
+        {
+            return this.defausse.Count;
+        }
+
         public Coord GetRandomTuileCoords()
         {
             int etageRand = -1,
