@@ -649,15 +649,23 @@ public sealed class OkeyHub : Hub
     //broadcast l'etat des defausses des autres joueurs (non pas actuel et prochain)
     private async Task SendAutreDefausseInfosToAll(List<string> connectionIds, Jeu j, Joueur pl)
     {
-        Joueur[] autreJoueur = { j.getNextJoueur(j.getNextJoueur(pl)), j.getNextJoueur(j.getNextJoueur(j.getNextJoueur(pl))) }; // [avant dernier joueur, dernier joueur]
+        Joueur[] autreJoueur =
+        {
+            j.getNextJoueur(j.getNextJoueur(pl)),
+            j.getNextJoueur(j.getNextJoueur(j.getNextJoueur(pl)))
+        }; // [avant dernier joueur, dernier joueur]
 
         foreach (var joueur in autreJoueur)
         {
             var DefausseTete = joueur.GetTeteDefausse();
             var DefausseTeteString = new TuileStringPacket
             {
-                numero  = (DefausseTete != null) ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture) : "",
-                Couleur = (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
+                numero =
+                    (DefausseTete != null)
+                        ? DefausseTete.GetNum().ToString(CultureInfo.InvariantCulture)
+                        : "",
+                Couleur =
+                    (DefausseTete != null) ? this.FromEnumToString(DefausseTete.GetCouleur()) : "",
                 isDefausse = "true"
             };
 
@@ -666,15 +674,15 @@ public sealed class OkeyHub : Hub
                 try
                 {
                     await this
-                            ._hubContext.Clients.Client(connectionId)
-                            .SendAsync(
-                                "ReceiveDefausseAutreUpdate",
-                                new PiocheInfosPacket
-                                {
-                                    PiocheTete = DefausseTeteString,
-                                    PiocheTaille = joueur.CountDefausse()
-                                }
-                            );
+                        ._hubContext.Clients.Client(connectionId)
+                        .SendAsync(
+                            "ReceiveDefausseAutreUpdate",
+                            new PiocheInfosPacket
+                            {
+                                PiocheTete = DefausseTeteString,
+                                PiocheTaille = joueur.CountDefausse()
+                            }
+                        );
                 }
                 catch (Exception ex)
                 {
