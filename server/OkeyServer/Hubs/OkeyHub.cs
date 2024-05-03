@@ -1087,6 +1087,8 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Group("Hub")
             .SendAsync("ReceiveMessage", new PacketSignal { message = roomsInfo });*/
 
+    /* Retirer le commentaire pour tester le client de gestion utilisateur XPR567
+
     /// <summary>
     /// affiche dans la console du serveur l'ensemble des utilisateurs actuellement connectés à celui-ci
     /// </summary>
@@ -1141,4 +1143,6 @@ public sealed class OkeyHub : Hub
             _connectedUsers[id].AchievementsToString()
         );
     }
+
+    */
 }
