@@ -532,7 +532,7 @@ public sealed class OkeyHub : Hub
     private async Task SendPiocheInfosToAll(List<string> connectionIds, Jeu jeu)
     {
         var PiocheTete = jeu.GetPiocheHead();
-        var PiocheTeteString = new TuileStringPacket
+        var PiocheTeteString = new TuileJeteePacket
         {
             numero =
                 (PiocheTete != null)
@@ -570,7 +570,7 @@ public sealed class OkeyHub : Hub
     private async Task SendCurrentDefausseInfosToAll(List<string> connectionIds, Joueur pl)
     {
         var DefausseTete = pl.GetTeteDefausse();
-        var DefausseTeteString = new TuileStringPacket
+        var DefausseTeteString = new TuileJeteePacket
         {
             numero =
                 (DefausseTete != null)
@@ -611,7 +611,7 @@ public sealed class OkeyHub : Hub
         var nextPlayer = j.getNextJoueur(pl);
 
         var DefausseTete = nextPlayer.GetTeteDefausse();
-        var DefausseTeteString = new TuileStringPacket
+        var DefausseTeteString = new TuileJeteePacket
         {
             numero =
                 (DefausseTete != null)
@@ -658,7 +658,7 @@ public sealed class OkeyHub : Hub
         foreach (var joueur in autreJoueur)
         {
             var DefausseTete = joueur.GetTeteDefausse();
-            var DefausseTeteString = new TuileStringPacket
+            var DefausseTeteString = new TuileJeteePacket
             {
                 numero =
                     (DefausseTete != null)
@@ -814,34 +814,86 @@ public sealed class OkeyHub : Hub
     }
 
     //envoi pour  tuile jete donc isdefausse = true
-    private async Task SendTuileJeteToAll(List<string> connectionIds, Tuile? tuile)
+    private async Task SendTuileJeteToAll(
+        List<string> connectionIds,
+        Joueur playerSource,
+        Tuile? tuile,
+        Jeu j
+    )
     {
         foreach (var connectionId in connectionIds)
         {
-            try
+            if (!connectionId.Equals(playerSource.getName(), StringComparison.Ordinal))
             {
-                if (tuile != null)
+                try
                 {
-                    var couleurString = this.FromEnumToString(tuile.GetCouleur());
-                    var numeroString = tuile.GetNum().ToString(CultureInfo.InvariantCulture);
-
-                    var tuileStringPacket = new TuileStringPacket
+                    if (tuile != null)
                     {
-                        Couleur = couleurString,
-                        numero = numeroString,
-                        isDefausse = "true"
-                    };
+                        var couleurString = this.FromEnumToString(tuile.GetCouleur());
+                        var numeroString = tuile.GetNum().ToString(CultureInfo.InvariantCulture);
 
-                    await this
-                        ._hubContext.Clients.Client(connectionId)
-                        .SendAsync("ReceiveTuileJete", tuileStringPacket);
+                        /* Position == 0 -> pile de gauche
+                         * Position == 1 -> Pile en haut à droite
+                         * Position == 2 -> Pile en haut à gauche
+                        */
+
+                        TuileJeteePacket tuileStringPacket;
+
+                        if (
+                            j.getNextJoueur(playerSource)
+                                .getName()
+                                .Equals(connectionId, StringComparison.Ordinal)
+                        )
+                        {
+                            tuileStringPacket = new TuileJeteePacket
+                            {
+                                Couleur = couleurString,
+                                numero = numeroString,
+                                isDefausse = "true",
+                                position = 0
+                            };
+                            await this
+                                ._hubContext.Clients.Client(connectionId)
+                                .SendAsync("ReceiveTuileJete", tuileStringPacket);
+                        }
+                        else if (
+                            j.getNextJoueur(j.getNextJoueur(playerSource))
+                                .getName()
+                                .Equals(connectionId, StringComparison.Ordinal)
+                        )
+                        {
+                            tuileStringPacket = new TuileJeteePacket
+                            {
+                                Couleur = couleurString,
+                                numero = numeroString,
+                                isDefausse = "true",
+                                position = 2
+                            };
+                            await this
+                                ._hubContext.Clients.Client(connectionId)
+                                .SendAsync("ReceiveTuileJete", tuileStringPacket);
+                        }
+                        else
+                        {
+                            tuileStringPacket = new TuileJeteePacket
+                            {
+                                Couleur = couleurString,
+                                numero = numeroString,
+                                isDefausse = "true",
+                                position = 1
+                            };
+                            await this
+                                ._hubContext.Clients.Client(connectionId)
+                                .SendAsync("ReceiveTuileJete", tuileStringPacket);
+                        }
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(
-                    $"Erreur lors de l'envoi de la tuile au client {connectionId}: {ex.Message}"
-                );
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"Erreur lors de l'envoi de la tuile au client {connectionId}: {ex.Message}"
+                    );
+                }
             }
         }
     }
@@ -855,7 +907,7 @@ public sealed class OkeyHub : Hub
                 var couleurString = this.FromEnumToString(tuile.GetCouleur());
                 var numeroString = tuile.GetNum().ToString(CultureInfo.InvariantCulture);
 
-                var tuileStringPacket = new TuileStringPacket
+                var tuileStringPacket = new TuileJeteePacket
                 {
                     Couleur = couleurString,
                     numero = numeroString,
@@ -978,7 +1030,12 @@ public sealed class OkeyHub : Hub
                 joueurStarter.JeterTuile(this.ReadCoords(coords), jeu);
 
                 //envoi de la tuile jetee du joueur qui commence
-                await this.SendTuileJeteToAll(playerIds, joueurStarter.GetTeteDefausse());
+                await this.SendTuileJeteToAll(
+                    playerIds,
+                    joueurStarter,
+                    joueurStarter.GetTeteDefausse(),
+                    jeu
+                );
                 await this.SendNextDefausseInfosToAll(playerIds, jeu, joueurStarter); // mohammed : update l'etat de la defausse du prochain joueur apres le jet
 
                 await this.SendChevalet(joueurStarter.getName(), joueurStarter);
@@ -1044,7 +1101,9 @@ public sealed class OkeyHub : Hub
                             //envoi de la tuile jetee
                             await this.SendTuileJeteToAll(
                                 playerIds,
-                                currentPlayer.GetTeteDefausse()
+                                currentPlayer,
+                                currentPlayer.GetTeteDefausse(),
+                                jeu
                             );
 
                             await this.SendNextDefausseInfosToAll(playerIds, jeu, currentPlayer); // mohammed : update l'etat de la defausse du prochain joueur apres le jet
