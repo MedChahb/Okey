@@ -11,7 +11,7 @@ public class Chevalet : MonoBehaviour
 
     public TuileData[,] Tuiles2D = new TuileData[2, 14];
     public TuileData[,] TuilesPack = new TuileData[2, 14];
-    private readonly Stack<Tuile> _pileGauche = new Stack<Tuile>();
+    public readonly Stack<Tuile> _pileGauche = new Stack<Tuile>();
     private Stack<Tuile> _pileDroite = new Stack<Tuile>();
     public readonly Stack<Tuile> _pilePioche = new Stack<Tuile>();
     public static GameObject PileGauchePlaceHolder;
@@ -20,6 +20,9 @@ public class Chevalet : MonoBehaviour
     public static GameObject PileDroitePlaceHolder;
     public static GameObject JokerPlaceHolder;
 
+    public static GameObject PileHautDroitePlaceHolder;
+    public static GameObject PileHautGauchePlaceHolder;
+
     public static Dictionary<string, Sprite> spritesDic = new Dictionary<string, Sprite>();
 
     public bool IsJete { get; set; }
@@ -27,7 +30,7 @@ public class Chevalet : MonoBehaviour
 
     public bool IsPiochee { get; set; }
 
-    public TuilePacket TuilePiochee = null;
+    public PiochePacket TuilePiochee = null;
 
     public bool IsTireeHasard { get; set; }
     public TuilePacket TuileTireeHasard = null;
@@ -87,6 +90,9 @@ public class Chevalet : MonoBehaviour
 
         this.IsTireeHasard = false;
         this.TuileTireeHasard = null;
+
+        this.IsPiochee = false;
+        this.TuilePiochee = null;
     }
 
     private void Start()
@@ -119,23 +125,25 @@ public class Chevalet : MonoBehaviour
         PileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
         PilePiochePlaceHolder = GameObject.Find("PiochePlaceHolder");
         JokerPlaceHolder = GameObject.Find("Okey");
-        this._pileGauche.Push(
-            PileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
-        );
-        this._pileGauche.Push(
-            PileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
-        );
+        PileHautDroitePlaceHolder = GameObject.Find("PileHautDroitePlaceHolder");
+        PileHautGauchePlaceHolder = GameObject.Find("PileHautGauchePlaceHolder");
+        //this._pileGauche.Push(
+        //    PileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
+        //);
+        //this._pileGauche.Push(
+        //    PileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
+        //);
         //this._pilePioche.Push(
         //    PilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
         //);
-        PileGauchePlaceHolder
-            .transform.GetChild(0)
-            .gameObject.GetComponent<Tuile>()
-            .SetIsDeplacable(false);
-        PileGauchePlaceHolder
-            .transform.GetChild(0)
-            .gameObject.GetComponent<Tuile>()
-            .SetIsInStack(true);
+        //PileGauchePlaceHolder
+        //    .transform.GetChild(0)
+        //    .gameObject.GetComponent<Tuile>()
+        //    .SetIsDeplacable(false);
+        //PileGauchePlaceHolder
+        //   .transform.GetChild(0)
+        //   .gameObject.GetComponent<Tuile>()
+        //   .SetIsInStack(true);
         PileDroitePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
@@ -295,6 +303,20 @@ public class Chevalet : MonoBehaviour
         this.TuileJete = tuileData;
     }
 
+    public void PiocheTile(bool isCenter)
+    {
+        Debug.Log("Il faut piocher une tuile");
+        if (isCenter)
+        {
+            this.TuilePiochee = new PiochePacket { Centre = true, Defausse = false };
+        }
+        else
+        {
+            this.TuilePiochee = new PiochePacket { Centre = false, Defausse = true };
+        }
+        this.IsPiochee = true;
+    }
+
     public void ThrowTileToWin(Tuile Tuile)
     {
         var tuileData = this.GetTuilePacketFromChevalet(Tuile, true);
@@ -414,9 +436,9 @@ public class Chevalet : MonoBehaviour
                         tuilePlaceHolder.SetValeur(tuile.GetValeur());
 
                         this.Tuiles2D[x, y] = new TuileData(
-                            FromStringToCouleurTuile(tuile.GetCouleur()),
-                            tuile.GetValeur(),
-                            tuile.GetIsJoker()
+                            FromStringToCouleurTuile(tuilePlaceHolder.GetCouleur()),
+                            tuilePlaceHolder.GetValeur(),
+                            tuilePlaceHolder.GetIsJoker()
                         );
                         var mat = new Material(Shader.Find("Sprites/Default"))
                         {
@@ -519,7 +541,9 @@ public class Chevalet : MonoBehaviour
                 coul = CouleurTuile.X;
                 break;
             default:
+                Debug.LogError(CouleurString);
                 throw new Exception();
+                break;
         }
         return coul;
     }
@@ -609,23 +633,52 @@ public class Chevalet : MonoBehaviour
         }
         //cas de tirage : pioche ou pile gauche -> Chevalet
         else if (
-            PreviousPlaceHolder == PileGauchePlaceHolder
-            || (
-                PreviousPlaceHolder == PilePiochePlaceHolder
-                && NextPlaceholder.transform.IsChildOf(chevaletFront.transform)
-            )
+            (
+                PreviousPlaceHolder == PileGauchePlaceHolder
+                || PreviousPlaceHolder == PilePiochePlaceHolder
+            ) && NextPlaceholder.transform.IsChildOf(chevaletFront.transform)
         )
         {
             //ajouter la piece pioché au chevalet
             this.InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets car quand on pioche on peut la mettre entre 2 tuiles et ca crée un decalage
             var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
             var nt = NextPlaceholder.GetComponent<Tuile>();
+
             nt.SetCouleur(tuile.GetCouleur());
             nt.SetValeur(tuile.GetValeur());
             nt.SetIsJoker(tuile.GetIsJoker());
 
-            tuile.SetCouleur(null);
-            tuile.SetValeur(0);
+            if (PreviousPlaceHolder == PilePiochePlaceHolder)
+            {
+                Debug.Log("Ici");
+                if (this._pilePioche.Count > 0)
+                {
+                    this._pilePioche.Pop();
+                    PilePiochePlaceHolder
+                        .GetComponent<Tuile>()
+                        .SetCouleur(this._pilePioche.Peek().GetCouleur());
+                    PilePiochePlaceHolder
+                        .GetComponent<Tuile>()
+                        .SetValeur(this._pilePioche.Peek().GetValeur());
+                }
+                this.PiocheTile(true);
+            }
+            else
+            {
+                Debug.Log("La");
+                this.PiocheTile(false);
+                this._pileGauche.Pop();
+                if (this._pileGauche.Count > 0)
+                {
+                    PileGauchePlaceHolder
+                        .GetComponent<Tuile>()
+                        .SetCouleur(this._pileGauche.Peek().GetCouleur());
+                    PileGauchePlaceHolder
+                        .GetComponent<Tuile>()
+                        .SetValeur(this._pileGauche.Peek().GetValeur());
+                }
+            }
+
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece pioché
         }
         //cas de jet : Chevalet -> pile droite / tentative de gain

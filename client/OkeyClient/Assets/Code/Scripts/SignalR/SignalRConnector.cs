@@ -162,20 +162,17 @@ public class SignalRConnector : MonoBehaviour
                                         "X",
                                         StringComparison.Ordinal
                                     )
-                                        ? true
-                                        : false
                                 )
                         );
 
-                        Chevalet
-                            .PilePiochePlaceHolder.GetComponent<Tuile>()
-                            .SetCouleur(piocheTuileData.couleur);
-                        Chevalet
-                            .PilePiochePlaceHolder.GetComponent<Tuile>()
-                            .SetValeur(piocheTuileData.num);
+                        piocheCentale.SetCouleur(piocheTuileData.couleur);
+                        piocheCentale.SetValeur(piocheTuileData.num);
 
                         var childObject = new GameObject("SpriteChild");
                         childObject.transform.SetParent(Chevalet.PilePiochePlaceHolder.transform);
+                        childObject.AddComponent<Tuile>();
+                        childObject.GetComponent<Tuile>().SetCouleur(piocheTuileData.couleur);
+                        childObject.GetComponent<Tuile>().SetValeur(piocheTuileData.num);
                         var spriteRen = childObject.AddComponent<SpriteRenderer>();
                         var mat = new Material(Shader.Find("Sprites/Default"))
                         {
@@ -191,24 +188,23 @@ public class SignalRConnector : MonoBehaviour
                         var transform1 = spriteRen.transform;
                         transform1.localPosition = new Vector3(0, 0, 0);
                         transform1.localScale = new Vector3(1, 1, 1);
-                        childObject.AddComponent<Tuile>();
                         var boxCollider2D = childObject.AddComponent<BoxCollider2D>();
                         boxCollider2D.size = new Vector2((float)0.875, (float)1.25);
 
-                        Chevalet
-                            .PilePiochePlaceHolder.transform.GetChild(0)
-                            .GetComponent<Tuile>()
-                            .SetCouleur(piocheTuileData.couleur);
-                        Chevalet
-                            .PilePiochePlaceHolder.transform.GetChild(0)
-                            .GetComponent<Tuile>()
-                            .SetValeur(piocheTuileData.num);
+                        //Chevalet
+                        //    .PilePiochePlaceHolder.transform.GetChild(0)
+                        //   .GetComponent<Tuile>()
+                        //   .SetCouleur(piocheTuileData.couleur);
+                        //Chevalet
+                        //   .PilePiochePlaceHolder.transform.GetChild(0)
+                        //    .GetComponent<Tuile>()
+                        //    .SetValeur(piocheTuileData.num);
 
                         Chevalet.Instance._pilePioche.Push(piocheCentale);
                         Chevalet
                             .PilePiochePlaceHolder.transform.GetChild(0)
                             .gameObject.GetComponent<Tuile>()
-                            .SetIsDeplacable(false);
+                            .SetIsDeplacable(true);
                         Chevalet
                             .PilePiochePlaceHolder.transform.GetChild(0)
                             .gameObject.GetComponent<Tuile>()
@@ -226,6 +222,93 @@ public class SignalRConnector : MonoBehaviour
                 {
                     Chevalet.Instance.SetTuileCentre(tuile);
                 });
+            }
+        );
+
+        this._hubConnection.On<TuileJeteePacket>(
+            "ReceiveTuileJete",
+            (tuile) =>
+            {
+                if (tuile.position == 0)
+                {
+                    MainThreadDispatcher.Enqueue(() =>
+                    {
+                        var tuileData = new TuileData(
+                            tuile.Couleur,
+                            int.Parse(tuile.numero),
+                            tuile.Couleur.Equals("M", StringComparison.Ordinal)
+                                || tuile.Couleur.Equals("X", StringComparison.Ordinal)
+                        );
+                        var childObject = new GameObject("SpriteChild");
+                        childObject.transform.SetParent(Chevalet.PileGauchePlaceHolder.transform);
+                        var spriteRen = childObject.AddComponent<SpriteRenderer>();
+                        var mat = new Material(Shader.Find("Sprites/Default"))
+                        {
+                            color = new Color(
+                                0.9529411764705882f,
+                                0.9411764705882353f,
+                                0.8156862745098039f
+                            )
+                        };
+                        spriteRen.material = mat;
+                        spriteRen.sprite = Chevalet.spritesDic[
+                            Chevalet.FromTuileToSpriteName(tuileData)
+                        ];
+                        spriteRen.sortingOrder =
+                            3 + Chevalet.PileGauchePlaceHolder.transform.childCount;
+                        var transform1 = spriteRen.transform;
+                        transform1.localPosition = new Vector3(0, 0, 0);
+                        transform1.localScale = new Vector3(1, 1, 1);
+                        childObject.AddComponent<Tuile>();
+                        var boxCollider2D = childObject.AddComponent<BoxCollider2D>();
+                        boxCollider2D.size = new Vector2((float)0.875, (float)1.25);
+
+                        Chevalet
+                            .PileGauchePlaceHolder.GetComponent<Tuile>()
+                            .SetCouleur(tuileData.couleur);
+                        Chevalet
+                            .PileGauchePlaceHolder.GetComponent<Tuile>()
+                            .SetValeur(tuileData.num);
+
+                        Chevalet.Instance._pileGauche.Push(
+                            Chevalet.PileGauchePlaceHolder.GetComponent<Tuile>()
+                        );
+                    });
+                }
+                else if (tuile.position == 1)
+                {
+                    MainThreadDispatcher.Enqueue(() =>
+                    {
+                        var tuileData = new TuileData(
+                            tuile.Couleur,
+                            int.Parse(tuile.numero),
+                            tuile.Couleur.Equals("M", StringComparison.Ordinal)
+                                || tuile.Couleur.Equals("X", StringComparison.Ordinal)
+                        );
+                        var spriteRen =
+                            Chevalet.PileHautDroitePlaceHolder.GetComponent<SpriteRenderer>();
+                        spriteRen.sprite = Chevalet.spritesDic[
+                            Chevalet.FromTuileToSpriteName(tuileData)
+                        ];
+                    });
+                }
+                else
+                {
+                    MainThreadDispatcher.Enqueue(() =>
+                    {
+                        var tuileData = new TuileData(
+                            tuile.Couleur,
+                            int.Parse(tuile.numero),
+                            tuile.Couleur.Equals("M", StringComparison.Ordinal)
+                                || tuile.Couleur.Equals("X", StringComparison.Ordinal)
+                        );
+                        var spriteRen =
+                            Chevalet.PileHautGauchePlaceHolder.GetComponent<SpriteRenderer>();
+                        spriteRen.sprite = Chevalet.spritesDic[
+                            Chevalet.FromTuileToSpriteName(tuileData)
+                        ];
+                    });
+                }
             }
         );
 
@@ -408,7 +491,23 @@ public class SignalRConnector : MonoBehaviour
             "PiochePacketRequest",
             () =>
             {
-                var tuile = new PiochePacket { Centre = false, Defausse = true };
+                var chevaletInstance = Chevalet.Instance;
+                Debug.Log("Ok il faut piocher une tuile");
+                var tuile = new PiochePacket { Centre = true, Defausse = false };
+
+                while (chevaletInstance.IsPiochee == false) { }
+                Debug.Log("La tuile vient d'etre piochee");
+
+                if (chevaletInstance.TuilePiochee != null)
+                {
+                    chevaletInstance.IsPiochee = false;
+                    return chevaletInstance.TuilePiochee;
+                }
+                // add code here signal
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    LobbyManager.Instance.SetMyTurn(false);
+                });
                 return tuile;
             }
         );
