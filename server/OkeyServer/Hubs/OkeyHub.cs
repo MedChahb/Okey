@@ -2,6 +2,9 @@ namespace OkeyServer.Hubs;
 
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
+using Data;
+using Exceptions;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
 using Okey;
@@ -11,6 +14,7 @@ using Okey.Tuiles;
 using Packets;
 using Packets.Dtos;
 using Player;
+using Security;
 
 /// <summary>
 /// Hub de communication entre les clients et le serveur
@@ -25,25 +29,24 @@ public sealed class OkeyHub : Hub
     private readonly IRoomManager _roomManager;
     private readonly IHubContext<OkeyHub> _hubContext;
     private static readonly char[] Separator = new char[] { ';' };
+    private readonly ServerDbContext _dbContext;
 
-    //private readonly ServerDbContext _dbContext;
     private ConcurrentDictionary<string, bool> _isPlayerTurn;
 
     public OkeyHub(
         IHubContext<OkeyHub> hubContext,
-        IRoomManager roomManager
-    //ServerDbContext dbContext
+        IRoomManager roomManager,
+        ServerDbContext dbContext
     )
     {
         this._roomManager = roomManager;
         this._hubContext = hubContext;
-        //this._dbContext = dbContext;
+        this._dbContext = dbContext;
         this._isPlayerTurn = new ConcurrentDictionary<string, bool>();
     }
 
     /// <summary>
     /// On ajoute automatiquement le client au groupe Hub,
-    /// ce groupe contient tous les clients qui ne sont pas dans une partie
     /// ce groupe contient tous les clients qui ne sont pas dans une partie
     /// </summary>
     public override async Task OnConnectedAsync()
@@ -73,7 +76,7 @@ public sealed class OkeyHub : Hub
                     }
                 );
         }
-        /*
+
         if (!_connectedUsers.TryRemove(this.Context.ConnectionId, out _))
         {
             throw new ConnectedUSerDictionnaryRemoveException(
@@ -82,12 +85,10 @@ public sealed class OkeyHub : Hub
                     + " from the connected users"
             );
         }
-        */
 
         await base.OnDisconnectedAsync(exception);
     }
 
-    /*
     /// <summary>
     /// Quand le joueur fourni un JWT Token lie la session de connxion au nom d'utilisateur
     /// Une transmission AccountLinkResult est envoyé au client indiquant comment s'est passée la tentative d'association
@@ -148,7 +149,6 @@ public sealed class OkeyHub : Hub
             await this.Clients.Caller.SendAsync("AccountLinkResult", 1);
         }
     }
-    */
 
     /// <summary>
     /// Envoi un message à tous lees membres d'un groupe
@@ -1087,12 +1087,62 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Group("Hub")
             .SendAsync("ReceiveMessage", new PacketSignal { message = roomsInfo });*/
 
-    public bool GetAllAssociations()
+    /* Retirer le commentaire pour tester le client de gestion utilisateur XPR567
+
+    /// <summary>
+    /// affiche dans la console du serveur l'ensemble des utilisateurs actuellement connectés à celui-ci
+    /// </summary>
+    /// <returns></returns>
+    public async Task GetAllAssociations()
     {
+        string allconnection = "";
         foreach (var elmt in _connectedUsers)
         {
-            Console.WriteLine($"Key: {elmt.Key}, Value: " + elmt.Value);
+            allconnection += $"Key: {elmt.Key}, Value: " + elmt.Value + "\n";
         }
-        return true;
+
+        await this.Clients.Caller.SendAsync("ReceiveMessage", allconnection);
     }
+
+    /// <summary>
+    ///  met à jour les valeurs de l'utilisateur appelant cette fonction, ici à titre d'exemple et à des fins de test
+    /// </summary>
+    /// <param name="Elo"></param>
+    /// <param name="Experience"></param>
+    /// <param name="PartieJouee"></param>
+    /// <param name="PartieGagnee"></param>
+    public async Task UpdatePlayerDatas(
+        int Elo,
+        int Experience,
+        bool PartieJouee,
+        bool PartieGagnee
+    )
+    {
+        var id = this.Context.ConnectionId;
+        await this.Clients.Caller.SendAsync("ReceiveStats", _connectedUsers[id].PlayerInfos());
+        await _connectedUsers[id]
+            .UpdateStats(this._dbContext, Elo, Experience, PartieGagnee, PartieJouee);
+        await this.Clients.Caller.SendAsync("ReceiveStats", _connectedUsers[id].PlayerInfos());
+    }
+
+    /// <summary>
+    /// met à jour la valeur de l'achievement passé en argument, avec le booléen fourni en argument ici a titre d'exemple sur els possiblités offertes par la gestion utilisateur
+    /// </summary>
+    /// <param name="Achievement"></param>
+    /// <param name="Value"></param>
+    public async Task UpdateAchievement(string Achievement, bool Value)
+    {
+        var id = this.Context.ConnectionId;
+        await this.Clients.Caller.SendAsync(
+            "ReceiveMessage",
+            _connectedUsers[id].AchievementsToString()
+        );
+        await _connectedUsers[id].UpdateAchievement(this._dbContext, Achievement, Value);
+        await this.Clients.Caller.SendAsync(
+            "ReceiveMessage",
+            _connectedUsers[id].AchievementsToString()
+        );
+    }
+
+    */
 }
