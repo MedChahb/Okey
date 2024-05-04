@@ -119,6 +119,25 @@ public class UIManagerPAcceuil : MonoBehaviour
         PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
             .GetSelfJoueur()
             .NomUtilisateur;
+        switch (
+            manager
+            .GetSelfJoueur()
+            .IconeProfil
+        )
+        {
+            case 0:
+                //Màj l'image avec l'avatar 1
+                break;
+            case 1:
+                //Màj l'image avec l'avatar 2
+                break;
+            case 2:
+                //Màj l'image avec l'avatar 3
+                break;
+            case 3:
+                //Màj l'image avec l'avatar 4
+                break;
+        }
         connexionBtn.gameObject.SetActive(false);
         rankingNotConnected.SetActive(false);
     }
