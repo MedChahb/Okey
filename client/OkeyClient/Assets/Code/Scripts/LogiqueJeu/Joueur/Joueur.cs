@@ -26,6 +26,12 @@ namespace LogiqueJeu.Joueur
 
         public int Classement { get; set; }
 
+        public DateTime DateInscription { get; set; }
+
+        public int NombreParties { get; set; }
+
+        public int NombrePartiesGagnees { get; set; }
+
         // Not sure if this is necessary
         public bool IsInGame { get; set; }
 
@@ -58,6 +64,9 @@ namespace LogiqueJeu.Joueur
             this.Score = 0;
             this.Niveau = 0;
             this.Classement = 0;
+            this.DateInscription = DateTime.UnixEpoch;
+            this.NombreParties = 0;
+            this.NombrePartiesGagnees = 0;
             this.IsInGame = false;
             this.InGame = new InGameDetails
             {
@@ -113,29 +122,7 @@ namespace LogiqueJeu.Joueur
             Behaviour.StartCoroutine(this.FetchUserBG());
         }
 
-        protected virtual IEnumerator FetchUserBG()
-        {
-            var Response = "";
-
-            var www = UnityWebRequest.Get(
-                Constants.API_URL_DEV + "/compte/watch/" + this.NomUtilisateur
-            );
-            www.certificateHandler = new BypassCertificate();
-            yield return www.SendWebRequest();
-
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                Response = www.downloadHandler.text;
-                var unmarshal = JsonUtility.FromJson<JoueurAPICompteDTO>(Response);
-                this.NomUtilisateur = unmarshal.username;
-                this.Elo = unmarshal.elo;
-                this.OnShapeChanged(EventArgs.Empty);
-            }
-            else
-            {
-                Debug.Log(www.error);
-            }
-        }
+        protected abstract IEnumerator FetchUserBG();
 
         protected virtual void OnShapeChanged(EventArgs E)
         {

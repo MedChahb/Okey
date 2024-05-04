@@ -3,6 +3,7 @@ namespace LogiqueJeu.Joueur
     using System;
     using System.Collections;
     using System.IO;
+    using System.Text.Json;
     using System.Xml.Serialization;
     using UnityEngine;
     using UnityEngine.Networking;
@@ -94,10 +95,15 @@ namespace LogiqueJeu.Joueur
             if (www.result == UnityWebRequest.Result.Success)
             {
                 Response = www.downloadHandler.text;
-                var unmarshal = JsonUtility.FromJson<SelfJoueurAPICompteDTO>(Response);
+                var unmarshal = JsonSerializer.Deserialize<SelfJoueurAPICompteDTO>(Response);
                 this.NomUtilisateur = unmarshal.username;
+                this.IconeProfil = unmarshal.photo;
+                this.Score = unmarshal.experience;
                 this.Elo = unmarshal.elo;
-                this.Achievements = unmarshal.achievements;
+                this.DateInscription = unmarshal.dateInscription;
+                this.NombreParties = unmarshal.nombreParties;
+                this.NombrePartiesGagnees = unmarshal.nombrePartiesGagnees;
+                this.Achievements = new(unmarshal.achievements);
                 this.SaveXML();
                 this.OnShapeChanged(EventArgs.Empty);
             }
@@ -137,11 +143,12 @@ namespace LogiqueJeu.Joueur
             MonoBehaviour Behaviour,
             string NomUtilisateur,
             string MotDePasse,
+            int IconeProfil,
             Action<int> CallbackResult = null
         )
         {
             var JSON = JsonUtility.ToJson(
-                new SelfJoueurAPIConnexionDTO(NomUtilisateur, MotDePasse)
+                new SelfJoueurAPICreationDTO(NomUtilisateur, MotDePasse, IconeProfil)
             );
             Behaviour.StartCoroutine(
                 this.PostUserConnexionBG(Behaviour, JSON, IsCreation: true, CallbackResult)
@@ -189,7 +196,7 @@ namespace LogiqueJeu.Joueur
             {
                 Response = www.downloadHandler.text;
                 var unmarshal = JsonUtility.FromJson<SelfJoueurAPIConnexionResponseDTO>(Response);
-                this.NomUtilisateur = unmarshal.userName;
+                this.NomUtilisateur = unmarshal.username;
                 this.TokenConnexion = unmarshal.token;
                 this.SaveXML();
                 this.LoadSelf(Behaviour);

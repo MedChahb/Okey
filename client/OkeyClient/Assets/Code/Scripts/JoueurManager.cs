@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json;
 using LogiqueJeu.Joueur;
 using UnityEngine;
 using UnityEngine.Events;
@@ -205,10 +206,17 @@ public class JoueurManager : MonoBehaviour
     public void StartCreationCompteSelfJoueur(
         string NomUtilisateur,
         string MotDePasse,
+        int IconeProfil,
         Action<int> CallbackResult = null
     )
     {
-        this.SoiMeme.StartCreationCompte(this, NomUtilisateur, MotDePasse, CallbackResult);
+        this.SoiMeme.StartCreationCompte(
+            this,
+            NomUtilisateur,
+            MotDePasse,
+            IconeProfil,
+            CallbackResult
+        );
     }
 
     public void DeconnexionSelfJoueur()
@@ -265,10 +273,11 @@ public class JoueurManager : MonoBehaviour
         if (www.result == UnityWebRequest.Result.Success)
         {
             Result = new();
-            var unmarshal = JsonUtility.FromJson<JoueurAPIClassementListDTO>(
-                "{ \"Classements\": " + www.downloadHandler.text + " }"
+            var unmarshal = JsonSerializer.Deserialize<List<JoueurAPIClassementDTO>>(
+                www.downloadHandler.text
             );
-            foreach (var JoueurDTO in unmarshal.Classements)
+
+            foreach (var JoueurDTO in unmarshal)
             {
                 Joueur J;
                 if (JoueurDTO.username == this.SoiMeme.NomUtilisateur)
