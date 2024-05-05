@@ -94,6 +94,8 @@ public class CreatAccountScreen : MonoBehaviour
 
         PasswordValidation.onValueChanged.AddListener(OnInputChanged);
 
+        this.manager.ConnexionChangeEvent.AddListener(() => Panel.SetActive(false));
+
         erreurTxt.gameObject.SetActive(false);
 
         avatar0.transform.localScale *= scaleFactor;
@@ -214,8 +216,6 @@ public class CreatAccountScreen : MonoBehaviour
                     icone,
                     this.Source.Token
                 );
-                Panel.SetActive(false);
-                accueil.setConnected(true);
                 return;
             }
             catch (HttpRequestException e)

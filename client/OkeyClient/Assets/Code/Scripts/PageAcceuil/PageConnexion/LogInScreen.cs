@@ -62,6 +62,8 @@ public class LogInScreen : MonoBehaviour
 
         Password.onValueChanged.AddListener(OnInputChanged);
 
+        this.manager.ConnexionChangeEvent.AddListener(() => Panel.SetActive(false));
+
         erreurTxt.gameObject.SetActive(false);
     }
 
@@ -107,8 +109,6 @@ public class LogInScreen : MonoBehaviour
             try
             {
                 await this.manager.ConnexionSelfJoueurAsync(username, password, this.Source.Token);
-                Panel.SetActive(false);
-                accueil.setConnected(true);
                 return;
             }
             catch (HttpRequestException e)

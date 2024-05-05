@@ -15,6 +15,17 @@ public class JoueurManager : MonoBehaviour
     private readonly List<Joueur> Joueurs = new(3);
     private SelfJoueur SoiMeme;
 
+    private bool _IsConnected = false;
+    public bool IsConnected
+    {
+        get { return this._IsConnected; }
+        private set
+        {
+            this._IsConnected = value;
+            this.ConnexionChangeEvent?.Invoke();
+        }
+    }
+
     [HideInInspector]
     public UnityEvent SelfJoueurChangeEvent = new();
 
@@ -24,8 +35,8 @@ public class JoueurManager : MonoBehaviour
     [HideInInspector]
     public UnityEvent AnyJoueurChangeEvent = new();
 
-    // [HideInInspector]
-    // public UnityEvent LoginChangeEvent = new();
+    [HideInInspector]
+    public UnityEvent ConnexionChangeEvent = new();
 
     private async void Awake()
     {
@@ -50,6 +61,10 @@ public class JoueurManager : MonoBehaviour
         }
         this.SoiMeme.JoueurChangeEvent += this.OnSelfJoueurChange;
         await this.SoiMeme.LoadSelf();
+        if (!string.IsNullOrEmpty(this.SoiMeme.TokenConnexion))
+        {
+            this.IsConnected = true;
+        }
     }
 
     private void OnSelfJoueurChange(object O = null, EventArgs E = null)
@@ -214,6 +229,7 @@ public class JoueurManager : MonoBehaviour
     )
     {
         await this.SoiMeme.ConnexionCompteAsync(NomUtilisateur, MotDePasse, Token);
+        this.IsConnected = true;
     }
 
     public async Task CreationCompteSelfJoueur(
@@ -224,11 +240,13 @@ public class JoueurManager : MonoBehaviour
     )
     {
         await this.SoiMeme.CreationCompteAsync(NomUtilisateur, MotDePasse, IconeProfil, Token);
+        this.IsConnected = true;
     }
 
     public void DeconnexionSelfJoueur()
     {
         this.SoiMeme.DeconnexionCompte();
+        this.IsConnected = false;
     }
 
     // Une requête est à faire ici pour mettre à jour l'icone dans l'API
