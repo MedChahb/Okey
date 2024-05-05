@@ -26,6 +26,7 @@ public class ClassementManager : MonoBehaviour
     private readonly CancellationTokenSource cancellationTokenSource = new();
     private int currentPage = 1; // Page actuelle initialisée à 1.
     private bool isLoading = false;
+    public Button refreshButton;
 
     /// <summary>
     /// Initialisation des requêtes de classement.
@@ -38,6 +39,7 @@ public class ClassementManager : MonoBehaviour
 
         // Ajouter un écouteur d'événement pour le scroll
         scrollRect.onValueChanged.AddListener(HandleScroll);
+        refreshButton.onClick.AddListener(ResetAndFetchFirstPage);
     }
 
     void HandleScroll(Vector2 position)
@@ -48,6 +50,16 @@ public class ClassementManager : MonoBehaviour
             isLoading = true;
             FetchClassementsPageAsync(++currentPage);
         }
+    }
+
+    /// <summary>
+    /// Réinitialise la vue à la première page et récupère les données pour celle-ci.
+    /// </summary>
+    public void ResetAndFetchFirstPage()
+    {
+        currentPage = 1; // Reset à la premiére page
+        FetchClassementsPageAsync(currentPage); // Fetch les données pour la premiére page
+        scrollRect.verticalNormalizedPosition = 1; // Reset scroll
     }
 
     private async void FetchClassementsTopAsync(int limit)
