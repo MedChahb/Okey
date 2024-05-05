@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using LogiqueJeu.Joueur;
 
 public class PageProfile : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class PageProfile : MonoBehaviour
     public GameObject Panel;
 
     //Modifier pour avoir l'avatar de l'utilisateur dans cette variable
-    private int currentAvatarId = 0;
+    private int currentAvatarId = 1;
 
     [SerializeField]
     private GameObject avatar0;
@@ -36,13 +37,38 @@ public class PageProfile : MonoBehaviour
     [SerializeField]
     private GameObject PanelAvatar;
 
+    [SerializeField]
     private JoueurManager manager;
+
+    [SerializeField]
+    private TextMeshProUGUI NiveauTxt;
+
+    [SerializeField]
+    private TextMeshProUGUI ScoreTxt;
+
+    [SerializeField]
+    private TextMeshProUGUI StatistiqueTxt;
+
+    [SerializeField]
+    private TextMeshProUGUI TempsTxt;
+
+    [SerializeField]
+    private TextMeshProUGUI WinTxt;
+
+    [SerializeField]
+    private TextMeshProUGUI LostTxt;
+
+    [SerializeField]
+    private TextMeshProUGUI RankTxt;
 
     // Start is called before the first frame update
     void Start()
     {
-        this.manager = JoueurManager.Instance;
-        manager.SelfJoueurChangeEvent.AddListener(updateUserProfile);
+        if (this.manager.IsConnected)
+        {
+            updateUserProfile();
+        }
+        manager.ConnexionChangeEvent.AddListener(updateUserProfile);
         disconnectionButton.onClick.AddListener(onDisconnectionClicked);
     }
 
@@ -58,19 +84,19 @@ public class PageProfile : MonoBehaviour
             {
                 if (hit.collider.gameObject == avatar0.gameObject)
                 {
-                    OnAvatarButtonClick(0);
+                    OnAvatarButtonClick(1);
                 }
                 else if (hit.collider.gameObject == avatar1.gameObject)
                 {
-                    OnAvatarButtonClick(1);
+                    OnAvatarButtonClick(2);
                 }
                 else if (hit.collider.gameObject == avatar2.gameObject)
                 {
-                    OnAvatarButtonClick(2);
+                    OnAvatarButtonClick(3);
                 }
                 else if (hit.collider.gameObject == avatar3.gameObject)
                 {
-                    OnAvatarButtonClick(3);
+                    OnAvatarButtonClick(4);
                 }
             }
         }
@@ -82,19 +108,19 @@ public class PageProfile : MonoBehaviour
         currentAvatarId = avatarId;
         switch (currentAvatarId)
         {
-            case 0:
+            case 1:
                 avatar0.transform.localScale *= scaleFactor;
                 //Update avatar
                 break;
-            case 1:
+            case 2:
                 avatar1.transform.localScale *= scaleFactor;
                 //Update avatar
                 break;
-            case 2:
+            case 3:
                 avatar2.transform.localScale *= scaleFactor;
                 //Update avatar
                 break;
-            case 3:
+            case 4:
                 avatar3.transform.localScale *= scaleFactor;
                 //Update avatar
                 break;
@@ -105,16 +131,16 @@ public class PageProfile : MonoBehaviour
     {
         switch (currentAvatarId)
         {
-            case 0:
+            case 1:
                 avatar0.transform.localScale /= scaleFactor;
                 break;
-            case 1:
+            case 2:
                 avatar1.transform.localScale /= scaleFactor;
                 break;
-            case 2:
+            case 3:
                 avatar2.transform.localScale /= scaleFactor;
                 break;
-            case 3:
+            case 4:
                 avatar3.transform.localScale /= scaleFactor;
                 break;
         }
@@ -131,6 +157,27 @@ public class PageProfile : MonoBehaviour
         PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
             .GetSelfJoueur()
             .NomUtilisateur;
+        NiveauTxt.text = "Niveau : " + manager
+            .GetSelfJoueur()
+            .Niveau;
+        ScoreTxt.text = "Score : " + manager
+            .GetSelfJoueur()
+            .Score;
+        StatistiqueTxt.text = "Statistique : " + manager
+            .GetSelfJoueur()
+            .Elo;
+        TempsTxt.text = "Temps Total : 15h";
+        WinTxt.text = "Parties Gagnées : " + manager
+            .GetSelfJoueur()
+            .NombrePartiesGagnees;
+        LostTxt.text = "Parties Perdues : " + (manager
+            .GetSelfJoueur()
+            .NombreParties - manager
+            .GetSelfJoueur()
+            .NombrePartiesGagnees);
+        RankTxt.text = "Classement : " + manager
+            .GetSelfJoueur()
+            .Classement;
         //Mettre à jour le reste du profil de l'utilisateur avec ses données
     }
 

@@ -52,7 +52,7 @@ public class CreatAccountScreen : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI erreurTxt;
 
-    private int currentAvatarId = 0;
+    private int currentAvatarId = 1;
 
     [SerializeField]
     private GameObject avatar0;
@@ -114,19 +114,19 @@ public class CreatAccountScreen : MonoBehaviour
             {
                 if (hit.collider.gameObject == avatar0.gameObject)
                 {
-                    OnAvatarButtonClick(0);
+                    OnAvatarButtonClick(1);
                 }
                 else if (hit.collider.gameObject == avatar1.gameObject)
                 {
-                    OnAvatarButtonClick(1);
+                    OnAvatarButtonClick(2);
                 }
                 else if (hit.collider.gameObject == avatar2.gameObject)
                 {
-                    OnAvatarButtonClick(2);
+                    OnAvatarButtonClick(3);
                 }
                 else if (hit.collider.gameObject == avatar3.gameObject)
                 {
-                    OnAvatarButtonClick(3);
+                    OnAvatarButtonClick(4);
                 }
             }
         }
@@ -187,7 +187,7 @@ public class CreatAccountScreen : MonoBehaviour
             await this.UpdateWithConnection(
                 username,
                 password,
-                (IconeProfil)(this.currentAvatarId + 1)
+                (IconeProfil)(this.currentAvatarId)
             );
         }
         else

@@ -30,7 +30,11 @@ public class UIManagerPAcceuil : MonoBehaviour
     [SerializeField]
     private LogInScreen login;
 
+    [SerializeField]
     public GameObject PanelAvatar;
+
+    [SerializeField]
+    public GameObject PanelConnected;
 
     public JoueurManager manager;
 
@@ -39,6 +43,11 @@ public class UIManagerPAcceuil : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (!this.manager.IsConnected)
+        {
+            connexionBtn.gameObject.SetActive(true);
+            rankingNotConnected.SetActive(true);
+        }
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
         connexionBtn.onClick.AddListener(onLoginClicked);
@@ -97,7 +106,7 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     private void updateAvatar()
     {
-        PanelAvatar.SetActive(true);
+        PanelConnected.SetActive(true);
         PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
             .GetSelfJoueur()
             .NomUtilisateur;
@@ -125,6 +134,7 @@ public class UIManagerPAcceuil : MonoBehaviour
         if (!this.manager.IsConnected)
         {
             connexionBtn.gameObject.SetActive(true);
+            rankingNotConnected.SetActive(true);
             connexionBtnTxt.text = UIManager.singleton.language ? "LogIn" : "Connexion";
         }
     }
