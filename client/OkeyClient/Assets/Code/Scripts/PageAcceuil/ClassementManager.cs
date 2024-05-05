@@ -1,4 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using LogiqueJeu.Joueur;
 using TMPro;
 using UnityEngine;
@@ -14,18 +18,64 @@ public class ClassementManager : MonoBehaviour
     public TextMeshProUGUI[] rankTexts;
     public TextMeshProUGUI[] userTexts;
     public TextMeshProUGUI[] eloTexts;
+    public const int MAX_REQUEST_RETRIES = 5; // Superieur ou égale à 1
+    public const int REQUEST_RETRY_DELAY = 1000; // En milisecondes
+    private readonly CancellationTokenSource Source = new();
 
     void Start()
     {
         Debug.Log("Fetching classements...");
-        // L'appel ci-dessous est configuré pour récupérer uniquement les 5 meilleurs joueurs
-        JoueurManager.Instance.StartFetchClassements(null, 5, OnClassementsReceived);
 
-        JoueurManager.Instance.StartFetchClassements(null, 0, OnAllClassementsReceived); // Assumer que 0 indique "tous les joueurs"
+        // L'appel ci-dessous est configuré pour récupérer uniquement les 5 meilleurs joueurs
+        this.FetchClassementsTopAsync(5);
+
+        // 0 indique "tous les joueurs", 1 indique la première page (30 joueurs à la fois), 2 la deuxième, etc.
+        this.FetchClassementsPageAsync(1);
     }
 
-    private void OnClassementsReceived(List<Joueur> joueurs)
+    private async void FetchClassementsTopAsync(int Limit)
     {
+        List<Joueur> joueurs = null;
+        for (var i = 0; i < MAX_REQUEST_RETRIES; i++)
+        {
+            try
+            {
+                joueurs = await API.FetchClassementsTopAsync(Limit, this.Source.Token);
+                break;
+            }
+            catch (HttpRequestException e)
+            {
+                var Code = e.GetStatusCode();
+                if (Code != null)
+                {
+                    Debug.Log("Request error with response code " + Code);
+                    break;
+                }
+                else
+                {
+                    Debug.Log("Network error");
+                    if (i != MAX_REQUEST_RETRIES - 1)
+                    {
+                        Debug.Log("Retrying...");
+                        try
+                        {
+                            await Task.Delay(REQUEST_RETRY_DELAY, this.Source.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            Debug.Log("Request cancelled.");
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Request cancelled.");
+                break;
+            }
+        }
+
         if (joueurs != null && joueurs.Count > 0)
         {
             Debug.Log("Classement reçu:");
@@ -57,8 +107,49 @@ public class ClassementManager : MonoBehaviour
         }
     }
 
-    private void OnAllClassementsReceived(List<Joueur> joueurs)
+    private async void FetchClassementsPageAsync(int PageNumber)
     {
+        List<Joueur> joueurs = null;
+        for (var i = 0; i < MAX_REQUEST_RETRIES; i++)
+        {
+            try
+            {
+                joueurs = await API.FetchClassementsPageAsync(PageNumber, this.Source.Token);
+                break;
+            }
+            catch (HttpRequestException e)
+            {
+                var Code = e.GetStatusCode();
+                if (Code != null)
+                {
+                    Debug.Log("Request error with response code " + Code);
+                    break;
+                }
+                else
+                {
+                    Debug.Log("Network error");
+                    if (i != MAX_REQUEST_RETRIES - 1)
+                    {
+                        Debug.Log("Retrying...");
+                        try
+                        {
+                            await Task.Delay(REQUEST_RETRY_DELAY, this.Source.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            Debug.Log("Request cancelled.");
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Request cancelled.");
+                break;
+            }
+        }
+
         // Vérification si la liste des joueurs est nulle
         if (joueurs == null)
         {

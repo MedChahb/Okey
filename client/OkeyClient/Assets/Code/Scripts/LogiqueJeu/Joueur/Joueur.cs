@@ -1,11 +1,10 @@
 namespace LogiqueJeu.Joueur
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Xml.Serialization;
-    using UnityEngine;
-    using UnityEngine.Networking;
 
     public abstract class Joueur : ICloneable
     {
@@ -13,7 +12,7 @@ namespace LogiqueJeu.Joueur
 
         public int Elo { get; set; }
 
-        public int IconeProfil { get; set; }
+        public IconeProfil IconeProfil { get; set; }
 
 #pragma warning disable IDE0052, IDE0044
         // A placeholder for the time being until it gets potentially implemented
@@ -60,7 +59,7 @@ namespace LogiqueJeu.Joueur
         {
             this.NomUtilisateur = Constants.ANONYMOUS_PLAYER_NAME;
             this.Elo = 0;
-            this.IconeProfil = 0;
+            this.IconeProfil = IconeProfil.Icone1;
             this.Score = 0;
             this.Niveau = 0;
             this.Classement = 0;
@@ -115,14 +114,9 @@ namespace LogiqueJeu.Joueur
             this.IsInGame = false;
         }
 
-        public abstract void LoadSelf(MonoBehaviour Behaviour);
+        public abstract Task LoadSelf(CancellationToken Token = default);
 
-        public virtual void UpdateDetails(MonoBehaviour Behaviour)
-        {
-            Behaviour.StartCoroutine(this.FetchUserBG());
-        }
-
-        protected abstract IEnumerator FetchUserBG();
+        protected abstract Task UpdateDetailsAsync(CancellationToken Token = default);
 
         protected virtual void OnShapeChanged(EventArgs E)
         {
@@ -136,21 +130,6 @@ namespace LogiqueJeu.Joueur
             copy.InGame._etatTour = (EtatTour)this.InGame._etatTour.Clone();
             copy.JoueurChangeEvent = null;
             return copy;
-        }
-    }
-
-    public class BypassCertificate : CertificateHandler
-    {
-        // Cela devrait pas être nécessaire vu que la connexion passe par HTTPS
-        // avec un certificat de l'Unistra bien reconnu.
-        // Il faut mettre l'API en HTTP simple.
-        // À mon avis il y a deux HTTPS en jeu en ce moment,
-        // 1) le bastion Unistra, 2) l'API ou le reverse proxy Nginx.
-        // Il faut enlever le HTTPS de l'API pour que ça marche mieux sans cette duplication.
-        protected override bool ValidateCertificate(byte[] certificateData)
-        {
-            //Simply return true no matter what
-            return true;
         }
     }
 }

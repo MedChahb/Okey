@@ -1,3 +1,4 @@
+using LogiqueJeu.Joueur;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -119,22 +120,18 @@ public class UIManagerPAcceuil : MonoBehaviour
         PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
             .GetSelfJoueur()
             .NomUtilisateur;
-        switch (
-            manager
-            .GetSelfJoueur()
-            .IconeProfil
-        )
+        switch (manager.GetSelfJoueur().IconeProfil)
         {
-            case 0:
+            case IconeProfil.Icone1:
                 //Màj l'image avec l'avatar 1
                 break;
-            case 1:
+            case IconeProfil.Icone2:
                 //Màj l'image avec l'avatar 2
                 break;
-            case 2:
+            case IconeProfil.Icone3:
                 //Màj l'image avec l'avatar 3
                 break;
-            case 3:
+            case IconeProfil.Icone4:
                 //Màj l'image avec l'avatar 4
                 break;
         }

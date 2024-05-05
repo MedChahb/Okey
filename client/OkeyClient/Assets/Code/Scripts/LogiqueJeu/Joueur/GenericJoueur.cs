@@ -1,45 +1,27 @@
 namespace LogiqueJeu.Joueur
 {
     using System;
-    using System.Collections;
-    using System.Text.Json;
-    using UnityEngine;
-    using UnityEngine.Networking;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public sealed class GenericJoueur : Joueur
     {
-        protected override IEnumerator FetchUserBG()
+        protected override async Task UpdateDetailsAsync(CancellationToken Token = default)
         {
-            var Response = "";
-
-            var www = UnityWebRequest.Get(
-                Constants.API_URL + "/compte/watch/" + this.NomUtilisateur
-            );
-            www.certificateHandler = new BypassCertificate();
-            yield return www.SendWebRequest();
-
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                Response = www.downloadHandler.text;
-                var unmarshal = JsonSerializer.Deserialize<JoueurAPICompteDTO>(Response);
-                this.NomUtilisateur = unmarshal.username;
-                this.IconeProfil = unmarshal.photo;
-                this.Score = unmarshal.experience;
-                this.Elo = unmarshal.elo;
-                this.DateInscription = unmarshal.dateInscription;
-                this.NombreParties = unmarshal.nombreParties;
-                this.NombrePartiesGagnees = unmarshal.nombrePartiesGagnees;
-                this.OnShapeChanged(EventArgs.Empty);
-            }
-            else
-            {
-                Debug.Log(www.error);
-            }
+            var Response = await API.FetchJoueurAsync(this.NomUtilisateur, Token);
+            this.NomUtilisateur = Response.username;
+            this.IconeProfil = (IconeProfil)Response.photo;
+            this.Score = Response.experience;
+            this.Elo = Response.elo;
+            this.DateInscription = Response.dateInscription;
+            this.NombreParties = Response.nombreParties;
+            this.NombrePartiesGagnees = Response.nombrePartiesGagnees;
+            this.OnShapeChanged(EventArgs.Empty);
         }
 
-        public override void LoadSelf(MonoBehaviour Behaviour)
+        public override async Task LoadSelf(CancellationToken Token = default)
         {
-            Behaviour.StartCoroutine(this.FetchUserBG());
+            await this.UpdateDetailsAsync(Token);
         }
     }
 }
