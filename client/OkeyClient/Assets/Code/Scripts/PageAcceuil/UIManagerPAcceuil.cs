@@ -110,20 +110,29 @@ public class UIManagerPAcceuil : MonoBehaviour
         PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
             .GetSelfJoueur()
             .NomUtilisateur;
-        switch (manager.GetSelfJoueur().IconeProfil)
+        Sprite newSprite = Resources.Load<Sprite>("Avatar/avatarn4");
+        switch(
+            (int) manager.GetSelfJoueur().IconeProfil
+        )
         {
-            case IconeProfil.Icone1:
-                //Màj l'image avec l'avatar 1
+            case (int) IconeProfil.Icone1:
+                newSprite = Resources.Load<Sprite>("Avatar/avatarn1");
                 break;
-            case IconeProfil.Icone2:
-                //Màj l'image avec l'avatar 2
+            case (int) IconeProfil.Icone2:
+                newSprite = Resources.Load<Sprite>("Avatar/avatarn2");
                 break;
-            case IconeProfil.Icone3:
-                //Màj l'image avec l'avatar 3
+            case (int) IconeProfil.Icone3:
+                newSprite = Resources.Load<Sprite>("Avatar/avatarn3");
                 break;
-            case IconeProfil.Icone4:
-                //Màj l'image avec l'avatar 4
-                break;
+        }
+        if (newSprite != null)
+        {
+            // Modification du sprite de l'Image
+            PanelAvatar.GetComponentInChildren<Image>().sprite = newSprite;
+        }
+        else
+        {
+            Debug.LogWarning("Sprite introuvable ou Image non définie !");
         }
         connexionBtn.gameObject.SetActive(false);
         rankingNotConnected.SetActive(false);

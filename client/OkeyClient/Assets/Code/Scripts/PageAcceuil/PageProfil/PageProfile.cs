@@ -12,7 +12,7 @@ public class PageProfile : MonoBehaviour
     public GameObject Panel;
 
     //Modifier pour avoir l'avatar de l'utilisateur dans cette variable
-    private int currentAvatarId = 1;
+    private int currentAvatarId;
 
     [SerializeField]
     private GameObject avatar0;
@@ -70,6 +70,8 @@ public class PageProfile : MonoBehaviour
         }
         manager.ConnexionChangeEvent.AddListener(updateUserProfile);
         disconnectionButton.onClick.AddListener(onDisconnectionClicked);
+        currentAvatarId = (int) manager.GetSelfJoueur().IconeProfil;
+        OnAvatarButtonClick();
     }
 
     // Update is called once per frame
@@ -84,33 +86,38 @@ public class PageProfile : MonoBehaviour
             {
                 if (hit.collider.gameObject == avatar0.gameObject)
                 {
-                    OnAvatarButtonClick(1);
+                    ResetAvatarView();
+                    currentAvatarId = 1;
+                    OnAvatarButtonClick();
                 }
                 else if (hit.collider.gameObject == avatar1.gameObject)
                 {
-                    OnAvatarButtonClick(2);
+                    ResetAvatarView();
+                    currentAvatarId = 2;
+                    OnAvatarButtonClick();
                 }
                 else if (hit.collider.gameObject == avatar2.gameObject)
                 {
-                    OnAvatarButtonClick(3);
+                    ResetAvatarView();
+                    currentAvatarId = 3;
+                    OnAvatarButtonClick();
                 }
                 else if (hit.collider.gameObject == avatar3.gameObject)
                 {
-                    OnAvatarButtonClick(4);
+                    ResetAvatarView();
+                    currentAvatarId = 4;
+                    OnAvatarButtonClick();
                 }
             }
         }
     }
 
-    void OnAvatarButtonClick(int avatarId)
+    void OnAvatarButtonClick()
     {
-        ResetAvatarView();
-        currentAvatarId = avatarId;
         switch (currentAvatarId)
         {
             case 1:
                 avatar0.transform.localScale *= scaleFactor;
-                //Update avatar
                 break;
             case 2:
                 avatar1.transform.localScale *= scaleFactor;
@@ -179,6 +186,30 @@ public class PageProfile : MonoBehaviour
             .GetSelfJoueur()
             .Classement;
         //Mettre à jour le reste du profil de l'utilisateur avec ses données
+        Sprite newSprite = Resources.Load<Sprite>("Avatar/avatarn4");
+        switch(
+            (int) manager.GetSelfJoueur().IconeProfil
+        )
+        {
+            case 1:
+                newSprite = Resources.Load<Sprite>("Avatar/avatarn1");
+                break;
+            case 2:
+                newSprite = Resources.Load<Sprite>("Avatar/avatarn2");
+                break;
+            case 3:
+                newSprite = Resources.Load<Sprite>("Avatar/avatarn3");
+                break;
+        }
+        if (newSprite != null)
+        {
+            // Modification du sprite de l'Image
+            PanelAvatar.GetComponentInChildren<Image>().sprite = newSprite;
+        }
+        else
+        {
+            Debug.LogWarning("Sprite introuvable ou Image non définie !");
+        }
     }
 
     void onDisconnectionClicked()
