@@ -138,16 +138,16 @@ public class CreatAccountScreen : MonoBehaviour
         currentAvatarId = avatarId;
         switch (currentAvatarId)
         {
-            case 0:
+            case 1:
                 avatar0.transform.localScale *= scaleFactor;
                 break;
-            case 1:
+            case 2:
                 avatar1.transform.localScale *= scaleFactor;
                 break;
-            case 2:
+            case 3:
                 avatar2.transform.localScale *= scaleFactor;
                 break;
-            case 3:
+            case 4:
                 avatar3.transform.localScale *= scaleFactor;
                 break;
         }
@@ -157,16 +157,16 @@ public class CreatAccountScreen : MonoBehaviour
     {
         switch (currentAvatarId)
         {
-            case 0:
+            case 1:
                 avatar0.transform.localScale /= scaleFactor;
                 break;
-            case 1:
+            case 2:
                 avatar1.transform.localScale /= scaleFactor;
                 break;
-            case 2:
+            case 3:
                 avatar2.transform.localScale /= scaleFactor;
                 break;
-            case 3:
+            case 4:
                 avatar3.transform.localScale /= scaleFactor;
                 break;
         }
