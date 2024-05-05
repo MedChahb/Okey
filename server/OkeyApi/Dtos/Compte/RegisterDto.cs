@@ -14,6 +14,12 @@ public class RegisterDto
     public string? Username { get; set; }
 
     /// <summary>
+    /// Photo de profil
+    /// </summary>
+    [Required]
+    public int Photo { get; set; }
+
+    /// <summary>
     /// Mot de passe
     /// </summary>
     [Required]

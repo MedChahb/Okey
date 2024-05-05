@@ -69,7 +69,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection(); <-- Inutile car la vm Bastillon repose déj à sur HTTPS.
 
 app.UseAuthentication();
 app.UseAuthorization();
