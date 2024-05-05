@@ -1,201 +1,174 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using LogiqueJeu.Joueur;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
+/// <summary>
+/// Gère l'affichage et la pagination des classements des joueurs.
+/// </summary>
 public class ClassementManager : MonoBehaviour
-{
+{ // Références aux éléments UI dans l'éditeur Unity
+    public ScrollRect scrollRect; // Composant ScrollRect pour gérer le scrolling dans l'UI
     public GameObject playerEntryPrefab; // Pour les entrées dynamiques dans le ScrollView
     public Transform contentPanel; // Content du ScrollView
-    public GameObject ClassementPanel;
-
+    public GameObject ClassementPanel; // Panneau affichant le classement
     public GameObject AvatarPanel;
     public GameObject ClassementAvantConnexion;
-    public TextMeshProUGUI[] rankTexts;
-    public TextMeshProUGUI[] userTexts;
-    public TextMeshProUGUI[] eloTexts;
-    public const int MAX_REQUEST_RETRIES = 5; // Superieur ou égale à 1
-    public const int REQUEST_RETRY_DELAY = 1000; // En milisecondes
-    private readonly CancellationTokenSource Source = new();
+    public TextMeshProUGUI[] rankTexts; //Textes pour les classements des top joueurs
+    public TextMeshProUGUI[] userTexts; // Textes pour les noms des top joueurs
+    public TextMeshProUGUI[] eloTexts; // Textes pour les scores ELO des top joueurs
+    public const int MAX_REQUEST_RETRIES = 5; // Supérieur ou égal à 1
+    public const int REQUEST_RETRY_DELAY = 1000; // En millisecondes
+    private readonly CancellationTokenSource cancellationTokenSource = new();
+    private int currentPage = 1; // Page actuelle initialisée à 1.
+    private bool isLoading = false;
 
+    /// <summary>
+    /// Initialisation des requêtes de classement.
+    /// </summary>
     void Start()
     {
         Debug.Log("Fetching classements...");
+        FetchClassementsTopAsync(5);
+        FetchClassementsPageAsync(currentPage);
 
-        // L'appel ci-dessous est configuré pour récupérer uniquement les 5 meilleurs joueurs
-        this.FetchClassementsTopAsync(5);
-
-        // 0 indique "tous les joueurs", 1 indique la première page (30 joueurs à la fois), 2 la deuxième, etc.
-        this.FetchClassementsPageAsync(1);
+        // Ajouter un écouteur d'événement pour le scroll
+        scrollRect.onValueChanged.AddListener(HandleScroll);
     }
 
-    private async void FetchClassementsTopAsync(int Limit)
+    void HandleScroll(Vector2 position)
+    {
+        // Vérifier si l'utilisateur a défilé jusqu'à la fin
+        if (position.y <= 0.01f && !isLoading)
+        {
+            isLoading = true;
+            FetchClassementsPageAsync(++currentPage);
+        }
+    }
+
+    private async void FetchClassementsTopAsync(int limit)
     {
         List<Joueur> joueurs = null;
-        for (var i = 0; i < MAX_REQUEST_RETRIES; i++)
+        try
         {
-            try
-            {
-                joueurs = await API.FetchClassementsTopAsync(Limit, this.Source.Token);
-                break;
-            }
-            catch (HttpRequestException e)
-            {
-                var Code = e.GetStatusCode();
-                if (Code != null)
-                {
-                    Debug.Log("Request error with response code " + Code);
-                    break;
-                }
-                else
-                {
-                    Debug.Log("Network error");
-                    if (i != MAX_REQUEST_RETRIES - 1)
-                    {
-                        Debug.Log("Retrying...");
-                        try
-                        {
-                            await Task.Delay(REQUEST_RETRY_DELAY, this.Source.Token);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            Debug.Log("Request cancelled.");
-                            break;
-                        }
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                Debug.Log("Request cancelled.");
-                break;
-            }
+            // Utilisation directe de la classe API pour la requête.
+            joueurs = await API.FetchClassementsTopAsync(limit, cancellationTokenSource.Token);
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"An error occurred: {e.Message}");
+            return;
         }
 
+        DisplayTopPlayers(joueurs); // Séparation de la logique d'affichage.
+    }
+
+    private async void FetchClassementsPageAsync(int pageNumber)
+    {
+        List<Joueur> joueurs = null;
+        try
+        {
+            joueurs = await API.FetchClassementsPageAsync(
+                pageNumber,
+                cancellationTokenSource.Token
+            );
+            DisplayPlayers(joueurs);
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"An error occurred: {e.Message}");
+        }
+        finally
+        {
+            isLoading = false; // Réinitialiser l'état de chargement après le chargement des données ou en cas d'erreur.
+        }
+    }
+
+    /// <summary>
+    /// Affiche les top joueurs récupérés.
+    /// </summary>
+    /// <param name="joueurs">Liste des joueurs à afficher.</param>
+    private void DisplayTopPlayers(List<Joueur> joueurs)
+    {
         if (joueurs != null && joueurs.Count > 0)
         {
-            Debug.Log("Classement reçu:");
-            int displayCount = Mathf.Min(joueurs.Count, 5); // S'assurer de ne traiter que les 5 premiers
+            Debug.Log("Top classement reçu:");
+            int displayCount = Mathf.Min(joueurs.Count, rankTexts.Length);
             for (int i = 0; i < displayCount; i++)
             {
                 rankTexts[i].text = (i + 1).ToString();
                 userTexts[i].text = joueurs[i].NomUtilisateur;
                 eloTexts[i].text = joueurs[i].Elo.ToString();
             }
-            // Effacer les champs restants si moins de 5 joueurs sont reçus
-            for (int i = joueurs.Count; i < rankTexts.Length; i++)
-            {
-                rankTexts[i].text = "";
-                userTexts[i].text = "";
-                eloTexts[i].text = "";
-            }
         }
         else
         {
             Debug.Log("Erreur lors de la récupération des classements ou aucune donnée reçue");
-            // Afficher un message d'erreur ou effacer les champs
-            for (int i = 0; i < rankTexts.Length; i++)
-            {
-                rankTexts[i].text = "-";
-                userTexts[i].text = "Données non disponibles";
-                eloTexts[i].text = "-";
-            }
+            ClearDisplay(); // Appel de la fonction de nettoyage de l'affichage.
         }
     }
 
-    private async void FetchClassementsPageAsync(int PageNumber)
+    /// <summary>
+    /// Affiche les joueurs pour la pagination.
+    /// </summary>
+    /// <param name="joueurs">Liste des joueurs à afficher.</param>
+    private void DisplayPlayers(List<Joueur> joueurs)
     {
-        List<Joueur> joueurs = null;
-        for (var i = 0; i < MAX_REQUEST_RETRIES; i++)
+        if (joueurs == null || joueurs.Count == 0)
         {
-            try
-            {
-                joueurs = await API.FetchClassementsPageAsync(PageNumber, this.Source.Token);
-                break;
-            }
-            catch (HttpRequestException e)
-            {
-                var Code = e.GetStatusCode();
-                if (Code != null)
-                {
-                    Debug.Log("Request error with response code " + Code);
-                    break;
-                }
-                else
-                {
-                    Debug.Log("Network error");
-                    if (i != MAX_REQUEST_RETRIES - 1)
-                    {
-                        Debug.Log("Retrying...");
-                        try
-                        {
-                            await Task.Delay(REQUEST_RETRY_DELAY, this.Source.Token);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            Debug.Log("Request cancelled.");
-                            break;
-                        }
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                Debug.Log("Request cancelled.");
-                break;
-            }
-        }
-
-        // Vérification si la liste des joueurs est nulle
-        if (joueurs == null)
-        {
-            Debug.Log("Liste des joueurs reçue est nulle.");
+            Debug.Log("Aucun joueur trouvé.");
             return;
         }
 
-        if (joueurs.Count > 0)
+        foreach (var joueur in joueurs)
         {
-            foreach (var joueur in joueurs)
+            if (playerEntryPrefab == null || contentPanel == null)
             {
-                // Vérifier si le prefab ou le contentPanel est nul
-                if (playerEntryPrefab == null || contentPanel == null)
-                {
-                    Debug.LogError("Prefab ou Content Panel non assigné dans l'éditeur.");
-                    return; // Sortie de la fonction pour éviter des erreurs
-                }
-
-                GameObject newEntry = Instantiate(playerEntryPrefab, contentPanel);
-                if (newEntry == null)
-                {
-                    Debug.LogError("Instantiation du prefab a échoué.");
-                    continue; // Continue avec le prochain joueur
-                }
-
-                // Vérification et récupération des composants
-                var rankText = newEntry.transform.Find("Rank")?.GetComponent<TextMeshProUGUI>();
-                var userText = newEntry.transform.Find("UserId")?.GetComponent<TextMeshProUGUI>();
-                var eloText = newEntry.transform.Find("Score")?.GetComponent<TextMeshProUGUI>();
-
-                if (rankText == null || userText == null || eloText == null)
-                {
-                    Debug.LogError(
-                        "Un ou plusieurs composants TextMeshProUGUI sont manquants sur le prefab."
-                    );
-                    continue; // Continue avec le prochain joueur
-                }
-
-                rankText.text = joueur.Classement.ToString();
-                userText.text = joueur.NomUtilisateur;
-                eloText.text = joueur.Elo.ToString();
+                Debug.LogError("Prefab ou Content Panel non assigné dans l'éditeur.");
+                return;
             }
+
+            GameObject newEntry = Instantiate(playerEntryPrefab, contentPanel);
+            if (newEntry == null)
+            {
+                Debug.LogError("Instantiation du prefab a échoué.");
+                continue;
+            }
+
+            var rankText = newEntry.transform.Find("Rank")?.GetComponent<TextMeshProUGUI>();
+            var userText = newEntry.transform.Find("UserId")?.GetComponent<TextMeshProUGUI>();
+            var eloText = newEntry.transform.Find("Score")?.GetComponent<TextMeshProUGUI>();
+
+            if (rankText == null || userText == null || eloText == null)
+            {
+                Debug.LogError(
+                    "Un ou plusieurs composants TextMeshProUGUI sont manquants sur le prefab."
+                );
+                continue;
+            }
+
+            rankText.text = joueur.Classement.ToString();
+            userText.text = joueur.NomUtilisateur;
+            eloText.text = joueur.Elo.ToString();
         }
-        else
+    }
+
+    // Fonction ajoutée pour nettoyer l'affichage si nécessaire.
+    /// <summary>
+    /// Nettoie l'affichage si une erreur de récupération des données se produit.
+    /// </summary>
+    private void ClearDisplay()
+    {
+        foreach (var textMesh in new[] { rankTexts, userTexts, eloTexts })
         {
-            Debug.Log("Aucun joueur trouvé dans la liste.");
+            foreach (var text in textMesh)
+            {
+                text.text = "-";
+            }
         }
     }
 
