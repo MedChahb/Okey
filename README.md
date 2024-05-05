@@ -51,7 +51,7 @@ Voir la [documentation](https://okaybytes.pages.unistra.fr/okey) complète pour 
 
 ### Dépendances
 
-Assurez vous d'être réglé avec les bonnes versions des dépendances de premier niveau dans la liste en dessous qui sont donc Git, Python, .NET Core et Unity. Les autres points (dépendances de deuxième niveau et encore) seront abordés plus en détails avec des instructions plus loin.
+Assurez vous d'être réglé avec les bonnes versions des dépendances de premier niveau dans la liste en dessous qui sont donc Git, Git LFS, Python, .NET Core et Unity. Les autres points (dépendances de deuxième niveau et encore) seront abordés plus en détails avec des instructions plus loin.
 
 Cette liste indique les versions minimales recommandées ou des versions exactes (sur certains) des outils nécessaires pour travailler sur ce projet. Si vous ne respectez pas ces versions votre environnement de développement risque de ne pas fonctionner correctement. Mais surtout, vous serez en décalage avec le reste de l'équipe et vous risquez de rencontrer des problèmes lors de votre implémentation (vieille version .NET ou mauvaise version Unity par exemple) qui ne sera plus compatible avec le projet.
 

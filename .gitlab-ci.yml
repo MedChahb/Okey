@@ -5,12 +5,12 @@ default:
       - .cache/pre-commit
   before_script:
     # Fix Unistra GitLab Docker runner permission issues
-    - export RUNNER_USER=$(ls -ld .git/ | awk '{print $3}')
+    - echo $(ls -ld .git/ | awk '{print $3}') > RUNNER_USER
     - mkdir -p .cache/pre-commit/
     - chown -R $(whoami) .
   after_script:
     # Fix Unistra GitLab Docker runner permission issues
-    - chown -fR "$RUNNER_USER" .cache/pre-commit/
+    - chown -fR "$(cat RUNNER_USER)" .cache/pre-commit/
 stages:
   - build
   - test
