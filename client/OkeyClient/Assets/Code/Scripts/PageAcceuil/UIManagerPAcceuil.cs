@@ -1,3 +1,4 @@
+using LogiqueJeu.Joueur;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,21 +33,26 @@ public class UIManagerPAcceuil : MonoBehaviour
     [SerializeField]
     public GameObject PanelAvatar;
 
-    private bool connected = false;
-
     [SerializeField]
+    public GameObject PanelConnected;
+
     public JoueurManager manager;
 
-    [SerializeField]
     public GameObject rankingNotConnected;
 
     // Start is called before the first frame update
     void Start()
     {
+        if (!this.manager.IsConnected)
+        {
+            connexionBtn.gameObject.SetActive(true);
+            rankingNotConnected.SetActive(true);
+        }
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
         connexionBtn.onClick.AddListener(onLoginClicked);
         manager.SelfJoueurChangeEvent.AddListener(updateAvatar);
+        manager.ConnexionChangeEvent.AddListener(updateConnexion);
     }
 
     // Update is called once per frame
@@ -55,20 +61,10 @@ public class UIManagerPAcceuil : MonoBehaviour
         if (UIManager.singleton.language)
         {
             playBtnTxt.text = "Play";
-            if (!connected)
-            {
-                connexionBtn.gameObject.SetActive(true);
-                connexionBtnTxt.text = "LogIn";
-            }
         }
         else
         {
             playBtnTxt.text = "Jouer";
-            if (!connected)
-            {
-                connexionBtn.gameObject.SetActive(true);
-                connexionBtnTxt.text = "Connexion";
-            }
         }
     }
 
@@ -108,18 +104,38 @@ public class UIManagerPAcceuil : MonoBehaviour
         rankingNotConnected.SetActive(false);
     }
 
-    public void setConnected(bool isConnected)
+    private void updateAvatar()
     {
-        this.connected = isConnected;
-    }
-
-    public void updateAvatar()
-    {
-        PanelAvatar.SetActive(true);
+        PanelConnected.SetActive(true);
         PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
             .GetSelfJoueur()
             .NomUtilisateur;
+        switch (manager.GetSelfJoueur().IconeProfil)
+        {
+            case IconeProfil.Icone1:
+                //Màj l'image avec l'avatar 1
+                break;
+            case IconeProfil.Icone2:
+                //Màj l'image avec l'avatar 2
+                break;
+            case IconeProfil.Icone3:
+                //Màj l'image avec l'avatar 3
+                break;
+            case IconeProfil.Icone4:
+                //Màj l'image avec l'avatar 4
+                break;
+        }
         connexionBtn.gameObject.SetActive(false);
         rankingNotConnected.SetActive(false);
+    }
+
+    private void updateConnexion()
+    {
+        if (!this.manager.IsConnected)
+        {
+            connexionBtn.gameObject.SetActive(true);
+            rankingNotConnected.SetActive(true);
+            connexionBtnTxt.text = UIManager.singleton.language ? "LogIn" : "Connexion";
+        }
     }
 }

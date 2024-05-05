@@ -1,3 +1,8 @@
+using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using LogiqueJeu.Joueur;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,6 +40,10 @@ public class LogInScreen : MonoBehaviour
     [SerializeField]
     private GameObject createAccountView;
 
+    public const int MAX_REQUEST_RETRIES = 5; // Superieur ou égale à 1
+    public const int REQUEST_RETRY_DELAY = 1000; // En milisecondes
+    private readonly CancellationTokenSource Source = new();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,18 +62,20 @@ public class LogInScreen : MonoBehaviour
 
         Password.onValueChanged.AddListener(OnInputChanged);
 
+        this.manager.ConnexionChangeEvent.AddListener(() => Panel.SetActive(false));
+
         erreurTxt.gameObject.SetActive(false);
     }
 
     // Méthode appelée lors du clic sur le bouton "Créer"
-    void OnConnexionClicked()
+    async void OnConnexionClicked()
     {
         string username = Username.text.Trim();
         string password = Password.text.Trim();
 
         if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
-            manager.StartConnexionSelfJoueur(username, password, UpdateWithConnection);
+            await this.UpdateWithConnection(username, password);
         }
         else
         {
@@ -91,18 +102,51 @@ public class LogInScreen : MonoBehaviour
         else { }
     }
 
-    public void UpdateWithConnection(int code)
+    public async Task UpdateWithConnection(string username, string password)
     {
-        if (code == 200)
+        for (var i = 0; i < MAX_REQUEST_RETRIES; i++)
         {
-            Panel.SetActive(false);
-            accueil.setConnected(true);
+            try
+            {
+                await this.manager.ConnexionSelfJoueurAsync(username, password, this.Source.Token);
+                return;
+            }
+            catch (HttpRequestException e)
+            {
+                var Code = e.GetStatusCode();
+                if (Code != null)
+                {
+                    Debug.Log("Request error with response code " + Code);
+                    erreurTxt.text = "Identifiant ou mot de passe invalide";
+                    erreurTxt.gameObject.SetActive(true);
+                    return;
+                }
+                else
+                {
+                    Debug.Log("Network error");
+                    if (i != MAX_REQUEST_RETRIES - 1)
+                    {
+                        Debug.Log("Retrying...");
+                        try
+                        {
+                            await Task.Delay(REQUEST_RETRY_DELAY, this.Source.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            Debug.Log("Request cancelled.");
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Request cancelled.");
+                return;
+            }
         }
-        else
-        {
-            erreurTxt.text = "Identifiant ou mot de passe invalide";
-            erreurTxt.gameObject.SetActive(true);
-        }
+        erreurTxt.text = "Erreur réseau, votre Internet marche bien ?";
+        erreurTxt.gameObject.SetActive(true);
     }
 
     private void OnInputChanged(string value)

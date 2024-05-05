@@ -232,10 +232,6 @@ client/OkeyClient/Assets/Plugins/**       linguist-vendored
 *.pdb                   lfs
 *.so                    lfs
 
-# Fonts
-*.otf                   lfs
-*.ttf                   lfs
-
 # Executable/Installer
 *.apk                   lfs
 *.exe                   lfs

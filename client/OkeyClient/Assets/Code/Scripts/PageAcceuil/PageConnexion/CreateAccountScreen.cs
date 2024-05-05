@@ -1,3 +1,8 @@
+using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using LogiqueJeu.Joueur;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,7 +52,7 @@ public class CreatAccountScreen : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI erreurTxt;
 
-    private int currentAvatarId = 0;
+    private int currentAvatarId = 1;
 
     [SerializeField]
     private GameObject avatar0;
@@ -62,6 +67,10 @@ public class CreatAccountScreen : MonoBehaviour
     private GameObject avatar3;
 
     private float scaleFactor = 1.3f;
+
+    public const int MAX_REQUEST_RETRIES = 5; // Superieur ou égale à 1
+    public const int REQUEST_RETRY_DELAY = 1000; // En milisecondes
+    private readonly CancellationTokenSource Source = new();
 
     // Start is called before the first frame update
     void Start()
@@ -85,6 +94,8 @@ public class CreatAccountScreen : MonoBehaviour
 
         PasswordValidation.onValueChanged.AddListener(OnInputChanged);
 
+        this.manager.ConnexionChangeEvent.AddListener(() => Panel.SetActive(false));
+
         erreurTxt.gameObject.SetActive(false);
 
         avatar0.transform.localScale *= scaleFactor;
@@ -103,19 +114,19 @@ public class CreatAccountScreen : MonoBehaviour
             {
                 if (hit.collider.gameObject == avatar0.gameObject)
                 {
-                    OnAvatarButtonClick(0);
+                    OnAvatarButtonClick(1);
                 }
                 else if (hit.collider.gameObject == avatar1.gameObject)
                 {
-                    OnAvatarButtonClick(1);
+                    OnAvatarButtonClick(2);
                 }
                 else if (hit.collider.gameObject == avatar2.gameObject)
                 {
-                    OnAvatarButtonClick(2);
+                    OnAvatarButtonClick(3);
                 }
                 else if (hit.collider.gameObject == avatar3.gameObject)
                 {
-                    OnAvatarButtonClick(3);
+                    OnAvatarButtonClick(4);
                 }
             }
         }
@@ -161,7 +172,7 @@ public class CreatAccountScreen : MonoBehaviour
         }
     }
 
-    void OnCreateClicked()
+    async void OnCreateClicked()
     {
         string username = Username.text.Trim();
         string password = Password.text.Trim();
@@ -173,7 +184,11 @@ public class CreatAccountScreen : MonoBehaviour
             && !string.IsNullOrEmpty(passwordValidation)
         )
         {
-            manager.StartCreationCompteSelfJoueur(username, password, UpdateWithConnection);
+            await this.UpdateWithConnection(
+                username,
+                password,
+                (IconeProfil)(this.currentAvatarId)
+            );
         }
         else
         {
@@ -189,18 +204,56 @@ public class CreatAccountScreen : MonoBehaviour
         logInScreen.SetActive(true);
     }
 
-    public void UpdateWithConnection(int code)
+    public async Task UpdateWithConnection(string username, string password, IconeProfil icone)
     {
-        if (code == 200)
+        for (var i = 0; i < MAX_REQUEST_RETRIES; i++)
         {
-            Panel.SetActive(false);
-            accueil.setConnected(true);
+            try
+            {
+                await this.manager.CreationCompteSelfJoueur(
+                    username,
+                    password,
+                    icone,
+                    this.Source.Token
+                );
+                return;
+            }
+            catch (HttpRequestException e)
+            {
+                var Code = e.GetStatusCode();
+                if (Code != null)
+                {
+                    Debug.Log("Request error with response code " + Code);
+                    erreurTxt.text = "La création de votre compte a échouée";
+                    erreurTxt.gameObject.SetActive(true);
+                    return;
+                }
+                else
+                {
+                    Debug.Log("Network error");
+                    if (i != MAX_REQUEST_RETRIES - 1)
+                    {
+                        Debug.Log("Retrying...");
+                        try
+                        {
+                            await Task.Delay(REQUEST_RETRY_DELAY, this.Source.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            Debug.Log("Request cancelled.");
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Request cancelled.");
+                return;
+            }
         }
-        else
-        {
-            erreurTxt.text = "La création de votre compte a échouée";
-            erreurTxt.gameObject.SetActive(true);
-        }
+        erreurTxt.text = "Erreur réseau, votre Internet marche bien ?";
+        erreurTxt.gameObject.SetActive(true);
     }
 
     void OnInputChanged(string value)

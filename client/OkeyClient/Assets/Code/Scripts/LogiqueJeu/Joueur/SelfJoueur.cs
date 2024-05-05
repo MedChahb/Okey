@@ -1,11 +1,11 @@
 namespace LogiqueJeu.Joueur
 {
     using System;
-    using System.Collections;
     using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Xml.Serialization;
     using UnityEngine;
-    using UnityEngine.Networking;
 
     public sealed class SelfJoueur : Joueur
     {
@@ -18,7 +18,7 @@ namespace LogiqueJeu.Joueur
             this.InGame.Pos = Position.SoiMeme;
         }
 
-        public override void LoadSelf(MonoBehaviour Behaviour)
+        public override async Task LoadSelf(CancellationToken Token = default)
         {
             if (File.Exists(Application.persistentDataPath + Constants.SELF_PLAYER_SAVE_FILE))
             {
@@ -38,7 +38,7 @@ namespace LogiqueJeu.Joueur
             }
             if (this.TokenConnexion != null && this.NomUtilisateur != null)
             {
-                Behaviour.StartCoroutine(this.FetchUserBG());
+                await this.UpdateDetailsAsync(Token);
             }
         }
 
@@ -80,31 +80,23 @@ namespace LogiqueJeu.Joueur
             }
         }
 
-        protected override IEnumerator FetchUserBG()
+        protected override async Task UpdateDetailsAsync(CancellationToken Token = default)
         {
-            var Response = "";
-
-            var www = UnityWebRequest.Get(
-                Constants.API_URL_DEV + "/compte/watch/" + this.NomUtilisateur
+            var Response = await API.FetchSelfJoueurAsync(
+                this.NomUtilisateur,
+                this.TokenConnexion,
+                Token
             );
-            www.SetRequestHeader("Authorization", "Bearer " + this.TokenConnexion);
-            www.certificateHandler = new BypassCertificate();
-            yield return www.SendWebRequest();
-
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                Response = www.downloadHandler.text;
-                var unmarshal = JsonUtility.FromJson<SelfJoueurAPICompteDTO>(Response);
-                this.NomUtilisateur = unmarshal.username;
-                this.Elo = unmarshal.elo;
-                this.Achievements = unmarshal.achievements;
-                this.SaveXML();
-                this.OnShapeChanged(EventArgs.Empty);
-            }
-            else
-            {
-                Debug.Log(www.error);
-            }
+            this.NomUtilisateur = Response.username;
+            this.IconeProfil = (IconeProfil)Response.photo;
+            this.Score = Response.experience;
+            this.Elo = Response.elo;
+            this.DateInscription = Response.dateInscription;
+            this.NombreParties = Response.nombreParties;
+            this.NombrePartiesGagnees = Response.nombrePartiesGagnees;
+            this.Achievements = new(Response.achievements);
+            this.SaveXML();
+            this.OnShapeChanged(EventArgs.Empty);
         }
 
         protected override void OnShapeChanged(EventArgs E)
@@ -118,88 +110,43 @@ namespace LogiqueJeu.Joueur
             this.TokenConnexion = SelfJoueur.TokenConnexion;
         }
 
-        public void StartConnexionCompte(
-            MonoBehaviour Behaviour,
+        public async Task ConnexionCompteAsync(
             string NomUtilisateur,
             string MotDePasse,
-            Action<int> CallbackResult = null
+            CancellationToken Token = default
         )
         {
-            var JSON = JsonUtility.ToJson(
-                new SelfJoueurAPIConnexionDTO(NomUtilisateur, MotDePasse)
+            var Response = await API.PostSelfJoueurConnexionAsync(
+                new SelfJoueurAPIConnexionDTO(NomUtilisateur, MotDePasse),
+                Token
             );
-            Behaviour.StartCoroutine(
-                this.PostUserConnexionBG(Behaviour, JSON, IsCreation: false, CallbackResult)
-            );
+            this.NomUtilisateur = Response.username;
+            this.TokenConnexion = Response.token;
+            this.SaveXML();
+            await this.LoadSelf(Token);
         }
 
-        public void StartCreationCompte(
-            MonoBehaviour Behaviour,
+        public async Task CreationCompteAsync(
             string NomUtilisateur,
             string MotDePasse,
-            Action<int> CallbackResult = null
+            IconeProfil IconeProfil,
+            CancellationToken Token = default
         )
         {
-            var JSON = JsonUtility.ToJson(
-                new SelfJoueurAPIConnexionDTO(NomUtilisateur, MotDePasse)
+            var Response = await API.PostSelfJoueurCreationAsync(
+                new SelfJoueurAPICreationDTO(NomUtilisateur, MotDePasse, (int)IconeProfil),
+                Token
             );
-            Behaviour.StartCoroutine(
-                this.PostUserConnexionBG(Behaviour, JSON, IsCreation: true, CallbackResult)
-            );
+            this.NomUtilisateur = Response.username;
+            this.TokenConnexion = Response.token;
+            this.SaveXML();
+            await this.LoadSelf(Token);
         }
 
         public void DeconnexionCompte()
         {
             this.DeleteXML();
             this.CopyFrom(new SelfJoueur());
-        }
-
-        // No error handling is built in for now. Need to handle the following cases
-        // and any other ones that I may have missed mentioning:
-        //
-        // In case of logging into an existing account
-        // - User not found (Invalid username)
-        // - Password mismatch (Invalid password)
-        //
-        // In case of creating a new account
-        // - Invalid username (illegal character, already taken...)
-        // - Invalid password (length, complexity...)
-        //
-        // See these references for more information:
-        // https://discord.com/channels/1201575577132486766/1204866892993536021/1220835503671349269
-        // https://discord.com/channels/1201575577132486766/1204874375480873011/1227992255512449058
-        private IEnumerator PostUserConnexionBG(
-            MonoBehaviour Behaviour,
-            string JSON,
-            bool IsCreation = false,
-            Action<int> CallbackResult = null
-        )
-        {
-            var Response = "";
-
-            var www = UnityWebRequest.Post(
-                Constants.API_URL_DEV + "/compte/" + (IsCreation ? "register" : "login"),
-                JSON,
-                "application/json"
-            );
-            www.certificateHandler = new BypassCertificate();
-            yield return www.SendWebRequest();
-
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                Response = www.downloadHandler.text;
-                var unmarshal = JsonUtility.FromJson<SelfJoueurAPIConnexionResponseDTO>(Response);
-                this.NomUtilisateur = unmarshal.userName;
-                this.TokenConnexion = unmarshal.token;
-                this.SaveXML();
-                this.LoadSelf(Behaviour);
-            }
-            else
-            {
-                Debug.Log(www.error);
-            }
-
-            CallbackResult?.Invoke((int)www.responseCode);
         }
 
         public override string ToString()

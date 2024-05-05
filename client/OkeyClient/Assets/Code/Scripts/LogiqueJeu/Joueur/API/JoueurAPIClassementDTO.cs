@@ -1,13 +1,10 @@
 namespace LogiqueJeu.Joueur
 {
-    using System;
-
-    [Serializable]
     public class JoueurAPIClassementDTO
     {
-        public string username;
-        public int classement;
-        public int elo;
+        public string username { get; set; }
+        public int classement { get; set; }
+        public int elo { get; set; }
 
         public override string ToString()
         {
