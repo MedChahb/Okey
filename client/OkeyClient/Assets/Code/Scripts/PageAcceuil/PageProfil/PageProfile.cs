@@ -214,6 +214,6 @@ public class PageProfile : MonoBehaviour
 
     void onDisconnectionClicked()
     {
-        manager.GetSelfJoueur().DeconnexionCompte();
+        manager.DeconnexionSelfJoueur();
     }
 }

@@ -65,6 +65,10 @@ public class LogInScreen : MonoBehaviour
         this.manager.ConnexionChangeEvent.AddListener(() => Panel.SetActive(false));
 
         erreurTxt.gameObject.SetActive(false);
+
+        Password.text = string.Empty;
+
+        Username.text = string.Empty;
     }
 
     // Méthode appelée lors du clic sur le bouton "Créer"

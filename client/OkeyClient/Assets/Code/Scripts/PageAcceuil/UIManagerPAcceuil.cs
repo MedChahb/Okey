@@ -43,11 +43,6 @@ public class UIManagerPAcceuil : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!this.manager.IsConnected)
-        {
-            connexionBtn.gameObject.SetActive(true);
-            rankingNotConnected.SetActive(true);
-        }
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
         connexionBtn.onClick.AddListener(onLoginClicked);
@@ -66,6 +61,7 @@ public class UIManagerPAcceuil : MonoBehaviour
         {
             playBtnTxt.text = "Jouer";
         }
+        updateConnexion();
     }
 
     void onPlayBtnClicked()
@@ -76,6 +72,7 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     void onSettingsClicked()
     {
+        rankingNotConnected.SetActive(false);
         if (parametres.parametresImage != null)
         {
             // Toggle the active state of the image
@@ -87,11 +84,11 @@ public class UIManagerPAcceuil : MonoBehaviour
         {
             Debug.LogWarning("Parametres Image reference is not set!");
         }
-        rankingNotConnected.SetActive(false);
     }
 
     void onLoginClicked()
     {
+        rankingNotConnected.SetActive(false);
         if (login.Panel != null)
         {
             // Toggle the active state of the image
@@ -101,7 +98,6 @@ public class UIManagerPAcceuil : MonoBehaviour
         {
             Debug.LogWarning("Login Image reference is not set!");
         }
-        rankingNotConnected.SetActive(false);
     }
 
     private void updateAvatar()
@@ -134,8 +130,6 @@ public class UIManagerPAcceuil : MonoBehaviour
         {
             Debug.LogWarning("Sprite introuvable ou Image non définie !");
         }
-        connexionBtn.gameObject.SetActive(false);
-        rankingNotConnected.SetActive(false);
     }
 
     private void updateConnexion()
@@ -145,6 +139,11 @@ public class UIManagerPAcceuil : MonoBehaviour
             connexionBtn.gameObject.SetActive(true);
             rankingNotConnected.SetActive(true);
             connexionBtnTxt.text = UIManager.singleton.language ? "LogIn" : "Connexion";
+        }
+        else
+        {
+            connexionBtn.gameObject.SetActive(false);
+            rankingNotConnected.SetActive(false);
         }
     }
 }
