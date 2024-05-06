@@ -45,14 +45,14 @@ public class UIManagerPAcceuil : MonoBehaviour
     {
         manager.SelfJoueurChangeEvent.AddListener(updateAvatar);
         manager.ConnexionChangeEvent.AddListener(updateConnexion);
+        playBtn.onClick.AddListener(onPlayBtnClicked);
+        paramBtn.onClick.AddListener(onSettingsClicked);
+        connexionBtn.onClick.AddListener(onLoginClicked);
     }
 
     // Update is called once per frame
     void Update()
     {
-        playBtn.onClick.AddListener(onPlayBtnClicked);
-        paramBtn.onClick.AddListener(onSettingsClicked);
-        connexionBtn.onClick.AddListener(onLoginClicked);
         if (UIManager.singleton.language)
         {
             playBtnTxt.text = "Play";
@@ -107,17 +107,15 @@ public class UIManagerPAcceuil : MonoBehaviour
             .GetSelfJoueur()
             .NomUtilisateur;
         Sprite newSprite = Resources.Load<Sprite>("Avatar/avatarn4");
-        switch(
-            (int) manager.GetSelfJoueur().IconeProfil
-        )
+        switch ((int)manager.GetSelfJoueur().IconeProfil)
         {
-            case (int) IconeProfil.Icone1:
+            case (int)IconeProfil.Icone1:
                 newSprite = Resources.Load<Sprite>("Avatar/avatarn1");
                 break;
-            case (int) IconeProfil.Icone2:
+            case (int)IconeProfil.Icone2:
                 newSprite = Resources.Load<Sprite>("Avatar/avatarn2");
                 break;
-            case (int) IconeProfil.Icone3:
+            case (int)IconeProfil.Icone3:
                 newSprite = Resources.Load<Sprite>("Avatar/avatarn3");
                 break;
         }

@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using LogiqueJeu.Joueur;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using LogiqueJeu.Joueur;
 
 public class PageProfile : MonoBehaviour
 {
-
     [SerializeField]
     public GameObject Panel;
 
@@ -69,7 +68,7 @@ public class PageProfile : MonoBehaviour
         }
         manager.ConnexionChangeEvent.AddListener(updateUserProfile);
         disconnectionButton.onClick.AddListener(onDisconnectionClicked);
-        currentAvatarId = (int) manager.GetSelfJoueur().IconeProfil;
+        currentAvatarId = (int)manager.GetSelfJoueur().IconeProfil;
         OnAvatarButtonClick();
     }
 
@@ -160,32 +159,20 @@ public class PageProfile : MonoBehaviour
         PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
             .GetSelfJoueur()
             .NomUtilisateur;
-        NiveauTxt.text = "Niveau : " + manager
-            .GetSelfJoueur()
-            .Niveau;
-        ScoreTxt.text = "Score : " + manager
-            .GetSelfJoueur()
-            .Score;
-        StatistiqueTxt.text = "Statistique : " + manager
-            .GetSelfJoueur()
-            .Elo;
+        NiveauTxt.text = "Niveau : " + manager.GetSelfJoueur().Niveau;
+        ScoreTxt.text = "Score : " + manager.GetSelfJoueur().Score;
+        StatistiqueTxt.text = "Statistique : " + manager.GetSelfJoueur().Elo;
         TempsTxt.text = "Temps Total : 15h";
-        WinTxt.text = "Parties Gagnées : " + manager
-            .GetSelfJoueur()
-            .NombrePartiesGagnees;
-        LostTxt.text = "Parties Perdues : " + (manager
-            .GetSelfJoueur()
-            .NombreParties - manager
-            .GetSelfJoueur()
-            .NombrePartiesGagnees);
-        RankTxt.text = "Classement : " + manager
-            .GetSelfJoueur()
-            .Classement;
+        WinTxt.text = "Parties Gagnées : " + manager.GetSelfJoueur().NombrePartiesGagnees;
+        LostTxt.text =
+            "Parties Perdues : "
+            + (
+                manager.GetSelfJoueur().NombreParties - manager.GetSelfJoueur().NombrePartiesGagnees
+            );
+        RankTxt.text = "Classement : " + manager.GetSelfJoueur().Classement;
         //Mettre à jour le reste du profil de l'utilisateur avec ses données
         Sprite newSprite = Resources.Load<Sprite>("Avatar/avatarn4");
-        switch(
-            (int) manager.GetSelfJoueur().IconeProfil
-        )
+        switch ((int)manager.GetSelfJoueur().IconeProfil)
         {
             case 1:
                 newSprite = Resources.Load<Sprite>("Avatar/avatarn1");
