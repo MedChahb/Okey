@@ -11,7 +11,6 @@ public class PageProfile : MonoBehaviour
     [SerializeField]
     public GameObject Panel;
 
-    //Modifier pour avoir l'avatar de l'utilisateur dans cette variable
     private int currentAvatarId;
 
     [SerializeField]
@@ -121,15 +120,12 @@ public class PageProfile : MonoBehaviour
                 break;
             case 2:
                 avatar1.transform.localScale *= scaleFactor;
-                //Update avatar
                 break;
             case 3:
                 avatar2.transform.localScale *= scaleFactor;
-                //Update avatar
                 break;
             case 4:
                 avatar3.transform.localScale *= scaleFactor;
-                //Update avatar
                 break;
         }
     }
@@ -201,15 +197,7 @@ public class PageProfile : MonoBehaviour
                 newSprite = Resources.Load<Sprite>("Avatar/avatarn3");
                 break;
         }
-        if (newSprite != null)
-        {
-            // Modification du sprite de l'Image
-            PanelAvatar.GetComponentInChildren<Image>().sprite = newSprite;
-        }
-        else
-        {
-            Debug.LogWarning("Sprite introuvable ou Image non définie !");
-        }
+        PanelAvatar.GetComponentInChildren<Image>().sprite = newSprite;
     }
 
     void onDisconnectionClicked()

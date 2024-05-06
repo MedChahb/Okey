@@ -43,9 +43,6 @@ public class UIManagerPAcceuil : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playBtn.onClick.AddListener(onPlayBtnClicked);
-        paramBtn.onClick.AddListener(onSettingsClicked);
-        connexionBtn.onClick.AddListener(onLoginClicked);
         manager.SelfJoueurChangeEvent.AddListener(updateAvatar);
         manager.ConnexionChangeEvent.AddListener(updateConnexion);
     }
@@ -53,6 +50,9 @@ public class UIManagerPAcceuil : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        playBtn.onClick.AddListener(onPlayBtnClicked);
+        paramBtn.onClick.AddListener(onSettingsClicked);
+        connexionBtn.onClick.AddListener(onLoginClicked);
         if (UIManager.singleton.language)
         {
             playBtnTxt.text = "Play";
@@ -61,7 +61,6 @@ public class UIManagerPAcceuil : MonoBehaviour
         {
             playBtnTxt.text = "Jouer";
         }
-        updateConnexion();
     }
 
     void onPlayBtnClicked()
@@ -103,6 +102,7 @@ public class UIManagerPAcceuil : MonoBehaviour
     private void updateAvatar()
     {
         PanelConnected.SetActive(true);
+        PanelAvatar.SetActive(true);
         PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
             .GetSelfJoueur()
             .NomUtilisateur;
@@ -138,12 +138,15 @@ public class UIManagerPAcceuil : MonoBehaviour
         {
             connexionBtn.gameObject.SetActive(true);
             rankingNotConnected.SetActive(true);
+            PanelAvatar.SetActive(false);
+            PanelConnected.SetActive(false);
             connexionBtnTxt.text = UIManager.singleton.language ? "LogIn" : "Connexion";
         }
         else
         {
             connexionBtn.gameObject.SetActive(false);
             rankingNotConnected.SetActive(false);
+            updateAvatar();
         }
     }
 }
