@@ -24,7 +24,7 @@ public class PlateauSignals : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            // DontDestroyOnLoad(gameObject);
         }
         else if (Instance != this)
         {
@@ -38,6 +38,7 @@ public class PlateauSignals : MonoBehaviour
         player2TurnSignal.gameObject.SetActive(false);
         player3TurnSignal.gameObject.SetActive(false);
         player4TurnSignal.gameObject.SetActive(false);
+        Debug.Log("Main player turn signal set.");
     }
 
     public void SetPlayerSignal(string playerName)
@@ -51,14 +52,17 @@ public class PlateauSignals : MonoBehaviour
             if (playerName == LobbyManager.Instance.players[0])
             {
                 player2TurnSignal.gameObject.SetActive(true);
+                Debug.Log("Player 2 turn signal set.");
             }
             else if (playerName == LobbyManager.Instance.players[1])
             {
                 player3TurnSignal.gameObject.SetActive(true);
+                Debug.Log("Player 3 turn signal set.");
             }
             else if (playerName == LobbyManager.Instance.players[2])
             {
                 player4TurnSignal.gameObject.SetActive(true);
+                Debug.Log("Player 4 turn signal set.");
             }
         }
         else

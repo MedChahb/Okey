@@ -102,6 +102,7 @@ public class SignalRConnector : MonoBehaviour
                 {
                     LobbyManager.Instance.SetMyTurn(false);
                     LobbyManager.Instance.SetCurrentPlayerTurn(PlayerName);
+                    Timer.Instance.LaunchTimer();
                 });
             }
         );
@@ -114,6 +115,7 @@ public class SignalRConnector : MonoBehaviour
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     LobbyManager.Instance.SetMyTurn(true);
+                    Timer.Instance.LaunchTimer();
                 });
             }
         );

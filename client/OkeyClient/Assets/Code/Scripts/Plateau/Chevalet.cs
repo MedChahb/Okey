@@ -49,7 +49,7 @@ public class Chevalet : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            // DontDestroyOnLoad(this.gameObject);
             Debug.Log("Chevalet instance set.");
         }
     }
