@@ -71,7 +71,6 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     void onSettingsClicked()
     {
-        rankingNotConnected.SetActive(false);
         if (parametres.parametresImage != null)
         {
             // Toggle the active state of the image
@@ -87,7 +86,6 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     void onLoginClicked()
     {
-        rankingNotConnected.SetActive(false);
         if (login.Panel != null)
         {
             // Toggle the active state of the image
