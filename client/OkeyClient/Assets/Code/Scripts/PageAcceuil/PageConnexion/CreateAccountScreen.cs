@@ -201,7 +201,6 @@ public class CreatAccountScreen : MonoBehaviour
     void onBackBtnClicked()
     {
         Panel.SetActive(false);
-        logInScreen.SetActive(true);
     }
 
     public async Task UpdateWithConnection(string username, string password, IconeProfil icone)
