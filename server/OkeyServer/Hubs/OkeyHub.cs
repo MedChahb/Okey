@@ -59,11 +59,6 @@ public sealed class OkeyHub : Hub
         {
             UsersInRooms.TryAdd(this.Context.ConnectionId, "Hub");
         }
-        Console.WriteLine("---[Joueurs]---");
-        foreach (var id in UsersInRooms)
-        {
-            Console.WriteLine($"{id.Key} : {id.Value}");
-        }
 
         await this.SendRoomListUpdate();
         _connectedUsers[this.Context.ConnectionId] = new PlayerDatas(this._dbContext, "Guest");
@@ -337,13 +332,13 @@ public sealed class OkeyHub : Hub
     {
         var listToSend = new List<RoomDto>();
 
-        foreach (var room in this._roomManager.GetRooms().Values)
+        foreach (var room in this._roomManager.GetRooms())
         {
             var r = new RoomDto
             {
                 Name = room.Name,
                 Capacity = room.Capacity,
-                Players = room.Players
+                Players = new List<string>(room.Players)
             };
             listToSend.Add(r);
         }
@@ -549,7 +544,7 @@ public sealed class OkeyHub : Hub
 
     private async Task TourSignalRequest(string roomName, string? connectionId)
     {
-        foreach (var player in this._roomManager.GetRooms()[roomName].GetPlayerIds())
+        foreach (var player in this._roomManager.GetRoomById(roomName).GetPlayerIds())
         {
             if (!player.Equals(connectionId, StringComparison.Ordinal))
             {
@@ -1024,7 +1019,7 @@ public sealed class OkeyHub : Hub
     public async Task StartGameForRoom(string roomName)
     {
         await this.StartGameSignal(roomName);
-        var playerIds = this._roomManager.GetRooms()[roomName].GetPlayerIds();
+        var playerIds = this._roomManager.GetRoomById(roomName).GetPlayerIds();
         Joueur[] joueurs =
         {
             new Humain(1, playerIds[0], _connectedUsers[playerIds[0]].GetElo()),

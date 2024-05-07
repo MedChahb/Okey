@@ -1,5 +1,6 @@
 namespace OkeyServer.Misc;
 
+using System.Collections.Concurrent;
 using Lobby;
 
 public interface IRoomManager
@@ -12,5 +13,6 @@ public interface IRoomManager
     string GetRoomsInfo();
     public bool IsRoomFull(string roomName);
     public void StartGameForRoom(string roomName);
-    public Dictionary<string, Room> GetRooms();
+    public ConcurrentBag<Room> GetRooms();
+    public Room GetRoomById(string id);
 }
