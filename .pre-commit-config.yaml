@@ -17,10 +17,10 @@ repos:
         exclude: 'client/OkeyClient/ProjectSettings/Packages/com\.unity\.testtools\.codecoverage/Settings\.json'
       - id: end-of-file-fixer
         exclude: |
-            (?x)^(
-                (.*\.(asset|meta|unity|prefab)$)|
-                client/OkeyClient/ProjectSettings/Packages/com\.unity\.testtools\.codecoverage/Settings\.json
-            )$
+          (?x)^(
+              (.*\.(asset|meta|unity|prefab)$)|
+              client/OkeyClient/ProjectSettings/Packages/com\.unity\.testtools\.codecoverage/Settings\.json
+          )$
       - id: trailing-whitespace
         exclude: '.*\.(asset|meta|unity|prefab)$'
       - id: fix-byte-order-marker
