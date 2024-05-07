@@ -53,6 +53,7 @@ public sealed class OkeyHub : Hub
     {
         await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, "Hub");
         await this.SendRoomListUpdate();
+        _connectedUsers[this.Context.ConnectionId] = new PlayerDatas(this._dbContext, "Guest");
         await base.OnConnectedAsync();
     }
 
@@ -982,10 +983,10 @@ public sealed class OkeyHub : Hub
         var playerIds = this._roomManager.GetRooms()[roomName].GetPlayerIds();
         Joueur[] joueurs =
         {
-            new Humain(1, playerIds[0], 800),
-            new Humain(2, playerIds[1], 100),
-            new Humain(3, playerIds[2], 2400),
-            new Humain(4, playerIds[3], 2400)
+            new Humain(1, playerIds[0], _connectedUsers[playerIds[0]].GetElo()),
+            new Humain(2, playerIds[1], _connectedUsers[playerIds[1]].GetElo()),
+            new Humain(3, playerIds[2], _connectedUsers[playerIds[2]].GetElo()),
+            new Humain(4, playerIds[3], _connectedUsers[playerIds[3]].GetElo())
         };
 
         var jeu = new Jeu(1, joueurs);
@@ -1115,6 +1116,26 @@ public sealed class OkeyHub : Hub
                     this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
                 }
             }
+            // on met à jour les informations des différents joueurs
+            if (jeu.isTermine())
+            {
+                var winner = jeu.getJoueurActuel();
+
+                for (var i = 0; i < 4; i++)
+                {
+                    // TODO appliquer des valeurs de score et de elo a l'aide de calculs
+                    if (joueurs[i] == winner)
+                    {
+                        await _connectedUsers[playerIds[i]]
+                            .UpdateStats(this._dbContext, 10, 5, true, true);
+                    }
+                    else
+                    {
+                        await _connectedUsers[playerIds[i]]
+                            .UpdateStats(this._dbContext, -5, 3, true, false);
+                    }
+                }
+            }
         }
     }
 
@@ -1202,6 +1223,5 @@ public sealed class OkeyHub : Hub
             _connectedUsers[id].AchievementsToString()
         );
     }
-
     */
 }
