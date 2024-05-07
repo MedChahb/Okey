@@ -22,6 +22,14 @@ namespace Okey.Tuiles
             return String.Format(null, "({0:00}, {1}, {2})", this.Num, this.Couleur, "No");
         }
 
+        public override bool TuileEquals(Tuile t)
+        {
+            if (t is Okay)
+                return true;
+            return this.Num == t.GetNum() && this.Couleur == t.GetCouleur();
+        }
+
         public override string GetName() => "No";
+
     }
 }

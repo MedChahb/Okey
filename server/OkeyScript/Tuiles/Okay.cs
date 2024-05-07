@@ -23,6 +23,13 @@ namespace Okey.Tuiles
             return String.Format(null, "({0:00}, {1}, {2})", this.Num, this.Couleur, "Ok");
         }
 
+        public override bool TuileEquals(Tuile t)
+        {
+            return true;
+        }
+
         public override string GetName() => "Ok";
+
+        
     }
 }
