@@ -18,6 +18,9 @@ namespace Okey.Joueurs
 
         private Random random = new Random();
 
+        //score du joueur initialement 7
+        private int score = 7;
+
         public Joueur(int id, String Name)
         {
             this.id = id;
@@ -101,7 +104,6 @@ namespace Okey.Joueurs
             if (this == null || c == null)
                 return;
 
-
             int x = c.getX();
             int y = c.getY();
 
@@ -121,7 +123,7 @@ namespace Okey.Joueurs
 
                 Console.WriteLine($"{this.Name} a jeté la tuile {t}\n");
 
-                if(t != null)
+                if (t != null)
                     j.ListeDefausse.Add(t);
             }
             else
@@ -280,7 +282,8 @@ namespace Okey.Joueurs
 
         private bool ChevaletHasCouples()
         {
-            Tuile t0, t1;
+            Tuile t0,
+                t1;
             List<List<Tuile>> ParitionEtage1 = PartitionListOnNulls(this.chevalet[0]);
             List<List<Tuile>> ParitionEtage2 = PartitionListOnNulls(this.chevalet[1]);
 
@@ -288,7 +291,7 @@ namespace Okey.Joueurs
             if (ParitionEtage1.Count + ParitionEtage2.Count != 7)
                 return false;
 
-            foreach(var coupleTuile in ParitionEtage1)
+            foreach (var coupleTuile in ParitionEtage1)
             {
                 t0 = coupleTuile[0];
                 t1 = coupleTuile[1];
@@ -305,7 +308,6 @@ namespace Okey.Joueurs
             }
 
             return true;
-
         }
 
         private bool VerifSerieChevalet()
@@ -391,6 +393,11 @@ namespace Okey.Joueurs
         public Stack<Tuile> GetDefausse()
         {
             return this.defausse;
+        }
+
+        public int GetScore()
+        {
+            return this.score;
         }
 
         public abstract override String ToString();
