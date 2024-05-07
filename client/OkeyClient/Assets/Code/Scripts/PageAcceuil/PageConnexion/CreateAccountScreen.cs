@@ -189,7 +189,6 @@ public class CreatAccountScreen : MonoBehaviour
                 password,
                 (IconeProfil)(this.currentAvatarId)
             );
-            Panel.SetActive(false);
         }
         else
         {
@@ -238,6 +237,7 @@ public class CreatAccountScreen : MonoBehaviour
                         try
                         {
                             await Task.Delay(REQUEST_RETRY_DELAY, this.Source.Token);
+                            Panel.SetActive(false);
                         }
                         catch (OperationCanceledException)
                         {

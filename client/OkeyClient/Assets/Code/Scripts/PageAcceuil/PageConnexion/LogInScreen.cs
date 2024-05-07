@@ -76,7 +76,6 @@ public class LogInScreen : MonoBehaviour
         if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
             await this.UpdateWithConnection(username, password);
-            Panel.SetActive(false);
         }
         else
         {
@@ -110,6 +109,7 @@ public class LogInScreen : MonoBehaviour
             try
             {
                 await this.manager.ConnexionSelfJoueurAsync(username, password, this.Source.Token);
+                Panel.SetActive(false);
                 return;
             }
             catch (HttpRequestException e)
