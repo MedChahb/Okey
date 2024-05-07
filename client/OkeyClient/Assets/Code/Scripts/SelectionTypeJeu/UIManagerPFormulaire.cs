@@ -49,7 +49,7 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     void Start()
     {
-        backBtnPrivate.onClick.AddListener(onBackBtnClicked);
+        backBtnPrivate.onClick.AddListener(onBackBtnPrivateClicked);
         backBtnPublic.onClick.AddListener(onBackBtnClicked);
         backBtn.onClick.AddListener(onBackBtnClicked);
         //joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
@@ -81,6 +81,11 @@ public class UIManagerPFormulaire : MonoBehaviour
     void onBackBtnClicked()
     {
         SceneManager.LoadScene(SceneId);
+    }
+
+    void onBackBtnPrivateClicked()
+    {
+        lobbyPrivateConfig.SetActive(false);
     }
 
     public void onPublicLobbyClicked()

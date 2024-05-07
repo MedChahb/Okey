@@ -94,7 +94,7 @@ public class CreatAccountScreen : MonoBehaviour
 
         PasswordValidation.onValueChanged.AddListener(OnInputChanged);
 
-        this.manager.ConnexionChangeEvent.AddListener(() => Panel.SetActive(false));
+        //this.manager.ConnexionChangeEvent.AddListener(OnCreateClicked);
 
         erreurTxt.gameObject.SetActive(false);
 
@@ -189,6 +189,7 @@ public class CreatAccountScreen : MonoBehaviour
                 password,
                 (IconeProfil)(this.currentAvatarId)
             );
+            Panel.SetActive(false);
         }
         else
         {

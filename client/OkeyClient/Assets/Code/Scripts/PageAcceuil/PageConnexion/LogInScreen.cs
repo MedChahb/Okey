@@ -62,7 +62,7 @@ public class LogInScreen : MonoBehaviour
 
         Password.onValueChanged.AddListener(OnInputChanged);
 
-        this.manager.ConnexionChangeEvent.AddListener(() => Panel.SetActive(false));
+        //this.manager.ConnexionChangeEvent.AddListener(OnConnexionClicked);
 
         erreurTxt.gameObject.SetActive(false);
     }
@@ -76,6 +76,7 @@ public class LogInScreen : MonoBehaviour
         if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
             await this.UpdateWithConnection(username, password);
+            Panel.SetActive(false);
         }
         else
         {
