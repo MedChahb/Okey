@@ -50,7 +50,7 @@ namespace Okey
                 if (!doitJete)
                 {
                     Console.Write("choisis de où piocher ('Centre' ou 'Defausse') ou 'Move': ");
-                    String? ouPiocher = await GetUserInputAsync();
+                    string? ouPiocher = "centre";
 
                     if (ouPiocher == null)
                     {
@@ -69,6 +69,8 @@ namespace Okey
                     )
                     {
                         joueurActuel?.PiocherTuile(ouPiocher, j);
+                        if (j.isTermine())
+                            break;
                         Console.WriteLine("\nmaintenant vous devez jeter une tuile.");
                     }
                     else
@@ -76,13 +78,14 @@ namespace Okey
                         continue;
                     }
                 }
+
                 j.AfficheChevaletActuel();
                 //le joueur jete
 
                 Console.Write(
                     "choisis la tuile à jeter (donner ces coords y x) ou taper 'Move' ou 'Gagner': "
                 );
-                String? coordStr = await GetUserInputAsync();
+                string? coordStr = "0 0";
 
                 if (coordStr == null)
                 {
@@ -100,7 +103,7 @@ namespace Okey
                 else if (string.Equals(coordStr, "gagner", StringComparison.OrdinalIgnoreCase))
                 {
                     Console.Write("donner les coords de la tuile que vous voulez finir avec : ");
-                    String? coordsToFinish = Console.ReadLine();
+                    string? coordsToFinish = Console.ReadLine();
                     Coord c = readCoord(coordsToFinish);
                     joueurActuel?.JeteTuilePourTerminer(c, j);
                     doitJete = true;

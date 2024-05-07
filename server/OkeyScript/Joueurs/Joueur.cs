@@ -142,22 +142,10 @@ namespace Okey.Joueurs
 
             if (string.Equals(OuPiocher, "Centre", StringComparison.OrdinalIgnoreCase))
             {
-                if (j.isPiocheCentreEmpty())
-                {
-                    Console.WriteLine("La pile au centre est vide, impossible de piocher.");
-                }
-                else
-                {
-                    var tuilePiochee = j.PopPiocheCentre();
-                    this.AjoutTuileChevalet(tuilePiochee);
-                    //on recheck l'etat dela pioche
-                    if (j.isPiocheCentreEmpty())
-                    {
-                        Console.WriteLine("Plus de tuile dans la pioche. Fin de la partie.");
-                        j.JeuTermine();
-                    }
-                }
+                var tuilePiochee = j.PopPiocheCentre();
+                this.AjoutTuileChevalet(tuilePiochee);
             }
+
             else if (string.Equals(OuPiocher, "Defausse", StringComparison.OrdinalIgnoreCase))
             {
                 Joueur PreviousPlayer = j.getPreviousPlayer(this);
@@ -172,7 +160,15 @@ namespace Okey.Joueurs
                     this.AjoutTuileChevalet(tuilePiochee);
                 }
             }
+
+            if (j.isPiocheCentreEmpty())
+            {
+                Console.WriteLine("\nLa pile au centre est vide, jeu terminé.");
+                j.JeuTermine();
+
+            }
         }
+
 
         //jete la 15eme tuile sur la pioche au milieu pour decalrer la victoire
         public bool JeteTuilePourTerminer(Coord c, Jeu j)
