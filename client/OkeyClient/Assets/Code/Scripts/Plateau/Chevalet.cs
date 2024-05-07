@@ -811,7 +811,7 @@ public class Chevalet : MonoBehaviour
             var tuileData = new TuileData(
                 FromStringToCouleurTuile(tuile.Couleur),
                 int.Parse(tuile.numero),
-                true
+                false
             );
 
             var childObject = new GameObject("SpriteChild");
