@@ -99,9 +99,9 @@ namespace Okey.Game
                     Random random = new Random();
                     int randIndex = random.Next(0, this.PacketTuile.Count - 1); // on prend en random l'index de la tuile du packet
 
-                    Tuile toGive = this.PacketTuile[randIndex]; // on la save dans toGive
+                    Tuile toGive = this.PacketTuile[i]; // on la save dans toGive
 
-                    this.PacketTuile.RemoveAt(randIndex); // on la supprime du packet
+                    this.PacketTuile.RemoveAt(i); // on la supprime du packet
                     pl.AjoutTuileChevalet(toGive); // on la donne au joueur (ajout à son chevalet)
 
                     //faire ça 14 fois pour les 4 joueurs

@@ -19,11 +19,12 @@ namespace Okey
             j.DistibuerTuile(); // on commence
             Console.WriteLine("Tuiles distribués.\n");
 
+
             Joueur? joueurStarter = j.getJoueurActuel();
             j.AfficheChevaletActuel();
 
             Console.Write("choisis la tuile à jeter (donner ces coords y x) ou 'Move' : ");
-            String? action = Console.ReadLine();
+            string? action = Console.ReadLine();
 
             while (string.Equals(action, "move", StringComparison.OrdinalIgnoreCase)) //action == "move"
             {
@@ -85,7 +86,7 @@ namespace Okey
 
                 if (coordStr == null)
                 {
-                    Coord JeterTuileAlea = joueurActuel?.GetRandomTuileCoords();
+                    var JeterTuileAlea = joueurActuel?.GetRandomTuileCoords();
                     joueurActuel?.JeterTuile(JeterTuileAlea, j);
                     Console.Write("\nTuile aleatoire jetee");
                     Console.WriteLine($"Tuile jetee de coordonnees : {JeterTuileAlea} !");
@@ -138,9 +139,9 @@ namespace Okey
             pl?.MoveTuileChevalet(from, to, j);
         }
 
-        static async Task<string> GetUserInputAsync()
+        static async Task<string?> GetUserInputAsync()
         {
-            Task<string> userInputTask = Task.Run(() => Console.ReadLine()); // Run Console.ReadLine asynchronously
+            var userInputTask = Task.Run(() => Console.ReadLine()); // Run Console.ReadLine asynchronously
 
             // Wait for either user input or 5 seconds timeout
             await Task.WhenAny(userInputTask, Task.Delay(20000));

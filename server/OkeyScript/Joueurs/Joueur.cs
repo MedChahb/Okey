@@ -81,7 +81,7 @@ namespace Okey.Joueurs
             this.Tour = true;
         }
 
-        public void AjoutTuileChevalet(Tuile t)
+        public void AjoutTuileChevalet(Tuile? t)
         {
             for (int j = 0; j < etage; j++)
             {
@@ -96,12 +96,11 @@ namespace Okey.Joueurs
             }
         }
 
-        public void JeterTuile(Coord c, Jeu j)
+        public void JeterTuile(Coord? c, Jeu j)
         {
-            if (this == null)
+            if (this == null || c == null)
                 return;
-            //bloquer la pioche (condition lors de l'appel en Jeu.cs)
-            //gerer le timer
+
 
             int x = c.getX();
             int y = c.getY();
@@ -109,6 +108,11 @@ namespace Okey.Joueurs
             if ((x >= 0 && x < tuilesDansEtage) && (y >= 0 || y < etage))
             {
                 Tuile? t = this.chevalet[y][x];
+                if (t == null)
+                {
+                    Console.WriteLine("error in JeterTuile. (pas de tuile)");
+                    return;
+                }
                 this.chevalet[y][x] = null; // enlever la tuile du chevalet
                 t?.SetDefause(); // devient defausse
                 this.JeteTuileDefausse(t); // la poser dans la defausse
@@ -117,9 +121,8 @@ namespace Okey.Joueurs
 
                 Console.WriteLine($"{this.Name} a jeté la tuile {t}\n");
 
-                //ajout de la tuile jete a la liste de tuile defausse
-                //(fonctionnalités)
-                j.ListeDefausse.Add(t);
+                if(t != null)
+                    j.ListeDefausse.Add(t);
             }
             else
             {
@@ -127,7 +130,7 @@ namespace Okey.Joueurs
             }
         }
 
-        public void PiocherTuile(String? OuPiocher, Jeu j)
+        public void PiocherTuile(string? OuPiocher, Jeu j)
         {
             if (OuPiocher == null)
             {
@@ -143,7 +146,7 @@ namespace Okey.Joueurs
                 }
                 else
                 {
-                    Tuile tuilePiochee = j.PopPiocheCentre();
+                    var tuilePiochee = j.PopPiocheCentre();
                     this.AjoutTuileChevalet(tuilePiochee);
                     //on recheck l'etat dela pioche
                     if (j.isPiocheCentreEmpty())
@@ -247,12 +250,12 @@ namespace Okey.Joueurs
             return true;
         }
 
-        public static bool EstSerie(List<Tuile> tuiles)
+        private static bool EstSerie(List<Tuile> tuiles)
         {
             return Est_serie_de_meme_chiffre(tuiles) || EstSerieDeCouleur(tuiles);
         }
 
-        public static List<List<Tuile>> PartitionListOnNulls(List<Tuile?> etage)
+        private static List<List<Tuile>> PartitionListOnNulls(List<Tuile?> etage)
         {
             List<List<Tuile>> partitions = new List<List<Tuile>>();
             List<Tuile> partition = new List<Tuile>();
@@ -275,8 +278,41 @@ namespace Okey.Joueurs
             return partitions;
         }
 
-        public bool VerifSerieChevalet()
+        private bool ChevaletHasCouples()
         {
+            Tuile t0, t1;
+            List<List<Tuile>> ParitionEtage1 = PartitionListOnNulls(this.chevalet[0]);
+            List<List<Tuile>> ParitionEtage2 = PartitionListOnNulls(this.chevalet[1]);
+
+            // si == 7  -> on a alors que des couples
+            if (ParitionEtage1.Count + ParitionEtage2.Count != 7)
+                return false;
+
+            foreach(var coupleTuile in ParitionEtage1)
+            {
+                t0 = coupleTuile[0];
+                t1 = coupleTuile[1];
+                if (!t0.TuileEquals(t1))
+                    return false;
+            }
+
+            foreach (var coupleTuile in ParitionEtage1)
+            {
+                t0 = coupleTuile[0];
+                t1 = coupleTuile[1];
+                if (!t0.TuileEquals(t1))
+                    return false;
+            }
+
+            return true;
+
+        }
+
+        private bool VerifSerieChevalet()
+        {
+            if (this.ChevaletHasCouples())
+                return true;
+
             List<List<Tuile>> ParitionEtage1 = PartitionListOnNulls(this.chevalet[0]);
             List<List<Tuile>> ParitionEtage2 = PartitionListOnNulls(this.chevalet[1]);
 
