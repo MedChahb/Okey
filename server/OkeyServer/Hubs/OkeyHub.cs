@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using Data;
-using Exceptions;
 using Microsoft.AspNetCore.SignalR;
 using Misc;
 using Okey;
@@ -26,6 +25,10 @@ public sealed class OkeyHub : Hub
 
     private static ConcurrentDictionary<string, PlayerDatas> _connectedUsers =
         new ConcurrentDictionary<string, PlayerDatas>();
+
+    internal static ConcurrentDictionary<string, string> UsersInRooms =
+        new ConcurrentDictionary<string, string>();
+
     private readonly IRoomManager _roomManager;
     private readonly IHubContext<OkeyHub> _hubContext;
     private static readonly char[] Separator = new char[] { ';' };
@@ -52,6 +55,16 @@ public sealed class OkeyHub : Hub
     public override async Task OnConnectedAsync()
     {
         await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, "Hub");
+        if (!UsersInRooms.Keys.Any(x => x == this.Context.ConnectionId))
+        {
+            UsersInRooms.TryAdd(this.Context.ConnectionId, "Hub");
+        }
+        Console.WriteLine("---[Joueurs]---");
+        foreach (var id in UsersInRooms)
+        {
+            Console.WriteLine($"{id.Key} : {id.Value}");
+        }
+
         await this.SendRoomListUpdate();
         _connectedUsers[this.Context.ConnectionId] = new PlayerDatas(this._dbContext, "Guest");
         await base.OnConnectedAsync();
@@ -62,31 +75,65 @@ public sealed class OkeyHub : Hub
     /// </summary>
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        var roomId = this._roomManager.GetRoomIdByConnectionId(this.Context.ConnectionId);
-        this._roomManager.PlayerDisconnected(this.Context.ConnectionId);
-        await this.SendRoomListUpdate();
-        if (!string.IsNullOrEmpty(roomId))
+        if (!UsersInRooms[this.Context.ConnectionId].Equals("Hub", StringComparison.Ordinal))
         {
-            await this
-                ._hubContext.Clients.Group(roomId)
-                .SendAsync(
-                    "ReceiveMessage",
-                    new PacketSignal
+            var roomId = this._roomManager.GetRoomIdByConnectionId(this.Context.ConnectionId);
+            if (UsersInRooms.TryRemove(this.Context.ConnectionId, out _))
+            {
+                await this.LobbyDisconnection(roomId);
+                this._roomManager.PlayerDisconnected(this.Context.ConnectionId);
+                if (!string.IsNullOrEmpty(roomId))
+                {
+                    await this
+                        ._hubContext.Clients.Group(roomId)
+                        .SendAsync(
+                            "ReceiveMessage",
+                            new PacketSignal
+                            {
+                                message =
+                                    $"Player {this.Context.ConnectionId} has left the {roomId} lobby."
+                            }
+                        );
+                }
+                /*
+                if (!_connectedUsers.TryRemove(this.Context.ConnectionId, out _))
+                {
+                    throw new ConnectedUSerDictionnaryRemoveException(
+                        "Couldn't remove the user : "
+                        + _connectedUsers[this.Context.ConnectionId]
+                        + " from the connected users"
+                    );
+                }*/
+            }
+        }
+        else
+        {
+            if (UsersInRooms[this.Context.ConnectionId].Equals("Hub", StringComparison.Ordinal))
+            {
+                if (UsersInRooms.TryRemove(this.Context.ConnectionId, out var ci))
+                {
+                    await this
+                        ._hubContext.Clients.Group("Hub")
+                        .SendAsync(
+                            "ReceiveMessage",
+                            new PacketSignal
+                            {
+                                message = $"Player {this.Context.ConnectionId} has left the Hub."
+                            }
+                        );
+                    await this.SendRoomListUpdate();
+                    /*
+                    if (!_connectedUsers.TryRemove(this.Context.ConnectionId, out _))
                     {
-                        message = $"Player {this.Context.ConnectionId} has left the lobby."
-                    }
-                );
+                        throw new ConnectedUSerDictionnaryRemoveException(
+                            "Couldn't remove the user : "
+                            + _connectedUsers[this.Context.ConnectionId]
+                            + " from the connected users"
+                        );
+                    }*/
+                }
+            }
         }
-
-        if (!_connectedUsers.TryRemove(this.Context.ConnectionId, out _))
-        {
-            throw new ConnectedUSerDictionnaryRemoveException(
-                "Couldn't remove the user : "
-                    + _connectedUsers[this.Context.ConnectionId]
-                    + " from the connected users"
-            );
-        }
-
         await base.OnDisconnectedAsync(exception);
     }
 
@@ -184,7 +231,7 @@ public sealed class OkeyHub : Hub
 
             await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, lobbyName);
             await this.SendRoomListUpdate();
-
+            UsersInRooms.TryUpdate(this.Context.ConnectionId, lobbyName, "Hub");
             await this
                 ._hubContext.Clients.Group(lobbyName)
                 .SendAsync(
@@ -300,9 +347,10 @@ public sealed class OkeyHub : Hub
             };
             listToSend.Add(r);
         }
-        await this
-            ._hubContext.Clients.Group("Hub")
-            .SendAsync("UpdateRoomsRequest", new RoomsPacket { ListRooms = listToSend });
+
+        var roomPack = new RoomsPacket { ListRooms = listToSend };
+
+        await this._hubContext.Clients.Group("Hub").SendAsync("UpdateRoomsRequest", roomPack);
     }
 
     private async Task<string> CoordsGainRequest(string connectionId)
@@ -503,29 +551,26 @@ public sealed class OkeyHub : Hub
     {
         foreach (var player in this._roomManager.GetRooms()[roomName].GetPlayerIds())
         {
-            if (player.Equals(connectionId, StringComparison.Ordinal))
-            {
-                await this._hubContext.Clients.Client(player).SendAsync("YourTurnSignal");
-            }
-            else
+            if (!player.Equals(connectionId, StringComparison.Ordinal))
             {
                 await this
                     ._hubContext.Clients.Client(player)
-                    .SendAsync(
-                        "TurnSignal",
-                        connectionId,
-                        cancellationToken: CancellationToken.None
-                    );
+                    .SendAsync("TurnSignal", player, cancellationToken: CancellationToken.None);
 
                 //like we sent "TurnSignal" , we send "TimerStartSignal"
                 await this
                     ._hubContext.Clients.Client(player)
                     .SendAsync(
                         "TimerStartSignal",
-                        connectionId,
+                        player,
                         cancellationToken: CancellationToken.None
                     );
             }
+        }
+
+        if (connectionId != null)
+        {
+            await this._hubContext.Clients.Client(connectionId).SendAsync("YourTurnSignal");
         }
     }
 
@@ -979,7 +1024,6 @@ public sealed class OkeyHub : Hub
     public async Task StartGameForRoom(string roomName)
     {
         await this.StartGameSignal(roomName);
-
         var playerIds = this._roomManager.GetRooms()[roomName].GetPlayerIds();
         Joueur[] joueurs =
         {

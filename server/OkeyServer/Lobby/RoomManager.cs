@@ -37,19 +37,17 @@ public class RoomManager : IRoomManager
         return false;
     }
 
-    private void OnGameStarted(string roomName) =>
-        // Notify subscribers that the game has started for the specified room
-        this.GameStarted?.Invoke(roomName);
+    private void OnGameStarted(string roomName) => this.GameStarted?.Invoke(roomName);
 
     public void LeaveRoom(string roomName, string playerId)
     {
         if (this._rooms.TryGetValue(roomName, out var room))
         {
             room.RemovePlayer(playerId);
-            if (room.IsEmpty())
-            {
-                this._rooms.Remove(roomName);
-            }
+            //if (room.IsEmpty())
+            //{
+            //    this._rooms.Remove(roomName);
+            //}
         }
     }
 
@@ -61,10 +59,10 @@ public class RoomManager : IRoomManager
         foreach (var room in this._rooms.Values)
         {
             room.RemovePlayer(connectionId);
-            if (room.IsEmpty())
-            {
-                this._rooms.Remove(room.Name);
-            }
+            //if (room.IsEmpty())
+            //{
+            //    this._rooms.Remove(room.Name);
+            //}
         }
     }
 
