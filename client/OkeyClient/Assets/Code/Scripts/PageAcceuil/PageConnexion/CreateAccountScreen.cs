@@ -81,18 +81,6 @@ public class CreatAccountScreen : MonoBehaviour
 
         PasswordValidation.contentType = TMP_InputField.ContentType.Password;
 
-        Password.text = string.Empty;
-
-        Username.text = string.Empty;
-
-        PasswordValidation.text = string.Empty;
-
-        DayInput.text = string.Empty;
-
-        MonthInput.text = string.Empty;
-
-        YearInput.text = string.Empty;
-
         createButton.onClick.AddListener(OnCreateClicked);
 
         connectionButton.onClick.AddListener(onBackBtnClicked);

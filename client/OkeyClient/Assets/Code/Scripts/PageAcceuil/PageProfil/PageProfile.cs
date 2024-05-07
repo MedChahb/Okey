@@ -69,6 +69,7 @@ public class PageProfile : MonoBehaviour
         manager.ConnexionChangeEvent.AddListener(updateUserProfile);
         disconnectionButton.onClick.AddListener(onDisconnectionClicked);
         currentAvatarId = (int)manager.GetSelfJoueur().IconeProfil;
+        Debug.Log(currentAvatarId);
         OnAvatarButtonClick();
     }
 
