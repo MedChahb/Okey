@@ -20,5 +20,10 @@ namespace Okey
         {
             return y;
         }
+
+        public override string ToString()
+        {
+            return $"({this.y}, {this.x})";
+        }
     }
 }

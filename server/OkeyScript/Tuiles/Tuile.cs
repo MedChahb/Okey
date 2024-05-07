@@ -78,6 +78,8 @@ namespace Okey.Tuiles
             return this.num;
         }
 
+        public abstract bool TuileEquals(Tuile t);
+
         public abstract bool MemeCouleur(Tuile t);
 
         public abstract bool estSuivant(Tuile t);

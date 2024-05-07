@@ -19,11 +19,12 @@ namespace Okey
             j.DistibuerTuile(); // on commence
             Console.WriteLine("Tuiles distribués.\n");
 
+
             Joueur? joueurStarter = j.getJoueurActuel();
             j.AfficheChevaletActuel();
 
             Console.Write("choisis la tuile à jeter (donner ces coords y x) ou 'Move' : ");
-            String? action = Console.ReadLine();
+            string? action = Console.ReadLine();
 
             while (string.Equals(action, "move", StringComparison.OrdinalIgnoreCase)) //action == "move"
             {
@@ -49,7 +50,7 @@ namespace Okey
                 if (!doitJete)
                 {
                     Console.Write("choisis de où piocher ('Centre' ou 'Defausse') ou 'Move': ");
-                    String? ouPiocher = await GetUserInputAsync();
+                    string? ouPiocher = "centre";
 
                     if (ouPiocher == null)
                     {
@@ -68,6 +69,8 @@ namespace Okey
                     )
                     {
                         joueurActuel?.PiocherTuile(ouPiocher, j);
+                        if (j.isTermine())
+                            break;
                         Console.WriteLine("\nmaintenant vous devez jeter une tuile.");
                     }
                     else
@@ -75,17 +78,18 @@ namespace Okey
                         continue;
                     }
                 }
+
                 j.AfficheChevaletActuel();
                 //le joueur jete
 
                 Console.Write(
                     "choisis la tuile à jeter (donner ces coords y x) ou taper 'Move' ou 'Gagner': "
                 );
-                String? coordStr = await GetUserInputAsync();
+                string? coordStr = "0 0";
 
                 if (coordStr == null)
                 {
-                    Coord JeterTuileAlea = joueurActuel?.GetRandomTuileCoords();
+                    var JeterTuileAlea = joueurActuel?.GetRandomTuileCoords();
                     joueurActuel?.JeterTuile(JeterTuileAlea, j);
                     Console.Write("\nTuile aleatoire jetee");
                     Console.WriteLine($"Tuile jetee de coordonnees : {JeterTuileAlea} !");
@@ -99,7 +103,7 @@ namespace Okey
                 else if (string.Equals(coordStr, "gagner", StringComparison.OrdinalIgnoreCase))
                 {
                     Console.Write("donner les coords de la tuile que vous voulez finir avec : ");
-                    String? coordsToFinish = Console.ReadLine();
+                    string? coordsToFinish = Console.ReadLine();
                     Coord c = readCoord(coordsToFinish);
                     joueurActuel?.JeteTuilePourTerminer(c, j);
                     doitJete = true;
@@ -138,9 +142,9 @@ namespace Okey
             pl?.MoveTuileChevalet(from, to, j);
         }
 
-        static async Task<string> GetUserInputAsync()
+        static async Task<string?> GetUserInputAsync()
         {
-            Task<string> userInputTask = Task.Run(() => Console.ReadLine()); // Run Console.ReadLine asynchronously
+            var userInputTask = Task.Run(() => Console.ReadLine()); // Run Console.ReadLine asynchronously
 
             // Wait for either user input or 5 seconds timeout
             await Task.WhenAny(userInputTask, Task.Delay(20000));
