@@ -90,6 +90,7 @@ public sealed class OkeyHub : Hub
                         await this._hubContext.Groups.RemoveFromGroupAsync(player, roomId);
                         await this._hubContext.Groups.AddToGroupAsync(player, "Hub");
                         UsersInRooms.TryUpdate(player, "Hub", roomId);
+                        _cts = new CancellationTokenSource();
                     }
                 }
 
@@ -453,7 +454,7 @@ public sealed class OkeyHub : Hub
                     return "Centre";
                 }
 
-                if (!_cts.Token.IsCancellationRequested)
+                if (_cts.Token.WaitHandle == null)
                 {
                     if (invokeTask.Result.Centre == true && invokeTask.Result.Defausse == false)
                     {
@@ -489,7 +490,7 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="connectionId"></param>
     /// <returns>coordonnées</returns>
-    private async Task JeterRequest(Joueur pl, string roomName, Jeu jeu)
+    private async Task<string> JeterRequest(Joueur pl, string roomName, Jeu jeu)
     {
         try
         {
@@ -506,62 +507,52 @@ public sealed class OkeyHub : Hub
 
                 if (completedTask == invokeTask) // TODO: if non optimal du tout, discussion nécessaire
                 {
-                    try
+                    var coordinates = await invokeTask;
+                    if (coordinates.gagner == true)
                     {
-                        var coordinates = await invokeTask;
-
-                        if (coordinates.gagner == true)
-                        {
-                            if (
-                                pl?.JeteTuilePourTerminer(
-                                    this.ReadCoords(coordinates.Y + ";" + coordinates.X),
-                                    jeu
-                                ) == true
-                            )
-                            {
-                                // Le joueur gagne
-                                await this.PlayerWon(roomName, pl.getName());
-                            }
-
-                            if (pl != null)
-                            {
-                                await this.SendMpToPlayer(
-                                    pl.getName(),
-                                    "Vous n'avez pas de serie dans votre chevalet !"
-                                );
-                                var randTuileCoord = pl.GetRandomTuileCoords();
-                                var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
-
-                                await this.SendTuileJeteeToPlayer(
-                                    pl.getName(),
-                                    new TuilePacket
-                                    {
-                                        X = randTuileCoord.getY().ToString(),
-                                        Y = randTuileCoord.getX().ToString(),
-                                        gagner = null
-                                    }
-                                );
-
-                                pl?.JeterTuile(
-                                    this.ReadCoords(
-                                        randTuileCoord.getY() + ";" + randTuileCoord.getX()
-                                    ),
-                                    jeu
-                                );
-                            }
-                        }
-                        else
-                        {
-                            pl?.JeterTuile(
+                        if (
+                            pl?.JeteTuilePourTerminer(
                                 this.ReadCoords(coordinates.Y + ";" + coordinates.X),
                                 jeu
+                            ) == true
+                        )
+                        {
+                            // Le joueur gagne
+                            await this.PlayerWon(roomName, pl.getName());
+                        }
+
+                        if (pl != null)
+                        {
+                            await this.SendMpToPlayer(
+                                pl.getName(),
+                                "Vous n'avez pas de serie dans votre chevalet !"
                             );
+                            var randTuileCoord = pl.GetRandomTuileCoords();
+                            var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
+
+                            await this.SendTuileJeteeToPlayer(
+                                pl.getName(),
+                                new TuilePacket
+                                {
+                                    X = randTuileCoord.getY().ToString(),
+                                    Y = randTuileCoord.getX().ToString(),
+                                    gagner = null
+                                }
+                            );
+
+                            pl?.JeterTuile(
+                                this.ReadCoords(
+                                    randTuileCoord.getY() + ";" + randTuileCoord.getX()
+                                ),
+                                jeu
+                            );
+                            return "";
                         }
                     }
-                    catch (Exception e)
+                    else
                     {
-                        Console.WriteLine(e);
-                        throw;
+                        pl?.JeterTuile(this.ReadCoords(coordinates.Y + ";" + coordinates.X), jeu);
+                        return "";
                     }
                 }
 
@@ -586,13 +577,17 @@ public sealed class OkeyHub : Hub
                             this.ReadCoords(RandTuileCoord.getY() + ";" + RandTuileCoord.getX()),
                             jeu
                         );
+                        return "";
                     }
                 }
             }
+
+            return "";
         }
-        catch (OperationCanceledException e)
+        catch (Exception e)
         {
             Console.WriteLine($"Ok jeterquest annule {e.Message}");
+            return "FIN";
         }
     }
 
@@ -1244,7 +1239,12 @@ public sealed class OkeyHub : Hub
 
                     await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                    await this.JeterRequest(currentPlayer, roomName, jeu);
+                    var res = await this.JeterRequest(currentPlayer, roomName, jeu);
+
+                    if (res.Equals("FIN", StringComparison.Ordinal))
+                    {
+                        return;
+                    }
 
                     if (currentPlayer != null)
                     {
