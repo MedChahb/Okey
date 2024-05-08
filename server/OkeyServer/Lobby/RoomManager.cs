@@ -8,7 +8,7 @@ public class RoomManager : IRoomManager
     private readonly Dictionary<string, Room> _rooms;
 
     private ConcurrentBag<Room> roomsAvailable;
-    private readonly ConcurrentBag<Room> RoomsBusy;
+    private ConcurrentBag<Room> RoomsBusy;
 
     public event Action<string>? GameStarted;
 
@@ -32,6 +32,14 @@ public class RoomManager : IRoomManager
 
     public bool IsRoomFull(string roomName) =>
         this._rooms.TryGetValue(roomName, out var room) && room.IsFull();
+
+    public void ResetRoom(string roomName)
+    {
+        var room = this.GetRoomById(roomName);
+        room.Players = new List<string>();
+        this.RoomsBusy = new ConcurrentBag<Room>(this.RoomsBusy.Except(new[] { room }));
+        this.roomsAvailable.Add(room);
+    }
 
     public void StartGameForRoom(string roomName)
     {

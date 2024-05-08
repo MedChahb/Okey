@@ -15,4 +15,5 @@ public interface IRoomManager
     public void StartGameForRoom(string roomName);
     public ConcurrentBag<Room> GetRooms();
     public Room GetRoomById(string id);
+    public void ResetRoom(string roomName);
 }
