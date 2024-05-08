@@ -1,0 +1,99 @@
+name: okey
+networks:
+  okey:
+    name: okey
+    # enable_ipv6: true
+    attachable: true
+    driver_opts:
+      name: okey
+services:
+  okey-api:
+    # image: registry.app.unistra.fr/okaybytes/okey/okeyapi:${TARGET:-dev}
+    build:
+      context: ../
+      dockerfile: docker/OkeyApi.Dockerfile
+    restart: always
+    container_name: okey-api
+    # volumes:
+    #   - ./data/:/www/data
+    networks:
+      - okey
+    depends_on:
+      - db
+    ports:
+      - 8000:3031
+    profiles:
+      - core
+      - extra
+  okey-server:
+    image: registry.app.unistra.fr/okaybytes/okey/okeyserver:${TARGET:-dev}
+    # build:
+    #   dockerfile: ./OkeyServer.Dockerfile
+    restart: always
+    container_name: okey-server
+    # volumes:
+    #   - ./data/:/www/data
+    networks:
+      - okey
+    depends_on:
+      - okey-api
+    profiles:
+      - core
+      - extra
+  db:
+    image: mysql:8.0.36
+    restart: always
+    container_name: mysql
+    volumes:
+      - ~/docker/mysql_data:/var/lib/mysql
+    networks:
+      - okey
+    expose:
+      - 8889 # port mapping doesn't work don't touch
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_DATABASE: okeidatabase
+      MYSQL_USER: lebron
+      MYSQL_PASSWORD: james
+      MYSQL_TCP_PORT: 8889
+    profiles:
+      - core
+      - extra
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    restart: always
+    container_name: phpmyadmin
+    networks:
+      - okey
+    depends_on:
+      - db
+    ports:
+      - 8080:80
+    environment:
+      PMA_ABSOLUTE_URI: "${CI_ENVIRONMENT_URL}${PHPMYADMIN_ENDPOINT}"
+      PMA_HOST: db
+      PMA_PORT: 8889
+      PMA_CONTROLPORT: 8889
+      PMA_PMADB: phpmyadmin
+      PMA_CONTROLUSER: root
+      PMA_CONTROLPASS: root
+    profiles:
+      - extra
+  # bla:
+  #   image: bla
+  #   restart: unless-stopped
+  #   container_name: mysql_database
+  #   volumes:
+  #     - ./data/:/www/data
+  #   user: 1000:1001 # your uid:gid
+  #   networks:
+  #     - frontend
+  #   ports:
+  #     # these ports are in format <host-port>:<container-port>
+  #     - 80:80
+  #     - 443:443
+  #     # add any other stream port you want to expose
+  #   environment:
+  #     disable_ipv6: 'true'
+  #   command: echo "i'm running ${compose_project_name}"
