@@ -453,35 +453,22 @@ public sealed class OkeyHub : Hub
                     );
                     return "Centre";
                 }
-
-                if (_cts.Token.WaitHandle == null)
-                {
-                    if (invokeTask.Result.Centre == true && invokeTask.Result.Defausse == false)
-                    {
-                        return "Centre";
-                    }
-
-                    if (invokeTask.Result.Centre == false && invokeTask.Result.Defausse == true)
-                    {
-                        return "Defausse";
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Le packet n'est pas conforme");
-                    }
-                }
-                else
+                if (invokeTask.Result.Centre == true && invokeTask.Result.Defausse == false)
                 {
                     return "Centre";
                 }
+                if (invokeTask.Result.Centre == false && invokeTask.Result.Defausse == true)
+                {
+                    return "Defausse";
+                }
+                throw new ArgumentException("Le packet n'est pas conforme");
             }
-
             return "Centre";
         }
-        catch (OperationCanceledException e)
+        catch (Exception e)
         {
-            Console.WriteLine(e);
-            return "Centre";
+            Console.WriteLine($"Ok jeterquest annule {e.Message}");
+            return "FIN";
         }
     }
 
@@ -1243,6 +1230,13 @@ public sealed class OkeyHub : Hub
 
                     if (res.Equals("FIN", StringComparison.Ordinal))
                     {
+                        await this.BroadCastInRoom(
+                            roomName,
+                            new PacketSignal
+                            {
+                                message = $"{joueurStarter?.getName()} a quitté la partie"
+                            }
+                        );
                         return;
                     }
 
