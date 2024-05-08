@@ -36,7 +36,7 @@ public sealed class OkeyHub : Hub
 
     private ConcurrentDictionary<string, bool> _isPlayerTurn;
 
-    private static CancellationTokenSource? _cts;
+    private CancellationTokenSource? _cts;
 
     public OkeyHub(
         IHubContext<OkeyHub> hubContext,
@@ -48,8 +48,6 @@ public sealed class OkeyHub : Hub
         this._hubContext = hubContext;
         this._dbContext = dbContext;
         this._isPlayerTurn = new ConcurrentDictionary<string, bool>();
-
-        _cts = new CancellationTokenSource();
     }
 
     /// <summary>
@@ -82,23 +80,25 @@ public sealed class OkeyHub : Hub
             {
                 // CAD PARTIE EN JEU
                 // DECONNECTER TOUT LE MONDE ET ARRETER LE JEU
-                _cts?.Cancel();
                 foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
                 {
-                    if (!player.Equals(this.Context.ConnectionId, StringComparison.Ordinal))
+                    if (
+                        !player.Equals(this.Context.ConnectionId, StringComparison.Ordinal)
+                        && UsersInRooms.TryGetValue(player, out _)
+                    )
                     {
-                        await this._hubContext.Groups.RemoveFromGroupAsync(player, roomId);
-                        await this._hubContext.Groups.AddToGroupAsync(player, "Hub");
-                        UsersInRooms.TryUpdate(player, "Hub", roomId);
-                        _cts = new CancellationTokenSource();
+                        await this.SendDisconnectionOrder(
+                            player,
+                            $"{this.Context.ConnectionId} a quitteé, fin de partie."
+                        );
                     }
                 }
-
                 this._roomManager.ResetRoom(roomId);
+                Console.WriteLine($"Room {roomId} reset");
             }
             else
             {
-                //  SE FIAT TRQLMENT
+                //  SE FAIT TRQLMENT
             }
 
             if (UsersInRooms.TryRemove(this.Context.ConnectionId, out _))
@@ -320,8 +320,7 @@ public sealed class OkeyHub : Hub
     /// Permet de lancer la partie
     /// </summary>
     /// <param name="roomName">Nom de room</param>
-    private async void OnGameStarted(string roomName) =>
-        await this.StartGameForRoom(roomName, _cts);
+    private async void OnGameStarted(string roomName) => await this.StartGameForRoom(roomName);
 
     /// <summary>
     /// Envoie un message a tout les utilisateurs d'un groupe
@@ -393,6 +392,13 @@ public sealed class OkeyHub : Hub
         await this._hubContext.Clients.Group("Hub").SendAsync("UpdateRoomsRequest", roomPack);
     }
 
+    private async Task SendDisconnectionOrder(string connectionId, string message)
+    {
+        await this
+            ._hubContext.Clients.Client(connectionId)
+            .SendAsync("Disconnection", new DisconnectionPacket { message = message });
+    }
+
     private async Task<string> CoordsGainRequest(string connectionId)
     {
         Console.WriteLine("Le pb arrive ici");
@@ -429,20 +435,27 @@ public sealed class OkeyHub : Hub
             ._hubContext.Clients.Client(connectionId)
             .InvokeAsync<string>("PiocheRequest", cancellationToken: CancellationToken.None);
     */
-    public async Task<string> PiochePacketRequest(string connectionId)
+    public async Task<string> PiochePacketRequest(
+        string connectionId,
+        CancellationTokenSource token
+    )
     {
         try
         {
-            if (_cts != null)
+            if (this._cts != null)
             {
+                token.Token.ThrowIfCancellationRequested();
                 var invokeTask = this
                     ._hubContext.Clients.Client(connectionId)
                     .InvokeAsync<PiochePacket>(
                         "PiochePacketRequest",
-                        cancellationToken: _cts.Token
+                        cancellationToken: this._cts.Token
                     );
-
-                var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
+                var completedTask = await Task.WhenAny(
+                    invokeTask,
+                    Task.Delay(time, cancellationToken: this._cts.Token)
+                );
+                token.Token.ThrowIfCancellationRequested();
 
                 if (completedTask != invokeTask)
                 {
@@ -451,23 +464,47 @@ public sealed class OkeyHub : Hub
                         connectionId,
                         "Temps écoulé, tuile piochée du centre."
                     );
+                    if (this._cts.Token.IsCancellationRequested)
+                    {
+                        return "FIN";
+                    }
                     return "Centre";
                 }
-                if (invokeTask.Result.Centre == true && invokeTask.Result.Defausse == false)
+
+                if (!this._cts.Token.IsCancellationRequested)
                 {
-                    return "Centre";
+                    if (invokeTask.Result.Centre == true && invokeTask.Result.Defausse == false)
+                    {
+                        if (this._cts.Token.IsCancellationRequested)
+                        {
+                            return "FIN";
+                        }
+                        return "Centre";
+                    }
+                    else if (
+                        invokeTask.Result.Centre == false
+                        && invokeTask.Result.Defausse == true
+                    )
+                    {
+                        if (this._cts.Token.IsCancellationRequested)
+                        {
+                            return "FIN";
+                        }
+                        return "Defausse";
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Packet non conforme");
+                    }
                 }
-                if (invokeTask.Result.Centre == false && invokeTask.Result.Defausse == true)
-                {
-                    return "Defausse";
-                }
-                throw new ArgumentException("Le packet n'est pas conforme");
+                //return "FIN";
             }
-            return "Centre";
+            return "FIN";
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Ok jeterquest annule {e.Message}");
+            Console.WriteLine($"Ok piocherequest annule {e.Message}");
+            await base.OnDisconnectedAsync(new OperationCanceledException());
             return "FIN";
         }
     }
@@ -477,99 +514,114 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="connectionId"></param>
     /// <returns>coordonnées</returns>
-    private async Task<string> JeterRequest(Joueur pl, string roomName, Jeu jeu)
+    private async Task<string> JeterRequest(
+        Joueur pl,
+        string roomName,
+        Jeu jeu,
+        CancellationTokenSource token
+    )
     {
         try
         {
-            if (_cts != null)
+            if (this._cts != null)
             {
                 var invokeTask = this
                     ._hubContext.Clients.Client(pl.getName())
-                    .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: _cts.Token);
-
+                    .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: this._cts.Token);
+                token.Token.ThrowIfCancellationRequested();
                 // attend soit la saisie du client, soit les 20sec
                 // si le client saisie alors    completedTask <- invokeTask
                 // sinon                        completedTask <- Task.Delay()
-                var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
 
-                if (completedTask == invokeTask) // TODO: if non optimal du tout, discussion nécessaire
+                if (!token.IsCancellationRequested)
                 {
-                    var coordinates = await invokeTask;
-                    if (coordinates.gagner == true)
+                    var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
+
+                    if (completedTask == invokeTask) // TODO: if non optimal du tout, discussion nécessaire
                     {
-                        if (
-                            pl?.JeteTuilePourTerminer(
+                        var coordinates = await invokeTask;
+                        if (coordinates.gagner == true)
+                        {
+                            if (
+                                pl?.JeteTuilePourTerminer(
+                                    this.ReadCoords(coordinates.Y + ";" + coordinates.X),
+                                    jeu
+                                ) == true
+                            )
+                            {
+                                // Le joueur gagne
+                                await this.PlayerWon(roomName, pl.getName());
+                            }
+
+                            if (pl != null)
+                            {
+                                await this.SendMpToPlayer(
+                                    pl.getName(),
+                                    "Vous n'avez pas de serie dans votre chevalet !"
+                                );
+                                var randTuileCoord = pl.GetRandomTuileCoords();
+                                var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
+
+                                await this.SendTuileJeteeToPlayer(
+                                    pl.getName(),
+                                    new TuilePacket
+                                    {
+                                        X = randTuileCoord.getY().ToString(),
+                                        Y = randTuileCoord.getX().ToString(),
+                                        gagner = null
+                                    }
+                                );
+
+                                pl?.JeterTuile(
+                                    this.ReadCoords(
+                                        randTuileCoord.getY() + ";" + randTuileCoord.getX()
+                                    ),
+                                    jeu
+                                );
+                                return "";
+                            }
+                        }
+                        else
+                        {
+                            pl?.JeterTuile(
                                 this.ReadCoords(coordinates.Y + ";" + coordinates.X),
                                 jeu
-                            ) == true
-                        )
-                        {
-                            // Le joueur gagne
-                            await this.PlayerWon(roomName, pl.getName());
+                            );
+                            return "";
                         }
+                    }
 
+                    if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
+                    {
                         if (pl != null)
                         {
-                            await this.SendMpToPlayer(
-                                pl.getName(),
-                                "Vous n'avez pas de serie dans votre chevalet !"
-                            );
-                            var randTuileCoord = pl.GetRandomTuileCoords();
-                            var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
+                            var RandTuileCoord = pl.GetRandomTuileCoords();
+                            var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
 
                             await this.SendTuileJeteeToPlayer(
                                 pl.getName(),
                                 new TuilePacket
                                 {
-                                    X = randTuileCoord.getY().ToString(),
-                                    Y = randTuileCoord.getX().ToString(),
+                                    X = RandTuileCoord.getY().ToString(),
+                                    Y = RandTuileCoord.getX().ToString(),
                                     gagner = null
                                 }
                             );
 
                             pl?.JeterTuile(
                                 this.ReadCoords(
-                                    randTuileCoord.getY() + ";" + randTuileCoord.getX()
+                                    RandTuileCoord.getY() + ";" + RandTuileCoord.getX()
                                 ),
                                 jeu
                             );
                             return "";
                         }
                     }
-                    else
-                    {
-                        pl?.JeterTuile(this.ReadCoords(coordinates.Y + ";" + coordinates.X), jeu);
-                        return "";
-                    }
                 }
-
-                if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
-                {
-                    if (pl != null)
-                    {
-                        var RandTuileCoord = pl.GetRandomTuileCoords();
-                        var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
-
-                        await this.SendTuileJeteeToPlayer(
-                            pl.getName(),
-                            new TuilePacket
-                            {
-                                X = RandTuileCoord.getY().ToString(),
-                                Y = RandTuileCoord.getX().ToString(),
-                                gagner = null
-                            }
-                        );
-
-                        pl?.JeterTuile(
-                            this.ReadCoords(RandTuileCoord.getY() + ";" + RandTuileCoord.getX()),
-                            jeu
-                        );
-                        return "";
-                    }
-                }
+                return "FIN";
             }
 
-            return "";
+            return "FIN";
         }
         catch (Exception e)
         {
@@ -1095,8 +1147,9 @@ public sealed class OkeyHub : Hub
     /// Fonction se declanchant quand il y a assez de monde, lancement du jeu
     /// </summary>
     /// <param name="roomName">nom de la room qui accueille le jeu</param>
-    public async Task StartGameForRoom(string roomName, CancellationTokenSource? tokenCancel)
+    public async Task StartGameForRoom(string roomName)
     {
+        this._cts = new CancellationTokenSource();
         await this.StartGameSignal(roomName);
         var playerIds = this._roomManager.GetRoomById(roomName).GetPlayerIds();
         Joueur[] joueurs =
@@ -1182,7 +1235,7 @@ public sealed class OkeyHub : Hub
                 {
                     await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                    var pioche = await this.PiochePacketRequest(currentPlayer.getName());
+                    var pioche = await this.PiochePacketRequest(currentPlayer.getName(), this._cts);
                     if (pioche.Equals("Move", StringComparison.Ordinal))
                     {
                         //await this.MoveInLoop(currentPlayer, jeu);
@@ -1226,8 +1279,7 @@ public sealed class OkeyHub : Hub
 
                     await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                    var res = await this.JeterRequest(currentPlayer, roomName, jeu);
-
+                    var res = await this.JeterRequest(currentPlayer, roomName, jeu, this._cts);
                     if (res.Equals("FIN", StringComparison.Ordinal))
                     {
                         await this.BroadCastInRoom(
