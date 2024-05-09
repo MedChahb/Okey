@@ -1143,9 +1143,17 @@ public sealed class OkeyHub : Hub
         await this.Clients.Group(roomName).SendAsync("TuilesDistribueesSignal");
     }
 
-    private async Task StartGameSignal(string roomName, List<string> players)
+    private async Task StartGameSignal(List<string> players)
     {
-        await this.Clients.Group(roomName).SendAsync("StartGame", players);
+        foreach (var player in players)
+        {
+            await this
+                .Clients.Client(player)
+                .SendAsync(
+                    "StartGame",
+                    new StartingGamePacket { playerId = player, playersList = players }
+                );
+        }
     }
 
     private async Task PlayerWon(string roomName, string winner)
@@ -1169,7 +1177,7 @@ public sealed class OkeyHub : Hub
             new Humain(4, playerIds[3], _connectedUsers[playerIds[3]].GetElo())
         };
 
-        await this.StartGameSignal(roomName, playerIds);
+        await this.StartGameSignal(playerIds);
 
         var jeu = new Jeu(1, joueurs);
         jeu.DistibuerTuile();
