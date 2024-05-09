@@ -4,15 +4,6 @@ namespace Okey
 
     public class Elo
     {
-        /*int Score;
-
-        public Elo(int Score) {  this.Score = Score; }
-
-        public void CalculElo() //besoin de la formule
-        {
-
-        }*/
-
         //Nom d'utilisateur : Ancien Elo
         private Dictionary<string, int> UsersData;
 
@@ -24,11 +15,28 @@ namespace Okey
             this.UsersData = UsersData;
         }
 
-        private int Compute_K(int nombresParties)
+        private int Compute_K(int nombresPartiesJouees, int nombresPartiesGagnees)
         {
-            // Implémenter une fonction décroissante assez bonne (par exemple (1 / log(x)) + C, est pas mal)
-            // ou alors quelque chose similaire à: 32 pour les joueurs ayant un classement inférieur à 2100, et de 24 pour les joueurs ayant un classement supérieur à 2100.
-            return 10;
+            // pour calculer le K, on vas travailler avec la fonction de decroissance (comme en decroissance radioactive)
+            // la difference de K est proportionnelle à la difference du nombre des matches multiplié par l'opposé de K et une constante qui determine le taux de changement de K
+            // c-a-d : delta(K) = - alpha * K * delta(nombrePartiesGagne), alors pour des variations instantanées et fines, la formule nous donne une équation differentielle dont la solution est :
+            // K(n) = K0 * exp(-alpha * nombrePartie). 
+            // mais cette fonction decroissante converge vers 0 pour les jouerus experimenté, donc faut ajouter une valeur de K minmun, pour gerer la convergence
+            // alors la fonction finale est : K(n) = Kmin + (K0 - Kmin) * exp(-alpha * nombrePartiesGagne) avec K0 l'abssice à l'origine et c'est le K pour un joueur nouveau qui a 0 de PartieJoue.
+            
+            var winRate = (nombresPartiesJouees != 0) ? (double)nombresPartiesGagnees / nombresPartiesJouees : 0;
+            var alpha = 0.02;
+            
+            if(winRate < 0.1)
+                return K_max;
+            if (winRate < 0.3)
+                return 29;
+            if (winRate < 0.45)
+                return 26;
+
+            
+            // si son winrate est positive alors utiliser la formule
+            return (int)Math.Round(K_min + ((K_max - K_min) * Math.Exp(-alpha * nbrPartieGagne))); // si il gange trop on diminue le K
         }
 
         private int Compute_ExpectationPlayer(string PlayerName)
