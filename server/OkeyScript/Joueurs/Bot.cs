@@ -1,5 +1,6 @@
 namespace Okey.Joueurs
 {
+    using Okey.Game;
     public class Bot : Joueur
     {
         private int difficulte;
@@ -10,14 +11,19 @@ namespace Okey.Joueurs
             this.difficulte = diff;
         }
 
-        public override void UpdateElo()
+        public override void UpdateElo(Jeu j)
         {
             // has no ELo -> does nothing (to discuss)
         }
 
-        public override void Gagne()
+        public override void Gagne(Jeu j)
         {
             Console.Write($"le gagnant est {this}.");
+        }
+
+        public int GetDifficulte()
+        {
+            return this.difficulte;
         }
 
         public override string ToString()
