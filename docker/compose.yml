@@ -21,6 +21,7 @@ services:
       - okey
     depends_on:
       - db
+      - db-init
     expose: # ça ne sert strictement à rien, aucun effet
       - 3031
     profiles:
@@ -41,6 +42,22 @@ services:
       - okey-api
     expose: # ça ne sert strictement à rien, aucun effet
       - 3030
+    profiles:
+      - core
+      - extra
+  db-init:
+    image: registry.app.unistra.fr/okaybytes/okey/db-init:${TARGET:-dev}
+    build:
+      context: ../
+      dockerfile: docker/DB-Init.Dockerfile
+      tags:
+        - registry.app.unistra.fr/okaybytes/okey/db-init
+    restart: on-failure
+    container_name: db-init
+    networks:
+      - okey
+    depends_on:
+      - db
     profiles:
       - core
       - extra

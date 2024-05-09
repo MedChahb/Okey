@@ -2,6 +2,7 @@
 /projet-integrateur-cicd
 /okeyapi
 /server
+/db-init
 
 # Ignorer les fichiers persistants des conteneurs Docker
 /docker_data/*
