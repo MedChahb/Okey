@@ -1,6 +1,7 @@
 namespace Okey.Joueurs
 {
     using Okey.Game;
+
     public class Bot : Joueur
     {
         private int difficulte;

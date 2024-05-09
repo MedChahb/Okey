@@ -17,9 +17,8 @@ namespace Okey.Joueurs
         //pour Calcul d'elo
         //a changer ces valuers pour les tests (pour le moment ça marche)
         private int K;
-        private int partieJoue = 28;     //a extraire
-        private int partieGagne = 28;  //a extraire
-
+        private int partieJoue = 28; //a extraire
+        private int partieGagne = 28; //a extraire
 
         static readonly int etage = 2;
         static readonly int tuilesDansEtage = 14; //14
@@ -400,7 +399,11 @@ namespace Okey.Joueurs
         {
             return this.Gagnant;
         }
-        public void SetGagnant() { this.Gagnant = true; }
+
+        public void SetGagnant()
+        {
+            this.Gagnant = true;
+        }
 
         public Stack<Tuile> GetDefausse()
         {
@@ -413,16 +416,50 @@ namespace Okey.Joueurs
         }
 
         //pour elo
-        public int GetPartieGagne() { return this.partieGagne; }
-        public void SetPartieGagne(int g) { this.partieGagne = g; }
-        public void SetPartieGagneIncrement() { this.partieGagne++;}
-        public int GetPartieJoue() { return this.partieJoue; }
-        public void SetPartieJoueIncrement() { this.partieJoue ++; }
-        public double GetWinRate() { return (this.partieJoue != 0) ? (double)this.partieGagne / this.partieJoue : 0; }
-        public int GetK() { return this.K; }
-        public void SetK( int k) { this.K = k; }
-        public void UpdateK() { this.SetK(Elo.ComputeK(this)); }
+        public int GetPartieGagne()
+        {
+            return this.partieGagne;
+        }
 
+        public void SetPartieGagne(int g)
+        {
+            this.partieGagne = g;
+        }
+
+        public void SetPartieGagneIncrement()
+        {
+            this.partieGagne++;
+        }
+
+        public int GetPartieJoue()
+        {
+            return this.partieJoue;
+        }
+
+        public void SetPartieJoueIncrement()
+        {
+            this.partieJoue++;
+        }
+
+        public double GetWinRate()
+        {
+            return (this.partieJoue != 0) ? (double)this.partieGagne / this.partieJoue : 0;
+        }
+
+        public int GetK()
+        {
+            return this.K;
+        }
+
+        public void SetK(int k)
+        {
+            this.K = k;
+        }
+
+        public void UpdateK()
+        {
+            this.SetK(Elo.ComputeK(this));
+        }
 
         public abstract override String ToString();
 

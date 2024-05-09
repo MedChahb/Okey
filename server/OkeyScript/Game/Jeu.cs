@@ -258,6 +258,7 @@ namespace Okey.Game
         {
             this.etat = true;
         }
+
         // pl est le gagnant
         public void JeuTermine(Joueur pl)
         {
@@ -273,7 +274,7 @@ namespace Okey.Game
 
         public void updateJoueursElo()
         {
-            foreach(var pl in this.Joueurs)
+            foreach (var pl in this.Joueurs)
             {
                 pl.Gagne(this);
             }
@@ -281,19 +282,19 @@ namespace Okey.Game
 
         public void UpdateAllPlayersK()
         {
-            foreach(var pl in this.Joueurs)
+            foreach (var pl in this.Joueurs)
             {
                 pl.UpdateK();
             }
         }
+
         public void PlayersPartieJouerIncrement()
         {
-            foreach(var pl in this.Joueurs)
+            foreach (var pl in this.Joueurs)
             {
                 pl.SetPartieJoueIncrement();
             }
         }
-
 
         static void ShuffleStack(Stack<Tuile> stack)
         {

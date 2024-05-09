@@ -5,7 +5,6 @@ namespace Okey
 
     public class Elo
     {
-
         //Nom d'utilisateur : Ancien Elo
         private Dictionary<string, int> UsersData;
 
@@ -27,7 +26,7 @@ namespace Okey
             // pour calculer le K, on vas travailler avec la fonction de decroissance (comme en decroissance radioactive)
             // la difference de K est proportionnelle à la difference du nombre des matches multiplié par l'opposé de K et une constante qui determine le taux de changement de K
             // c-a-d : delta(K) = - alpha * K * delta(nombrePartiesGagne), alors pour des variations instantanées et fines, la formule nous donne une équation differentielle dont la solution est :
-            // K(n) = K0 * exp(-alpha * nombrePartie). 
+            // K(n) = K0 * exp(-alpha * nombrePartie).
             // mais cette fonction decroissante converge vers 0 pour les jouerus experimenté, donc faut ajouter une valeur de K minmun, pour gerer la convergence
             // alors la fonction finale est : K(n) = Kmin + (K0 - Kmin) * exp(-alpha * nombrePartiesGagne) avec K0 l'abssice à l'origine et c'est le K pour un joueur nouveau qui a 0 de PartieJoue.
 
@@ -35,14 +34,13 @@ namespace Okey
             var winRate = j.GetWinRate();
             var alpha = 0.02; // taux de decroisance de la fonction
 
-            if(winRate < 0.1)
+            if (winRate < 0.1)
                 return K_max;
             if (winRate < 0.3)
                 return 29;
             if (winRate < 0.4)
                 return 26;
 
-            
             // si son winrate est positive alors utiliser la formule
             return (int)Math.Round(K_min + ((K_max - K_min) * Math.Exp(-alpha * nbrPartieGagne))); // si il gange trop on diminue le K
         }
@@ -65,15 +63,20 @@ namespace Okey
         private static double Compute_ExpectationPlayer(Jeu j, Joueur pl)
         {
             var moyenneElos = 0;
-            foreach(var joueur in j.GetJoueurs())
+            foreach (var joueur in j.GetJoueurs())
             {
-                if(!string.Equals(joueur.getName(), pl.getName(), StringComparison.OrdinalIgnoreCase))
+                if (
+                    !string.Equals(
+                        joueur.getName(),
+                        pl.getName(),
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                )
                 {
                     if (joueur is Humain)
                     {
                         moyenneElos += ((Humain)joueur).GetElo();
                     }
-
                     else if (joueur is Bot)
                     {
                         moyenneElos += ((Bot)joueur).GetDifficulte();
@@ -83,14 +86,13 @@ namespace Okey
 
             moyenneElos /= 3;
             int playerElo = 0; // assigne 0 to bypass error, soit le if soit le elseif qui marchera
-            if(pl is Humain)
+            if (pl is Humain)
                 playerElo = ((Humain)pl).GetElo();
             else if (pl is Bot)
                 playerElo = ((Bot)pl).GetDifficulte();
 
             return (double)(1 / (1 + double.Pow(10, (playerElo - moyenneElos) / 400.0))); // 400 est en float pour eviter que la portion de fraction soit perdue.
         }
-
 
         /*public Dictionary<string, int> CalculElo()
         {
@@ -119,7 +121,7 @@ namespace Okey
         public static int CalculElo(Jeu j, Joueur pl)
         {
             // le Si = 1 pour le winner, sinon 0
-            // si on implemente le systeme de ingame score, faut noramliser le Si pourqu'il soit dans l'intervalle [0,1], et pour cela Si = ingame_score_i/max_in_score pour le joueur 
+            // si on implemente le systeme de ingame score, faut noramliser le Si pourqu'il soit dans l'intervalle [0,1], et pour cela Si = ingame_score_i/max_in_score pour le joueur
             var Si = pl.isGagnant() ? 1 : 0;
 
             //Console.WriteLine($"{pl} : compute = {Compute_ExpectationPlayer(j, pl)}");
@@ -131,9 +133,12 @@ namespace Okey
         {
             Dictionary<string, int> EloData = [];
 
-            foreach(var player in j.GetJoueurs())
+            foreach (var player in j.GetJoueurs())
             {
-                _ = EloData.TryAdd(player.getName(), (player is Humain) ? ((Humain)player).GetElo() : ((Bot)player).GetDifficulte());
+                _ = EloData.TryAdd(
+                    player.getName(),
+                    (player is Humain) ? ((Humain)player).GetElo() : ((Bot)player).GetDifficulte()
+                );
             }
 
             return EloData;
