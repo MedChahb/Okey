@@ -9,13 +9,16 @@ namespace Okey
 
         private string winnerName;
 
+        private static readonly int K_max = 32;
+        private static readonly int K_min = 5;
+
         public Elo(Dictionary<string, int> UsersData, string winnerName)
         {
             this.winnerName = winnerName;
             this.UsersData = UsersData;
         }
 
-        private int Compute_K(int nombresPartiesJouees, int nombresPartiesGagnees)
+        private static int Compute_K(int nombresPartiesJouees, int nombresPartiesGagnees)
         {
             // pour calculer le K, on vas travailler avec la fonction de decroissance (comme en decroissance radioactive)
             // la difference de K est proportionnelle à la difference du nombre des matches multiplié par l'opposé de K et une constante qui determine le taux de changement de K
@@ -36,10 +39,10 @@ namespace Okey
 
             
             // si son winrate est positive alors utiliser la formule
-            return (int)Math.Round(K_min + ((K_max - K_min) * Math.Exp(-alpha * nbrPartieGagne))); // si il gange trop on diminue le K
+            return (int)Math.Round(K_min + ((K_max - K_min) * Math.Exp(-alpha * nombresPartiesGagnees))); // si il gange trop on diminue le K
         }
 
-        private int Compute_ExpectationPlayer(string PlayerName)
+        private double Compute_ExpectationPlayer(string PlayerName)
         {
             var moyenneElos = 0;
             foreach (var user in this.UsersData)
@@ -51,28 +54,20 @@ namespace Okey
             }
             moyenneElos /= 3;
             var playerElo = this.UsersData[PlayerName];
-            return (int)(1 / (1 + double.Pow(10, (playerElo - moyenneElos) / 400.0))); // 400 est en float pour eviter que la portion de fraction soit perdue.
+            return (double)(1 / (1 + double.Pow(10, (playerElo - moyenneElos) / 400.0))); // 400 est en float pour eviter que la portion de fraction soit perdue.
         }
 
         public Dictionary<string, int> CalculElo()
         {
             var newElos = new Dictionary<string, int>();
+            
             foreach (var user in this.UsersData)
             {
-                if (user.Key.Equals(this.winnerName, StringComparison.Ordinal))
-                {
-                    newElos.TryAdd(
-                        this.winnerName,
-                        this.Compute_K(10) * (1 - this.Compute_ExpectationPlayer(user.Key))
-                    );
-                }
-                else
-                {
-                    newElos.TryAdd(
-                        this.winnerName,
-                        this.Compute_K(10) * (0 - this.Compute_ExpectationPlayer(user.Key))
-                    );
-                }
+                var Si = (user.Key.Equals(this.winnerName, StringComparison.Ordinal)) ? 1 : 0;
+                newElos.TryAdd(
+                    this.winnerName,
+                    (int)Math.Round(Compute_K(10,10) * (Si - this.Compute_ExpectationPlayer(user.Key)))
+                );
             }
             return newElos;
         }
