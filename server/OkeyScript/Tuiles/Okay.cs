@@ -29,7 +29,5 @@ namespace Okey.Tuiles
         }
 
         public override string GetName() => "Ok";
-
-        
     }
 }

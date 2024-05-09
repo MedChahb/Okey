@@ -145,7 +145,6 @@ namespace Okey.Joueurs
                 var tuilePiochee = j.PopPiocheCentre();
                 this.AjoutTuileChevalet(tuilePiochee);
             }
-
             else if (string.Equals(OuPiocher, "Defausse", StringComparison.OrdinalIgnoreCase))
             {
                 Joueur PreviousPlayer = j.getPreviousPlayer(this);
@@ -165,10 +164,8 @@ namespace Okey.Joueurs
             {
                 Console.WriteLine("\nLa pile au centre est vide, jeu terminé.");
                 j.JeuTermine();
-
             }
         }
-
 
         //jete la 15eme tuile sur la pioche au milieu pour decalrer la victoire
         public bool JeteTuilePourTerminer(Coord c, Jeu j)
