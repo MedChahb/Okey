@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Okey.Game;
 using Okey.Tuiles;
 
@@ -12,6 +13,13 @@ namespace Okey.Joueurs
         private bool tour;
         private bool gagnant;
         private Stack<Tuile> defausse = new Stack<Tuile>();
+
+        //pour Calcul d'elo
+        //a changer ces valuers pour les tests (pour le moment ça marche)
+        private int K;
+        private int partieJoue = 28;     //a extraire
+        private int partieGagne = 28;  //a extraire
+
 
         static readonly int etage = 2;
         static readonly int tuilesDansEtage = 14; //14
@@ -27,6 +35,8 @@ namespace Okey.Joueurs
             this.name = Name;
             this.tour = false;
             this.gagnant = false;
+
+            this.K = Elo.ComputeK(this);
 
             //initialisation du chevalet (ready to get Tuiles)
             for (int i = 0; i < etage; i++)
@@ -71,8 +81,8 @@ namespace Okey.Joueurs
             set => defausse = value;
         }
 
-        public abstract void Gagne();
-        public abstract void UpdateElo();
+        public abstract void Gagne(Jeu j);
+        public abstract void UpdateElo(Jeu j);
 
         public void EstPlusTour()
         {
@@ -107,7 +117,7 @@ namespace Okey.Joueurs
             int x = c.getX();
             int y = c.getY();
 
-            if ((x >= 0 && x < tuilesDansEtage) && (y >= 0 || y < etage))
+            if (x >= 0 && x < tuilesDansEtage && (y >= 0 || y < etage))
             {
                 Tuile? t = this.chevalet[y][x];
                 if (t == null)
@@ -191,12 +201,10 @@ namespace Okey.Joueurs
             Tuile? toThrow = this.chevalet[y][x];
 
             this.chevalet[y][x] = null;
-            if (this.VerifSerieChevalet())
+            if (this.VerifSerieChevalet()) // ici le joueur gagne
             {
                 j.PushPiocheCentre(toThrow); // on met la tuile que le joueur desire finir avec sur la pioche
-                j.JeuTermine();
-                this.Gagne();
-                this.Gagnant = true;
+                j.JeuTermine(this); // ici on update le Elo et K
                 return true;
             }
             else
@@ -392,6 +400,7 @@ namespace Okey.Joueurs
         {
             return this.Gagnant;
         }
+        public void SetGagnant() { this.Gagnant = true; }
 
         public Stack<Tuile> GetDefausse()
         {
@@ -402,6 +411,18 @@ namespace Okey.Joueurs
         {
             return this.score;
         }
+
+        //pour elo
+        public int GetPartieGagne() { return this.partieGagne; }
+        public void SetPartieGagne(int g) { this.partieGagne = g; }
+        public void SetPartieGagneIncrement() { this.partieGagne++;}
+        public int GetPartieJoue() { return this.partieJoue; }
+        public void SetPartieJoueIncrement() { this.partieJoue ++; }
+        public double GetWinRate() { return (this.partieJoue != 0) ? (double)this.partieGagne / this.partieJoue : 0; }
+        public int GetK() { return this.K; }
+        public void SetK( int k) { this.K = k; }
+        public void UpdateK() { this.SetK(Elo.ComputeK(this)); }
+
 
         public abstract override String ToString();
 
