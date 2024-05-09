@@ -253,47 +253,10 @@ namespace Okey.Game
             this.JoueurActuel = j;
         }
 
-        //si le jeu termine sans un gagant
         public void JeuTermine()
         {
             this.etat = true;
         }
-        // pl est le gagnant
-        public void JeuTermine(Joueur pl)
-        {
-            this.etat = true;
-            pl.SetGagnant();
-            this.updateJoueursElo(); // fait le update du Elo
-            pl.SetPartieGagneIncrement(); // pour faire l'update du K
-            this.PlayersPartieJouerIncrement();
-            this.UpdateAllPlayersK();
-        }
-
-        //pour Elo
-
-        public void updateJoueursElo()
-        {
-            foreach(var pl in this.Joueurs)
-            {
-                pl.Gagne(this);
-            }
-        }
-
-        public void UpdateAllPlayersK()
-        {
-            foreach(var pl in this.Joueurs)
-            {
-                pl.UpdateK();
-            }
-        }
-        public void PlayersPartieJouerIncrement()
-        {
-            foreach(var pl in this.Joueurs)
-            {
-                pl.SetPartieJoueIncrement();
-            }
-        }
-
 
         static void ShuffleStack(Stack<Tuile> stack)
         {

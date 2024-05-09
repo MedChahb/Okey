@@ -1,39 +1,35 @@
 namespace Okey.Joueurs
 {
-    using Okey.Game;
-
     public class Humain : Joueur
     {
-        private int nbElo;
+        private int Elo;
         private int Rank;
 
         public Humain(int id, string Name, int elo)
             : base(id, Name)
         {
-            this.nbElo = elo;
+            this.Elo = elo;
             this.Rank = -1; // au debut le joueur n'est pas classé
         }
 
-        public override void UpdateElo(Jeu j)
+        public override void UpdateElo()
         {
-            this.nbElo += Elo.CalculElo(j, this);
+            if (this.Gagnant)
+                this.Elo += 10;
+            else
+                this.Elo -= 10;
         }
 
-        public override void Gagne(Jeu j)
+        public override void Gagne()
         {
-            Console.Write($"Le gagnant est : {Name}, encient Elo = {nbElo}, ");
-            this.UpdateElo(j);
-            Console.WriteLine($"nouveau Elo = {nbElo}.");
+            Console.Write($"Le gagnant est : {Name}, encient Elo = {Elo}, ");
+            this.UpdateElo();
+            Console.WriteLine($"nouveau Elo = {Elo}.");
         }
 
         public int GetRank()
         {
             return this.Rank;
-        }
-
-        public int GetElo()
-        {
-            return this.nbElo;
         }
 
         public override string ToString()
