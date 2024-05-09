@@ -132,18 +132,20 @@ namespace Okey.Joueurs
             }
         }
 
-        public void PiocherTuile(string? OuPiocher, Jeu j)
+        public Tuile? PiocherTuile(string? OuPiocher, Jeu j)
         {
             if (OuPiocher == null)
             {
                 Console.WriteLine("ouPiocher est null");
-                return;
+                return null;
             }
 
             if (string.Equals(OuPiocher, "Centre", StringComparison.OrdinalIgnoreCase))
             {
                 var tuilePiochee = j.PopPiocheCentre();
+
                 this.AjoutTuileChevalet(tuilePiochee);
+                return null;
             }
             else if (string.Equals(OuPiocher, "Defausse", StringComparison.OrdinalIgnoreCase))
             {
@@ -157,6 +159,12 @@ namespace Okey.Joueurs
                 {
                     Tuile tuilePiochee = PreviousPlayer.PopDefausseJoueur();
                     this.AjoutTuileChevalet(tuilePiochee);
+
+                    if (PreviousPlayer.defausse.Count > 1)
+                    {
+                        return PreviousPlayer.defausse.Peek();
+                    }
+                    return null;
                 }
             }
 
@@ -165,6 +173,8 @@ namespace Okey.Joueurs
                 Console.WriteLine("\nLa pile au centre est vide, jeu terminé.");
                 j.JeuTermine();
             }
+
+            return null;
         }
 
         //jete la 15eme tuile sur la pioche au milieu pour decalrer la victoire

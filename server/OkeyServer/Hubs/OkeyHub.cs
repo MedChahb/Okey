@@ -995,6 +995,147 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    private async Task SendPiocheToAll(
+        List<string> connectionIds,
+        Joueur playerSource,
+        Tuile? tuile,
+        Jeu j
+    )
+    {
+        foreach (var connectionId in connectionIds)
+        {
+            if (!connectionId.Equals(playerSource.getName(), StringComparison.Ordinal))
+            {
+                try
+                {
+                    /* Position == 0 -> pioche de gauche
+                     * Position == 1 -> Pioche en haut à droite
+                     * Position == 2 -> Pioche en haut à gauche
+                     * Position == 3 -> Pioche au centre (on s'en fiche un peu)
+                     */
+
+                    if (
+                        j.getNextJoueur(playerSource)
+                            .getName()
+                            .Equals(connectionId, StringComparison.Ordinal)
+                    )
+                    {
+                        // 2
+
+                        if (tuile != null)
+                        {
+                            var tuileStringPacket = new TuilePiocheePacket
+                            {
+                                position = 2,
+                                Couleur = this.FromEnumToString(tuile.GetCouleur()),
+                                numero = tuile.GetNum().ToString(CultureInfo.InvariantCulture)
+                            };
+                            await this
+                                ._hubContext.Clients.Client(connectionId)
+                                .SendAsync("ReceiveTuilePiochee", tuileStringPacket);
+                        }
+                        else
+                        {
+                            var tuileStringPacket = new TuilePiocheePacket
+                            {
+                                position = 2,
+                                Couleur = null,
+                                numero = null
+                            };
+                            await this
+                                ._hubContext.Clients.Client(connectionId)
+                                .SendAsync("ReceiveTuilePiochee", tuileStringPacket);
+                        }
+                    }
+                    else if (
+                        j.getNextJoueur(j.getNextJoueur(playerSource))
+                            .getName()
+                            .Equals(connectionId, StringComparison.Ordinal)
+                    )
+                    {
+                        // 1
+
+                        if (tuile != null)
+                        {
+                            var tuileStringPacket = new TuilePiocheePacket
+                            {
+                                position = 1,
+                                Couleur = this.FromEnumToString(tuile.GetCouleur()),
+                                numero = tuile.GetNum().ToString(CultureInfo.InvariantCulture)
+                            };
+                            await this
+                                ._hubContext.Clients.Client(connectionId)
+                                .SendAsync("ReceiveTuilePiochee", tuileStringPacket);
+                        }
+                        else
+                        {
+                            var tuileStringPacket = new TuilePiocheePacket
+                            {
+                                position = 1,
+                                Couleur = null,
+                                numero = null
+                            };
+                            await this
+                                ._hubContext.Clients.Client(connectionId)
+                                .SendAsync("ReceiveTuilePiochee", tuileStringPacket);
+                        }
+                    }
+                    else if (
+                        j.getNextJoueur(j.getNextJoueur(j.getNextJoueur(playerSource)))
+                            .getName()
+                            .Equals(connectionId, StringComparison.Ordinal)
+                    )
+                    {
+                        // 0
+
+                        if (tuile != null)
+                        {
+                            var tuileStringPacket = new TuilePiocheePacket
+                            {
+                                position = 0,
+                                Couleur = this.FromEnumToString(tuile.GetCouleur()),
+                                numero = tuile.GetNum().ToString(CultureInfo.InvariantCulture)
+                            };
+                            await this
+                                ._hubContext.Clients.Client(connectionId)
+                                .SendAsync("ReceiveTuilePiochee", tuileStringPacket);
+                        }
+                        else
+                        {
+                            var tuileStringPacket = new TuilePiocheePacket
+                            {
+                                position = 0,
+                                Couleur = null,
+                                numero = null
+                            };
+                            await this
+                                ._hubContext.Clients.Client(connectionId)
+                                .SendAsync("ReceiveTuilePiochee", tuileStringPacket);
+                        }
+                    }
+                    else
+                    {
+                        // 3
+                        var tuileStringPacket = new TuilePiocheePacket
+                        {
+                            position = 3,
+                            Couleur = null,
+                            numero = null
+                        };
+                        await this
+                            ._hubContext.Clients.Client(connectionId)
+                            .SendAsync("ReceiveTuilePiochee", tuileStringPacket);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Erreur lors de l'envoi de update de pioche {e.Message}");
+                    throw;
+                }
+            }
+        }
+    }
+
     //envoi pour  tuile jete donc isdefausse = true
     private async Task SendTuileJeteToAll(
         List<string> connectionIds,
@@ -1274,13 +1415,14 @@ public sealed class OkeyHub : Hub
 
                     if (pioche.Equals("Centre", StringComparison.OrdinalIgnoreCase))
                     {
-                        currentPlayer.PiocherTuile(pioche, jeu);
+                        var tuilePiochee = currentPlayer.PiocherTuile(pioche, jeu);
                         await this.SendPiocheInfosToAll(playerIds, jeu);
                     }
                     else if (string.Equals(pioche, "Defausse", StringComparison.OrdinalIgnoreCase))
                     {
-                        currentPlayer.PiocherTuile(pioche, jeu);
+                        var tuilePiochee = currentPlayer.PiocherTuile(pioche, jeu);
                         await this.SendCurrentDefausseInfosToAll(playerIds, currentPlayer);
+                        await this.SendPiocheToAll(playerIds, currentPlayer, tuilePiochee, jeu);
                     }
                     // si sous forme :emote_name:
                     else if (
