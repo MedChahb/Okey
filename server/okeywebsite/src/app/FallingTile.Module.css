@@ -1,0 +1,17 @@
+.tile {
+  width: 50px;
+  height: 50px;
+  background-color: #ccc;
+  position: absolute;
+  top: -50px; /* Initially positioned above the screen */
+  animation: fall 2s linear infinite; /* Define the animation */
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100px) scaleZ(1); /* Start position above the screen */
+  }
+  100% {
+    transform: translateY(100vh) scaleZ(0); /* End position at the bottom of the screen with a zoom effect on Z-axis */
+  }
+}
