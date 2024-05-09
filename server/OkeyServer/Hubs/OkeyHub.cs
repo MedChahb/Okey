@@ -1143,9 +1143,9 @@ public sealed class OkeyHub : Hub
         await this.Clients.Group(roomName).SendAsync("TuilesDistribueesSignal");
     }
 
-    private async Task StartGameSignal(string roomName)
+    private async Task StartGameSignal(string roomName, List<string> players)
     {
-        await this.Clients.Group(roomName).SendAsync("StartGame");
+        await this.Clients.Group(roomName).SendAsync("StartGame", players);
     }
 
     private async Task PlayerWon(string roomName, string winner)
@@ -1160,7 +1160,6 @@ public sealed class OkeyHub : Hub
     public async Task StartGameForRoom(string roomName)
     {
         this._cts = new CancellationTokenSource();
-        await this.StartGameSignal(roomName);
         var playerIds = this._roomManager.GetRoomById(roomName).GetPlayerIds();
         Joueur[] joueurs =
         {
@@ -1169,6 +1168,8 @@ public sealed class OkeyHub : Hub
             new Humain(3, playerIds[2], _connectedUsers[playerIds[2]].GetElo()),
             new Humain(4, playerIds[3], _connectedUsers[playerIds[3]].GetElo())
         };
+
+        await this.StartGameSignal(roomName, playerIds);
 
         var jeu = new Jeu(1, joueurs);
         jeu.DistibuerTuile();
