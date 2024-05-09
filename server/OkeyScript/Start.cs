@@ -5,7 +5,7 @@ namespace Okey
 {
     public class Start
     {
-        public static async Task Main(string[] args)
+        public static Task Main(string[] args)
         {
             Joueur[] Joueurs =
             {
@@ -18,7 +18,6 @@ namespace Okey
 
             j.DistibuerTuile(); // on commence
             Console.WriteLine("Tuiles distribués.\n");
-
 
             Joueur? joueurStarter = j.getJoueurActuel();
             j.AfficheChevaletActuel();
@@ -116,6 +115,8 @@ namespace Okey
                 }
                 doitJete = false;
             }
+
+            return Task.CompletedTask;
         }
 
         internal static readonly char[] separator = new char[] { ' ' };
