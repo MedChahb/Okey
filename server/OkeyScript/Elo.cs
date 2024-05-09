@@ -125,5 +125,18 @@ namespace Okey
             //Console.WriteLine($"{pl} : compute = {Compute_ExpectationPlayer(j, pl)}");
             return (int)Math.Round(pl.GetK() * (Si - Compute_ExpectationPlayer(j, pl))); // getK() est correct puisque a l'intanciation du chaque joueur, on lui calcul un K avec la methode Compute_K (voir constructeur de Joueur)
         }
+
+        //returns a dict containing new Elo and players name {player_name1 : elo1, pla  yer_name_2 : elo2 ....}
+        public static Dictionary<string, int> GetEloDataDict(Jeu j)
+        {
+            Dictionary<string, int> EloData = [];
+
+            foreach(var player in j.GetJoueurs())
+            {
+                _ = EloData.TryAdd(player.getName(), (player is Humain) ? ((Humain)player).GetElo() : ((Bot)player).GetDifficulte());
+            }
+
+            return EloData;
+        }
     }
 }
