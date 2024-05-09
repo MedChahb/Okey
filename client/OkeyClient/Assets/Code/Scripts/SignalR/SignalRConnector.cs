@@ -79,11 +79,20 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On(
+        this._hubConnection.On<StartingGamePacket>(
             "StartGame",
-            () =>
+            (players) =>
             {
                 Debug.Log($"Le jeu a commence");
+
+                if (players.playersList != null)
+                {
+                    foreach (var player in players.playersList)
+                    {
+                        Debug.LogWarning(player);
+                    }
+                }
+
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     SceneManager.LoadScene("PlateauInit");
