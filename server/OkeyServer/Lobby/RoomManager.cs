@@ -49,6 +49,18 @@ public class RoomManager : IRoomManager
         }
     }
 
+    public bool IsRoomBusy(string roomName)
+    {
+        foreach (var roomB in this.RoomsBusy)
+        {
+            if (roomB.Name.Equals(roomName, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public bool TryJoinRoom(string roomName, string playerId)
     {
         if (this._rooms.TryGetValue(roomName, out var room) && !room.IsFull())
@@ -75,10 +87,6 @@ public class RoomManager : IRoomManager
         if (this._rooms.TryGetValue(roomName, out var room))
         {
             room.RemovePlayer(playerId);
-            //if (room.IsEmpty())
-            //{
-            //    this._rooms.Remove(roomName);
-            //}
         }
     }
 

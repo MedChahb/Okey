@@ -16,4 +16,5 @@ public interface IRoomManager
     public ConcurrentBag<Room> GetRooms();
     public Room GetRoomById(string id);
     public void ResetRoom(string roomName);
+    public bool IsRoomBusy(string roomName);
 }

@@ -76,10 +76,23 @@ public sealed class OkeyHub : Hub
         {
             var roomId = this._roomManager.GetRoomIdByConnectionId(this.Context.ConnectionId);
 
-            if (this._roomManager.IsRoomFull(roomId))
+            if (this._roomManager.IsRoomBusy(roomId))
             {
-                // CAD PARTIE EN JEU
-                // DECONNECTER TOUT LE MONDE ET ARRETER LE JEU
+                this._roomManager.ResetRoom(roomId);
+                Console.WriteLine($"Room {roomId} reset");
+                UsersInRooms.TryRemove(this.Context.ConnectionId, out _);
+                await this.LobbyDisconnection(roomId);
+                this._roomManager.PlayerDisconnected(this.Context.ConnectionId);
+                await this
+                    ._hubContext.Clients.Group(roomId)
+                    .SendAsync(
+                        "ReceiveMessage",
+                        new PacketSignal
+                        {
+                            message =
+                                $"Player {this.Context.ConnectionId} has left the {roomId} lobby."
+                        }
+                    );
                 foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
                 {
                     if (
@@ -93,40 +106,37 @@ public sealed class OkeyHub : Hub
                         );
                     }
                 }
-                this._roomManager.ResetRoom(roomId);
-                Console.WriteLine($"Room {roomId} reset");
+                await base.OnDisconnectedAsync(exception);
             }
             else
             {
-                //  SE FAIT TRQLMENT
-            }
-
-            if (UsersInRooms.TryRemove(this.Context.ConnectionId, out _))
-            {
-                await this.LobbyDisconnection(roomId);
-                this._roomManager.PlayerDisconnected(this.Context.ConnectionId);
-                if (!string.IsNullOrEmpty(roomId))
+                if (UsersInRooms.TryRemove(this.Context.ConnectionId, out _))
                 {
-                    await this
-                        ._hubContext.Clients.Group(roomId)
-                        .SendAsync(
-                            "ReceiveMessage",
-                            new PacketSignal
-                            {
-                                message =
-                                    $"Player {this.Context.ConnectionId} has left the {roomId} lobby."
-                            }
+                    await this.LobbyDisconnection(roomId);
+                    this._roomManager.PlayerDisconnected(this.Context.ConnectionId);
+                    if (!string.IsNullOrEmpty(roomId))
+                    {
+                        await this
+                            ._hubContext.Clients.Group(roomId)
+                            .SendAsync(
+                                "ReceiveMessage",
+                                new PacketSignal
+                                {
+                                    message =
+                                        $"Player {this.Context.ConnectionId} has left the {roomId} lobby."
+                                }
+                            );
+                    }
+                    /*
+                    if (!_connectedUsers.TryRemove(this.Context.ConnectionId, out _))
+                    {
+                        throw new ConnectedUSerDictionnaryRemoveException(
+                            "Couldn't remove the user : "
+                            + _connectedUsers[this.Context.ConnectionId]
+                            + " from the connected users"
                         );
+                    }*/
                 }
-                /*
-                if (!_connectedUsers.TryRemove(this.Context.ConnectionId, out _))
-                {
-                    throw new ConnectedUSerDictionnaryRemoveException(
-                        "Couldn't remove the user : "
-                        + _connectedUsers[this.Context.ConnectionId]
-                        + " from the connected users"
-                    );
-                }*/
             }
         }
         else
