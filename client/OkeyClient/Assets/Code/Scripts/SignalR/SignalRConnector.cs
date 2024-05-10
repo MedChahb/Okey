@@ -60,6 +60,7 @@ public class SignalRConnector : MonoBehaviour
                         LobbyManager.Instance.rommsListFilled = true;
                         LobbyManager.Instance.playerCount = Rooms.listRooms[0].Players.Count;
                         LobbyManager.Instance.SetPlayers(Rooms.listRooms[0].Players);
+                        // Debug.Log(_hubConnection.getConnectionId());
                         DisplayRooms.Instance.updateLabel();
                     });
                 }
