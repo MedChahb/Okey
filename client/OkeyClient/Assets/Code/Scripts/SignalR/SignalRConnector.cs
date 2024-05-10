@@ -82,7 +82,10 @@ public class SignalRConnector : MonoBehaviour
             "StartGame",
             (players) =>
             {
-                Debug.Log($"Le jeu a commence");
+                Debug.LogWarning("La partie peut commencer");
+                //SceneManager.UnloadSceneAsync("SelectionTypeJeu");
+                //SceneManager.LoadScene("PlateauInit");
+
 
                 // if (players.playersList != null)
                 // {
@@ -99,60 +102,58 @@ public class SignalRConnector : MonoBehaviour
                 //         }
                 //     }
                 // }
-                //MainThreadDispatcher.Enqueue(() =>
-                //{
-                UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(false);
-                Debug.Log("On va crash ici");
-                if (players.playersList != null && players.playersList.Count > 0)
-                {
-                    int otherPlayerIndex = 0;
-                    for (int i = 0; i < players.playersList.Count; i++)
-                    {
-                        // string player = players.playersList[i];
-                        // store the player value as a string in lower case trim
-                        string player = players.playersList[i].Trim().ToLower();
-                        // Debug.LogWarning($"Player {i + 1}: {player}");
 
-                        Debug.Log(
-                            "Main player: "
-                                + _hubConnection.ConnectionId
-                                + " Player iteration: "
-                                + player
-                        );
-                        if (player == _hubConnection.ConnectionId.Trim().ToLower())
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    Debug.LogWarning($"Le jeu a commence");
+                    if (players.playersList != null && players.playersList.Count > 0)
+                    {
+                        int otherPlayerIndex = 0;
+                        for (int i = 0; i < players.playersList.Count; i++)
                         {
-                            LobbyManager.Instance.mainPlayer = player;
-                            Debug.Log("MainPlayer: " + player);
-                        }
-                        else
-                        {
-                            switch (otherPlayerIndex)
+                            // string player = players.playersList[i];
+                            // store the player value as a string in lower case trim
+                            string player = players.playersList[i].Trim().ToLower();
+                            // Debug.LogWarning($"Player {i + 1}: {player}");
+
+                            Debug.Log(
+                                "Main player: "
+                                    + _hubConnection.ConnectionId
+                                    + " Player iteration: "
+                                    + player
+                            );
+                            if (player == _hubConnection.ConnectionId.Trim().ToLower())
                             {
-                                case 0:
-                                    LobbyManager.Instance.player2 = player;
-                                    // Debug.Log($"Player 2 set to: {player}");
-                                    break;
-                                case 1:
-                                    LobbyManager.Instance.player3 = player;
-                                    // Debug.Log($"Player 3 set to: {player}");
-                                    break;
-                                case 2:
-                                    LobbyManager.Instance.player4 = player;
-                                    // Debug.Log($"Player 4 set to: {player}");
-                                    break;
+                                LobbyManager.Instance.mainPlayer = player;
+                                Debug.Log("MainPlayer: " + player);
                             }
-                            otherPlayerIndex++;
+                            else
+                            {
+                                switch (otherPlayerIndex)
+                                {
+                                    case 0:
+                                        LobbyManager.Instance.player2 = player;
+                                        // Debug.Log($"Player 2 set to: {player}");
+                                        break;
+                                    case 1:
+                                        LobbyManager.Instance.player3 = player;
+                                        // Debug.Log($"Player 3 set to: {player}");
+                                        break;
+                                    case 2:
+                                        LobbyManager.Instance.player4 = player;
+                                        // Debug.Log($"Player 4 set to: {player}");
+                                        break;
+                                }
+                                otherPlayerIndex++;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    Debug.LogError("No players found in playersList.");
-                }
-
-                Debug.Log("On va crash avant de charger la scene");
-                SceneManager.LoadSceneAsync("PlateauInit");
-                //});
+                    else
+                    {
+                        Debug.LogError("No players found in playersList.");
+                    }
+                    SceneManager.LoadSceneAsync("PlateauInit");
+                });
             }
         );
 
