@@ -80,15 +80,104 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On(
+        this._hubConnection.On<StartingGamePacket>(
             "StartGame",
-            () =>
+            (players) =>
             {
                 Debug.Log($"Le jeu a commence");
+
+                if (players.playersList != null)
+                {
+                    foreach (var player in players.playersList)
+                    {
+                        Debug.LogWarning(player);
+                    }
+                }
+
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     SceneManager.LoadScene("PlateauInit");
                 });
+            }
+        );
+
+        this._hubConnection.On<TuilePiocheePacket>(
+            "ReceiveTuilePiochee",
+            (tuileInfos) =>
+            {
+                if (tuileInfos.position == 0)
+                {
+                    MainThreadDispatcher.Enqueue(() =>
+                    {
+                        Destroy(
+                            Chevalet
+                                .PileDroitePlaceHolder.transform.GetChild(
+                                    Chevalet.PileDroitePlaceHolder.transform.childCount - 1
+                                )
+                                .gameObject
+                        );
+                    });
+                }
+                else if (tuileInfos.position == 1)
+                {
+                    MainThreadDispatcher.Enqueue(() =>
+                    {
+                        if (tuileInfos.numero != null)
+                        {
+                            var tuileData = new TuileData(
+                                tuileInfos.Couleur,
+                                int.Parse(tuileInfos.numero),
+                                tuileInfos.Couleur != null
+                                    && (
+                                        tuileInfos.Couleur.Equals("M", StringComparison.Ordinal)
+                                        || tuileInfos.Couleur.Equals("X", StringComparison.Ordinal)
+                                    )
+                            );
+                            Debug.LogWarning(Chevalet.FromTuileToSpriteName(tuileData));
+                            var spriteRen =
+                                Chevalet.PileHautDroitePlaceHolder.GetComponent<SpriteRenderer>();
+                            spriteRen.sprite = Chevalet.spritesDic[
+                                Chevalet.FromTuileToSpriteName(tuileData)
+                            ];
+                        }
+                        else
+                        {
+                            var spriteRen =
+                                Chevalet.PileHautDroitePlaceHolder.GetComponent<SpriteRenderer>();
+                            spriteRen.sprite = null;
+                        }
+                    });
+                }
+                else
+                {
+                    MainThreadDispatcher.Enqueue(() =>
+                    {
+                        if (tuileInfos.numero != null)
+                        {
+                            var tuileData = new TuileData(
+                                tuileInfos.Couleur,
+                                int.Parse(tuileInfos.numero),
+                                tuileInfos.Couleur != null
+                                    && (
+                                        tuileInfos.Couleur.Equals("M", StringComparison.Ordinal)
+                                        || tuileInfos.Couleur.Equals("X", StringComparison.Ordinal)
+                                    )
+                            );
+                            Debug.LogWarning(Chevalet.FromTuileToSpriteName(tuileData));
+                            var spriteRen =
+                                Chevalet.PileHautGauchePlaceHolder.GetComponent<SpriteRenderer>();
+                            spriteRen.sprite = Chevalet.spritesDic[
+                                Chevalet.FromTuileToSpriteName(tuileData)
+                            ];
+                        }
+                        else
+                        {
+                            var spriteRen =
+                                Chevalet.PileHautGauchePlaceHolder.GetComponent<SpriteRenderer>();
+                            spriteRen.sprite = null;
+                        }
+                    });
+                }
             }
         );
 

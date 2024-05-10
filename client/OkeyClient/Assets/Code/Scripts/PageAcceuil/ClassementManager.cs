@@ -129,13 +129,13 @@ public class ClassementManager : MonoBehaviour
     /// </summary>
     /// <param name="joueurs">Liste des joueurs à afficher.</param>
     private void DisplayPlayers(List<Joueur> joueurs)
-    {
+    { /*
         if (joueurs == null || joueurs.Count == 0)
         {
             Debug.Log("Aucun joueur trouvé.");
             return;
         }
-
+        */
         foreach (var joueur in joueurs)
         {
             if (playerEntryPrefab == null || contentPanel == null)

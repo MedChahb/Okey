@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,8 +14,46 @@ public class Plateau2 : MonoBehaviour
 
     public Sprite[] emojiSprites;
     public Image EmojiDisplay;
+    public Button[] wordButtons; // Boutons pour les mots
+    public TextMeshProUGUI gameDisplayText; // Texte affiché sur le plateau de jeu
 
     // Fonction pour activer le Confirmation_Panel et désactiver le Plateau_Panel
+    // Tableau des mots, assurez-vous que cela correspond à l'ordre des boutons
+
+
+    public void OnWordButtonClicked(int buttonIndex)
+    {
+        string[] words =
+        {
+            "Bonne chance",
+            "Bien joué !",
+            "Super Combat",
+            "Merci !",
+            "Super !",
+            "Aie...."
+        };
+        Debug.Log($"Button clicked with index: {buttonIndex}");
+        if (buttonIndex >= 0 && buttonIndex < words.Length)
+        {
+            Debug.Log($"Displaying word: {words[buttonIndex]}");
+            gameDisplayText.text = words[buttonIndex];
+            StartCoroutine(ClearTextAfterDelay(gameDisplayText, 2f));
+            EmojiPanel.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError(
+                $"Index out of range: {buttonIndex}, words array length: {words.Length}"
+            );
+        }
+    }
+
+    IEnumerator ClearTextAfterDelay(TextMeshProUGUI textComponent, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        textComponent.text = ""; // Efface le texte après le délai
+    }
+
     public void ShowConfirmationPanel()
     {
         ConfirmationPanel.SetActive(true);
