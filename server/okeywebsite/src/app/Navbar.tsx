@@ -36,8 +36,8 @@ const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-4">
-              <a href="#" className="text-white px-3 py-2 rounded-md text-sm font-medium">Comment jouer</a>
-              <a href="#" className="text-white px-3 py-2 rounded-md text-sm font-medium">Services</a>
+              <a href="#" className="text-white px-3 py-2 rounded-md text-sm font-medium">Tutoriel</a>
+              <a href="#" className="text-white px-3 py-2 rounded-md text-sm font-medium">Télécharger le jeu</a>
               <a href="#" className="text-white px-3 py-2 rounded-md text-sm font-medium">Langue</a>
             </div>
           </div>
