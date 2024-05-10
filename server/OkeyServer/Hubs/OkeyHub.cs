@@ -689,24 +689,21 @@ public sealed class OkeyHub : Hub
         {
             if (!player.Equals(connectionId, StringComparison.Ordinal))
             {
-                await this
-                    ._hubContext.Clients.Client(player)
-                    .SendAsync("TurnSignal", player, cancellationToken: CancellationToken.None);
+                await this._hubContext.Clients.Client(player).SendAsync("TurnSignal", connectionId);
 
                 //like we sent "TurnSignal" , we send "TimerStartSignal"
+                /*
                 await this
                     ._hubContext.Clients.Client(player)
                     .SendAsync(
                         "TimerStartSignal",
-                        player,
-                        cancellationToken: CancellationToken.None
-                    );
+                        player
+                    );*/
             }
-        }
-
-        if (connectionId != null)
-        {
-            await this._hubContext.Clients.Client(connectionId).SendAsync("YourTurnSignal");
+            else
+            {
+                await this._hubContext.Clients.Client(player).SendAsync("YourTurnSignal");
+            }
         }
     }
 
