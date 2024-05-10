@@ -9,22 +9,6 @@ export default function Home() {
         <NavBar />
         <Hero />
         <OkeyHistory />
-
-        <div className='h-80'>
-          <h3>hi</h3>
-        </div>
-
-        <div className='h-80'>
-          <h3>hi</h3>
-        </div>
-
-        <div className='h-80'>
-          <h3>hi</h3>
-        </div>
-
-        <div className='h-80'>
-          <h3>hi</h3>
-        </div>
     </div>
   );
 }

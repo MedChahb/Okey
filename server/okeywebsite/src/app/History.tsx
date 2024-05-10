@@ -5,23 +5,23 @@ import Image from "next/image";
 
 const OkeyHistory = () => {
     return (
-
-        <div className="flex h-1/4">
-      {/* Colonne de gauche avec une image */}
-      <div className="w-1/2 h-full flex items-center justify-center">
-        <img
-          src="/imgs/history_pic.jpeg"
-          alt="Image"
-          className="h-full w-auto max-h-full max-w-full ml-8"
-        />
+      <div className="flex h-1/4">
+        <div className="w-1/2 h-full flex items-center justify-center">
+          <img
+            src="/imgs/history_pic.jpeg"
+            alt="Image"
+            className="h-full w-auto max-h-full max-w-full ml-8"
+          />
+        </div>
+        <div className="w-1/2 p-8">
+          <h3 className="font-bold text-xl">Jouer en partie rapide avec notre communauté</h3>
+          <p className="font-normal text-m">Nous avons des salles de jeux publiques pour pouvoir jouer contre des adversaires faisant preuve de stratégie et de vivacité d'esprit.</p><br />
+          <h3 className="font-bold text-xl">Créez ou rejoignez des salles de jeux privées</h3>
+          <p className="font-normal text-m">Jouer entre amis ou avec votre famille en toute convivialité et avec l'esprit de rivalité. </p><br />
+          <h3 className="font-bold text-xl">Votre jeu sur Desktop et dans votre poche !</h3>
+          <p className="font-normal text-m">Notre jeu est disponnible sur Windows, MacOS, Linux ainsi que Android.</p>
+        </div>
       </div>
-      {/* Colonne de droite avec du texte */}
-      <div className="w-1/2 bg-gray-200 p-8">
-        <p className="text-lg">Le rummikub, le pionnier du jeu de rami moderne, a été inventé par un juif d'origine roumaine nommé Ephraim Hertzano, qui a immigré en Palestine au début des années 1930.[1] Il a fabriqué son premier ensemble de jeu pour sa famille dans le jardin de sa maison. Le jeu est un mélange de rami et de mahjong.[1] C'est le jeu d'exportation numéro 1 d'Israël.[1] En 1977, il devient le jeu le plus vendu aux États-Unis.[2]
-
-Okey semble être une évolution du Rummikub, que les travailleurs turcs « Gastarbeiter » rencontraient en Allemagne.</p>
-      </div>
-    </div>
     );   
 
 };
