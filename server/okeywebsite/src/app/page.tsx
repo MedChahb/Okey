@@ -7,8 +7,8 @@ export default function Home() {
     <div>
         <NavBar />
         <Hero />
-        
-        
+
+
         <div className='h-80'>
           <h3>hi</h3>
         </div>
