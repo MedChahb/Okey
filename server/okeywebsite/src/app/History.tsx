@@ -13,7 +13,7 @@ const OkeyHistory = () => {
             className="h-full w-auto max-h-full max-w-full ml-8"
           />
         </div>
-        <div className="w-1/2 p-8">
+        <div className="w-1/2 p-8 flex flex-col justify-center">
           <h3 className="font-bold text-xl">Jouer en partie rapide avec notre communauté</h3>
           <p className="font-normal text-m">Nous avons des salles de jeux publiques pour pouvoir jouer contre des adversaires faisant preuve de stratégie et de vivacité d'esprit.</p><br />
           <h3 className="font-bold text-xl">Créez ou rejoignez des salles de jeux privées</h3>
