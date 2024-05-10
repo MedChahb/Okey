@@ -1328,17 +1328,19 @@ public sealed class OkeyHub : Hub
             new Humain(4, playerIds[3], _connectedUsers[playerIds[3]].GetElo())
         };
 
+        foreach (var t in joueurs)
+        {
+            this.SetPlayerTurn(t.getName(), false);
+        }
+
         await this.StartGameSignal(playerIds);
 
         var jeu = new Jeu(1, joueurs);
         jeu.DistibuerTuile();
 
-        await this.TuilesDistribueesSignal(roomName);
+        Thread.Sleep(5000);
 
-        foreach (var t in joueurs)
-        {
-            this.SetPlayerTurn(t.getName(), false);
-        }
+        await this.TuilesDistribueesSignal(roomName);
 
         var joueurStarter = jeu.getJoueurActuel();
         var playerName = string.Empty;
