@@ -32,10 +32,13 @@ public class SignalRConnector : MonoBehaviour
         {
             Debug.LogError($"SignalR connection failed: {ex.Message}");
         }
+
+        this.JoinRoom();
     }
 
     private void ConfigureHubEvents()
     {
+        /*
         this._hubConnection.On<RoomsPacket>(
             "UpdateRoomsRequest",
             Rooms =>
@@ -65,7 +68,7 @@ public class SignalRConnector : MonoBehaviour
                     Debug.LogError("UIManagerPFormulaire instance is null.");
                 }
             }
-        );
+        );*/
 
         this._hubConnection.On<PacketSignal>(
             "ReceiveMessage",
@@ -96,58 +99,60 @@ public class SignalRConnector : MonoBehaviour
                 //         }
                 //     }
                 // }
-                MainThreadDispatcher.Enqueue(() =>
+                //MainThreadDispatcher.Enqueue(() =>
+                //{
+                UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(false);
+                Debug.Log("On va crash ici");
+                if (players.playersList != null && players.playersList.Count > 0)
                 {
-                    if (players.playersList != null && players.playersList.Count > 0)
+                    int otherPlayerIndex = 0;
+                    for (int i = 0; i < players.playersList.Count; i++)
                     {
-                        int otherPlayerIndex = 0;
-                        for (int i = 0; i < players.playersList.Count; i++)
-                        {
-                            // string player = players.playersList[i];
-                            // store the player value as a string in lower case trim
-                            string player = players.playersList[i].Trim().ToLower();
-                            // Debug.LogWarning($"Player {i + 1}: {player}");
+                        // string player = players.playersList[i];
+                        // store the player value as a string in lower case trim
+                        string player = players.playersList[i].Trim().ToLower();
+                        // Debug.LogWarning($"Player {i + 1}: {player}");
 
-                            Debug.Log(
-                                "Main player: "
-                                    + _hubConnection.ConnectionId
-                                    + " Player iteration: "
-                                    + player
-                            );
-                            if (player == _hubConnection.ConnectionId.Trim().ToLower())
+                        Debug.Log(
+                            "Main player: "
+                                + _hubConnection.ConnectionId
+                                + " Player iteration: "
+                                + player
+                        );
+                        if (player == _hubConnection.ConnectionId.Trim().ToLower())
+                        {
+                            LobbyManager.Instance.mainPlayer = player;
+                            Debug.Log("MainPlayer: " + player);
+                        }
+                        else
+                        {
+                            switch (otherPlayerIndex)
                             {
-                                LobbyManager.Instance.mainPlayer = player;
-                                Debug.Log("MainPlayer: " + player);
+                                case 0:
+                                    LobbyManager.Instance.player2 = player;
+                                    // Debug.Log($"Player 2 set to: {player}");
+                                    break;
+                                case 1:
+                                    LobbyManager.Instance.player3 = player;
+                                    // Debug.Log($"Player 3 set to: {player}");
+                                    break;
+                                case 2:
+                                    LobbyManager.Instance.player4 = player;
+                                    // Debug.Log($"Player 4 set to: {player}");
+                                    break;
                             }
-                            else
-                            {
-                                switch (otherPlayerIndex)
-                                {
-                                    case 0:
-                                        LobbyManager.Instance.player2 = player;
-                                        // Debug.Log($"Player 2 set to: {player}");
-                                        break;
-                                    case 1:
-                                        LobbyManager.Instance.player3 = player;
-                                        // Debug.Log($"Player 3 set to: {player}");
-                                        break;
-                                    case 2:
-                                        LobbyManager.Instance.player4 = player;
-                                        // Debug.Log($"Player 4 set to: {player}");
-                                        break;
-                                }
-                                otherPlayerIndex++;
-                            }
+                            otherPlayerIndex++;
                         }
                     }
-                    else
-                    {
-                        Debug.LogError("No players found in playersList.");
-                    }
+                }
+                else
+                {
+                    Debug.LogError("No players found in playersList.");
+                }
 
-                    // Debug.Log("Loading PlateauInit scene");
-                    SceneManager.LoadScene("PlateauInit");
-                });
+                Debug.Log("On va crash avant de charger la scene");
+                SceneManager.LoadSceneAsync("PlateauInit");
+                //});
             }
         );
 
@@ -358,6 +363,14 @@ public class SignalRConnector : MonoBehaviour
                             .SetIsInPioche(true);
                     }
                 });
+            }
+        );
+
+        this._hubConnection.On<PacketSignal>(
+            "JoinRoomFail",
+            (signal) =>
+            {
+                Debug.LogError(signal.message);
             }
         );
 
@@ -894,7 +907,7 @@ public class SignalRConnector : MonoBehaviour
         {
             try
             {
-                await this._hubConnection.SendAsync("LobbyConnection", "room1");
+                await this._hubConnection.SendAsync("LobbyConnection");
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     UIManagerPFormulaire.Instance.showRooms.SetActive(false);
