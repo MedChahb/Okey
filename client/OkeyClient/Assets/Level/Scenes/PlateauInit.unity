@@ -2474,7 +2474,7 @@ GameObject:
   - component: {fileID: 508548178}
   - component: {fileID: 508548177}
   m_Layer: 5
-  m_Name: TurnSignal
+  m_Name: TurnSignal3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4779,7 +4779,7 @@ GameObject:
   - component: {fileID: 1111366618}
   - component: {fileID: 1111366619}
   m_Layer: 5
-  m_Name: PlayerAvatars
+  m_Name: PlayerSignals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4822,7 +4822,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainPlayerTurnSignal: {fileID: 1988457369}
   player2TurnSignal: {fileID: 1683240395}
-  player3TurnSignal: {fileID: 1683240395}
+  player3TurnSignal: {fileID: 508548177}
   player4TurnSignal: {fileID: 1829035518}
 --- !u!1 &1117009844
 GameObject:
@@ -6797,7 +6797,7 @@ GameObject:
   - component: {fileID: 1683240396}
   - component: {fileID: 1683240395}
   m_Layer: 5
-  m_Name: TurnSignal
+  m_Name: TurnSignal2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7490,7 +7490,7 @@ GameObject:
   - component: {fileID: 1829035519}
   - component: {fileID: 1829035518}
   m_Layer: 5
-  m_Name: TurnSignal
+  m_Name: TurnSignal4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
