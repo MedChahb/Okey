@@ -256,39 +256,59 @@ public sealed class OkeyHub : Hub
     /// Effectue la connection au lobby correspondant au lobbyName si ce lobby est joignable
     /// </summary>
     /// <param name="lobbyName"> chaine de caractère correspondant au lobby souhaitant être rejoint </param>
-    public async Task LobbyConnection(string lobbyName)
+    public async Task LobbyConnection()
     {
-        var success = this._roomManager.TryJoinRoom(lobbyName, this.Context.ConnectionId);
-        if (success)
-        {
-            await this._hubContext.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, "Hub");
+        var roomId = this._roomManager.GetFirstRoomAvailable();
 
-            await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, lobbyName);
-            await this.SendRoomListUpdate();
-            UsersInRooms.TryUpdate(this.Context.ConnectionId, lobbyName, "Hub");
-            await this
-                ._hubContext.Clients.Group(lobbyName)
-                .SendAsync(
-                    "ReceiveMessage",
-                    new PacketSignal
-                    {
-                        message = $"Player {this.Context.ConnectionId} joined {lobbyName}"
-                    }
-                );
-
-            if (this._roomManager.IsRoomFull(lobbyName))
-            {
-                this.OnGameStarted(lobbyName);
-            }
-        }
-        else
+        if (roomId.Equals("", StringComparison.Ordinal))
         {
             await this
                 ._hubContext.Clients.Client(this.Context.ConnectionId)
                 .SendAsync(
-                    "ReceiveMessage",
-                    new PacketSignal { message = "Unable to join the room. It may be full." }
+                    "JoinRoomFail",
+                    new PacketSignal { message = "Pas de room disponnible pour l'instant." }
                 );
+        }
+        else
+        {
+            var success = this._roomManager.TryJoinRoom(roomId, this.Context.ConnectionId);
+            if (success)
+            {
+                await this._hubContext.Groups.RemoveFromGroupAsync(
+                    this.Context.ConnectionId,
+                    "Hub"
+                );
+
+                await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, roomId);
+                await this.SendRoomListUpdate();
+                UsersInRooms.TryUpdate(this.Context.ConnectionId, roomId, "Hub");
+                await this
+                    ._hubContext.Clients.Group(roomId)
+                    .SendAsync(
+                        "ReceiveMessage",
+                        new PacketSignal
+                        {
+                            message = $"Player {this.Context.ConnectionId} joined {roomId}"
+                        }
+                    );
+
+                if (this._roomManager.IsRoomFull(roomId))
+                {
+                    this.OnGameStarted(roomId);
+                }
+            }
+            else
+            {
+                await this
+                    ._hubContext.Clients.Client(this.Context.ConnectionId)
+                    .SendAsync(
+                        "JoinRoomFail",
+                        new PacketSignal
+                        {
+                            message = "Impossible de rejoindre une room, réessayer plus tard"
+                        }
+                    );
+            }
         }
     }
 
@@ -690,15 +710,8 @@ public sealed class OkeyHub : Hub
             if (!player.Equals(connectionId, StringComparison.Ordinal))
             {
                 await this._hubContext.Clients.Client(player).SendAsync("TurnSignal", connectionId);
-
                 //like we sent "TurnSignal" , we send "TimerStartSignal"
-                /*
-                await this
-                    ._hubContext.Clients.Client(player)
-                    .SendAsync(
-                        "TimerStartSignal",
-                        player
-                    );*/
+                await this._hubContext.Clients.Client(player).SendAsync("TimerStartSignal", player);
             }
             else
             {

@@ -98,11 +98,17 @@ public class RoomManager : IRoomManager
         foreach (var room in this._rooms.Values)
         {
             room.RemovePlayer(connectionId);
-            //if (room.IsEmpty())
-            //{
-            //    this._rooms.Remove(room.Name);
-            //}
         }
+    }
+
+    public string GetFirstRoomAvailable()
+    {
+        Room? room;
+        if (this.roomsAvailable.TryPeek(out room))
+        {
+            return room.Name;
+        }
+        return "";
     }
 
     public string GetRoomsInfo() =>

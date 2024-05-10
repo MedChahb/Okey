@@ -17,4 +17,5 @@ public interface IRoomManager
     public Room GetRoomById(string id);
     public void ResetRoom(string roomName);
     public bool IsRoomBusy(string roomName);
+    public string GetFirstRoomAvailable();
 }
