@@ -50,17 +50,13 @@ public class SignalRConnector : MonoBehaviour
                     }
                     Debug.Log($"Room: {room.Name}, Players: {room.Players.Count}/{room.Capacity}");
                 }
-                // UpdateRoomDisplay(rooms)
 
                 if (UIManagerPFormulaire.Instance != null)
                 {
                     MainThreadDispatcher.Enqueue(() =>
                     {
                         UIManagerPFormulaire.Instance.setActiveShowRooms();
-                        LobbyManager.Instance.rommsListFilled = true;
                         LobbyManager.Instance.playerCount = Rooms.listRooms[0].Players.Count;
-                        LobbyManager.Instance.SetPlayers(Rooms.listRooms[0].Players);
-                        // Debug.Log(_hubConnection.getConnectionId());
                         DisplayRooms.Instance.updateLabel();
                     });
                 }
@@ -76,7 +72,6 @@ public class SignalRConnector : MonoBehaviour
             Message =>
             {
                 Debug.Log(Message.message);
-                // DisplayRooms.Instance.messageLogs.Add(message.message);
             }
         );
 
@@ -86,16 +81,71 @@ public class SignalRConnector : MonoBehaviour
             {
                 Debug.Log($"Le jeu a commence");
 
-                if (players.playersList != null)
-                {
-                    foreach (var player in players.playersList)
-                    {
-                        Debug.LogWarning(player);
-                    }
-                }
+                // if (players.playersList != null)
+                // {
+                //     LobbyManager.Instance.players.Clear();  // Clear existing players
+                //     foreach (var player in players.playersList)
+                //     {
+                //         Debug.LogWarning(player);
 
+                //         LobbyManager.Instance.players.Add(player);
+                //         if (player == _hubConnection.ConnectionId)
+                //         {
+                //             LobbyManager.Instance.mainPlayer = player;
+                //             Debug.Log("Current userID: " + player);
+                //         }
+                //     }
+                // }
                 MainThreadDispatcher.Enqueue(() =>
                 {
+                    if (players.playersList != null && players.playersList.Count > 0)
+                    {
+                        int otherPlayerIndex = 0;
+                        for (int i = 0; i < players.playersList.Count; i++)
+                        {
+                            // string player = players.playersList[i];
+                            // store the player value as a string in lower case trim
+                            string player = players.playersList[i].Trim().ToLower();
+                            // Debug.LogWarning($"Player {i + 1}: {player}");
+
+                            Debug.Log(
+                                "Main player: "
+                                    + _hubConnection.ConnectionId
+                                    + " Player iteration: "
+                                    + player
+                            );
+                            if (player == _hubConnection.ConnectionId.Trim().ToLower())
+                            {
+                                LobbyManager.Instance.mainPlayer = player;
+                                Debug.Log("MainPlayer: " + player);
+                            }
+                            else
+                            {
+                                switch (otherPlayerIndex)
+                                {
+                                    case 0:
+                                        LobbyManager.Instance.player2 = player;
+                                        // Debug.Log($"Player 2 set to: {player}");
+                                        break;
+                                    case 1:
+                                        LobbyManager.Instance.player3 = player;
+                                        // Debug.Log($"Player 3 set to: {player}");
+                                        break;
+                                    case 2:
+                                        LobbyManager.Instance.player4 = player;
+                                        // Debug.Log($"Player 4 set to: {player}");
+                                        break;
+                                }
+                                otherPlayerIndex++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("No players found in playersList.");
+                    }
+
+                    // Debug.Log("Loading PlateauInit scene");
                     SceneManager.LoadScene("PlateauInit");
                 });
             }
@@ -190,9 +240,11 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est le tour de {PlayerName}");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    LobbyManager.Instance.SetMyTurn(false);
-                    LobbyManager.Instance.SetCurrentPlayerTurn(PlayerName);
-                    Timer.Instance.LaunchTimer();
+                    // LobbyManager.Instance.SetMyTurn(false);
+                    // LobbyManager.Instance.SetCurrentPlayerTurn(PlayerName);
+                    // Timer.Instance.LaunchTimer();
+                    // Debug.Log("Signal received");
+                    PlateauSignals.Instance.SetPlayerSignal(PlayerName);
                 });
             }
         );
@@ -204,7 +256,10 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est votre tour");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    LobbyManager.Instance.SetMyTurn(true);
+                    // LobbyManager.Instance.SetMyTurn(true);
+                    // Debug.Log("Signal received");
+                    PlateauSignals.Instance.SetMainPlayerTurnSignal();
+                    // Debug.Log("restarting timer");
                     Timer.Instance.LaunchTimer();
                 });
             }
@@ -462,6 +517,8 @@ public class SignalRConnector : MonoBehaviour
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     LobbyManager.Instance.SetMyTurn(false);
+                    PlateauSignals.Instance.mainPlayerTurnSignal.gameObject.SetActive(false);
+                    Timer.Instance.ResetTimer();
                 });
                 return tuile;
             }
