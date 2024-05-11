@@ -648,8 +648,12 @@ public sealed class OkeyHub : Hub
                                     pl.getName(),
                                     new TuilePacket
                                     {
-                                        X = randTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
-                                        Y = randTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
+                                        X = randTuileCoord
+                                            .getY()
+                                            .ToString(CultureInfo.InvariantCulture),
+                                        Y = randTuileCoord
+                                            .getX()
+                                            .ToString(CultureInfo.InvariantCulture),
                                         gagner = null
                                     }
                                 );
@@ -684,8 +688,12 @@ public sealed class OkeyHub : Hub
                                 pl.getName(),
                                 new TuilePacket
                                 {
-                                    X = RandTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
-                                    Y = RandTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
+                                    X = RandTuileCoord
+                                        .getY()
+                                        .ToString(CultureInfo.InvariantCulture),
+                                    Y = RandTuileCoord
+                                        .getX()
+                                        .ToString(CultureInfo.InvariantCulture),
                                     gagner = null
                                 }
                             );
