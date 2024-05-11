@@ -5,29 +5,81 @@ using Okey.Tuiles;
 
 namespace Okey.Joueurs
 {
+    /// <summary>
+    /// Classe abstraite représentant un joueur dans le jeu.
+    /// </summary>
     public abstract class Joueur
     {
+        /// <summary>
+        /// Identifiant du joueur.
+        /// </summary>
         private int id;
+
+        /// <summary>
+        /// Nom du joueur.
+        /// </summary>
         private String name;
-        private List<List<Tuile?>> chevalet = []; // 15tuile + 1case vide
+
+        /// <summary>
+        /// Chevalet du joueur, contenant les tuiles.
+        /// </summary>
+        private List<List<Tuile?>> chevalet = new List<List<Tuile?>>(); // 15 tuiles + 1 case vide
+
+        /// <summary>
+        /// Indique si c'est le tour du joueur.
+        /// </summary>
         private bool tour;
+
+        /// <summary>
+        /// Indique si le joueur est gagnant.
+        /// </summary>
         private bool gagnant;
+
+        /// <summary>
+        /// Pile des tuiles défaussées.
+        /// </summary>
         private Stack<Tuile> defausse = new Stack<Tuile>();
 
-        //pour Calcul d'elo
-        //a changer ces valuers pour les tests (pour le moment ça marche)
+        /// <summary>
+        /// Constante pour le calcul d'Elo.
+        /// </summary>
         private int K;
-        private int partieJoue = 28; //a extraire
-        private int partieGagne = 28; //a extraire
 
+        /// <summary>
+        /// Nombre de parties jouées.
+        /// </summary>
+        private int partieJoue = 28; // à extraire
+
+        /// <summary>
+        /// Nombre de parties gagnées.
+        /// </summary>
+        private int partieGagne = 28; // à extraire
+
+        /// <summary>
+        /// Nombre d'étages dans le chevalet.
+        /// </summary>
         static readonly int etage = 2;
-        static readonly int tuilesDansEtage = 14; //14
 
+        /// <summary>
+        /// Nombre de tuiles par étage.
+        /// </summary>
+        static readonly int tuilesDansEtage = 14;
+
+        /// <summary>
+        /// Générateur de nombres aléatoires.
+        /// </summary>
         private Random random = new Random();
 
-        //score du joueur initialement 7
+        /// <summary>
+        /// Score initial du joueur.
+        /// </summary>
         private int score = 7;
 
+        /// <summary>
+        /// Initialise une nouvelle instance de la classe Joueur avec un identifiant et un nom spécifiés.
+        /// </summary>
+        /// <param name="id">Identifiant du joueur.</param>
+        /// <param name="Name">Nom du joueur.</param>
         public Joueur(int id, String Name)
         {
             this.id = id;
@@ -37,10 +89,10 @@ namespace Okey.Joueurs
 
             this.K = Elo.ComputeK(this);
 
-            //initialisation du chevalet (ready to get Tuiles)
+            // Initialisation du chevalet (prêt à recevoir des tuiles)
             for (int i = 0; i < etage; i++)
             {
-                this.chevalet.Add([]);
+                this.chevalet.Add(new List<Tuile?>());
 
                 for (int j = 0; j < tuilesDansEtage; j++)
                 {
@@ -49,50 +101,92 @@ namespace Okey.Joueurs
             }
         }
 
+        /// <summary>
+        /// Obtient ou définit l'identifiant du joueur.
+        /// </summary>
         protected int Id
         {
             get => id;
             set => id = value;
         }
+
+        /// <summary>
+        /// Obtient ou définit le nom du joueur.
+        /// </summary>
         protected string Name
         {
             get => name;
             set => name = value;
         }
+
+        /// <summary>
+        /// Obtient ou définit le chevalet du joueur.
+        /// </summary>
         protected List<List<Tuile?>> Chevalet
         {
             get => chevalet;
             set => chevalet = value;
         }
+
+        /// <summary>
+        /// Obtient ou définit une valeur indiquant si c'est le tour du joueur.
+        /// </summary>
         protected bool Tour
         {
             get => tour;
             set => tour = value;
         }
+
+        /// <summary>
+        /// Obtient ou définit une valeur indiquant si le joueur est gagnant.
+        /// </summary>
         protected bool Gagnant
         {
             get => gagnant;
             set => gagnant = value;
         }
+
+        /// <summary>
+        /// Obtient ou définit la pile des tuiles défaussées.
+        /// </summary>
         protected Stack<Tuile> Defausse
         {
             get => defausse;
             set => defausse = value;
         }
 
+        /// <summary>
+        /// Méthode abstraite pour indiquer que le joueur a gagné.
+        /// </summary>
+        /// <param name="j">Instance du jeu.</param>
         public abstract void Gagne(Jeu j);
+
+        /// <summary>
+        /// Méthode abstraite pour mettre à jour le Elo du joueur.
+        /// </summary>
+        /// <param name="j">Instance du jeu.</param>
         public abstract void UpdateElo(Jeu j);
 
+        /// <summary>
+        /// Indique que ce n'est plus le tour du joueur.
+        /// </summary>
         public void EstPlusTour()
         {
             this.Tour = false;
         }
 
+        /// <summary>
+        /// Indique que c'est le tour du joueur.
+        /// </summary>
         public void Ajouer()
         {
             this.Tour = true;
         }
 
+        /// <summary>
+        /// Ajoute une tuile au chevalet du joueur.
+        /// </summary>
+        /// <param name="t">Tuile à ajouter.</param>
         public void AjoutTuileChevalet(Tuile? t)
         {
             for (int j = 0; j < etage; j++)
@@ -108,6 +202,11 @@ namespace Okey.Joueurs
             }
         }
 
+        /// <summary>
+        /// Jette une tuile du chevalet à la défausse.
+        /// </summary>
+        /// <param name="c">Coordonnées de la tuile.</param>
+        /// <param name="j">Instance du jeu.</param>
         public void JeterTuile(Coord? c, Jeu j)
         {
             if (this == null || c == null)
@@ -121,31 +220,37 @@ namespace Okey.Joueurs
                 Tuile? t = this.chevalet[y][x];
                 if (t == null)
                 {
-                    Console.WriteLine("error in JeterTuile. (pas de tuile)");
+                    Console.WriteLine("erreur dans JeterTuile. (pas de tuile)");
                     return;
                 }
                 this.chevalet[y][x] = null; // enlever la tuile du chevalet
-                t?.SetDefause(); // devient defausse
-                this.JeteTuileDefausse(t); // la poser dans la defausse
+                t?.SetDefause(); // devient défausse
+                this.JeteTuileDefausse(t); // la poser dans la défausse
                 this.EstPlusTour(); // plus son tour
-                j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour an next joueur
+                j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour au prochain joueur
 
                 Console.WriteLine($"{this.Name} a jeté la tuile {t}\n");
 
                 if (t != null)
-                    j.ListeDefausse.Add(t);
+                    j.AddToListeDefausse(t);
             }
             else
             {
-                Console.WriteLine("error in JeterTuile. (coords invalides)");
+                Console.WriteLine("erreur dans JeterTuile. (coords invalides)");
             }
         }
 
+        /// <summary>
+        /// Pioche une tuile d'une source spécifiée.
+        /// </summary>
+        /// <param name="OuPiocher">Source de la pioche ("Centre" ou "Defausse").</param>
+        /// <param name="j">Instance du jeu.</param>
+        /// <returns>La tuile piochée ou null si aucune tuile disponible.</returns>
         public Tuile? PiocherTuile(string? OuPiocher, Jeu j)
         {
             if (OuPiocher == null)
             {
-                Console.WriteLine("ouPiocher est null");
+                Console.WriteLine("OuPiocher est null");
                 return null;
             }
 
@@ -169,7 +274,7 @@ namespace Okey.Joueurs
 
                 if (PreviousPlayer.isDefausseEmpty())
                 {
-                    Console.WriteLine("La defausse du joueur est vide, impossible a piocher");
+                    Console.WriteLine("La défausse du joueur est vide, impossible à piocher");
                 }
                 else
                 {
@@ -187,7 +292,12 @@ namespace Okey.Joueurs
             return null;
         }
 
-        //jete la 15eme tuile sur la pioche au milieu pour decalrer la victoire
+        /// <summary>
+        /// Jette la 15ème tuile pour déclarer la victoire.
+        /// </summary>
+        /// <param name="c">Coordonnées de la tuile.</param>
+        /// <param name="j">Instance du jeu.</param>
+        /// <returns>Vrai si la tuile a été jetée pour terminer, sinon faux.</returns>
         public bool JeteTuilePourTerminer(Coord c, Jeu j)
         {
             if (this.CountTuileDansChevalet() == 14)
@@ -203,18 +313,24 @@ namespace Okey.Joueurs
             this.chevalet[y][x] = null;
             if (this.VerifSerieChevalet()) // ici le joueur gagne
             {
-                j.PushPiocheCentre(toThrow); // on met la tuile que le joueur desire finir avec sur la pioche
-                j.JeuTermine(this); // ici on update le Elo et K
+                j.PushPiocheCentre(toThrow); // on met la tuile que le joueur désire finir avec sur la pioche
+                j.JeuTermine(this); // ici on met à jour le Elo et K
                 return true;
             }
             else
             {
-                Console.WriteLine("Vous n'avez pas de serie dans votre chevalet !");
-                this.chevalet[y][x] = toThrow; // undo changes
+                Console.WriteLine("Vous n'avez pas de série dans votre chevalet !");
+                this.chevalet[y][x] = toThrow; // annuler les changements
                 return false;
             }
         }
 
+        /// <summary>
+        /// Déplace une tuile dans le chevalet.
+        /// </summary>
+        /// <param name="from">Coordonnées de départ.</param>
+        /// <param name="to">Coordonnées d'arrivée.</param>
+        /// <param name="j">Instance du jeu.</param>
         public void MoveTuileChevalet(Coord from, Coord to, Jeu j)
         {
             (int yFrom, int xFrom) = (from.getY(), from.getX());
@@ -226,6 +342,11 @@ namespace Okey.Joueurs
             this.chevalet[yFrom][xFrom] = tmpTuileTo;
         }
 
+        /// <summary>
+        /// Vérifie si une liste de tuiles est une série de même chiffre.
+        /// </summary>
+        /// <param name="tuiles">Liste de tuiles.</param>
+        /// <returns>Vrai si c'est une série de même chiffre, sinon faux.</returns>
         private static bool Est_serie_de_meme_chiffre(List<Tuile> tuiles)
         {
             if (tuiles.Count <= 2)
@@ -237,19 +358,24 @@ namespace Okey.Joueurs
                 if (tuile is Okay)
                     continue;
                 if (tuiles[0].GetNum() != tuile.GetNum())
-                    return false; // deux tuiles pas mm num -> false
+                    return false; // deux tuiles pas même numéro -> faux
 
                 if (CouleurVues.Contains(tuile.GetCouleur()))
-                    return false; // deux tuile de mm couleur -> false
-                // renvoie false automatiquement si y a > 4 Tuiles
-                // car il ya que 4 couleurs
-                CouleurVues.Add(tuile.GetCouleur()); // on memorise la couleur vue
+                    return false; // deux tuiles de même couleur -> faux
+                // renvoie faux automatiquement si y a > 4 Tuiles
+                // car il n'y a que 4 couleurs
+                CouleurVues.Add(tuile.GetCouleur()); // on mémorise la couleur vue
             }
 
             return true;
         }
 
-        private static bool EstSerieDeCouleur(List<Tuile> t) // tuile se suivent, mm couleur
+        /// <summary>
+        /// Vérifie si une liste de tuiles est une série de même couleur.
+        /// </summary>
+        /// <param name="t">Liste de tuiles.</param>
+        /// <returns>Vrai si c'est une série de même couleur, sinon faux.</returns>
+        private static bool EstSerieDeCouleur(List<Tuile> t)
         {
             if (t.Count < 3)
                 return false;
@@ -263,11 +389,21 @@ namespace Okey.Joueurs
             return true;
         }
 
+        /// <summary>
+        /// Vérifie si une liste de tuiles est une série.
+        /// </summary>
+        /// <param name="tuiles">Liste de tuiles.</param>
+        /// <returns>Vrai si c'est une série, sinon faux.</returns>
         private static bool EstSerie(List<Tuile> tuiles)
         {
             return Est_serie_de_meme_chiffre(tuiles) || EstSerieDeCouleur(tuiles);
         }
 
+        /// <summary>
+        /// Partitionne une liste de tuiles en sous-listes séparées par des null.
+        /// </summary>
+        /// <param name="etage">Liste de tuiles.</param>
+        /// <returns>Liste de partitions de tuiles.</returns>
         private static List<List<Tuile>> PartitionListOnNulls(List<Tuile?> etage)
         {
             List<List<Tuile>> partitions = new List<List<Tuile>>();
@@ -279,7 +415,7 @@ namespace Okey.Joueurs
                 {
                     if (partition.Count != 0)
                         partitions.Add(partition);
-                    partition = [];
+                    partition = new List<Tuile>();
                 }
                 else
                 {
@@ -291,10 +427,13 @@ namespace Okey.Joueurs
             return partitions;
         }
 
+        /// <summary>
+        /// Vérifie si le chevalet contient uniquement des couples.
+        /// </summary>
+        /// <returns>Vrai si le chevalet contient uniquement des couples, sinon faux.</returns>
         private bool ChevaletHasCouples()
         {
-            Tuile t0,
-                t1;
+            Tuile t0, t1;
             List<List<Tuile>> ParitionEtage1 = PartitionListOnNulls(this.chevalet[0]);
             List<List<Tuile>> ParitionEtage2 = PartitionListOnNulls(this.chevalet[1]);
 
@@ -321,6 +460,10 @@ namespace Okey.Joueurs
             return true;
         }
 
+        /// <summary>
+        /// Vérifie si le chevalet contient des séries valides.
+        /// </summary>
+        /// <returns>Vrai si le chevalet contient des séries valides, sinon faux.</returns>
         private bool VerifSerieChevalet()
         {
             if (this.ChevaletHasCouples())
@@ -344,6 +487,10 @@ namespace Okey.Joueurs
             return true;
         }
 
+        /// <summary>
+        /// Compte le nombre de tuiles dans le chevalet.
+        /// </summary>
+        /// <returns>Nombre de tuiles dans le chevalet.</returns>
         public int CountTuileDansChevalet()
         {
             int res = 0;
@@ -360,15 +507,22 @@ namespace Okey.Joueurs
             return res;
         }
 
+        /// <summary>
+        /// Compte le nombre de tuiles dans la défausse.
+        /// </summary>
+        /// <returns>Nombre de tuiles dans la défausse.</returns>
         public int CountDefausse()
         {
             return this.defausse.Count;
         }
 
+        /// <summary>
+        /// Obtient les coordonnées d'une tuile aléatoire dans le chevalet.
+        /// </summary>
+        /// <returns>Coordonnées d'une tuile aléatoire.</returns>
         public Coord GetRandomTuileCoords()
         {
-            int etageRand = -1,
-                tuileDansEtageRand = -1;
+            int etageRand = -1, tuileDansEtageRand = -1;
 
             do
             {
@@ -379,6 +533,10 @@ namespace Okey.Joueurs
             return new Coord(etageRand, tuileDansEtageRand);
         }
 
+        /// <summary>
+        /// Ajoute une tuile à la défausse.
+        /// </summary>
+        /// <param name="t">Tuile à ajouter.</param>
         public void JeteTuileDefausse(Tuile? t)
         {
             if (t == null)
@@ -386,99 +544,158 @@ namespace Okey.Joueurs
             this.defausse.Push(t);
         }
 
+        /// <summary>
+        /// Retire la tuile du sommet de la défausse.
+        /// </summary>
+        /// <returns>Tuile retirée.</returns>
         public Tuile PopDefausseJoueur()
         {
             return this.defausse.Pop();
         }
 
+        /// <summary>
+        /// Indique si la défausse est vide.
+        /// </summary>
+        /// <returns>Vrai si la défausse est vide, sinon faux.</returns>
         public bool isDefausseEmpty()
         {
             return this.defausse.Count == 0;
         }
 
+        /// <summary>
+        /// Indique si le joueur est gagnant.
+        /// </summary>
+        /// <returns>Vrai si le joueur est gagnant, sinon faux.</returns>
         public bool isGagnant()
         {
             return this.Gagnant;
         }
 
+        /// <summary>
+        /// Définit le joueur comme gagnant.
+        /// </summary>
         public void SetGagnant()
         {
             this.Gagnant = true;
         }
 
+        /// <summary>
+        /// Obtient la pile des tuiles défaussées.
+        /// </summary>
+        /// <returns>La pile des tuiles défaussées.</returns>
         public Stack<Tuile> GetDefausse()
         {
             return this.defausse;
         }
 
+        /// <summary>
+        /// Obtient le score du joueur.
+        /// </summary>
+        /// <returns>Le score du joueur.</returns>
         public int GetScore()
         {
             return this.score;
         }
 
-        //pour elo
+        /// <summary>
+        /// Obtient le nombre de parties gagnées.
+        /// </summary>
+        /// <returns>Nombre de parties gagnées.</returns>
         public int GetPartieGagne()
         {
             return this.partieGagne;
         }
 
+        /// <summary>
+        /// Définit le nombre de parties gagnées.
+        /// </summary>
+        /// <param name="g">Nombre de parties gagnées.</param>
         public void SetPartieGagne(int g)
         {
             this.partieGagne = g;
         }
 
+        /// <summary>
+        /// Incrémente le nombre de parties gagnées.
+        /// </summary>
         public void SetPartieGagneIncrement()
         {
             this.partieGagne++;
         }
 
+        /// <summary>
+        /// Obtient le nombre de parties jouées.
+        /// </summary>
+        /// <returns>Nombre de parties jouées.</returns>
         public int GetPartieJoue()
         {
             return this.partieJoue;
         }
 
+        /// <summary>
+        /// Incrémente le nombre de parties jouées.
+        /// </summary>
         public void SetPartieJoueIncrement()
         {
             this.partieJoue++;
         }
 
+        /// <summary>
+        /// Obtient le taux de victoire du joueur.
+        /// </summary>
+        /// <returns>Taux de victoire.</returns>
         public double GetWinRate()
         {
             return (this.partieJoue != 0) ? (double)this.partieGagne / this.partieJoue : 0;
         }
 
+        /// <summary>
+        /// Obtient la constante K pour le calcul du Elo.
+        /// </summary>
+        /// <returns>La constante K.</returns>
         public int GetK()
         {
             return this.K;
         }
 
+        /// <summary>
+        /// Définit la constante K pour le calcul du Elo.
+        /// </summary>
+        /// <param name="k">La constante K.</param>
         public void SetK(int k)
         {
             this.K = k;
         }
 
+        /// <summary>
+        /// Met à jour la constante K pour le calcul du Elo.
+        /// </summary>
         public void UpdateK()
         {
             this.SetK(Elo.ComputeK(this));
         }
 
-        public abstract override String ToString();
-
+        /// <summary>
+        /// Affiche les tuiles dans la défausse.
+        /// </summary>
         public void AfficheDefausse()
         {
             if (this.isDefausseEmpty())
             {
-                Console.WriteLine("La defausse est vide.");
+                Console.WriteLine("La défausse est vide.");
                 return;
             }
 
-            Console.WriteLine($"La defausse du {this} contient : ");
+            Console.WriteLine($"La défausse du {this} contient : ");
             foreach (var elem in this.defausse)
             {
                 Console.WriteLine(elem);
             }
         }
 
+        /// <summary>
+        /// Affiche les tuiles dans le chevalet.
+        /// </summary>
         public void AfficheChevalet()
         {
             Console.WriteLine($"\nLe chevalet de {this} : ");
@@ -496,6 +713,10 @@ namespace Okey.Joueurs
             }
         }
 
+        /// <summary>
+        /// Retourne une chaîne représentant le contenu du chevalet.
+        /// </summary>
+        /// <returns>Chaîne représentant le contenu du chevalet.</returns>
         public string StringChevalet()
         {
             var buff = "";
@@ -514,22 +735,28 @@ namespace Okey.Joueurs
             return buff;
         }
 
-        //pour tester VerifChevalet()
-        public void setChevalet(List<List<Tuile?>> chev)
-        {
-            this.chevalet = chev;
-        }
-
+        /// <summary>
+        /// Obtient le nom du joueur.
+        /// </summary>
+        /// <returns>Le nom du joueur.</returns>
         public String getName()
         {
             return this.Name;
         }
 
+        /// <summary>
+        /// Obtient le chevalet du joueur.
+        /// </summary>
+        /// <returns>Le chevalet du joueur.</returns>
         public List<List<Tuile?>> GetChevalet()
         {
             return this.chevalet;
         }
 
+        /// <summary>
+        /// Obtient la tuile en tête de la défausse.
+        /// </summary>
+        /// <returns>La tuile en tête de la défausse, ou null si la défausse est vide.</returns>
         public Tuile? GetTeteDefausse()
         {
             if (defausse.Count > 0)
