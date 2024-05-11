@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Code.Scripts.SignalR.Packets;
 using Code.Scripts.SignalR.Packets.Rooms;
 using Microsoft.AspNetCore.SignalR.Client;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,7 +34,7 @@ public class SignalRConnector : MonoBehaviour
             Debug.LogError($"SignalR connection failed: {ex.Message}");
         }
 
-        this.JoinRoom();
+        await this.JoinRoom();
     }
 
     private void ConfigureHubEvents()
@@ -684,6 +685,20 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        this._hubConnection.On<RoomState>(
+            "SendRoomState",
+            (roomState) =>
+            {
+                if (roomState.playerDatas != null)
+                {
+                    foreach (var data in roomState.playerDatas)
+                    {
+                        Debug.LogWarning(data);
+                    }
+                }
+            }
+        );
+
         this._hubConnection.On<ChevaletPacket>(
             "ReceiveChevalet",
             (chevalet) =>
@@ -922,6 +937,14 @@ public class SignalRConnector : MonoBehaviour
                 {
                     UIManagerPFormulaire.Instance.showRooms.SetActive(false);
                     UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
+
+                    var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
+
+                    var bg = vue.transform.GetChild(0);
+                    var header = bg.transform.GetChild(0);
+                    var txtCounter = header.transform.GetChild(2);
+                    Debug.LogWarning(txtCounter.gameObject.name);
+                    txtCounter.transform.GetComponent<TextMeshProUGUI>().text = "/4";
                 });
                 Debug.Log($"Request to join room 1 sent.");
             }
