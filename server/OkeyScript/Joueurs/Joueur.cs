@@ -154,6 +154,13 @@ namespace Okey.Joueurs
                 var tuilePiochee = j.PopPiocheCentre();
 
                 this.AjoutTuileChevalet(tuilePiochee);
+
+                if (j.isPiocheCentreEmpty())
+                {
+                    Console.WriteLine("\nLa pile au centre est vide, jeu terminé.");
+                    j.JeuTermine();
+                }
+
                 return null;
             }
             else if (string.Equals(OuPiocher, "Defausse", StringComparison.OrdinalIgnoreCase))
@@ -175,12 +182,6 @@ namespace Okey.Joueurs
                     }
                     return null;
                 }
-            }
-
-            if (j.isPiocheCentreEmpty())
-            {
-                Console.WriteLine("\nLa pile au centre est vide, jeu terminé.");
-                j.JeuTermine();
             }
 
             return null;
