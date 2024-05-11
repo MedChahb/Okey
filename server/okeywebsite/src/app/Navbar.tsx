@@ -11,6 +11,7 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 300) {
@@ -27,6 +28,11 @@ const Navbar = () => {
     };
   }, []);
 
+  const changeLanguage = (language: string) => {
+    // Here you would implement the logic to change the language
+    console.log(`Changing language to ${language}`);
+  };
+
   return (
     <nav className={`fixed w-full z-10 h-28 flex justify-center items-center ${scrolling ? 'bg-green-800' : 'bg-transparent'} backdrop-filter backdrop-blur-lg`}>
       <div className="max-w-7xl mx-auto px-4">
@@ -38,7 +44,17 @@ const Navbar = () => {
             <div className="ml-10 flex items-center space-x-4">
               <a href="#tutoriel" className="text-white px-3 py-2 rounded-md text-sm font-medium">Tutoriel</a>
               <a href="#download" className="text-white px-3 py-2 rounded-md text-sm font-medium">Télécharger le jeu</a>
-              <a href="#" className="text-white px-3 py-2 rounded-md text-sm font-medium">Langue</a>
+              <div className="relative">
+                <button onClick={toggleNavbar} className="text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none">Langue</button>
+                {/* Ajout de l'état isOpen pour contrôler la visibilité du menu */}
+                {isOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-green-800 rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                    <a href="#" className="block px-4 py-2 text-sm text-white hover:bg-green-700" onClick={() => {changeLanguage('fr')}}>Français</a>
+                    <a href="#" className="block px-4 py-2 text-sm text-white hover:bg-green-700" onClick={() => {changeLanguage('en')}}>English</a>
+                    <a href="#" className="block px-4 py-2 text-sm text-white hover:bg-green-700" onClick={() => {changeLanguage('tr')}}>Türkçe</a>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div className="-mr-2 flex md:hidden">
@@ -63,6 +79,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
+
   );
 };
 
