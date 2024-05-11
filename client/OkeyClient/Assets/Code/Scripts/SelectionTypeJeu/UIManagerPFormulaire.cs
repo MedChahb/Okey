@@ -90,7 +90,7 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     public void onPublicLobbyClicked()
     {
-        lobbyPlayerWaiting.SetActive(true);
+        // lobbyPlayerWaiting.SetActive(true);
         onJoinLobbyButtonPressed();
     }
 
