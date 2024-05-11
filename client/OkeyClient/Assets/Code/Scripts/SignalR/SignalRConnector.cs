@@ -85,6 +85,12 @@ public class SignalRConnector : MonoBehaviour
             (players) =>
             {
                 Debug.LogWarning("La partie peut commencer");
+
+                foreach (var player in players.playersUsernames)
+                {
+                    Debug.LogWarning(player);
+                }
+
                 //SceneManager.UnloadSceneAsync("SelectionTypeJeu");
                 //SceneManager.LoadScene("PlateauInit");
 
@@ -649,6 +655,12 @@ public class SignalRConnector : MonoBehaviour
             "UsernameRequest",
             () =>
             {
+                var user = JoueurManager.Instance;
+
+                if (user.IsConnected)
+                {
+                    return user.GetSelfJoueur().NomUtilisateur;
+                }
                 return "Guest";
             }
         );
