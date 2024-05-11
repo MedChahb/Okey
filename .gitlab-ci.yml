@@ -57,12 +57,12 @@ docker-ci:
     # Store registry auth credentials for Kaniko to read during push
     - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}"
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/CICD.Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}"
   after_script: ""
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
-        - docker/Dockerfile
+        - docker/CICD.Dockerfile
         - requirements.txt
         - .config/dotnet-tools.json
       when: always
@@ -116,7 +116,7 @@ docker-server:
     - IMAGE_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev-${CI_COMMIT_SHORT_SHA}"; else echo ${CI_COMMIT_TAG}; fi)
     - IMAGE_SLIDING_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev"; else echo "latest"; fi)
   script:
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/OkeyApi.Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_TAG}" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_SLIDING_TAG}"
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/OkeyServer.Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_TAG}" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_SLIDING_TAG}"
   after_script: ""
   rules:
     - if: $CI_COMMIT_BRANCH == "back-end"

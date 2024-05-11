@@ -10,7 +10,7 @@ IMG_NAME_DB-INIT=db-init
 all: cicd api server db-init
 
 cicd: $(IMG_NAME_CICD)
-$(IMG_NAME_CICD): Dockerfile ../requirements.txt ../.config/dotnet-tools.json
+$(IMG_NAME_CICD): CICD.Dockerfile ../requirements.txt ../.config/dotnet-tools.json
 	docker build -t $(REGISTRY)/$@ -f $< ..
 	touch $@
 
