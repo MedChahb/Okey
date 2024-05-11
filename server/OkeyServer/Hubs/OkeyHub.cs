@@ -18,7 +18,6 @@ using Security;
 /// <summary>
 /// Hub de communication entre les clients et le serveur
 /// </summary>
-
 public sealed class OkeyHub : Hub
 {
     private static readonly int time = 20000;
@@ -38,6 +37,12 @@ public sealed class OkeyHub : Hub
 
     private CancellationTokenSource? _cts;
 
+    /// <summary>
+    /// Initialise une nouvelle instance de la classe <see cref="OkeyHub"/>.
+    /// </summary>
+    /// <param name="hubContext">Contexte du hub pour la communication SignalR.</param>
+    /// <param name="roomManager">Gestionnaire de salle pour la gestion des salles de jeu.</param>
+    /// <param name="dbContext">Contexte de base de données pour les opérations de données du serveur.</param>
     public OkeyHub(
         IHubContext<OkeyHub> hubContext,
         IRoomManager roomManager,
@@ -64,6 +69,10 @@ public sealed class OkeyHub : Hub
         await base.OnConnectedAsync();
     }
 
+    /// <summary>
+    /// Récupère le nom d'utilisateur du client.
+    /// </summary>
+    /// <param name="connectionId">ID de connexion du client.</param>
     private async Task GetUserNameFromClient(string connectionId)
     {
         try
@@ -100,6 +109,7 @@ public sealed class OkeyHub : Hub
     /// <summary>
     /// On supprime automatiquement le client au groupe Hub.
     /// </summary>
+    /// <param name="exception">Exception causant la déconnexion, le cas échéant.</param>
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         if (!UsersInRooms[this.Context.ConnectionId].Equals("Hub", StringComparison.Ordinal))
@@ -132,7 +142,7 @@ public sealed class OkeyHub : Hub
                     {
                         await this.SendDisconnectionOrder(
                             player,
-                            $"{this.Context.ConnectionId} a quitteé, fin de partie."
+                            $"{this.Context.ConnectionId} a quitté, fin de partie."
                         );
                     }
                 }
@@ -202,7 +212,7 @@ public sealed class OkeyHub : Hub
     }
 
     /// <summary>
-    /// Quand le joueur fourni un JWT Token lie la session de connxion au nom d'utilisateur
+    /// Quand le joueur fourni un JWT Token lie la session de connexion au nom d'utilisateur
     /// Une transmission AccountLinkResult est envoyé au client indiquant comment s'est passée la tentative d'association
     /// </summary>
     /// <param name="token">JWT token</param>
@@ -263,10 +273,10 @@ public sealed class OkeyHub : Hub
     }
 
     /// <summary>
-    /// Envoi un message à tous lees membres d'un groupe
+    /// Envoi un message à tous les membres d'un groupe.
     /// </summary>
-    /// <param name="lobbyName"> groupe qui reçoit le message de test</param>
-    /// <param name="message"> message envoyé à tous les membres du groupe</param>
+    /// <param name="lobbyName">Nom du groupe qui reçoit le message.</param>
+    /// <param name="message">Message envoyé à tous les membres du groupe.</param>
     public async Task SendToLobby(string lobbyName, string message)
     {
         try
@@ -283,9 +293,8 @@ public sealed class OkeyHub : Hub
     }
 
     /// <summary>
-    /// Effectue la connection au lobby correspondant au lobbyName si ce lobby est joignable
+    /// Effectue la connexion au lobby si ce lobby est joignable.
     /// </summary>
-    /// <param name="lobbyName"> chaine de caractère correspondant au lobby souhaitant être rejoint </param>
     public async Task LobbyConnection()
     {
         await this.GetUserNameFromClient(this.Context.ConnectionId);
@@ -298,7 +307,7 @@ public sealed class OkeyHub : Hub
                 ._hubContext.Clients.Client(this.Context.ConnectionId)
                 .SendAsync(
                     "JoinRoomFail",
-                    new PacketSignal { message = "Pas de room disponnible pour l'instant." }
+                    new PacketSignal { message = "Pas de room disponible pour l'instant." }
                 );
         }
         else
@@ -348,9 +357,9 @@ public sealed class OkeyHub : Hub
     }
 
     /// <summary>
-    /// deconnecte le client du lobby en question
+    /// Déconnecte le client du lobby en question.
     /// </summary>
-    /// <param name="lobbyName"> nom du lobby à quitter </param>
+    /// <param name="lobbyName">Nom du lobby à quitter.</param>
     public async Task LobbyDisconnection(string lobbyName)
     {
         this._roomManager.LeaveRoom(lobbyName, this.Context.ConnectionId);
@@ -363,6 +372,11 @@ public sealed class OkeyHub : Hub
         await this.SendRoomListUpdate();
     }
 
+    /// <summary>
+    /// Lit les coordonnées à partir d'une chaîne.
+    /// </summary>
+    /// <param name="str">Chaîne de coordonnées.</param>
+    /// <returns>Objet <see cref="Coord"/> représentant les coordonnées.</returns>
     public Coord ReadCoords(string str)
     {
         Console.WriteLine(str);
@@ -382,42 +396,42 @@ public sealed class OkeyHub : Hub
     }
 
     /// <summary>
-    /// Permet de lancer la partie
+    /// Permet de lancer la partie.
     /// </summary>
-    /// <param name="roomName">Nom de room</param>
+    /// <param name="roomName">Nom de la salle.</param>
     private async void OnGameStarted(string roomName) => await this.StartGameForRoom(roomName);
 
     /// <summary>
-    /// Envoie un message a tout les utilisateurs d'un groupe
+    /// Envoie un message à tous les utilisateurs d'un groupe.
     /// </summary>
-    /// <param name="roomName">nom de room</param>
-    /// <param name="message">message a envoyer</param>
+    /// <param name="roomName">Nom de la salle.</param>
+    /// <param name="message">Message à envoyer.</param>
     private async Task BroadCastInRoom(string roomName, PacketSignal message) =>
         await this._hubContext.Clients.Group(roomName).SendAsync("ReceiveMessage", message);
 
     /// <summary>
-    /// Envoie un message a tout un utilisateur d'un groupe
+    /// Envoie un message privé à un utilisateur.
     /// </summary>
-    /// <param name="userId">nom de l'utilisateur</param>
-    /// <param name="message">message a envoyer</param>
+    /// <param name="userId">Nom de l'utilisateur.</param>
+    /// <param name="message">Message à envoyer.</param>
     private async Task SendMpToPlayer(string userId, string message) =>
         await this
             ._hubContext.Clients.Client(userId)
             .SendAsync("ReceiveMessage", new PacketSignal { message = message });
 
     /// <summary>
-    /// Envoie la tuile jetee dans le cas ou c'est fait automatiquement (delai depasse par exemple)
+    /// Envoie la tuile jetée dans le cas où c'est fait automatiquement (délai dépassé par exemple).
     /// </summary>
-    /// <param name="userId">Nom d'utilisateur</param>
-    /// <param name="tuile">Tuile jetee automatiquement</param>
+    /// <param name="userId">Nom d'utilisateur.</param>
+    /// <param name="tuile">Tuile jetée automatiquement.</param>
     private async Task SendTuileJeteeToPlayer(string userId, TuilePacket tuile) =>
         await this._hubContext.Clients.Client(userId).SendAsync("TuileJeteeAuto", tuile);
 
     /// <summary>
-    /// Requete de coordoonnees
+    /// Requête de coordonnées.
     /// </summary>
-    /// <param name="connectionId">Id de l'utilisateur</param>
-    /// <returns>Contrat</returns>
+    /// <param name="connectionId">ID de l'utilisateur.</param>
+    /// <returns>Coordonnées sous forme de chaîne.</returns>
     private async Task<string> CoordsRequest(string connectionId)
     {
         try
@@ -437,6 +451,9 @@ public sealed class OkeyHub : Hub
         return "";
     }
 
+    /// <summary>
+    /// Envoie une requête de mise à jour des salles.
+    /// </summary>
     private async Task SendRoomsRequest()
     {
         var listToSend = new List<RoomDto>();
@@ -457,6 +474,11 @@ public sealed class OkeyHub : Hub
         await this._hubContext.Clients.Group("Hub").SendAsync("UpdateRoomsRequest", roomPack);
     }
 
+    /// <summary>
+    /// Envoie une commande de déconnexion à un utilisateur.
+    /// </summary>
+    /// <param name="connectionId">ID de l'utilisateur.</param>
+    /// <param name="message">Message de déconnexion.</param>
     private async Task SendDisconnectionOrder(string connectionId, string message)
     {
         await this
@@ -464,6 +486,11 @@ public sealed class OkeyHub : Hub
             .SendAsync("Disconnection", new DisconnectionPacket { message = message });
     }
 
+    /// <summary>
+    /// Requête pour obtenir les coordonnées de gain.
+    /// </summary>
+    /// <param name="connectionId">ID de l'utilisateur.</param>
+    /// <returns>Coordonnées ou indication de gain.</returns>
     private async Task<string> CoordsGainRequest(string connectionId)
     {
         Console.WriteLine("Le pb arrive ici");
@@ -481,25 +508,12 @@ public sealed class OkeyHub : Hub
         return tuile.Y + ";" + tuile.X;
     }
 
-    /* Pour debug
-    private async Task<string> FirstCoordsRequest(string connectionId) =>
-        await this
-            ._hubContext.Clients.Client(connectionId)
-            .InvokeAsync<string>(
-                "FirstCoordsActionRequest",
-                cancellationToken: CancellationToken.None
-            );
-
     /// <summary>
-    /// Requete de pioche
+    /// Requête pour piocher une tuile.
     /// </summary>
-    /// <param name="connectionId"></param>
-    /// <returns>Contrat</returns>
-    public async Task<string> PiocheRequest(string connectionId) =>
-        await this
-            ._hubContext.Clients.Client(connectionId)
-            .InvokeAsync<string>("PiocheRequest", cancellationToken: CancellationToken.None);
-    */
+    /// <param name="connectionId">ID de l'utilisateur.</param>
+    /// <param name="token">Jeton d'annulation.</param>
+    /// <returns>Centre ou défausse.</returns>
     public async Task<string> PiochePacketRequest(
         string connectionId,
         CancellationTokenSource token
@@ -568,17 +582,20 @@ public sealed class OkeyHub : Hub
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Ok piocherequest annule {e.Message}");
+            Console.WriteLine($"Ok piocherequest annulé {e.Message}");
             await base.OnDisconnectedAsync(new OperationCanceledException());
             return "FIN";
         }
     }
 
     /// <summary>
-    /// Requete de jeter
+    /// Requête pour jeter une tuile.
     /// </summary>
-    /// <param name="connectionId"></param>
-    /// <returns>coordonnées</returns>
+    /// <param name="pl">Joueur qui jette la tuile.</param>
+    /// <param name="roomName">Nom de la salle.</param>
+    /// <param name="jeu">Instance de jeu.</param>
+    /// <param name="token">Jeton d'annulation.</param>
+    /// <returns>Coordonnées de la tuile jetée.</returns>
     private async Task<string> JeterRequest(
         Joueur pl,
         string roomName,
@@ -690,16 +707,16 @@ public sealed class OkeyHub : Hub
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Ok jeterquest annule {e.Message}");
+            Console.WriteLine($"Ok jeterrequest annulé {e.Message}");
             return "FIN";
         }
     }
 
     /// <summary>
-    /// Requete de jet pour le premier joueur, ne pas remplacer !!!! (thread conditions)
+    /// Requête pour le premier joueur de jeter une tuile (ne pas remplacer).
     /// </summary>
-    /// <param name="connectionId"></param>
-    /// <returns>coordonnes sous la forme y;x</returns>
+    /// <param name="pl">Premier joueur.</param>
+    /// <returns>Coordonnées sous forme y;x.</returns>
     private async Task<string> FirstJeterRequest(Joueur pl)
     {
         try
@@ -721,7 +738,7 @@ public sealed class OkeyHub : Hub
                 //notifier l'action au joueur.
                 await this.SendMpToPlayer(
                     pl.getName(),
-                    $"Temps écoulé. La tuile ({coord}) a etait jetée aléatoirement."
+                    $"Temps écoulé. La tuile ({coord}) a été jetée aléatoirement."
                 );
                 return RandTuileCoord.getY() + ";" + RandTuileCoord.getX(); // return random coords
             }
@@ -733,11 +750,16 @@ public sealed class OkeyHub : Hub
         }
         catch (Exception e)
         {
-            Console.WriteLine($"On arrete la partie {e.Message}");
+            Console.WriteLine($"On arrête la partie {e.Message}");
             return "FIN";
         }
     }
 
+    /// <summary>
+    /// Envoie le signal du tour à tous les joueurs de la salle.
+    /// </summary>
+    /// <param name="roomName">Nom de la salle.</param>
+    /// <param name="connectionId">ID de l'utilisateur.</param>
     private async Task TourSignalRequest(string roomName, string? connectionId)
     {
         foreach (var player in this._roomManager.GetRoomById(roomName).GetPlayerIds())
@@ -755,7 +777,11 @@ public sealed class OkeyHub : Hub
         }
     }
 
-    // broadcast la taille et la tete de la pioche au centre (pas besoin d'envoyer toute la pioche puisqu'on affiche que la tete)
+    /// <summary>
+    /// Diffuse les informations de la pioche à tous les utilisateurs.
+    /// </summary>
+    /// <param name="connectionIds">Liste des ID de connexion des utilisateurs.</param>
+    /// <param name="jeu">Instance de jeu.</param>
     private async Task SendPiocheInfosToAll(List<string> connectionIds, Jeu jeu)
     {
         var PiocheTete = jeu.GetPiocheHead();
@@ -793,7 +819,11 @@ public sealed class OkeyHub : Hub
         }
     }
 
-    // broadcast la tete et la taille de la defausse du joueur actuel
+    /// <summary>
+    /// Diffuse les informations de la défausse actuelle à tous les utilisateurs.
+    /// </summary>
+    /// <param name="connectionIds">Liste des ID de connexion des utilisateurs.</param>
+    /// <param name="pl">Joueur actuel.</param>
     private async Task SendCurrentDefausseInfosToAll(List<string> connectionIds, Joueur pl)
     {
         var DefausseTete = pl.GetTeteDefausse();
@@ -826,13 +856,18 @@ public sealed class OkeyHub : Hub
             catch (Exception ex)
             {
                 Console.WriteLine(
-                    $"Erreur lors de l'envoi des infos de la defausse au client {connectionId}: {ex.Message}"
+                    $"Erreur lors de l'envoi des infos de la défausse au client {connectionId}: {ex.Message}"
                 );
             }
         }
     }
 
-    //broadcast l'etat de a defausse du prochain joueur (call this function AFTER current player jete (not when win))
+    /// <summary>
+    /// Diffuse les informations de la prochaine défausse à tous les utilisateurs.
+    /// </summary>
+    /// <param name="connectionIds">Liste des ID de connexion des utilisateurs.</param>
+    /// <param name="j">Instance de jeu.</param>
+    /// <param name="pl">Joueur actuel.</param>
     private async Task SendNextDefausseInfosToAll(List<string> connectionIds, Jeu j, Joueur pl)
     {
         var nextPlayer = j.getNextJoueur(pl);
@@ -867,13 +902,18 @@ public sealed class OkeyHub : Hub
             catch (Exception ex)
             {
                 Console.WriteLine(
-                    $"Erreur lors de l'envoi des infos de la prochaine defausse au client {connectionId}: {ex.Message}"
+                    $"Erreur lors de l'envoi des infos de la prochaine défausse au client {connectionId}: {ex.Message}"
                 );
             }
         }
     }
 
-    //broadcast l'etat des defausses des autres joueurs (non pas actuel et prochain)
+    /// <summary>
+    /// Diffuse les informations des défausses des autres joueurs (non actuel et prochain).
+    /// </summary>
+    /// <param name="connectionIds">Liste des ID de connexion des utilisateurs.</param>
+    /// <param name="j">Instance de jeu.</param>
+    /// <param name="pl">Joueur actuel.</param>
     private async Task SendAutreDefausseInfosToAll(List<string> connectionIds, Jeu j, Joueur pl)
     {
         Joueur[] autreJoueur =
@@ -914,13 +954,18 @@ public sealed class OkeyHub : Hub
                 catch (Exception ex)
                 {
                     Console.WriteLine(
-                        $"Erreur lors de l'envoi des infos de la defausse de {joueur.getName()} au client {connectionId}: {ex.Message}"
+                        $"Erreur lors de l'envoi des infos de la défausse de {joueur.getName()} au client {connectionId}: {ex.Message}"
                     );
                 }
             }
         }
     }
 
+    /// <summary>
+    /// Envoie les chevalets des joueurs à tous les utilisateurs.
+    /// </summary>
+    /// <param name="connectionIds">Liste des ID de connexion des utilisateurs.</param>
+    /// <param name="joueurs">Liste des joueurs.</param>
     private async Task SendChevalets(List<string> connectionIds, List<Joueur> joueurs)
     {
         foreach (var connectionId in connectionIds)
@@ -932,6 +977,11 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    /// <summary>
+    /// Envoie le chevalet d'un joueur spécifique.
+    /// </summary>
+    /// <param name="connectionId">ID de l'utilisateur.</param>
+    /// <param name="joueur">Joueur dont le chevalet doit être envoyé.</param>
     private async Task SendChevalet(string connectionId, Joueur joueur)
     {
         var chevaletInit = joueur.GetChevalet();
@@ -987,6 +1037,11 @@ public sealed class OkeyHub : Hub
             );
     }
 
+    /// <summary>
+    /// Envoie la liste des tuiles défaussées à tous les utilisateurs.
+    /// </summary>
+    /// <param name="connectionIds">Liste des ID de connexion des utilisateurs.</param>
+    /// <param name="jeu">Instance de jeu.</param>
     private async Task SendListeDefausseToAll(List<string> connectionIds, Jeu jeu)
     {
         foreach (var connectionId in connectionIds)
@@ -1022,6 +1077,11 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    /// <summary>
+    /// Envoie une émote à tous les utilisateurs.
+    /// </summary>
+    /// <param name="ConnectionIds">Liste des ID de connexion des utilisateurs.</param>
+    /// <param name="EmoteName">Nom de l'émote.</param>
     private async Task EnvoyerEmoteAll(List<string> ConnectionIds, string EmoteName)
     {
         foreach (var connectionId in ConnectionIds)
@@ -1040,6 +1100,13 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    /// <summary>
+    /// Envoie les informations de pioche à tous les utilisateurs.
+    /// </summary>
+    /// <param name="connectionIds">Liste des ID de connexion des utilisateurs.</param>
+    /// <param name="playerSource">Joueur source.</param>
+    /// <param name="tuile">Tuile piochée.</param>
+    /// <param name="j">Instance de jeu.</param>
     private async Task SendPiocheToAll(
         List<string> connectionIds,
         Joueur playerSource,
@@ -1181,7 +1248,13 @@ public sealed class OkeyHub : Hub
         }
     }
 
-    //envoi pour  tuile jete donc isdefausse = true
+    /// <summary>
+    /// Envoie les informations de la tuile jetée à tous les utilisateurs.
+    /// </summary>
+    /// <param name="connectionIds">Liste des ID de connexion des utilisateurs.</param>
+    /// <param name="playerSource">Joueur source.</param>
+    /// <param name="tuile">Tuile jetée.</param>
+    /// <param name="j">Instance de jeu.</param>
     private async Task SendTuileJeteToAll(
         List<string> connectionIds,
         Joueur playerSource,
@@ -1266,6 +1339,11 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    /// <summary>
+    /// Envoie la tuile centrale à tous les utilisateurs.
+    /// </summary>
+    /// <param name="connectionIds">Liste des ID de connexion des utilisateurs.</param>
+    /// <param name="tuile">Tuile centrale.</param>
     private async Task SendTuileCentreToAll(List<string> connectionIds, Tuile tuile)
     {
         foreach (var connectionId in connectionIds)
@@ -1295,6 +1373,11 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    /// <summary>
+    /// Convertit une couleur de tuile énumérée en chaîne.
+    /// </summary>
+    /// <param name="col">Couleur de la tuile.</param>
+    /// <returns>Chaîne représentant la couleur.</returns>
     public string FromEnumToString(CouleurTuile col)
     {
         switch (col)
@@ -1315,20 +1398,28 @@ public sealed class OkeyHub : Hub
     }
 
     /// <summary>
-    /// Permet de definir l'etat du tour d'un joueur
+    /// Définit l'état du tour d'un joueur.
     /// </summary>
-    /// <param name="playerName">Nom du joueur</param>
-    /// <param name="isTurn">Booleen: vrai -> c'est son tour ; false => ce n'est pas son tour</param>
+    /// <param name="playerName">Nom du joueur.</param>
+    /// <param name="isTurn">Indique si c'est le tour du joueur.</param>
     private void SetPlayerTurn(string playerName, bool isTurn)
     {
         this._isPlayerTurn[playerName] = isTurn;
     }
 
+    /// <summary>
+    /// Envoie le signal que les tuiles ont été distribuées.
+    /// </summary>
+    /// <param name="roomName">Nom de la salle.</param>
     private async Task TuilesDistribueesSignal(string roomName)
     {
         await this.Clients.Group(roomName).SendAsync("TuilesDistribueesSignal");
     }
 
+    /// <summary>
+    /// Envoie le signal de début de jeu à tous les joueurs.
+    /// </summary>
+    /// <param name="players">Liste des joueurs.</param>
     private async Task StartGameSignal(List<string> players)
     {
         var listUsernames = new List<string>();
@@ -1354,15 +1445,20 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    /// <summary>
+    /// Gère la victoire d'un joueur.
+    /// </summary>
+    /// <param name="roomName">Nom de la salle.</param>
+    /// <param name="winner">Nom du joueur gagnant.</param>
     private async Task PlayerWon(string roomName, string winner)
     {
-        await this.Clients.Group(roomName).SendAsync("PlayerWon", winner); //TODO: Faire la distincion entre le gagnant et les autres
+        await this.Clients.Group(roomName).SendAsync("PlayerWon", winner); //TODO: Faire la distinction entre le gagnant et les autres
     }
 
     /// <summary>
-    /// Fonction se declanchant quand il y a assez de monde, lancement du jeu
+    /// Fonction déclenchée lorsque suffisamment de joueurs sont présents, lancement du jeu.
     /// </summary>
-    /// <param name="roomName">nom de la room qui accueille le jeu</param>
+    /// <param name="roomName">Nom de la salle qui accueille le jeu.</param>
     public async Task StartGameForRoom(string roomName)
     {
         this._cts = new CancellationTokenSource();
@@ -1428,7 +1524,7 @@ public sealed class OkeyHub : Hub
             }*/
 
             joueurStarter.JeterTuile(this.ReadCoords(coords), jeu);
-            //envoi de la tuile jetee du joueur qui commence
+            //envoi de la tuile jetée du joueur qui commence
             await this.SendTuileJeteToAll(
                 playerIds,
                 joueurStarter,
@@ -1516,7 +1612,7 @@ public sealed class OkeyHub : Hub
                     {
                         await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                        //envoi de la tuile jetee
+                        //envoi de la tuile jetée
                         await this.SendTuileJeteToAll(
                             playerIds,
                             currentPlayer,
@@ -1558,10 +1654,10 @@ public sealed class OkeyHub : Hub
     }
 
     /// <summary>
-    /// Permet de bouger une tuile sur son chevalet
+    /// Déplace une tuile sur le chevalet.
     /// </summary>
-    /// <param name="Pl"></param>
-    /// <param name="J"></param>
+    /// <param name="Pl">Joueur.</param>
+    /// <param name="J">Instance de jeu.</param>
     public async Task MoveInLoop(Joueur Pl, Jeu J)
     {
         Console.Write("Donner les coords de la tuile à deplacer (y x): ");
@@ -1572,7 +1668,7 @@ public sealed class OkeyHub : Hub
     }
 
     /// <summary>
-    /// Permet d'envoyer le nouvel etat des rooms au clients dans le Hub.
+    /// Envoie la mise à jour des salles aux clients dans le Hub.
     /// </summary>
     private async Task SendRoomListUpdate()
     {
