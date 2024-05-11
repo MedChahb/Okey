@@ -85,6 +85,12 @@ public class SignalRConnector : MonoBehaviour
             (players) =>
             {
                 Debug.LogWarning("La partie peut commencer");
+
+                foreach (var player in players.playersUsernames)
+                {
+                    Debug.LogWarning(player);
+                }
+
                 //SceneManager.UnloadSceneAsync("SelectionTypeJeu");
                 //SceneManager.LoadScene("PlateauInit");
 
