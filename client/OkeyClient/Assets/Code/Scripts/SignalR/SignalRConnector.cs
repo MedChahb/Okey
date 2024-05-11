@@ -122,6 +122,7 @@ public class SignalRConnector : MonoBehaviour
                             // string player = players.playersList[i];
                             // store the player value as a string in lower case trim
                             string player = players.playersList[i].Trim().ToLower();
+                            string username = players.playersUsernames[i];
                             // Debug.LogWarning($"Player {i + 1}: {player}");
 
                             Debug.Log(
