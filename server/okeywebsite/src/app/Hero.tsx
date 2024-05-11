@@ -3,7 +3,7 @@ import OSInfo from './OSButton';
 
 const Hero = () => {
 
-  
+
   return (
 
     <div className='text-white bg-cover bg-center h-screen'>
@@ -28,7 +28,7 @@ const Hero = () => {
         </div>
       </div>
     </div>
-  </div>      
+  </div>
 </div>
 
 
