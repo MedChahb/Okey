@@ -20,6 +20,7 @@ namespace LogiqueJeu.Joueur
 
         public override async Task LoadSelf(CancellationToken Token = default)
         {
+#if !LOCAL
             if (File.Exists(Application.persistentDataPath + Constants.SELF_PLAYER_SAVE_FILE))
             {
                 TextReader reader = null;
@@ -36,6 +37,7 @@ namespace LogiqueJeu.Joueur
                     reader?.Close();
                 }
             }
+#endif
             if (this.TokenConnexion != null && this.NomUtilisateur != null)
             {
                 await this.UpdateDetailsAsync(Token);
@@ -44,6 +46,7 @@ namespace LogiqueJeu.Joueur
 
         public void SaveXML()
         {
+#if !LOCAL
             if (this.TokenConnexion == null)
             {
                 return;
@@ -61,6 +64,7 @@ namespace LogiqueJeu.Joueur
             {
                 writer?.Close();
             }
+#endif
         }
 
         public void DeleteXML()

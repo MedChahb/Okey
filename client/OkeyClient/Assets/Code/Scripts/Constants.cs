@@ -8,7 +8,9 @@ public static class Constants
     public const int MAX_TUILES_PAR_COULEUR = 26;
     public const int MAX_TUILES_JOKER = 2;
     public const string API_URL =
-#if (DEBUG || UNITY_EDITOR)
+#if LOCAL
+        "http://localhost/okeyapi/";
+#elif (DEBUG || UNITY_EDITOR)
         "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-0/okeyapi/";
 #else
         "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-1/okeyapi/";
