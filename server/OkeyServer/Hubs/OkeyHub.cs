@@ -314,16 +314,18 @@ public sealed class OkeyHub : Hub
                 await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, roomId);
                 await this.SendRoomListUpdate();
                 UsersInRooms.TryUpdate(this.Context.ConnectionId, roomId, "Hub");
-                await this
-                    ._hubContext.Clients.Group(roomId)
-                    .SendAsync(
-                        "ReceiveMessage",
-                        new PacketSignal
-                        {
-                            message =
-                                $"Player {_connectedUsers[this.Context.ConnectionId]} joined {roomId}"
-                        }
+
+                var packet = new RoomState();
+                packet.playerDatas = new List<string?>();
+
+                foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
+                {
+                    packet.playerDatas.Add(
+                        $"{_connectedUsers[player].GetUsername()};{_connectedUsers[player].GetPhoto()};{_connectedUsers[player].GetElo()};{_connectedUsers[player].GetExperience()}"
                     );
+                }
+
+                await this._hubContext.Clients.Group(roomId).SendAsync("SendRoomState", packet);
 
                 if (this._roomManager.IsRoomFull(roomId))
                 {

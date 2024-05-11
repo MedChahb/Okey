@@ -305,6 +305,21 @@ public class PlayerDatas
         }
     }
 
+    public string GetUsername()
+    {
+        return this.Username;
+    }
+
+    public int GetPhoto()
+    {
+        return this.Photo;
+    }
+
+    public int GetExperience()
+    {
+        return this.Experience;
+    }
+
     public int GetElo()
     {
         return this.Elo;
