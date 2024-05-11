@@ -71,9 +71,9 @@ public class Timer : MonoBehaviour
         this.TimerOn = false;
     }
 
-    public void ResetTimer()
-    {
-        // this.TimerOn = false;
-        RemainingTime = TimerValue;
-    }
+    // public void ResetTimer()
+    // {
+    //     // this.TimerOn = false;
+    //     RemainingTime = TimerValue;
+    // }
 }
