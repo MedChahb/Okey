@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Code.Scripts.SignalR.Packets;
 using Code.Scripts.SignalR.Packets.Rooms;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.SignalR.Client;
 using TMPro;
 using UnityEngine;
@@ -691,9 +692,13 @@ public class SignalRConnector : MonoBehaviour
             {
                 if (roomState.playerDatas != null)
                 {
+                    this.UpdateWaitingPlayerUI(roomState.playerDatas);
                     foreach (var data in roomState.playerDatas)
                     {
-                        Debug.LogWarning(data);
+                        var dSplit = data.Split(';');
+                        Debug.LogWarning(
+                            $"Username: {dSplit[0]}, Photo: {dSplit[1]}, Elo: {dSplit[2]}, Experience: {dSplit[3]}"
+                        );
                     }
                 }
             }
@@ -923,6 +928,59 @@ public class SignalRConnector : MonoBehaviour
 
 
 
+    private void UpdateWaitingPlayerUI(List<string> PlayerData)
+    {
+        MainThreadDispatcher.Enqueue(() =>
+        {
+            var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
+
+            var bg = vue.transform.GetChild(0);
+            var header = bg.transform.GetChild(0);
+            var txtCounter = header.transform.GetChild(2);
+            txtCounter.transform.GetComponent<TextMeshProUGUI>().text = $"{PlayerData.Count}/4";
+
+            var P1 = bg.transform.GetChild(1);
+            var P2 = bg.transform.GetChild(2);
+            var P3 = bg.transform.GetChild(3);
+            var P4 = bg.transform.GetChild(4);
+
+            var tabP = new List<Transform>();
+            tabP.Add(P1);
+            tabP.Add(P2);
+            tabP.Add(P3);
+            tabP.Add(P4);
+            for (var i = 0; i < PlayerData.Count; i++)
+            {
+                var dSplit = PlayerData[i].Split(';');
+                var username = tabP[i].transform.GetChild(1);
+                var avatar = tabP[i].transform.GetChild(0);
+                var elo = tabP[i].transform.GetChild(2);
+                var experience = tabP[i].transform.GetChild(3);
+
+                username.transform.GetComponent<TextMeshProUGUI>().text = dSplit[0];
+                avatar.transform.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(
+                    "Avatar/avatarn" + dSplit[1]
+                );
+                avatar.transform.GetComponent<SpriteRenderer>().transform.localScale = new Vector3(
+                    0.342f,
+                    0.342f,
+                    1f
+                );
+                if (dSplit[0].Equals("Guest", StringComparison.Ordinal))
+                {
+                    elo.transform.GetComponent<TextMeshProUGUI>().text = "";
+                    experience.transform.GetComponent<TextMeshProUGUI>().text = "";
+                }
+                else
+                {
+                    elo.transform.GetComponent<TextMeshProUGUI>().text = "Elo Score: " + dSplit[2];
+                    experience.transform.GetComponent<TextMeshProUGUI>().text =
+                        "Niveau: " + dSplit[3];
+                }
+            }
+        });
+    }
+
     public async Task JoinRoom() // takes parameter roomName in future
     {
         if (
@@ -939,12 +997,6 @@ public class SignalRConnector : MonoBehaviour
                     UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
 
                     var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
-
-                    var bg = vue.transform.GetChild(0);
-                    var header = bg.transform.GetChild(0);
-                    var txtCounter = header.transform.GetChild(2);
-                    Debug.LogWarning(txtCounter.gameObject.name);
-                    txtCounter.transform.GetComponent<TextMeshProUGUI>().text = "/4";
                 });
                 Debug.Log($"Request to join room 1 sent.");
             }
