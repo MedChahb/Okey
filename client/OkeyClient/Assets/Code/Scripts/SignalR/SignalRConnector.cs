@@ -643,6 +643,14 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        this._hubConnection.On<string>(
+            "UsernameRequest",
+            () =>
+            {
+                return "Guest";
+            }
+        );
+
         this._hubConnection.On(
             "TuilesDistribueesSignal",
             () =>
