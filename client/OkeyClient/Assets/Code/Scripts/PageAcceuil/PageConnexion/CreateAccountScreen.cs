@@ -66,7 +66,7 @@ public class CreatAccountScreen : MonoBehaviour
     [SerializeField]
     private GameObject avatar3;
 
-    private float scaleFactor = 1.3f;
+    private float scaleFactor = 1.2f;
 
     public const int MAX_REQUEST_RETRIES = 5; // Superieur ou égale à 1
     public const int REQUEST_RETRY_DELAY = 1000; // En milisecondes
@@ -83,7 +83,7 @@ public class CreatAccountScreen : MonoBehaviour
 
         createButton.onClick.AddListener(OnCreateClicked);
 
-        connectionButton.onClick.AddListener(onBackBtnClicked);
+        connectionButton.onClick.AddListener(onConnectionClicked);
 
         // Ajoute un écouteur au bouton "Retour"
         backButton.onClick.AddListener(onBackBtnClicked);
@@ -93,8 +93,6 @@ public class CreatAccountScreen : MonoBehaviour
         Password.onValueChanged.AddListener(OnInputChanged);
 
         PasswordValidation.onValueChanged.AddListener(OnInputChanged);
-
-        //this.manager.ConnexionChangeEvent.AddListener(OnCreateClicked);
 
         erreurTxt.gameObject.SetActive(false);
 
@@ -203,6 +201,12 @@ public class CreatAccountScreen : MonoBehaviour
         Panel.SetActive(false);
     }
 
+    void onConnectionClicked()
+    {
+        Panel.SetActive(false);
+        logInScreen.SetActive(true);
+    }
+
     public async Task UpdateWithConnection(string username, string password, IconeProfil icone)
     {
         for (var i = 0; i < MAX_REQUEST_RETRIES; i++)
@@ -215,6 +219,7 @@ public class CreatAccountScreen : MonoBehaviour
                     icone,
                     this.Source.Token
                 );
+                Panel.SetActive(false);
                 return;
             }
             catch (HttpRequestException e)
