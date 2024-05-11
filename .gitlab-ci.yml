@@ -260,7 +260,7 @@ unity-linux-local-test:
     expire_in: 30 days
   tags:
     - kubernetes
-unity-mac-loca-test:
+unity-mac-local-test:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-mac-mono-3.0.1
   stage: build
