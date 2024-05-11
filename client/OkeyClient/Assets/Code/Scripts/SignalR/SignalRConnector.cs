@@ -649,6 +649,12 @@ public class SignalRConnector : MonoBehaviour
             "UsernameRequest",
             () =>
             {
+                var user = JoueurManager.Instance;
+
+                if (user.IsConnected)
+                {
+                    return user.GetSelfJoueur().NomUtilisateur;
+                }
                 return "Guest";
             }
         );
