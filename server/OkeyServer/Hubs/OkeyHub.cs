@@ -61,10 +61,40 @@ public sealed class OkeyHub : Hub
         {
             UsersInRooms.TryAdd(this.Context.ConnectionId, "Hub");
         }
-
-        await this.SendRoomListUpdate();
-        _connectedUsers[this.Context.ConnectionId] = new PlayerDatas(this._dbContext, "Guest");
         await base.OnConnectedAsync();
+    }
+
+    private async Task GetUserNameFromClient(string connectionId)
+    {
+        try
+        {
+            var username = await this
+                ._hubContext.Clients.Client(connectionId)
+                .InvokeAsync<string>("UsernameRequest", cancellationToken: CancellationToken.None);
+
+            if (username != null)
+            {
+                if (username == "")
+                {
+                    username = "Guest";
+                }
+                _connectedUsers[this.Context.ConnectionId] = new PlayerDatas(
+                    this._dbContext,
+                    username
+                );
+            }
+            else
+            {
+                _connectedUsers[this.Context.ConnectionId] = new PlayerDatas(
+                    this._dbContext,
+                    "Guest"
+                );
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Erreur lors de recuperation du username client: {e.Message}");
+        }
     }
 
     /// <summary>
@@ -258,6 +288,8 @@ public sealed class OkeyHub : Hub
     /// <param name="lobbyName"> chaine de caractère correspondant au lobby souhaitant être rejoint </param>
     public async Task LobbyConnection()
     {
+        await this.GetUserNameFromClient(this.Context.ConnectionId);
+
         var roomId = this._roomManager.GetFirstRoomAvailable();
 
         if (roomId.Equals("", StringComparison.Ordinal))
@@ -288,7 +320,8 @@ public sealed class OkeyHub : Hub
                         "ReceiveMessage",
                         new PacketSignal
                         {
-                            message = $"Player {this.Context.ConnectionId} joined {roomId}"
+                            message =
+                                $"Player {_connectedUsers[this.Context.ConnectionId]} joined {roomId}"
                         }
                     );
 
