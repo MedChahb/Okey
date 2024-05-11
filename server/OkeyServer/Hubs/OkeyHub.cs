@@ -1331,13 +1331,25 @@ public sealed class OkeyHub : Hub
 
     private async Task StartGameSignal(List<string> players)
     {
+        var listUsernames = new List<string>();
+
+        foreach (var player in players)
+        {
+            listUsernames.Add(_connectedUsers[player].GetUsername());
+        }
+
         foreach (var player in players)
         {
             await this
                 .Clients.Client(player)
                 .SendAsync(
                     "StartGame",
-                    new StartingGamePacket { playerId = player, playersList = players }
+                    new StartingGamePacket
+                    {
+                        playerId = player,
+                        playersList = players,
+                        playersUsernames = listUsernames
+                    }
                 );
         }
     }
