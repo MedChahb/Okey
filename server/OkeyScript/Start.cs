@@ -58,7 +58,7 @@ namespace Okey
                 if (!doitJete)
                 {
                     Console.Write("choisis de où piocher ('Centre' ou 'Defausse') ou 'Move': ");
-                    //string? ouPiocher = "centre"; // pour tester 
+                    //string? ouPiocher = "centre"; // pour tester
                     string? ouPiocher = await GetUserInputAsync();
                     ;
 

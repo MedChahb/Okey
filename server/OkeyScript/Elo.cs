@@ -22,7 +22,6 @@ namespace Okey
         /// </summary>
         private static readonly int K_min = 4;
 
-
         /*public Elo(Dictionary<string, int> UsersData, string winnerName)
         {
             this.winnerName = winnerName;

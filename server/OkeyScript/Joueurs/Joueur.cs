@@ -433,7 +433,8 @@ namespace Okey.Joueurs
         /// <returns>Vrai si le chevalet contient uniquement des couples, sinon faux.</returns>
         private bool ChevaletHasCouples()
         {
-            Tuile t0, t1;
+            Tuile t0,
+                t1;
             List<List<Tuile>> ParitionEtage1 = PartitionListOnNulls(this.chevalet[0]);
             List<List<Tuile>> ParitionEtage2 = PartitionListOnNulls(this.chevalet[1]);
 
@@ -522,7 +523,8 @@ namespace Okey.Joueurs
         /// <returns>Coordonnées d'une tuile aléatoire.</returns>
         public Coord GetRandomTuileCoords()
         {
-            int etageRand = -1, tuileDansEtageRand = -1;
+            int etageRand = -1,
+                tuileDansEtageRand = -1;
 
             do
             {

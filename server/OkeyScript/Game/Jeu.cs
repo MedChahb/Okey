@@ -66,7 +66,10 @@ namespace Okey.Game
             int ok = 0;
             for (int i = 0; i < 103; i++)
             {
-                if (tableauTuiles[i].GetNum() == numOkey && tableauTuiles[i].GetCouleur() == couleurOkey)
+                if (
+                    tableauTuiles[i].GetNum() == numOkey
+                    && tableauTuiles[i].GetCouleur() == couleurOkey
+                )
                 {
                     Okay okay = new Okay(true);
                     tableauTuiles[i] = okay;
@@ -319,7 +322,6 @@ namespace Okey.Game
         {
             this.ListeDefausse.Add(t);
         }
-
 
         /// <summary>
         /// Ajoute une tuile à la pioche centrale.

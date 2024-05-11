@@ -12,18 +12,22 @@ namespace Okey.Tuiles
         /// Jaune.
         /// </summary>
         J,
+
         /// <summary>
         /// Noir.
         /// </summary>
         N,
+
         /// <summary>
         /// Rouge.
         /// </summary>
         R,
+
         /// <summary>
         /// Bleu.
         /// </summary>
         B,
+
         /// <summary>
         /// Multicolore.
         /// </summary>
