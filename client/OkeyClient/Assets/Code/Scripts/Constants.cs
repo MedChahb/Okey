@@ -17,5 +17,12 @@ public static class Constants
 #endif
     public const string SELF_PLAYER_SAVE_FILE = "/Player.dat";
     public const string ANONYMOUS_PLAYER_NAME = "Anonyme";
-    public const string SIGNALR_HUB_URL = "http://localhost:3030/OkeyHub";
+    public const string SIGNALR_HUB_URL =
+#if LOCAL
+        "http://localhost/OkeyHub";
+#elif (DEBUG || UNITY_EDITOR)
+        "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-0/OkeyHub";
+#else
+        "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-1/OkeyHub";
+#endif
 }
