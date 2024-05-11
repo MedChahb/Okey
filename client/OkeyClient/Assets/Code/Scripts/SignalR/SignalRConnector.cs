@@ -251,6 +251,7 @@ public class SignalRConnector : MonoBehaviour
                     // Timer.Instance.LaunchTimer();
                     // Debug.Log("Signal received");
                     PlateauSignals.Instance.SetPlayerSignal(PlayerName);
+                    Timer.Instance.LaunchTimer();
                 });
             }
         );
@@ -528,12 +529,12 @@ public class SignalRConnector : MonoBehaviour
                 }
 
                 // add code here signal
-                MainThreadDispatcher.Enqueue(() =>
-                {
-                    LobbyManager.Instance.SetMyTurn(false);
-                    PlateauSignals.Instance.mainPlayerTurnSignal.gameObject.SetActive(false);
-                    Timer.Instance.ResetTimer();
-                });
+                // MainThreadDispatcher.Enqueue(() =>
+                // {
+                //     LobbyManager.Instance.SetMyTurn(false);
+                //     PlateauSignals.Instance.mainPlayerTurnSignal.gameObject.SetActive(false);
+                //     Timer.Instance.ResetTimer();
+                // });
                 return tuile;
             }
         );
