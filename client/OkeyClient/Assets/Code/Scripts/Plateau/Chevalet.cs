@@ -935,7 +935,7 @@ public class Chevalet : MonoBehaviour
         return tuilesTriees;
     }
 
-    public (List<TuileData>, List<TuileData>) TriCouleur(List<Tuile> tuiles)
+    public (List<TuileData>, List<TuileData>) TriCouleur(List<TuileData> tuiles)
     {
         List<TuileData> tuilesTriees = this.TrierTuilesParNumero(tuiles);
         List<TuileData> series = new List<TuileData>();
@@ -950,10 +950,7 @@ public class Chevalet : MonoBehaviour
             currentSeries.Add(tuilesTriees[i]);
 
             // Vérifier si la tuile suivante n'est pas consécutive ou s'il n'y a plus de tuiles
-            if (
-                i == tuilesTriees.Count - 1
-                || tuilesTriees[i + 1].Numero != tuilesTriees[i].Numero + 1
-            )
+            if (i == tuilesTriees.Count - 1 || tuilesTriees[i + 1].num != tuilesTriees[i].num + 1)
             {
                 // Si la série est valide (au moins 3 tuiles), ajouter à la liste des séries
                 if (currentSeries.Count >= 3)
