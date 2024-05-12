@@ -9,6 +9,5 @@ public class EmotePacket
     /// Obtient ou définit le nom de l'émote.
     /// </summary>
     public int? EmoteValue { get; set; }
-
     public string? PlayerSource { get; set; }
 }
