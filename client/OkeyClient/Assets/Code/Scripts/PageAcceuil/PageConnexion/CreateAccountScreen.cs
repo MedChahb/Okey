@@ -176,6 +176,45 @@ public class CreatAccountScreen : MonoBehaviour
         string password = Password.text.Trim();
         string passwordValidation = PasswordValidation.text.Trim();
 
+        if (!int.TryParse(DayInput.text, out jour) || !int.TryParse(MonthInput.text, out mois) || !int.TryParse(YearInput.text, out annee))
+        {
+            erreurTxt.text = "Veuillez entrer des nombres valides pour le jour, le mois et l'année.";
+            erreurTxt.gameObject.SetActive(true);
+            return;
+        }
+
+        // Vérifier si le mois est entre 1 et 12
+        if (mois < 1 || mois > 12)
+        {
+            erreurTxt.text = "Le mois doit être compris entre 1 et 12.";
+            erreurTxt.gameObject.SetActive(true);
+            return;
+        }
+
+        // Vérifier si le jour est valide pour le mois
+        int joursDansMois = System.DateTime.DaysInMonth(annee, mois);
+        if (jour < 1 || jour > joursDansMois)
+        {
+            erreurTxt.text = "Le jour n'est pas valide.";
+            erreurTxt.gameObject.SetActive(true);
+            return;
+        }
+
+        // Vérifier si l'année est valide (facultatif)
+        if (annee < 1900 || annee > 2024)
+        {
+            erreurTxt.text = "Entrez une année valide.";
+            erreurTxt.gameObject.SetActive(true);
+            return;
+        }
+
+        // Vérifier si les mots de passe sont identiques
+        if (PasswordInput.text != ConfirmPasswordInput.text)
+        {
+            erreurTxt.text = "Les mots de passe ne correspondent pas.";
+            erreurTxt.gameObject.SetActive(true);
+            return;
+        }
         if (
             !string.IsNullOrEmpty(username)
             && !string.IsNullOrEmpty(password)
@@ -268,4 +307,6 @@ public class CreatAccountScreen : MonoBehaviour
             erreurTxt.gameObject.SetActive(false);
         }
     }
+
+    
 }
