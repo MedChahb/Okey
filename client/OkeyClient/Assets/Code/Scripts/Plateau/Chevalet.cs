@@ -1047,6 +1047,36 @@ public class Chevalet : MonoBehaviour
         }
 
         return new List<List<TuileData>> { rouges, bleus, noirs, jaunes, okeys };
+    }
+
+    public void TriChevalet()
+    {
+        List<List<TuileData>> groupedByColor = this.GroupByCouleur(this.Tuiles2D); // 5 lists
+
+        List<TuileData> serieMemeCouleurFinale = [];
+        List<TuileData> resteDeMemeCouleurFinale = [];
+
+        for(int i = 0; i<4; i++)
+        {
+            List<TuileData> serieMemeCouleur = [];
+            List<TuileData> resteDeMemeCouleur = [];
+            (serieMemeCouleur, resteDeMemeCouleur) = this.TriCouleur(groupedByColor[i]);
+
+            serieMemeCouleurFinale.AddRange(serieMemeCouleur);
+            resteDeMemeCouleurFinale.AddRange(resteDeMemeCouleur);
+            // ajout de l'espace null
+        }
+        // ne pas oublier les okeys
+
+
+        List<TuileData> serieDansReste = [];
+        List<TuileData> resteDansReste = [];
+
+        (serieDansReste, resteDansReste) = this.triChiffre(resteDeMemeCouleurFinale);
+
+        // on ajoute toutes les bonnes series ici .
+        serieMemeCouleurFinale.AddRange(serieDansReste);
+
     }*/
 }
 
