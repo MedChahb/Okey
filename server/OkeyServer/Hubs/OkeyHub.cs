@@ -1090,12 +1090,31 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="ConnectionIds">Liste des ID de connexion des utilisateurs.</param>
     /// <param name="EmoteName">Nom de l'émote.</param>
-    public Task EnvoyerEmoteAll(EmotePacket packetEmote)
+    public async Task EnvoyerEmoteAll(EmotePacket packetEmote)
     {
         Console.WriteLine(
             $"{packetEmote.PlayerSource} veut envoyer l'emote {packetEmote.EmoteValue}"
         );
-        return Task.CompletedTask;
+
+        if (packetEmote.PlayerSource != null && packetEmote.EmoteValue != null)
+        {
+            var roomId = UsersInRooms[packetEmote.PlayerSource];
+
+            foreach (var player in this._roomManager.GetRoomById(roomId).Players)
+            {
+                if (
+                    !_connectedUsers[player]
+                        .GetUsername()
+                        .Equals(packetEmote.PlayerSource, StringComparison.Ordinal)
+                ) { }
+
+                {
+                    await this
+                        ._hubContext.Clients.Client(player)
+                        .SendAsync("ReceiveEmote", packetEmote);
+                }
+            }
+        }
 
         /*
         foreach (var connectionId in ConnectionIds)
