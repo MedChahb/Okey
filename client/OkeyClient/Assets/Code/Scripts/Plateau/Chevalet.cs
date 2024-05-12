@@ -1089,9 +1089,89 @@ public class Chevalet : MonoBehaviour
 
     }
 
-    public void triEnCouple()
+    public void TriEnCouple()
     {
+        // Dictionnaire pour compter les tuiles par couleur et numéro
+        var tuileCount = new Dictionary<(string, int), List<TuileData>>();
 
+        // Parcourir le tableau 2D et remplir le dictionnaire
+        for (int i = 0; i < Tuiles2D.GetLength(0); i++)
+        {
+            for (int j = 0; j < Tuiles2D.GetLength(1); j++)
+            {
+                var tuile = Tuiles2D[i, j];
+                if (tuile != null)
+                {
+                    var key = (tuile.Couleur, tuile.Numero);
+                    if (!tuileCount.ContainsKey(key))
+                    {
+                        tuileCount[key] = new List<TuileData>();
+                    }
+                    tuileCount[key].Add(tuile);
+                }
+            }
+        }
+
+        // Réinitialiser Tuiles2D
+        Tuiles2D = new TuileData[2, 14];
+        int row = 0, col = 0;
+
+        List<TuileData> remainingTiles = new List<TuileData>();
+
+        // Parcourir le dictionnaire et placer les couples dans Tuiles2D
+        foreach (var kvp in tuileCount)
+        {
+            var tuileList = kvp.Value;
+            while (tuileList.Count >= 2)
+            {
+                if (col >= Tuiles2D.GetLength(1))
+                {
+                    col = 0;
+                    row++;
+                    if (row >= Tuiles2D.GetLength(0)) return; // Arrêter si on dépasse les limites
+                }
+
+                // Ajouter le couple
+                Tuiles2D[row, col] = tuileList[0];
+                Tuiles2D[row, col + 1] = tuileList[1];
+                // Supprimer les deux tuiles ajoutées
+                tuileList.RemoveAt(0);
+                tuileList.RemoveAt(0);
+
+                // Mettre null après le couple
+                if (col + 2 < Tuiles2D.GetLength(1))
+                {
+                    Tuiles2D[row, col + 2] = null;
+                    col += 3;
+                }
+                else
+                {
+                    col = 0;
+                    row++;
+                    if (row < Tuiles2D.GetLength(0))
+                    {
+                        Tuiles2D[row, col] = null;
+                        col++;
+                    }
+                }
+            }
+
+            // Ajouter les tuiles restantes au remainingTiles
+            remainingTiles.AddRange(tuileList);
+        }
+
+        // Ajouter les tuiles restantes à la fin de Tuiles2D
+        foreach (var tuile in remainingTiles)
+        {
+            if (col >= Tuiles2D.GetLength(1))
+            {
+                col = 0;
+                row++;
+                if (row >= Tuiles2D.GetLength(0)) return; // Arrêter si on dépasse les limites
+            }
+            Tuiles2D[row, col] = tuile;
+            col++;
+        }
     }*/
 }
 
