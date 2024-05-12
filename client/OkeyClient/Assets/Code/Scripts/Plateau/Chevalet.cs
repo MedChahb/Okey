@@ -934,6 +934,45 @@ public class Chevalet : MonoBehaviour
         var tuilesTriees = tuiles.OrderBy(tuile => tuile.num).ToList();
         return tuilesTriees;
     }
+
+    public (List<TuileData>, List<TuileData>) TriCouleur(List<Tuile> tuiles)
+    {
+        List<TuileData> tuilesTriees = this.TrierTuilesParNumero(tuiles);
+        List<TuileData> series = new List<TuileData>();
+        List<TuileData> nonSeries = new List<TuileData>();
+
+        // Variables pour suivre la série actuelle
+        List<TuileData> currentSeries = new List<TuileData>();
+
+        for (int i = 0; i < tuilesTriees.Count; i++)
+        {
+            // Ajouter la tuile actuelle à la série en cours
+            currentSeries.Add(tuilesTriees[i]);
+
+            // Vérifier si la tuile suivante n'est pas consécutive ou s'il n'y a plus de tuiles
+            if (
+                i == tuilesTriees.Count - 1
+                || tuilesTriees[i + 1].Numero != tuilesTriees[i].Numero + 1
+            )
+            {
+                // Si la série est valide (au moins 3 tuiles), ajouter à la liste des séries
+                if (currentSeries.Count >= 3)
+                {
+                    series.AddRange(currentSeries);
+                }
+                else
+                {
+                    // Sinon, ajouter à la liste des non-séries
+                    nonSeries.AddRange(currentSeries);
+                }
+
+                // Réinitialiser la série en cours
+                currentSeries = new List<TuileData>();
+            }
+        }
+
+        return (series, nonSeries);
+    }
 }
 
 
