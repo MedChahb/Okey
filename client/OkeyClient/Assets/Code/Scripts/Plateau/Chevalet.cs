@@ -935,7 +935,7 @@ public class Chevalet : MonoBehaviour
         return tuilesTriees;
     }
 
-    public (List<TuileData>, List<TuileData>) TriCouleur(List<TuileData> tuiles)
+    private (List<TuileData>, List<TuileData>) TriCouleur(List<TuileData> tuiles)
     {
         List<TuileData> tuilesTriees = this.TrierTuilesParNumero(tuiles);
         List<TuileData> series = new List<TuileData>();
@@ -950,7 +950,10 @@ public class Chevalet : MonoBehaviour
             currentSeries.Add(tuilesTriees[i]);
 
             // Vérifier si la tuile suivante n'est pas consécutive ou s'il n'y a plus de tuiles
-            if (i == tuilesTriees.Count - 1 || tuilesTriees[i + 1].num != tuilesTriees[i].num + 1)
+            if (
+                i == tuilesTriees.Count - 1
+                || tuilesTriees[i + 1].Numero != tuilesTriees[i].Numero + 1
+            )
             {
                 // Si la série est valide (au moins 3 tuiles), ajouter à la liste des séries
                 if (currentSeries.Count >= 3)
@@ -1004,6 +1007,46 @@ public class Chevalet : MonoBehaviour
         }
 
         return (memesNumeros, restantes);
+    }
+
+    private List<List<TuileData>> GroupByCouleur(TuileData[,] Matrice)
+    {
+        List<TuileData> rouges = new List<TuileData>();
+        List<TuileData> bleus = new List<TuileData>();
+        List<TuileData> noirs = new List<TuileData>();
+        List<TuileData> jaunes = new List<TuileData>();
+        List<TuileData> okeys = new List<TuileData>();
+
+        for (int i = 0; i < Matrice.GetLength(0); i++)
+        {
+            for (int j = 0; j < Matrice.GetLength(1); j++)
+            {
+                TuileData tuile = Matrice[i, j];
+                if (tuile != null)
+                {
+                    switch (tuile.Couleur.ToLower())
+                    {
+                        case "rouge":
+                            rouges.Add(tuile);
+                            break;
+                        case "bleu":
+                            bleus.Add(tuile);
+                            break;
+                        case "noir":
+                            noirs.Add(tuile);
+                            break;
+                        case "jaune":
+                            jaunes.Add(tuile);
+                            break;
+                        case "multicolor":
+                            okeys.Add(tuile);
+                            break;
+                    }
+                }
+            }
+        }
+
+        return new List<List<TuileData>> { rouges, bleus, noirs, jaunes, okeys };
     }*/
 }
 
