@@ -1090,22 +1090,28 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="ConnectionIds">Liste des ID de connexion des utilisateurs.</param>
     /// <param name="EmoteName">Nom de l'émote.</param>
-    private async Task EnvoyerEmoteAll(List<string> ConnectionIds, string EmoteName)
+    public Task EnvoyerEmoteAll(EmotePacket packetEmote)
     {
+        Console.WriteLine(
+            $"{packetEmote.PlayerSource} veut envoyer l'emote {packetEmote.EmoteValue}"
+        );
+        return Task.CompletedTask;
+
+        /*
         foreach (var connectionId in ConnectionIds)
         {
             try
             {
                 await this
                     ._hubContext.Clients.Client(connectionId)
-                    .SendAsync("ReceiveEmote", new EmotePacket { EmoteName = EmoteName });
+                    .SendAsync("ReceiveEmote", new EmotePacket { EmoteValue = 1 });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 throw;
             }
-        }
+        }*/
     }
 
     /// <summary>
@@ -1593,7 +1599,7 @@ public sealed class OkeyHub : Hub
                         && pioche.EndsWith(":", StringComparison.OrdinalIgnoreCase)
                     )
                     {
-                        await this.EnvoyerEmoteAll(playerIds, pioche);
+                        //await this.EnvoyerEmoteAll(playerIds, pioche);
                         continue;
                     }
                     else
