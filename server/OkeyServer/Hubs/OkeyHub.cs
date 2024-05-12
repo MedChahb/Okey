@@ -1094,15 +1094,9 @@ public sealed class OkeyHub : Hub
         Console.WriteLine(
             $"{packetEmote.PlayerSource} veut envoyer l'emote {packetEmote.EmoteValue}"
         );
-
         if (packetEmote.PlayerSource != null && packetEmote.EmoteValue != null)
         {
-            var connId = _connectedUsers
-                .FirstOrDefault(x =>
-                    x.Value.GetUsername().Equals(packetEmote.PlayerSource, StringComparison.Ordinal)
-                )
-                .Key;
-            var roomId = UsersInRooms[connId];
+            var roomId = UsersInRooms[packetEmote.PlayerSource];
             await this._hubContext.Clients.Group(roomId).SendAsync("ReceiveEmote", packetEmote);
         }
     }
