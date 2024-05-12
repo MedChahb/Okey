@@ -135,7 +135,13 @@ unity-linux-test:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-base-3.0.1
   stage: build
-  dependencies: []
+  needs:
+    - job: unity-linux-local-test
+      artifacts: false
+    - job: unity-mac-local-test
+      artifacts: false
+    - job: unity-windows-local-test
+      artifacts: false
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Linux
   before_script:
@@ -167,7 +173,13 @@ unity-mac-test:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-mac-mono-3.0.1
   stage: build
-  dependencies: []
+  needs:
+    - job: unity-linux-local-test
+      artifacts: false
+    - job: unity-mac-local-test
+      artifacts: false
+    - job: unity-windows-local-test
+      artifacts: false
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Mac
   before_script:
@@ -200,7 +212,13 @@ unity-windows-test:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-windows-mono-3.0.1
   stage: build
-  dependencies: []
+  needs:
+    - job: unity-linux-local-test
+      artifacts: false
+    - job: unity-mac-local-test
+      artifacts: false
+    - job: unity-windows-local-test
+      artifacts: false
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Windows
   before_script:
@@ -329,7 +347,13 @@ unity-linux-release:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-base-3.0.1
   stage: build
-  dependencies: []
+  needs:
+    - job: unity-linux-test
+      artifacts: false
+    - job: unity-mac-test
+      artifacts: false
+    - job: unity-windows-test
+      artifacts: false
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Linux
     ENV_FILE: unity-linux-release.env
@@ -366,7 +390,13 @@ unity-mac-release:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-mac-mono-3.0.1
   stage: build
-  dependencies: []
+  needs:
+    - job: unity-linux-test
+      artifacts: false
+    - job: unity-mac-test
+      artifacts: false
+    - job: unity-windows-test
+      artifacts: false
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Mac
     ENV_FILE: unity-mac-release.env
@@ -404,7 +434,13 @@ unity-windows-release:
   image:
     name: unityci/editor:ubuntu-2022.3.19f1-windows-mono-3.0.1
   stage: build
-  dependencies: []
+  needs:
+    - job: unity-linux-test
+      artifacts: false
+    - job: unity-mac-test
+      artifacts: false
+    - job: unity-windows-test
+      artifacts: false
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Windows
     ENV_FILE: unity-windows-release.env
