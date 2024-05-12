@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Code.Scripts.SignalR.Packets;
 using Code.Scripts.SignalR.Packets.Rooms;
@@ -20,7 +22,11 @@ public class SignalRConnector : MonoBehaviour
 
     public async void InitializeConnection()
     {
-        this._hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
+        Debug.LogWarning(Constants.SIGNALR_HUB_URL);
+
+        this._hubConnection = new HubConnectionBuilder()
+            .WithUrl(Constants.SIGNALR_HUB_URL)
+            .Build();
 
         this.ConfigureHubEvents();
 
@@ -971,14 +977,14 @@ public class SignalRConnector : MonoBehaviour
                 var experience = tabP[i].transform.GetChild(3);
 
                 username.transform.GetComponent<TextMeshProUGUI>().text = dSplit[0];
-                avatar.transform.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(
-                    "Avatar/avatarn" + dSplit[1]
-                );
+                var res = Resources.Load<Sprite>("Avatar/avatarn" + dSplit[1]);
                 avatar.transform.GetComponent<SpriteRenderer>().transform.localScale = new Vector3(
-                    0.342f,
-                    0.342f,
+                    50f, //0.342f,
+                    50f, //0.342f,
                     1f
                 );
+                avatar.transform.GetComponent<SpriteRenderer>().sortingOrder = 5;
+                avatar.transform.GetComponent<SpriteRenderer>().sprite = res;
                 if (dSplit[0].Equals("Guest", StringComparison.Ordinal))
                 {
                     elo.transform.GetComponent<TextMeshProUGUI>().text = "";
