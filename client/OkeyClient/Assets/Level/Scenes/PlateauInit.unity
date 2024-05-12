@@ -4678,11 +4678,6 @@ MonoBehaviour:
   - {fileID: 1210995087}
   - {fileID: 1986471622}
   gameDisplayText: {fileID: 2091376650}
-  words:
-  - Bonjour
-  - Bonne chance
-  - Merci
-  - Super
 --- !u!114 &1101884193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8462,7 +8457,7 @@ GameObject:
   - component: {fileID: 2091376651}
   - component: {fileID: 2091376650}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TextSelected
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
