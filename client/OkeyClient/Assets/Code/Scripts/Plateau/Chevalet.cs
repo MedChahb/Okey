@@ -959,6 +959,7 @@ public class Chevalet : MonoBehaviour
                 if (currentSeries.Count >= 3)
                 {
                     series.AddRange(currentSeries);
+                    series.Add(null); // peut causer des erreus de debordements
                 }
                 else
                 {
@@ -970,6 +971,7 @@ public class Chevalet : MonoBehaviour
                 currentSeries = new List<TuileData>();
             }
         }
+
 
         return (series, nonSeries);
     }
@@ -999,6 +1001,7 @@ public class Chevalet : MonoBehaviour
             if (groupe.Select(t => t.Couleur).Distinct().Count() > 1)
             {
                 memesNumeros.AddRange(groupe);
+                memesNumeros.Add(null); // peut causer des erreurs
             }
             else
             {
@@ -1053,29 +1056,41 @@ public class Chevalet : MonoBehaviour
     {
         List<List<TuileData>> groupedByColor = this.GroupByCouleur(this.Tuiles2D); // 5 lists
 
-        List<TuileData> serieMemeCouleurFinale = [];
+        List<TuileData> serieFinale = [];
         List<TuileData> resteDeMemeCouleurFinale = [];
 
-        for(int i = 0; i<4; i++)
+        for (int i = 0; i < 4; i++)
         {
             List<TuileData> serieMemeCouleur = [];
             List<TuileData> resteDeMemeCouleur = [];
             (serieMemeCouleur, resteDeMemeCouleur) = this.TriCouleur(groupedByColor[i]);
 
-            serieMemeCouleurFinale.AddRange(serieMemeCouleur);
+            serieFinale.AddRange(serieMemeCouleur);
             resteDeMemeCouleurFinale.AddRange(resteDeMemeCouleur);
-            // ajout de l'espace null
         }
-        // ne pas oublier les okeys
-
 
         List<TuileData> serieDansReste = [];
         List<TuileData> resteDansReste = [];
 
+        //resteDansReste c'est le reste a mettre dans le chevalet.
         (serieDansReste, resteDansReste) = this.triChiffre(resteDeMemeCouleurFinale);
+        List<TuileData> okeys = groupedByColor[4];
+        resteDansReste.AddRange(okeys);
 
         // on ajoute toutes les bonnes series ici .
-        serieMemeCouleurFinale.AddRange(serieDansReste);
+        serieFinale.AddRange(serieDansReste);
+
+        // il reste a placer les tuiles dans le chevalet
+        int i = 0, j = 0; // pour le parcours de chevalet
+        foreach(var t in serieFinale)
+        {
+
+        }
+
+    }
+
+    public void triEnCouple()
+    {
 
     }*/
 }
