@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Code.Scripts.SignalR.Packets;
 using Unity.VisualScripting;
@@ -927,6 +928,171 @@ public class Chevalet : MonoBehaviour
         }
         return num;
     }
+
+    /*private List<TuileData> TrierTuilesParNumero(List<TuileData> tuiles)
+    {
+        var tuilesTriees = tuiles.OrderBy(tuile => tuile.num).ToList();
+        return tuilesTriees;
+    }
+
+    private (List<TuileData>, List<TuileData>) TriCouleur(List<TuileData> tuiles)
+    {
+        List<TuileData> tuilesTriees = this.TrierTuilesParNumero(tuiles);
+        List<TuileData> series = new List<TuileData>();
+        List<TuileData> nonSeries = new List<TuileData>();
+
+        // Variables pour suivre la série actuelle
+        List<TuileData> currentSeries = new List<TuileData>();
+
+        for (int i = 0; i < tuilesTriees.Count; i++)
+        {
+            // Ajouter la tuile actuelle à la série en cours
+            currentSeries.Add(tuilesTriees[i]);
+
+            // Vérifier si la tuile suivante n'est pas consécutive ou s'il n'y a plus de tuiles
+            if (
+                i == tuilesTriees.Count - 1
+                || tuilesTriees[i + 1].Numero != tuilesTriees[i].Numero + 1
+            )
+            {
+                // Si la série est valide (au moins 3 tuiles), ajouter à la liste des séries
+                if (currentSeries.Count >= 3)
+                {
+                    series.AddRange(currentSeries);
+                    series.Add(null); // peut causer des erreus de debordements
+                }
+                else
+                {
+                    // Sinon, ajouter à la liste des non-séries
+                    nonSeries.AddRange(currentSeries);
+                }
+
+                // Réinitialiser la série en cours
+                currentSeries = new List<TuileData>();
+            }
+        }
+
+
+        return (series, nonSeries);
+    }
+
+    private (List<TuileData>, List<TuileData>) triChiffre(List<TuileData> nonSerie)
+    {
+        // Dictionnaire pour stocker les tuiles par numéro
+        Dictionary<int, List<TuileData>> tuilesParNumero = new Dictionary<int, List<TuileData>>();
+
+        // Parcourir les tuiles et les regrouper par numéro
+        foreach (var tuile in nonSerie)
+        {
+            if (!tuilesParNumero.ContainsKey(tuile.Numero))
+            {
+                tuilesParNumero[tuile.Numero] = new List<TuileData>();
+            }
+            tuilesParNumero[tuile.Numero].Add(tuile);
+        }
+
+        List<TuileData> memesNumeros = new List<TuileData>();
+        List<TuileData> restantes = new List<TuileData>();
+
+        // Vérifier les groupes de tuiles pour des couleurs différentes
+        foreach (var entry in tuilesParNumero)
+        {
+            var groupe = entry.Value;
+            if (groupe.Select(t => t.Couleur).Distinct().Count() > 1)
+            {
+                memesNumeros.AddRange(groupe);
+                memesNumeros.Add(null); // peut causer des erreurs
+            }
+            else
+            {
+                restantes.AddRange(groupe);
+            }
+        }
+
+        return (memesNumeros, restantes);
+    }
+
+    private List<List<TuileData>> GroupByCouleur(TuileData[,] Matrice)
+    {
+        List<TuileData> rouges = new List<TuileData>();
+        List<TuileData> bleus = new List<TuileData>();
+        List<TuileData> noirs = new List<TuileData>();
+        List<TuileData> jaunes = new List<TuileData>();
+        List<TuileData> okeys = new List<TuileData>();
+
+        for (int i = 0; i < Matrice.GetLength(0); i++)
+        {
+            for (int j = 0; j < Matrice.GetLength(1); j++)
+            {
+                TuileData tuile = Matrice[i, j];
+                if (tuile != null)
+                {
+                    switch (tuile.Couleur.ToLower())
+                    {
+                        case "rouge":
+                            rouges.Add(tuile);
+                            break;
+                        case "bleu":
+                            bleus.Add(tuile);
+                            break;
+                        case "noir":
+                            noirs.Add(tuile);
+                            break;
+                        case "jaune":
+                            jaunes.Add(tuile);
+                            break;
+                        case "multicolor":
+                            okeys.Add(tuile);
+                            break;
+                    }
+                }
+            }
+        }
+
+        return new List<List<TuileData>> { rouges, bleus, noirs, jaunes, okeys };
+    }
+
+    public void TriChevalet()
+    {
+        List<List<TuileData>> groupedByColor = this.GroupByCouleur(this.Tuiles2D); // 5 lists
+
+        List<TuileData> serieFinale = [];
+        List<TuileData> resteDeMemeCouleurFinale = [];
+
+        for (int i = 0; i < 4; i++)
+        {
+            List<TuileData> serieMemeCouleur = [];
+            List<TuileData> resteDeMemeCouleur = [];
+            (serieMemeCouleur, resteDeMemeCouleur) = this.TriCouleur(groupedByColor[i]);
+
+            serieFinale.AddRange(serieMemeCouleur);
+            resteDeMemeCouleurFinale.AddRange(resteDeMemeCouleur);
+        }
+
+        List<TuileData> serieDansReste = [];
+        List<TuileData> resteDansReste = [];
+
+        //resteDansReste c'est le reste a mettre dans le chevalet.
+        (serieDansReste, resteDansReste) = this.triChiffre(resteDeMemeCouleurFinale);
+        List<TuileData> okeys = groupedByColor[4];
+        resteDansReste.AddRange(okeys);
+
+        // on ajoute toutes les bonnes series ici .
+        serieFinale.AddRange(serieDansReste);
+
+        // il reste a placer les tuiles dans le chevalet
+        int i = 0, j = 0; // pour le parcours de chevalet
+        foreach(var t in serieFinale)
+        {
+
+        }
+
+    }
+
+    public void triEnCouple()
+    {
+
+    }*/
 }
 
 

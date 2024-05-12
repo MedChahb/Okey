@@ -1,3 +1,5 @@
+using System.Net;
+
 public static class Constants
 {
     public const int MAX_JOUEURS = 4;
@@ -21,7 +23,7 @@ public static class Constants
 #if LOCAL
         "http://localhost/OkeyHub";
 #elif (DEBUG || UNITY_EDITOR)
-        "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-0/OkeyHub";
+        "http://localhost/OkeyHub";
 #else
         "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-1/OkeyHub";
 #endif

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -17,9 +18,24 @@ public class Plateau2 : MonoBehaviour
     public Button[] wordButtons; // Boutons pour les mots
     public TextMeshProUGUI gameDisplayText; // Texte affiché sur le plateau de jeu
 
+    public static Plateau2 Instance { get; private set; }
+
     // Fonction pour activer le Confirmation_Panel et désactiver le Plateau_Panel
     // Tableau des mots, assurez-vous que cela correspond à l'ordre des boutons
 
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+        DontDestroyOnLoad(this.gameObject);
+    }
 
     public void OnWordButtonClicked(int buttonIndex)
     {
@@ -37,6 +53,7 @@ public class Plateau2 : MonoBehaviour
         {
             Debug.Log($"Displaying word: {words[buttonIndex]}");
             gameDisplayText.text = words[buttonIndex];
+            SignalRConnector.Instance.SendEmoji(4 + buttonIndex);
             StartCoroutine(ClearTextAfterDelay(gameDisplayText, 2f));
             EmojiPanel.SetActive(false);
         }
@@ -47,6 +64,8 @@ public class Plateau2 : MonoBehaviour
             );
         }
     }
+
+    public void DisplayEmote(int playerNumber, int emoteNumber) { }
 
     IEnumerator ClearTextAfterDelay(TextMeshProUGUI textComponent, float delay)
     {
@@ -78,6 +97,7 @@ public class Plateau2 : MonoBehaviour
 
         // Change le sprite de l'objet Image pour correspondre à l'émoji sélectionné
         EmojiDisplay.sprite = emojiSprites[emojiIndex];
+        SignalRConnector.Instance.SendEmoji(emojiIndex);
 
         // Active l'objet Image pour afficher l'émoji et le désactive après 2 secondes
         EmojiDisplay.gameObject.SetActive(true);
