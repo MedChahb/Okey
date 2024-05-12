@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Code.Scripts.SignalR.Packets;
 using Unity.VisualScripting;
@@ -926,6 +927,12 @@ public class Chevalet : MonoBehaviour
             }
         }
         return num;
+    }
+
+    private List<TuileData> TrierTuilesParNumero(List<TuileData> tuiles)
+    {
+        List<TuileData> tuilesTriees = tuiles.OrderBy(tuile => tuile.Numero).ToList();
+        return tuilesTriees;
     }
 }
 
