@@ -175,11 +175,18 @@ public class CreatAccountScreen : MonoBehaviour
         string username = Username.text.Trim();
         string password = Password.text.Trim();
         string passwordValidation = PasswordValidation.text.Trim();
-        int jour, mois, annee;
+        int jour,
+            mois,
+            annee;
 
-        if (!int.TryParse(DayInput.text, out jour) || !int.TryParse(MonthInput.text, out mois) || !int.TryParse(YearInput.text, out annee))
+        if (
+            !int.TryParse(DayInput.text, out jour)
+            || !int.TryParse(MonthInput.text, out mois)
+            || !int.TryParse(YearInput.text, out annee)
+        )
         {
-            erreurTxt.text = "Veuillez entrer des nombres valides pour le jour, le mois et l'année.";
+            erreurTxt.text =
+                "Veuillez entrer des nombres valides pour le jour, le mois et l'année.";
             erreurTxt.gameObject.SetActive(true);
             return;
         }
@@ -308,6 +315,4 @@ public class CreatAccountScreen : MonoBehaviour
             erreurTxt.gameObject.SetActive(false);
         }
     }
-
-    
 }

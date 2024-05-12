@@ -32,8 +32,6 @@ public class SignalRConnector : MonoBehaviour
 
     public async void InitializeConnection()
     {
-        Debug.LogWarning(Constants.SIGNALR_HUB_URL);
-
         this._hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
 
         this.ConfigureHubEvents();
@@ -147,7 +145,7 @@ public class SignalRConnector : MonoBehaviour
                             );
                             if (player == _hubConnection.ConnectionId.Trim().ToLower())
                             {
-                                LobbyManager.Instance.mainPlayer = player;
+                                LobbyManager.mainPlayer = player;
                                 LobbyManager.Instance.mainPlayerUsername = username;
                                 Debug.Log("MainPlayer: " + player);
                             }
@@ -156,17 +154,17 @@ public class SignalRConnector : MonoBehaviour
                                 switch (otherPlayerIndex)
                                 {
                                     case 0:
-                                        LobbyManager.Instance.player2 = player;
+                                        LobbyManager.player2 = player;
                                         LobbyManager.Instance.player2Username = username;
                                         // Debug.Log($"Player 2 set to: {player}");
                                         break;
                                     case 1:
-                                        LobbyManager.Instance.player3 = player;
+                                        LobbyManager.player3 = player;
                                         LobbyManager.Instance.player3Username = username;
                                         // Debug.Log($"Player 3 set to: {player}");
                                         break;
                                     case 2:
-                                        LobbyManager.Instance.player4 = player;
+                                        LobbyManager.player4 = player;
                                         LobbyManager.Instance.player4Username = username;
                                         // Debug.Log($"Player 4 set to: {player}");
                                         break;
@@ -568,49 +566,51 @@ public class SignalRConnector : MonoBehaviour
 
         this._hubConnection.On<EmotePacket>(
             "ReceiveEmote",
-            async (packet) =>
+            (packet) =>
             {
+                Debug.Log($"On a recu l'emote de {packet.PlayerSource}");
                 if (packet.PlayerSource != null && packet.EmoteValue != null)
                 {
-                    if (
-                        packet.PlayerSource.Equals(
-                            LobbyManager.Instance.mainPlayerUsername,
-                            StringComparison.Ordinal
-                        )
-                    )
+                    var src = packet.PlayerSource.Trim().ToLower();
+                    Debug.Log("On rentre bien ici");
+                    if (src.Equals(LobbyManager.player2, StringComparison.Ordinal))
                     {
-                        // On ne fait rien enfaite, aucun affichage necessaire
-                        Debug.LogWarning("On a recu l'emote de sois meme");
+                        Debug.Log("joueur a droite");
+                        MainThreadDispatcher.Enqueue(() =>
+                        {
+                            Plateau2.Instance.DisplayEmote(2, (int)packet.EmoteValue);
+                        });
                     }
-                    else if (
-                        packet.PlayerSource.Equals(
-                            LobbyManager.Instance.player2Username,
-                            StringComparison.Ordinal
-                        )
-                    )
+                    else if (src.Equals(LobbyManager.player3, StringComparison.Ordinal))
                     {
-                        Plateau2.Instance.DisplayEmote(2, (int)packet.EmoteValue);
+                        Debug.Log("joueur en face");
+                        MainThreadDispatcher.Enqueue(() =>
+                        {
+                            Plateau2.Instance.DisplayEmote(3, (int)packet.EmoteValue);
+                        });
                     }
-                    else if (
-                        packet.PlayerSource.Equals(
-                            LobbyManager.Instance.player3Username,
-                            StringComparison.Ordinal
-                        )
-                    )
+                    else if (src.Equals(LobbyManager.player4, StringComparison.Ordinal))
                     {
-                        Plateau2.Instance.DisplayEmote(3, (int)packet.EmoteValue);
+                        Debug.Log("joueur a gauche");
+                        MainThreadDispatcher.Enqueue(() =>
+                        {
+                            Plateau2.Instance.DisplayEmote(4, (int)packet.EmoteValue);
+                        });
                     }
-                    else if (
-                        packet.PlayerSource.Equals(
-                            LobbyManager.Instance.player4Username,
-                            StringComparison.Ordinal
-                        )
-                    )
+                    else if (src.Equals(LobbyManager.mainPlayer, StringComparison.Ordinal))
                     {
-                        Plateau2.Instance.DisplayEmote(4, (int)packet.EmoteValue);
+                        Debug.Log($"{packet.PlayerSource} <-> {LobbyManager.mainPlayer}");
                     }
-                    //Erreur...
+                    else
+                    {
+                        Debug.LogError("Impossible de detecter la source");
+                        Debug.Log(LobbyManager.player2);
+                        Debug.Log(LobbyManager.player3);
+                        Debug.Log(LobbyManager.player4);
+                        Debug.Log(LobbyManager.mainPlayer);
+                    }
                 }
+                return Task.CompletedTask;
             }
         );
 
@@ -1092,7 +1092,7 @@ public class SignalRConnector : MonoBehaviour
         var emotePacket = new EmotePacket
         {
             EmoteValue = indexEmoji,
-            PlayerSource = JoueurManager.Instance.GetSelfJoueur().NomUtilisateur
+            PlayerSource = this._hubConnection.ConnectionId
         };
         await this._hubConnection.SendAsync("EnvoyerEmoteAll", emotePacket);
     }

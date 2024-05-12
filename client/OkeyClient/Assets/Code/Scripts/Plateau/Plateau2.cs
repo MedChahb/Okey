@@ -20,6 +20,16 @@ public class Plateau2 : MonoBehaviour
 
     public static Plateau2 Instance { get; private set; }
 
+    private string[] words =
+    {
+        "Bonne chance",
+        "Bien joué !",
+        "Super Combat",
+        "Merci !",
+        "Super !",
+        "Aie...."
+    };
+
     // Fonction pour activer le Confirmation_Panel et désactiver le Plateau_Panel
     // Tableau des mots, assurez-vous que cela correspond à l'ordre des boutons
 
@@ -39,21 +49,13 @@ public class Plateau2 : MonoBehaviour
 
     public void OnWordButtonClicked(int buttonIndex)
     {
-        string[] words =
-        {
-            "Bonne chance",
-            "Bien joué !",
-            "Super Combat",
-            "Merci !",
-            "Super !",
-            "Aie...."
-        };
         Debug.Log($"Button clicked with index: {buttonIndex}");
-        if (buttonIndex >= 0 && buttonIndex < words.Length)
+        if (buttonIndex >= 0 && buttonIndex < this.words.Length)
         {
-            Debug.Log($"Displaying word: {words[buttonIndex]}");
-            gameDisplayText.text = words[buttonIndex];
+            Debug.Log($"Displaying word: {this.words[buttonIndex]}");
+            gameDisplayText.text = this.words[buttonIndex];
             SignalRConnector.Instance.SendEmoji(4 + buttonIndex);
+            Debug.LogWarning("On a bien envoyé le texte");
             StartCoroutine(ClearTextAfterDelay(gameDisplayText, 2f));
             EmojiPanel.SetActive(false);
         }
@@ -65,7 +67,80 @@ public class Plateau2 : MonoBehaviour
         }
     }
 
-    public void DisplayEmote(int playerNumber, int emoteNumber) { }
+    public void DisplayEmote(int playerNumber, int emoteNumber)
+    {
+        var playerSignals = this.PlateauPanel.transform.GetChild(7);
+
+        if (playerNumber == 2)
+        {
+            Debug.Log("Joueur de droite");
+            var player = playerSignals.transform.GetChild(1);
+            if (emoteNumber < 4)
+            {
+                var image = player.transform.GetChild(1);
+                Debug.Log($"{image.name}");
+                var noneSprite = image.GetComponent<SpriteRenderer>().sprite;
+                var sprite = image.GetComponent<SpriteRenderer>();
+                sprite.sprite = this.emojiSprites[emoteNumber];
+                this.StartCoroutine(this.WaitForEraseSprite(sprite, noneSprite));
+            }
+            else
+            {
+                var text = player.transform.GetChild(2);
+                var realText = text.GetComponent<TextMeshProUGUI>();
+                realText.text = this.words[emoteNumber - 4];
+                this.StartCoroutine(this.ClearTextAfterDelay(realText, 2f));
+            }
+        }
+        else if (playerNumber == 3)
+        {
+            Debug.Log("Joueur en face");
+            var player = playerSignals.transform.GetChild(2);
+            if (emoteNumber < 4)
+            {
+                var image = player.transform.GetChild(1);
+                Debug.Log($"{image.name}");
+                var noneSprite = image.GetComponent<SpriteRenderer>().sprite;
+                var sprite = image.GetComponent<SpriteRenderer>();
+                sprite.sprite = this.emojiSprites[emoteNumber];
+                this.StartCoroutine(this.WaitForEraseSprite(sprite, noneSprite));
+            }
+            else
+            {
+                var text = player.transform.GetChild(2);
+                var realText = text.GetComponent<TextMeshProUGUI>();
+                realText.text = this.words[emoteNumber - 4];
+                this.StartCoroutine(this.ClearTextAfterDelay(realText, 2f));
+            }
+        }
+        else if (playerNumber == 4)
+        {
+            Debug.Log("Joueur de gauche");
+            var player = playerSignals.transform.GetChild(3);
+            if (emoteNumber < 4)
+            {
+                var image = player.transform.GetChild(1);
+                Debug.Log($"{image.name}");
+                var noneSprite = image.GetComponent<SpriteRenderer>().sprite;
+                var sprite = image.GetComponent<SpriteRenderer>();
+                sprite.sprite = this.emojiSprites[emoteNumber];
+                this.StartCoroutine(this.WaitForEraseSprite(sprite, noneSprite));
+            }
+            else
+            {
+                var text = player.transform.GetChild(2);
+                var realText = text.GetComponent<TextMeshProUGUI>();
+                realText.text = this.words[emoteNumber - 4];
+                this.StartCoroutine(this.ClearTextAfterDelay(realText, 2f));
+            }
+        }
+    }
+
+    IEnumerator WaitForEraseSprite(SpriteRenderer sp, Sprite s)
+    {
+        yield return new WaitForSeconds(2);
+        sp.sprite = s;
+    }
 
     IEnumerator ClearTextAfterDelay(TextMeshProUGUI textComponent, float delay)
     {
@@ -96,12 +171,13 @@ public class Plateau2 : MonoBehaviour
             return;
 
         // Change le sprite de l'objet Image pour correspondre à l'émoji sélectionné
-        EmojiDisplay.sprite = emojiSprites[emojiIndex];
+        //EmojiDisplay.sprite = emojiSprites[emojiIndex];
         SignalRConnector.Instance.SendEmoji(emojiIndex);
+        Debug.LogWarning("On a bien envoyé l'emoji");
 
         // Active l'objet Image pour afficher l'émoji et le désactive après 2 secondes
         EmojiDisplay.gameObject.SetActive(true);
-        StartCoroutine(DisableAfterDelay(EmojiDisplay.gameObject, 2f));
+        //StartCoroutine(DisableAfterDelay(EmojiDisplay.gameObject, 2f));
 
         // Cache le panneau d'emojis après sélection
         EmojiPanel.SetActive(false);

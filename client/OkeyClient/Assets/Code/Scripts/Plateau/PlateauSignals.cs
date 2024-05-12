@@ -74,17 +74,17 @@ public class PlateauSignals : MonoBehaviour
         //  Debug.Log("player 4:" + LobbyManager.Instance.player4);
 
         playerName = playerName.Trim().ToLower();
-        if (LobbyManager.Instance.player2 == playerName)
+        if (LobbyManager.player2 == playerName)
         {
             player2TurnSignal.gameObject.SetActive(true);
             Debug.Log("Player 2 turn signal set.");
         }
-        else if (LobbyManager.Instance.player3 == playerName)
+        else if (LobbyManager.player3 == playerName)
         {
             player3TurnSignal.gameObject.SetActive(true);
             Debug.Log("Player 3 turn signal set.");
         }
-        else if (LobbyManager.Instance.player4 == playerName)
+        else if (LobbyManager.player4 == playerName)
         {
             player4TurnSignal.gameObject.SetActive(true);
             Debug.Log("Player 4 turn signal set.");
