@@ -1098,7 +1098,12 @@ public sealed class OkeyHub : Hub
 
         if (packetEmote.PlayerSource != null && packetEmote.EmoteValue != null)
         {
-            var roomId = UsersInRooms[packetEmote.PlayerSource];
+            var connId = _connectedUsers
+                .FirstOrDefault(x =>
+                    x.Value.GetUsername().Equals(packetEmote.PlayerSource, StringComparison.Ordinal)
+                )
+                .Key;
+            var roomId = UsersInRooms[connId];
 
             foreach (var player in this._roomManager.GetRoomById(roomId).Players)
             {
