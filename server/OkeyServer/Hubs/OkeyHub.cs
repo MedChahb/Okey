@@ -1103,33 +1103,8 @@ public sealed class OkeyHub : Hub
                 )
                 .Key;
             var roomId = UsersInRooms[connId];
-
-            foreach (var player in this._roomManager.GetRoomById(roomId).Players)
-            {
-                if (!player.Equals(connId, StringComparison.Ordinal))
-                {
-                    await this
-                        ._hubContext.Clients.Client(player)
-                        .SendAsync("ReceiveEmote", packetEmote);
-                }
-            }
+            await this._hubContext.Clients.Group(roomId).SendAsync("ReceiveEmote", packetEmote);
         }
-
-        /*
-        foreach (var connectionId in ConnectionIds)
-        {
-            try
-            {
-                await this
-                    ._hubContext.Clients.Client(connectionId)
-                    .SendAsync("ReceiveEmote", new EmotePacket { EmoteValue = 1 });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                throw;
-            }
-        }*/
     }
 
     /// <summary>
