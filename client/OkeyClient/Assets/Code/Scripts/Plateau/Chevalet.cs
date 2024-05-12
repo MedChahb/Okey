@@ -931,7 +931,7 @@ public class Chevalet : MonoBehaviour
 
     private List<TuileData> TrierTuilesParNumero(List<TuileData> tuiles)
     {
-        List<TuileData> tuilesTriees = tuiles.OrderBy(tuile => tuile.Numero).ToList();
+        var tuilesTriees = tuiles.OrderBy(tuile => tuile.num).ToList();
         return tuilesTriees;
     }
 }

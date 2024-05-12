@@ -35,7 +35,6 @@ public class Plateau2 : MonoBehaviour
             Instance = this;
         }
         DontDestroyOnLoad(this.gameObject);
-
     }
 
     public void OnWordButtonClicked(int buttonIndex)
@@ -54,7 +53,7 @@ public class Plateau2 : MonoBehaviour
         {
             Debug.Log($"Displaying word: {words[buttonIndex]}");
             gameDisplayText.text = words[buttonIndex];
-            SignalRConnector.Instance.SendEmoji(4+buttonIndex);
+            SignalRConnector.Instance.SendEmoji(4 + buttonIndex);
             StartCoroutine(ClearTextAfterDelay(gameDisplayText, 2f));
             EmojiPanel.SetActive(false);
         }
@@ -66,10 +65,7 @@ public class Plateau2 : MonoBehaviour
         }
     }
 
-    public void DisplayEmote(int playerNumber, int emoteNumber)
-    {
-        
-    }
+    public void DisplayEmote(int playerNumber, int emoteNumber) { }
 
     IEnumerator ClearTextAfterDelay(TextMeshProUGUI textComponent, float delay)
     {

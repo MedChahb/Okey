@@ -23,7 +23,6 @@ public class LobbyManager : MonoBehaviour
     public string player3;
     public string player4;
 
-
     public string mainPlayerUsername;
     public string player2Username;
     public string player3Username;

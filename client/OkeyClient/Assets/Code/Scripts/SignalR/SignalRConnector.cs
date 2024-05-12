@@ -34,9 +34,7 @@ public class SignalRConnector : MonoBehaviour
     {
         Debug.LogWarning(Constants.SIGNALR_HUB_URL);
 
-        this._hubConnection = new HubConnectionBuilder()
-            .WithUrl(Constants.SIGNALR_HUB_URL)
-            .Build();
+        this._hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
 
         this.ConfigureHubEvents();
 
@@ -568,28 +566,53 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<EmotePacket>("ReceiveEmote", async (packet) =>
-        {
-            if (packet.PlayerSource != null && packet.EmoteValue != null)
+        this._hubConnection.On<EmotePacket>(
+            "ReceiveEmote",
+            async (packet) =>
             {
-                if (packet.PlayerSource.Equals(LobbyManager.Instance.mainPlayerUsername, StringComparison.Ordinal))
+                if (packet.PlayerSource != null && packet.EmoteValue != null)
                 {
-                    // On ne fait rien enfaite, aucun affichage necessaire
-                    Debug.LogWarning("On a recu l'emote de sois meme");
-                } else if (packet.PlayerSource.Equals(LobbyManager.Instance.player2Username, StringComparison.Ordinal))
-                {
-                    Plateau2.Instance.DisplayEmote(2, (int)packet.EmoteValue);
-                } else if (packet.PlayerSource.Equals(LobbyManager.Instance.player3Username, StringComparison.Ordinal))
-                {
-                    Plateau2.Instance.DisplayEmote(3, (int)packet.EmoteValue);
-                } else if (packet.PlayerSource.Equals(LobbyManager.Instance.player4Username, StringComparison.Ordinal))
-                {
-                    Plateau2.Instance.DisplayEmote(4, (int)packet.EmoteValue);
+                    if (
+                        packet.PlayerSource.Equals(
+                            LobbyManager.Instance.mainPlayerUsername,
+                            StringComparison.Ordinal
+                        )
+                    )
+                    {
+                        // On ne fait rien enfaite, aucun affichage necessaire
+                        Debug.LogWarning("On a recu l'emote de sois meme");
+                    }
+                    else if (
+                        packet.PlayerSource.Equals(
+                            LobbyManager.Instance.player2Username,
+                            StringComparison.Ordinal
+                        )
+                    )
+                    {
+                        Plateau2.Instance.DisplayEmote(2, (int)packet.EmoteValue);
+                    }
+                    else if (
+                        packet.PlayerSource.Equals(
+                            LobbyManager.Instance.player3Username,
+                            StringComparison.Ordinal
+                        )
+                    )
+                    {
+                        Plateau2.Instance.DisplayEmote(3, (int)packet.EmoteValue);
+                    }
+                    else if (
+                        packet.PlayerSource.Equals(
+                            LobbyManager.Instance.player4Username,
+                            StringComparison.Ordinal
+                        )
+                    )
+                    {
+                        Plateau2.Instance.DisplayEmote(4, (int)packet.EmoteValue);
+                    }
+                    //Erreur...
                 }
-                //Erreur...
             }
-
-        });
+        );
 
         this._hubConnection.On<DefaussePacket>(
             "ReceiveListeDefausse",
@@ -1066,7 +1089,11 @@ public class SignalRConnector : MonoBehaviour
 
     public async void SendEmoji(int indexEmoji)
     {
-        var emotePacket = new EmotePacket { EmoteValue = indexEmoji, PlayerSource = JoueurManager.Instance.GetSelfJoueur().NomUtilisateur};
+        var emotePacket = new EmotePacket
+        {
+            EmoteValue = indexEmoji,
+            PlayerSource = JoueurManager.Instance.GetSelfJoueur().NomUtilisateur
+        };
         await this._hubConnection.SendAsync("EnvoyerEmoteAll", emotePacket);
     }
 
