@@ -929,7 +929,7 @@ public class Chevalet : MonoBehaviour
         return num;
     }
 
-    private List<TuileData> TrierTuilesParNumero(List<TuileData> tuiles)
+    /*private List<TuileData> TrierTuilesParNumero(List<TuileData> tuiles)
     {
         var tuilesTriees = tuiles.OrderBy(tuile => tuile.num).ToList();
         return tuilesTriees;
@@ -970,6 +970,41 @@ public class Chevalet : MonoBehaviour
 
         return (series, nonSeries);
     }
+
+    private (List<TuileData>, List<TuileData>) triChiffre(List<TuileData> nonSerie)
+    {
+        // Dictionnaire pour stocker les tuiles par numéro
+        Dictionary<int, List<TuileData>> tuilesParNumero = new Dictionary<int, List<TuileData>>();
+
+        // Parcourir les tuiles et les regrouper par numéro
+        foreach (var tuile in nonSerie)
+        {
+            if (!tuilesParNumero.ContainsKey(tuile.Numero))
+            {
+                tuilesParNumero[tuile.Numero] = new List<TuileData>();
+            }
+            tuilesParNumero[tuile.Numero].Add(tuile);
+        }
+
+        List<TuileData> memesNumeros = new List<TuileData>();
+        List<TuileData> restantes = new List<TuileData>();
+
+        // Vérifier les groupes de tuiles pour des couleurs différentes
+        foreach (var entry in tuilesParNumero)
+        {
+            var groupe = entry.Value;
+            if (groupe.Select(t => t.Couleur).Distinct().Count() > 1)
+            {
+                memesNumeros.AddRange(groupe);
+            }
+            else
+            {
+                restantes.AddRange(groupe);
+            }
+        }
+
+        return (memesNumeros, restantes);
+    }*/
 }
 
 
