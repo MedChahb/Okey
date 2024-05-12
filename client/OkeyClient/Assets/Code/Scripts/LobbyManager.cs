@@ -1,3 +1,4 @@
+using System.Collections.Generic; // Add this line
 using System.Linq;
 using UnityEngine;
 
@@ -12,6 +13,15 @@ public class LobbyManager : MonoBehaviour
     public bool connectionStarted = false;
     public bool rommsListFilled = false;
     public int playerCount;
+
+    public bool myTurn = false;
+
+    public string currentPlayerTurn;
+
+    public string mainPlayer;
+    public string player2;
+    public string player3;
+    public string player4;
 
     private void Awake() { }
 
@@ -74,5 +84,28 @@ public class LobbyManager : MonoBehaviour
         // Gameloop here
         // requests
         // all checks
+    }
+
+    public void SetMyTurn(bool value)
+    {
+        myTurn = value;
+        // PlateauSignals.Instance.SetMainPlayerTurnSignal();
+    }
+
+    public void SetPlayers(List<string> players)
+    {
+        if (players.Count >= 3) { }
+        else
+        {
+            Debug.LogError(
+                "Insufficient players provided. Expected at least 3, received " + players.Count
+            );
+        }
+    }
+
+    public void SetCurrentPlayerTurn(string currentPlayerTurn)
+    {
+        this.currentPlayerTurn = currentPlayerTurn;
+        // PlateauSignals.Instance.SetPlayerSignal(currentPlayerTurn);
     }
 }

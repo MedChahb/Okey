@@ -59,14 +59,14 @@ public class ParametreScreen : MonoBehaviour
     {
         if (UIManager.singleton.language == true) // EN
         {
-            titleCard.text = "Settings";
+            //titleCard.text = "Settings";
             soundEffects.text = "Sound Effects";
             music.text = "Music";
             language.text = "Language";
         }
         else
         {
-            titleCard.text = "Parametres";
+            //titleCard.text = "Parametres";
             soundEffects.text = "Effet Sonores";
             music.text = "Ambiance Musique";
             language.text = "Language";

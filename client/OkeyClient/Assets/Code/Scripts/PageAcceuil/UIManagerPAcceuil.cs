@@ -1,3 +1,4 @@
+using LogiqueJeu.Joueur;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,18 +33,21 @@ public class UIManagerPAcceuil : MonoBehaviour
     [SerializeField]
     public GameObject PanelAvatar;
 
-    private bool connected = false;
-
     [SerializeField]
+    public GameObject PanelConnected;
+
     public JoueurManager manager;
+
+    public GameObject rankingNotConnected;
 
     // Start is called before the first frame update
     void Start()
     {
+        manager.SelfJoueurChangeEvent.AddListener(updateAvatar);
+        manager.ConnexionChangeEvent.AddListener(updateConnexion);
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
         connexionBtn.onClick.AddListener(onLoginClicked);
-        manager.SelfJoueurChangeEvent.AddListener(updateAvatar);
     }
 
     // Update is called once per frame
@@ -52,20 +56,10 @@ public class UIManagerPAcceuil : MonoBehaviour
         if (UIManager.singleton.language)
         {
             playBtnTxt.text = "Play";
-            if (!connected)
-            {
-                connexionBtn.gameObject.SetActive(true);
-                connexionBtnTxt.text = "LogIn";
-            }
         }
         else
         {
             playBtnTxt.text = "Jouer";
-            if (!connected)
-            {
-                connexionBtn.gameObject.SetActive(true);
-                connexionBtnTxt.text = "Connexion";
-            }
         }
     }
 
@@ -103,17 +97,52 @@ public class UIManagerPAcceuil : MonoBehaviour
         }
     }
 
-    public void setConnected(bool isConnected)
+    private void updateAvatar()
     {
-        this.connected = isConnected;
-    }
-
-    public void updateAvatar()
-    {
+        PanelConnected.SetActive(true);
         PanelAvatar.SetActive(true);
         PanelAvatar.GetComponentInChildren<TextMeshProUGUI>().text = manager
             .GetSelfJoueur()
             .NomUtilisateur;
-        connexionBtn.gameObject.SetActive(false);
+        Sprite newSprite = Resources.Load<Sprite>("Avatar/avatarn4");
+        switch ((int)manager.GetSelfJoueur().IconeProfil)
+        {
+            case (int)IconeProfil.Icone1:
+                newSprite = Resources.Load<Sprite>("Avatar/avatarn1");
+                break;
+            case (int)IconeProfil.Icone2:
+                newSprite = Resources.Load<Sprite>("Avatar/avatarn2");
+                break;
+            case (int)IconeProfil.Icone3:
+                newSprite = Resources.Load<Sprite>("Avatar/avatarn3");
+                break;
+        }
+        if (newSprite != null)
+        {
+            // Modification du sprite de l'Image
+            PanelAvatar.GetComponentInChildren<Image>().sprite = newSprite;
+        }
+        else
+        {
+            Debug.LogWarning("Sprite introuvable ou Image non définie !");
+        }
+    }
+
+    private void updateConnexion()
+    {
+        if (!this.manager.IsConnected)
+        {
+            connexionBtn.gameObject.SetActive(true);
+            rankingNotConnected.SetActive(true);
+            PanelAvatar.SetActive(false);
+            PanelConnected.SetActive(false);
+            connexionBtnTxt.text = UIManager.singleton.language ? "LogIn" : "Connexion";
+        }
+        else
+        {
+            connexionBtn.gameObject.SetActive(false);
+            rankingNotConnected.SetActive(false);
+            updateAvatar();
+        }
     }
 }

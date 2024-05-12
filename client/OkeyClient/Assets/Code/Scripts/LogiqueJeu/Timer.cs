@@ -5,18 +5,33 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
+    // make this class an instance
+    public static Timer Instance;
+
     [SerializeField]
     private TextMeshProUGUI TimerTxt;
 
     [SerializeField]
-    public static float TimerValue = 30;
-    private float RemainingTime = TimerValue; // timer value
+    public static float TimerValue = 59;
+    private float RemainingTime = TimerValue;
     private bool TimerOn;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        this.LaunchTimer(); // pour test apres on verra ou il faut l'appeler
+        // this.LaunchTimer();
     }
 
     // Update is called once per frame
@@ -30,11 +45,9 @@ public class Timer : MonoBehaviour
             }
             else
             {
-                RemainingTime = 0;
                 TimerOn = false;
-                RemainingTime = TimerValue; //reinit timer
+                RemainingTime = 0;
             }
-
             int min = Mathf.FloorToInt(RemainingTime / 60);
             int sec = Mathf.FloorToInt(RemainingTime % 60);
             TimerTxt.text = string.Format("{0:00}:{1:00}", min, sec);
@@ -49,5 +62,18 @@ public class Timer : MonoBehaviour
     public void LaunchTimer()
     {
         this.TimerOn = true;
+        // reset the timer t 59 seconds
+        RemainingTime = TimerValue;
     }
+
+    public void StopTimer()
+    {
+        this.TimerOn = false;
+    }
+
+    // public void ResetTimer()
+    // {
+    //     // this.TimerOn = false;
+    //     RemainingTime = TimerValue;
+    // }
 }
