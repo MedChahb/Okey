@@ -175,6 +175,7 @@ public class CreatAccountScreen : MonoBehaviour
         string username = Username.text.Trim();
         string password = Password.text.Trim();
         string passwordValidation = PasswordValidation.text.Trim();
+        int jour, mois, annee;
 
         if (!int.TryParse(DayInput.text, out jour) || !int.TryParse(MonthInput.text, out mois) || !int.TryParse(YearInput.text, out annee))
         {
@@ -201,7 +202,7 @@ public class CreatAccountScreen : MonoBehaviour
         }
 
         // Vérifier si l'année est valide (facultatif)
-        if (annee < 1900 || annee > 2024)
+        if (annee < 1900 || annee > 2023)
         {
             erreurTxt.text = "Entrez une année valide.";
             erreurTxt.gameObject.SetActive(true);
@@ -209,7 +210,7 @@ public class CreatAccountScreen : MonoBehaviour
         }
 
         // Vérifier si les mots de passe sont identiques
-        if (PasswordInput.text != ConfirmPasswordInput.text)
+        if (Password.text != PasswordValidation.text)
         {
             erreurTxt.text = "Les mots de passe ne correspondent pas.";
             erreurTxt.gameObject.SetActive(true);
