@@ -1097,21 +1097,8 @@ public sealed class OkeyHub : Hub
         if (packetEmote.PlayerSource != null && packetEmote.EmoteValue != null)
         {
             var roomId = UsersInRooms[packetEmote.PlayerSource];
-
-            foreach (var player in this._roomManager.GetRoomById(roomId).Players)
-            {
-                if (
-                    !packetEmote.PlayerSource.Equals(
-                        this.Context.ConnectionId,
-                        StringComparison.Ordinal
-                    )
-                )
-                {
-                    await this
-                        ._hubContext.Clients.Group(roomId)
-                        .SendAsync("ReceiveEmote", packetEmote);
-                }
-            }
+            await this._hubContext.Clients.Group(roomId).SendAsync("ReceiveEmote", packetEmote);
+            Console.WriteLine($"On a envoye l'emote");
         }
     }
 
