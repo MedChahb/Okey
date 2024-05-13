@@ -757,10 +757,11 @@ public class SignalRConnector : MonoBehaviour
                     return chevaletInstance.TuilePiochee;
                 }
                 // add code here signal
-                MainThreadDispatcher.Enqueue(() =>
-                {
-                    LobbyManager.Instance.SetMyTurn(false);
-                });
+                // MainThreadDispatcher.Enqueue(() =>
+                // {
+                //     LobbyManager.Instance.SetMyTurn(false);
+                //     // Plateau
+                // });
                 return tuile;
             }
         );
