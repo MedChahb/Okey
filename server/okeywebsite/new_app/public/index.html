@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+    <nav id="navbar" class="fixed w-full z-10 h-28 flex justify-center items-center bg-transparent backdrop-filter backdrop-blur-lg bg-green-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-full items-center">
+                <div class="flex items-center">
+                    <img src="./resources/imgs/logo.png" alt="Logo" width="100" height="100">
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-4">
+                        <a href="#tutoriel" class="text-white px-3 py-2 rounded-md text-sm font-medium">Tutoriel</a>
+                        <a href="#download" class="text-white px-3 py-2 rounded-md text-sm font-medium">Télécharger le jeu</a>
+                        <div class="relative">
+                            <button id="toggleButton" class="text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none">Langue</button>
+                            <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-green-800 rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
+                                <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">Français</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">English</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">Türkçe</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button id="toggleMobileMenu" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white">
+                        <svg id="openIcon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                        <svg id="closeIcon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About</a>
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Services</a>
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+
+      <div class='text-white bg-cover bg-center h-screen'>
+        <div class='bg-cover h-screen bg-center flex justify-center items-center' style="background-image: url('./resources/imgs/bg-green.png')">
+          <div class='max-w-[1000px] mx-4 flex-1'>
+            <div class="md:flex md:justify-between items-center">
+              <div class="md:w-1/2 md:mr-2 mb-4 md:mb-0">
+                <h1 class='md:text-4xl text-4xl font-bold'>OkeyGame: Partout avec qui vous voulez</h1> <br />
+                <p class='font-normal md:text-l text-white mb-4'>Faites preuve de stratégie dans ce jeu excitant et compétitif, jouez en ligne avec vos amis, votre famille ou avec notre communauté de joueurs.</p>
+                <div class="space-x-4">
+                    <button id="osButton" class="btn hover:bg-primaryColorHover text-black py-2 px-4 rounded">
+                        Essayer sur Android
+                    </button>
+                  <button class="btn hover:bg-primaryColorHover text-black py-2 px-4 rounded">
+                    Essayer sur Android
+                  </button>
+                  <style>
+                    .btn {
+                        background-color: #E3E3BB;
+                    }
+                    .btn:hover {
+                        background-color: #d1d1ae; /* Change background color on hover */
+                    }
+                </style>
+                </div>
+              </div>
+      
+              <div class="md:w-1/2 md:ml-2 flex justify-center">
+                <video class='max-w-full h-auto md:h-80' controls>
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="flex h-1/4">
+        <div class="w-1/2 h-full flex items-center justify-center">
+          <img
+            src="./resources/imgs/history_pic.jpeg"
+            alt="Image"
+            class="h-full w-auto max-h-full max-w-full ml-8"
+          />
+        </div>
+        <div class="w-1/2 p-8 flex flex-col justify-center">
+          <h3 class="font-bold text-xl">Jouer en partie rapide avec notre communauté</h3>
+          <p class="font-normal text-m">Nous avons des salles de jeux publiques pour pouvoir jouer contre des adversaires faisant preuve de stratégie et de vivacité d&lsquo;esprit.</p><br />
+          <h3 class="font-bold text-xl">Créez ou rejoignez des salles de jeux privées</h3>
+          <p class="font-normal text-m">Jouer entre amis ou avec votre famille en toute convivialité et avec l&lsquo;esprit de rivalité. </p><br />
+          <h3 class="font-bold text-xl">Votre jeu sur Desktop et dans votre poche !</h3>
+          <p class="font-normal text-m">Notre jeu est disponnible sur Windows, MacOS, Linux ainsi que Android.</p>
+        </div>
+      </div>
+  
+
+    <div id="tutoriel" class="text-center py-32">
+        <h3 class="text-3xl md:text-4xl font-bold">Apprendre à jouer</h3>
+        <video class='max-w-full h-auto items-center md:h-80 mt-4 mx-auto' controls>
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <div id="download" class="bg-green-800 text-white">
+        <div class="mx-10 py-20 flex h-1/4">
+            <div class="w-1/2 h-full flex flex-col justify-center">
+                <h1 class="font-bold text-4xl pb-5">Téléchargez OkeyGame</h1>
+                <p class="text-justify">Notre jeu est disponnible sur Desktop (Windows) et Mobile (Android). Installer le jeu sans s&lsquo;inscrire suffis pour pouvoir y jouer et rejoindre notre communauté !</p>
+            </div>
+            <div class="w-1/2 pt-3 flex flex-col justify-center mx-10">
+
+                <div class="pb-5 flex justify-between">
+                    <button class="btn text-black py-2 px-4 rounded">
+                        Essayer sur Windows
+                    </button>
+                    <button class="btn text-black py-2 px-4 rounded">
+                      Essayer sur MacOS
+                    </button>
+                    <button class="btn text-black py-2 px-4 rounded">
+                      Essayer sur Linux
+                    </button>
+                </div>
+
+                <button class="btn text-black py-2 px-4 rounded">
+                  Essayer sur Android
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="bg-gray-800 text-white pt-8 pb-2 flex flex-col items-center justify-center">
+        <div class="flex items-center mb-4">
+            <div class="flex flex-col items-center mr-5">
+                <img src="./resources/imgs/logo.png" alt="Logo du jeu" class="h-20 mb-2" />
+            </div>
+            <div class="flex flex-col items-center ml-20">
+                <h2 class="text-xl font-semibold">Nous rejoindre</h2>
+    
+                <a href="https://www.instagram.com/okey_bytes/" target="_blank" rel="noopener noreferrer" class="flex">
+                    <p class="mr-2">Sur Instagram</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="" viewBox="0 0 16 16">
+                        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="flex items-center justify-center w-full">
+            <p>OkeyBytes Studio tous droits réservés</p>
+        </div>
+    </footer>
+
+
+
+
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const toggleButton = document.getElementById('toggleButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const toggleMobileMenu = document.getElementById('toggleMobileMenu');
+            const openIcon = document.getElementById('openIcon');
+            const closeIcon = document.getElementById('closeIcon');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            toggleButton.addEventListener('click', function() {
+                dropdownMenu.classList.toggle('hidden');
+            });
+
+            toggleMobileMenu.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                openIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            });
+  
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 500) {
+                    navbar.classList.add('bg-green-800');
+                    navbar.classList.remove('bg-transparent');
+                } else {
+                    navbar.classList.remove('bg-green-800');
+                }
+            });
+
+            function showOS() {
+            const platform = navigator.platform.toLowerCase();
+            let osName;
+
+            if (platform.includes('win')) {
+                osName = 'Windows';
+            } else if (platform.includes('mac')) {
+                osName = 'Mac OS';
+            } else if (platform.includes('linux')) {
+                osName = 'Linux';
+            } else {
+                osName = 'Télécharger';
+            }
+
+            document.getElementById('osButton').textContent = "Essayer sur "+osName;
+        }
+
+        // Call the function on page load to set the initial button label
+        showOS();
+        });
+        
+    </script>
+    
+
+
+</body>
+</html>

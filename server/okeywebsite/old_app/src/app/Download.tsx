@@ -6,7 +6,7 @@ const Telecharger = () => {
             <div className="mx-10 py-20 flex h-1/4">
                 <div className="w-1/2 h-full flex flex-col justify-center">
                     <h1 className="font-bold text-4xl pb-5">Téléchargez OkeyGame</h1>
-                    <p className="text-justify">Notre jeu est disponnible sur Desktop (Windows) et Mobile (Android). Installer le jeu sans s'inscrire suffis pour pouvoir y jouer et rejoindre notre communauté !</p>
+                    <p className="text-justify">Notre jeu est disponnible sur Desktop (Windows) et Mobile (Android). Installer le jeu sans s&lsquo;inscrire suffis pour pouvoir y jouer et rejoindre notre communauté !</p>
                 </div>
                 <div className="w-1/2 pt-3 flex flex-col justify-center mx-10">
 
