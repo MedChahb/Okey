@@ -18,17 +18,35 @@ public class LobbyManager : MonoBehaviour
 
     public string currentPlayerTurn;
 
-    public string mainPlayer;
-    public string player2;
-    public string player3;
-    public string player4;
+    public static string mainPlayer;
+    public static string player2;
+    public static string player3;
+    public static string player4;
 
-    private void Awake() { }
+    public string mainPlayerUsername;
+    public string player2Username;
+    public string player3Username;
+    public string player4Username;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
+    }
 
     void Start()
     {
         Debug.Log("[LobbyManager] Awake called.");
 
+        /*
         if (Instance == null)
         {
             Instance = this;
@@ -39,7 +57,7 @@ public class LobbyManager : MonoBehaviour
         {
             Debug.LogWarning("[LobbyManager] Duplicate instance detected, destroying this one.");
             Destroy(gameObject);
-        }
+        }*/
     }
 
     // SignalR connection.

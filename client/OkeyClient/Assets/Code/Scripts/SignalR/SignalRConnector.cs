@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Code.Scripts.SignalR.Packets;
+using Code.Scripts.SignalR.Packets.Emojis;
 using Code.Scripts.SignalR.Packets.Rooms;
-using JetBrains.Annotations;
+using LogiqueJeu.Joueur;
 using Microsoft.AspNetCore.SignalR.Client;
 using TMPro;
 using UnityEngine;
@@ -15,18 +14,25 @@ public class SignalRConnector : MonoBehaviour
 {
     private HubConnection _hubConnection;
 
+    public static SignalRConnector Instance { get; private set; }
+
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+
         DontDestroyOnLoad(this.gameObject);
     }
 
     public async void InitializeConnection()
     {
-        Debug.LogWarning(Constants.SIGNALR_HUB_URL);
-
-        this._hubConnection = new HubConnectionBuilder()
-            .WithUrl(Constants.SIGNALR_HUB_URL)
-            .Build();
+        this._hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
 
         this.ConfigureHubEvents();
 
@@ -139,7 +145,8 @@ public class SignalRConnector : MonoBehaviour
                             );
                             if (player == _hubConnection.ConnectionId.Trim().ToLower())
                             {
-                                LobbyManager.Instance.mainPlayer = player;
+                                LobbyManager.mainPlayer = player;
+                                LobbyManager.Instance.mainPlayerUsername = username;
                                 Debug.Log("MainPlayer: " + player);
                             }
                             else
@@ -147,15 +154,18 @@ public class SignalRConnector : MonoBehaviour
                                 switch (otherPlayerIndex)
                                 {
                                     case 0:
-                                        LobbyManager.Instance.player2 = player;
+                                        LobbyManager.player2 = player;
+                                        LobbyManager.Instance.player2Username = username;
                                         // Debug.Log($"Player 2 set to: {player}");
                                         break;
                                     case 1:
-                                        LobbyManager.Instance.player3 = player;
+                                        LobbyManager.player3 = player;
+                                        LobbyManager.Instance.player3Username = username;
                                         // Debug.Log($"Player 3 set to: {player}");
                                         break;
                                     case 2:
-                                        LobbyManager.Instance.player4 = player;
+                                        LobbyManager.player4 = player;
+                                        LobbyManager.Instance.player4Username = username;
                                         // Debug.Log($"Player 4 set to: {player}");
                                         break;
                                 }
@@ -554,6 +564,56 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        this._hubConnection.On<EmotePacket>(
+            "ReceiveEmote",
+            (packet) =>
+            {
+                Debug.Log($"On a recu l'emote de {packet.PlayerSource}");
+                if (packet.PlayerSource != null && packet.EmoteValue != null)
+                {
+                    var src = packet.PlayerSource.Trim().ToLower();
+                    Debug.Log("On rentre bien ici");
+                    if (src.Equals(LobbyManager.player2, StringComparison.Ordinal))
+                    {
+                        Debug.Log("joueur a droite");
+                        MainThreadDispatcher.Enqueue(() =>
+                        {
+                            Plateau2.Instance.DisplayEmote(2, (int)packet.EmoteValue);
+                        });
+                    }
+                    else if (src.Equals(LobbyManager.player3, StringComparison.Ordinal))
+                    {
+                        Debug.Log("joueur en face");
+                        MainThreadDispatcher.Enqueue(() =>
+                        {
+                            Plateau2.Instance.DisplayEmote(3, (int)packet.EmoteValue);
+                        });
+                    }
+                    else if (src.Equals(LobbyManager.player4, StringComparison.Ordinal))
+                    {
+                        Debug.Log("joueur a gauche");
+                        MainThreadDispatcher.Enqueue(() =>
+                        {
+                            Plateau2.Instance.DisplayEmote(4, (int)packet.EmoteValue);
+                        });
+                    }
+                    else if (src.Equals(LobbyManager.mainPlayer, StringComparison.Ordinal))
+                    {
+                        Debug.Log($"{packet.PlayerSource} <-> {LobbyManager.mainPlayer}");
+                    }
+                    else
+                    {
+                        Debug.LogError("Impossible de detecter la source");
+                        Debug.Log(LobbyManager.player2);
+                        Debug.Log(LobbyManager.player3);
+                        Debug.Log(LobbyManager.player4);
+                        Debug.Log(LobbyManager.mainPlayer);
+                    }
+                }
+                return Task.CompletedTask;
+            }
+        );
+
         this._hubConnection.On<DefaussePacket>(
             "ReceiveListeDefausse",
             (Defausse) =>
@@ -944,9 +1004,6 @@ public class SignalRConnector : MonoBehaviour
 
     //}
 
-
-
-
     private void UpdateWaitingPlayerUI(List<string> PlayerData)
     {
         MainThreadDispatcher.Enqueue(() =>
@@ -1028,6 +1085,16 @@ public class SignalRConnector : MonoBehaviour
         {
             Debug.LogError("Cannot join room. Hub connection is not established.");
         }
+    }
+
+    public async void SendEmoji(int indexEmoji)
+    {
+        var emotePacket = new EmotePacket
+        {
+            EmoteValue = indexEmoji,
+            PlayerSource = this._hubConnection.ConnectionId
+        };
+        await this._hubConnection.SendAsync("EnvoyerEmoteAll", emotePacket);
     }
 
     public async void SendBoardState(TuileData[,] BoardState)
