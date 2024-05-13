@@ -59,7 +59,9 @@
         dest: /etc/docker/daemon.json
         content: |
           {
-            "log-driver": "local"
+            "log-driver": "local",
+            "experimental": true,
+            "ip6tables": true
           }
     - name: Start and enable Docker service
       service:

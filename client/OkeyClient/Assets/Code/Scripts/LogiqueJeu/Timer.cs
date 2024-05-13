@@ -65,4 +65,15 @@ public class Timer : MonoBehaviour
         // reset the timer t 59 seconds
         RemainingTime = TimerValue;
     }
+
+    public void StopTimer()
+    {
+        this.TimerOn = false;
+    }
+
+    // public void ResetTimer()
+    // {
+    //     // this.TimerOn = false;
+    //     RemainingTime = TimerValue;
+    // }
 }
