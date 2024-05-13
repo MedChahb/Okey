@@ -1097,22 +1097,22 @@ public sealed class OkeyHub : Hub
     /// <summary>
     /// Envoie une émote à tous les utilisateurs.
     /// </summary>
-    /// <param name="ConnectionIds">Liste des ID de connexion des utilisateurs.</param>
-    /// <param name="EmoteName">Nom de l'émote.</param>
-    private async Task EnvoyerEmoteAll(List<string> ConnectionIds, string EmoteName)
+    /// <param name="packetEmote">Packet emote recu par l'utilisateur</param>
+    public async Task EnvoyerEmoteAll(EmotePacket packetEmote)
     {
-        foreach (var connectionId in ConnectionIds)
+        Console.WriteLine(
+            $"{packetEmote.PlayerSource} veut envoyer l'emote {packetEmote.EmoteValue}"
+        );
+        if (packetEmote.PlayerSource != null && packetEmote.EmoteValue != null)
         {
-            try
+            var roomId = UsersInRooms[packetEmote.PlayerSource];
+
+            foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
             {
                 await this
-                    ._hubContext.Clients.Client(connectionId)
-                    .SendAsync("ReceiveEmote", new EmotePacket { EmoteName = EmoteName });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                throw;
+                    ._hubContext.Clients.Client(player)
+                    .SendAsync("ReceiveEmote", packetEmote);
+                Console.WriteLine($"On a envoye l'emote a {player}");
             }
         }
     }
@@ -1602,7 +1602,7 @@ public sealed class OkeyHub : Hub
                         && pioche.EndsWith(":", StringComparison.OrdinalIgnoreCase)
                     )
                     {
-                        await this.EnvoyerEmoteAll(playerIds, pioche);
+                        //await this.EnvoyerEmoteAll(playerIds, pioche);
                         continue;
                     }
                     else
