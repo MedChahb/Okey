@@ -1056,37 +1056,64 @@ public class Chevalet : MonoBehaviour
     {
         List<List<TuileData>> groupedByColor = this.GroupByCouleur(this.Tuiles2D); // 5 lists
 
-        List<TuileData> serieFinale = [];
-        List<TuileData> resteDeMemeCouleurFinale = [];
+        List<TuileData> serieFinale = new List<TuileData>();
+        List<TuileData> resteDeMemeCouleurFinale = new List<TuileData>();
 
         for (int i = 0; i < 4; i++)
         {
-            List<TuileData> serieMemeCouleur = [];
-            List<TuileData> resteDeMemeCouleur = [];
+            List<TuileData> serieMemeCouleur = new List<TuileData>();
+            List<TuileData> resteDeMemeCouleur = new List<TuileData>();
             (serieMemeCouleur, resteDeMemeCouleur) = this.TriCouleur(groupedByColor[i]);
 
             serieFinale.AddRange(serieMemeCouleur);
             resteDeMemeCouleurFinale.AddRange(resteDeMemeCouleur);
         }
 
-        List<TuileData> serieDansReste = [];
-        List<TuileData> resteDansReste = [];
+        List<TuileData> serieDansReste = new List<TuileData>();
+        List<TuileData> resteDansReste = new List<TuileData>();
 
-        //resteDansReste c'est le reste a mettre dans le chevalet.
         (serieDansReste, resteDansReste) = this.triChiffre(resteDeMemeCouleurFinale);
         List<TuileData> okeys = groupedByColor[4];
         resteDansReste.AddRange(okeys);
 
-        // on ajoute toutes les bonnes series ici .
+        // on ajoute toutes les bonnes series ici.
         serieFinale.AddRange(serieDansReste);
 
-        // il reste a placer les tuiles dans le chevalet
         int i = 0, j = 0; // pour le parcours de chevalet
-        foreach(var t in serieFinale)
-        {
 
+        foreach (var tuile in serieFinale)
+        {
+            while (i < this.Tuiles2D.Count && j < this.Tuiles2D[i].Count && this.Tuiles2D[i][j] != null)
+            {
+                j++;
+                if (j >= this.Tuiles2D[i].Count)
+                {
+                    j = 0;
+                    i++;
+                }
+            }
+
+            if (i < this.Tuiles2D.Count && j < this.Tuiles2D[i].Count)
+            {
+                this.Tuiles2D[i][j] = tuile;
+            }
         }
 
+        for (i = 0; i < this.Tuiles2D.Count; i++)
+        {
+            for (j = 0; j < this.Tuiles2D[i].Count; j++)
+            {
+                if (this.Tuiles2D[i][j] == null)
+                {
+                    // Ajout des tuiles dans resteDansReste a la fin
+                    if (resteDansReste.Count > 0)
+                    {
+                        this.Tuiles2D[i][j] = resteDansReste[0];
+                        resteDansReste.RemoveAt(0);
+                    }
+                }
+            }
+        }
     }
 
     public void TriEnCouple()
