@@ -1,19 +1,30 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using LogiqueJeu.Joueur;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Networking;
 
 public class JoueurManager : MonoBehaviour
 {
     public static JoueurManager Instance { get; private set; }
 
     [SerializeField]
-    private bool CleanStart = false; // Manipulez dans l'éditeur Unity pour invalider les données de cache SelfJoueur
+    private bool CleanStart = false; // Manipulez dans l'éditeur Unity pour invalider les données de cache SelfJoueur (détails de dernier login)
     private readonly List<Joueur> Joueurs = new(3);
     private SelfJoueur SoiMeme;
+
+    private bool _IsConnected = false;
+    public bool IsConnected
+    {
+        get { return this._IsConnected; }
+        private set
+        {
+            this._IsConnected = value;
+            this.ConnexionChangeEvent?.Invoke();
+        }
+    }
 
     [HideInInspector]
     public UnityEvent SelfJoueurChangeEvent = new();
@@ -24,8 +35,14 @@ public class JoueurManager : MonoBehaviour
     [HideInInspector]
     public UnityEvent AnyJoueurChangeEvent = new();
 
-    private void Awake()
+    [HideInInspector]
+    public UnityEvent ConnexionChangeEvent = new();
+
+    private async void Awake()
     {
+#if !UNITY_EDITOR
+        this.CleanStart = false;
+#endif
         if (Instance != null && Instance != this)
         {
             Destroy(this);
@@ -43,7 +60,11 @@ public class JoueurManager : MonoBehaviour
             this.SoiMeme.DeleteXML();
         }
         this.SoiMeme.JoueurChangeEvent += this.OnSelfJoueurChange;
-        this.SoiMeme.LoadSelf(this);
+        await this.SoiMeme.LoadSelf();
+        if (!string.IsNullOrEmpty(this.SoiMeme.TokenConnexion))
+        {
+            this.IsConnected = true;
+        }
     }
 
     private void OnSelfJoueurChange(object O = null, EventArgs E = null)
@@ -58,11 +79,12 @@ public class JoueurManager : MonoBehaviour
         this.AnyJoueurChangeEvent?.Invoke();
     }
 
-    public void AddGenericJoueur(
+    public async Task AddGenericJoueur(
         int ID,
         string NomUtilisateur = null,
         Position? Pos = null,
-        bool Replace = false
+        bool Replace = false,
+        CancellationToken Token = default
     )
     {
         if (Pos == Position.SoiMeme)
@@ -79,13 +101,14 @@ public class JoueurManager : MonoBehaviour
         {
             throw new ArgumentException("Cannot add a player with the same ID as another player");
         }
+
         var Joueur = new GenericJoueur();
         Joueur.InGame.ID = ID;
         Joueur.InGame.Pos = Pos;
         if (NomUtilisateur != null)
         {
             Joueur.NomUtilisateur = NomUtilisateur;
-            Joueur.LoadSelf(this);
+            await Joueur.LoadSelf(Token);
         }
 
         if (Replace)
@@ -103,6 +126,7 @@ public class JoueurManager : MonoBehaviour
                 this.Joueurs.Remove(JF);
             }
         }
+
         this.Joueurs.Add(Joueur);
         Joueur.JoueurChangeEvent += this.OnOtherJoueurChange;
         this.OnOtherJoueurChange();
@@ -147,12 +171,17 @@ public class JoueurManager : MonoBehaviour
         return this.RemoveJoueur(Joueur.InGame.ID);
     }
 
-    public void UpdateJoueurs()
+    public async Task UpdateSelfJoueur(CancellationToken Token = default)
     {
-        this.SoiMeme.LoadSelf(this);
+        await this.SoiMeme.LoadSelf(Token);
+    }
+
+    public async Task UpdateAllJoueurs(CancellationToken Token = default)
+    {
+        await this.UpdateSelfJoueur(Token);
         foreach (var Joueur in this.Joueurs)
         {
-            Joueur.LoadSelf(this);
+            await Joueur.LoadSelf(Token);
         }
     }
 
@@ -193,112 +222,36 @@ public class JoueurManager : MonoBehaviour
         return (Joueur)this.Joueurs.Find(Joueur => Joueur.InGame.Pos == Position.Haut).Clone();
     }
 
-    public void StartConnexionSelfJoueur(
+    public async Task ConnexionSelfJoueurAsync(
         string NomUtilisateur,
         string MotDePasse,
-        Action<int> CallbackResult = null
+        CancellationToken Token = default
     )
     {
-        this.SoiMeme.StartConnexionCompte(this, NomUtilisateur, MotDePasse, CallbackResult);
+        await this.SoiMeme.ConnexionCompteAsync(NomUtilisateur, MotDePasse, Token);
+        this.IsConnected = true;
     }
 
-    public void StartCreationCompteSelfJoueur(
+    public async Task CreationCompteSelfJoueur(
         string NomUtilisateur,
         string MotDePasse,
-        Action<int> CallbackResult = null
+        IconeProfil IconeProfil,
+        CancellationToken Token = default
     )
     {
-        this.SoiMeme.StartCreationCompte(this, NomUtilisateur, MotDePasse, CallbackResult);
+        await this.SoiMeme.CreationCompteAsync(NomUtilisateur, MotDePasse, IconeProfil, Token);
+        this.IsConnected = true;
     }
 
     public void DeconnexionSelfJoueur()
     {
         this.SoiMeme.DeconnexionCompte();
+        this.IsConnected = false;
     }
 
     // Une requête est à faire ici pour mettre à jour l'icone dans l'API
-    public void SetIconeSelfJoueur(int Icone)
+    public void SetIconeSelfJoueur(IconeProfil Icone)
     {
         throw new NotImplementedException();
-    }
-
-    // This method fetches the order of the players in the leaderboard
-    // but it does it in two stages. It first fetches the leaderboard
-    // and secondly for each entry in the leaderboard, it fetches more
-    // information on that specific account from a seperate endpoint.
-    // Due to the nature of this two stage behaviour which is dictated by
-    // the backend API implementation (there is nothing we can do about it
-    // from the client side to make it better), there is a possiblity for a
-    // weird pseudo error case where the leaderboard or the player details
-    // of some players in the previously fetched leaderboard might have changed
-    // in the meantime, making the leaderboard inconsistent.
-    //
-    // A good way to handle this would be to merge the two endpoints on the backend
-    // or implement a database lock mechanism to prevent changes while this method executes.
-    // This would then result in a consistent result no matter what with zero race conditions.
-    private IEnumerator FetchClassementsBG(
-        string NomUtilisateur = null,
-        int Limit = 5,
-        Action<List<Joueur>> CallbackResult = null
-    )
-    {
-        List<Joueur> Result = null;
-
-        var RequestURL = Constants.API_URL_DEV + "/classement/";
-        if (NomUtilisateur != null)
-        {
-            RequestURL += NomUtilisateur;
-        }
-        else if (Limit > 0)
-        {
-            RequestURL += Limit;
-        }
-        else if (Limit < 0)
-        {
-            throw new ArgumentException("Limit must be a positive integer or zero");
-        }
-
-        var www = UnityWebRequest.Get(RequestURL);
-        www.certificateHandler = new BypassCertificate();
-        yield return www.SendWebRequest();
-
-        if (www.result == UnityWebRequest.Result.Success)
-        {
-            Result = new();
-            var unmarshal = JsonUtility.FromJson<JoueurAPIClassementListDTO>(
-                "{ \"Classements\": " + www.downloadHandler.text + " }"
-            );
-            foreach (var JoueurDTO in unmarshal.Classements)
-            {
-                Joueur J;
-                if (JoueurDTO.username == this.SoiMeme.NomUtilisateur)
-                {
-                    this.SoiMeme.UpdateDetails(this);
-                    J = (SelfJoueur)this.SoiMeme.Clone();
-                }
-                else
-                {
-                    J = new GenericJoueur { NomUtilisateur = JoueurDTO.username };
-                    J.LoadSelf(this);
-                }
-                J.Classement = JoueurDTO.classement;
-                Result.Add(J);
-            }
-        }
-        else
-        {
-            Debug.Log(www.error);
-        }
-
-        CallbackResult?.Invoke(Result);
-    }
-
-    public void StartFetchClassements(
-        string NomUtilisateur = null,
-        int Limit = 5,
-        Action<List<Joueur>> CallbackResult = null
-    )
-    {
-        this.StartCoroutine(this.FetchClassementsBG(NomUtilisateur, Limit, CallbackResult));
     }
 }

@@ -33,10 +33,10 @@ public class PublicUtilisateurDto
     /// <summary>
     /// Nombres de parties effectuees par le joueur
     /// </summary>
-    public int NombreParties { get; set; } = 0;
+    public int NombreParties { get; set; } // = 0; to rm warnings (integers are 0 by default)
 
     /// <summary>
     /// Nombres de parties gagné par le joueur
     /// </summary>
-    public int NombrePartiesGagnees { get; set; } = 0;
+    public int NombrePartiesGagnees { get; set; }
 }

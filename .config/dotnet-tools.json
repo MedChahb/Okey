@@ -19,12 +19,6 @@
       "commands": [
         "roslynator"
       ]
-    },
-    "dotnet-ef": {
-      "version": "8.0.3",
-      "commands": [
-        "dotnet-ef"
-      ]
     }
   }
 }

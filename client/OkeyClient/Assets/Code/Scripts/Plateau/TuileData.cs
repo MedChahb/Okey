@@ -11,4 +11,11 @@ public class TuileData
         this.num = num;
         this.isJoker = isJoker;
     }
+
+    public TuileData(string couleur, int num, bool isJoker)
+    {
+        this.couleur = couleur;
+        this.num = num;
+        this.isJoker = isJoker;
+    }
 }

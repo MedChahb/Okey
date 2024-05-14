@@ -1,113 +1,194 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Code.Scripts.SignalR.Packets;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Chevalet : MonoBehaviour
 {
-    public static GameObject[] placeholders = new GameObject[28]; // Tableau des 28 Placeholders (la grille)
+    public static readonly GameObject[] Placeholders = new GameObject[28]; // Tableau des 28 Placeholders (la grille)
 
-    public TuileData[,] tuiles2D = new TuileData[2, 14];
-    private Stack<Tuile> pileGauche = new Stack<Tuile>();
-    private Stack<Tuile> pileDroite = new Stack<Tuile>();
-    private Stack<Tuile> pilePioche = new Stack<Tuile>();
-    public static GameObject pileGauchePlaceHolder;
-    public static GameObject pilePiochePlaceHolder;
+    public TuileData[,] Tuiles2D = new TuileData[2, 14];
+    public TuileData[,] TuilesPack = new TuileData[2, 14];
+    public readonly Stack<Tuile> _pileGauche = new Stack<Tuile>();
+    private Stack<Tuile> _pileDroite = new Stack<Tuile>();
+    public readonly Stack<Tuile> _pilePioche = new Stack<Tuile>();
+    public static GameObject PileGauchePlaceHolder;
+    public static GameObject PilePiochePlaceHolder;
 
-    public static GameObject pileDroitePlaceHolder;
-    public static GameObject jokerPlaceHolder;
+    public static GameObject PileDroitePlaceHolder;
+    public static GameObject JokerPlaceHolder;
 
-    public static Chevalet Instance { get; private set; }
+    public static GameObject PileHautDroitePlaceHolder;
+    public static GameObject PileHautGauchePlaceHolder;
+
+    public static Dictionary<string, Sprite> spritesDic = new Dictionary<string, Sprite>();
+
+    public bool IsJete { get; set; }
+    public TuilePacket TuileJete { get; set; }
+
+    public bool IsPiochee { get; set; }
+
+    public PiochePacket TuilePiochee = null;
+
+    public bool IsTireeHasard { get; set; }
+    public TuilePacket TuileTireeHasard = null;
+
+    public static bool neverReceivedChevalet = true;
+
+    public static Chevalet Instance { get; set; }
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            Debug.Log("Destroying duplicate instance of Chevalet.");
+            Destroy(this.gameObject);
         }
         else
         {
-            Destroy(this.gameObject);
+            Instance = this;
+            // DontDestroyOnLoad(this.gameObject);
+            Debug.Log("Chevalet instance set.");
         }
     }
 
-    void Start()
+    public void Init()
     {
-        InitPlaceholders();
-        this.InitializeBoardFromPlaceholders();
-        this.Print2DMatrix();
+        var sprites = Resources.LoadAll<Sprite>("Tiles");
+
+        for (var i = 0; i < 13; i++)
+        {
+            spritesDic.Add($"Black_{i + 1}", sprites[i]);
+        }
+
+        for (var i = 13; i < 26; i++)
+        {
+            spritesDic.Add($"Blue_{(i + 1) - 13}", sprites[i]);
+        }
+
+        spritesDic.Add("Fake Joker_1", sprites[26]);
+        spritesDic.Add("Fake Joker_2", sprites[27]);
+
+        for (var i = 28; i < 41; i++)
+        {
+            spritesDic.Add($"Green_{(i + 1) - 28}", sprites[i]);
+        }
+
+        spritesDic.Add($"Pioche", sprites[41]);
+
+        for (var i = 42; i < 55; i++)
+        {
+            spritesDic.Add($"Red_{(i + 1) - 42}", sprites[i]);
+        }
+
+        this.InitPlaceholders();
+        this.InitializeBoardFromTuiles();
+        this.TuileJete = null;
+        this.IsJete = false;
+
+        this.IsTireeHasard = false;
+        this.TuileTireeHasard = null;
+
+        this.IsPiochee = false;
+        this.TuilePiochee = null;
+    }
+
+    private void Start()
+    {
+        this.InitPlaceholders();
+        this.Awake();
+        //this.InitializeBoardFromPlaceholders();
+        //this.InitializeBoardFromTuiles();
 
         //PrintTuilesArray();
     }
 
-    void InitPlaceholders()
+    private void InitPlaceholders()
     {
         // Remplir le tableau avec les placeholders dans la scene
-        for (int i = 1; i <= 28; i++) //i commence a 1 car le premier placeholder est "PlaceHolder1"
+        for (var i = 1; i <= 28; i++) //i commence a 1 car le premier placeholder est "PlaceHolder1"
         {
-            GameObject placeholder = GameObject.Find("PlaceHolder" + i);
+            var placeholder = GameObject.Find("PlaceHolder" + i);
             if (placeholder != null)
             {
-                placeholders[i - 1] = placeholder; // Mettre le placeholder dans le tableau
+                Placeholders[i - 1] = placeholder; // Mettre le placeholder dans le tableau
             }
             else
             {
                 Debug.LogError("PlaceHolder" + i + " not found!");
             }
         }
+
         //ToDo : Instancier les piles en fonction de ce qu'on reçoit du Back
-        pileGauchePlaceHolder = GameObject.Find("PileGauchePlaceHolder");
-        pileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
-        pilePiochePlaceHolder = GameObject.Find("PiochePlaceHolder");
-        jokerPlaceHolder = GameObject.Find("Okey");
-        pileGauche.Push(
-            pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
-        );
-        pileGauche.Push(
-            pileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
-        );
-        pilePioche.Push(
-            pilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
-        );
-        pileGauchePlaceHolder
+        PileGauchePlaceHolder = GameObject.Find("PileGauchePlaceHolder");
+        PileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
+        PilePiochePlaceHolder = GameObject.Find("PiochePlaceHolder");
+        JokerPlaceHolder = GameObject.Find("Okey");
+        PileHautDroitePlaceHolder = GameObject.Find("PileHautDroitePlaceHolder");
+        PileHautGauchePlaceHolder = GameObject.Find("PileHautGauchePlaceHolder");
+        //this._pileGauche.Push(
+        //    PileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
+        //);
+        //this._pileGauche.Push(
+        //    PileGauchePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
+        //);
+        //this._pilePioche.Push(
+        //    PilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
+        //);
+
+        if (PileGauchePlaceHolder.transform.childCount > 0)
+        {
+            PileGauchePlaceHolder
+                .transform.GetChild(0)
+                .gameObject.GetComponent<Tuile>()
+                .SetIsInStack(true);
+            PileGauchePlaceHolder
+                .transform.GetChild(0)
+                .gameObject.GetComponent<Tuile>()
+                .SetIsDeplacable(false);
+        }
+
+        if (PilePiochePlaceHolder.transform.childCount > 0)
+        {
+            PilePiochePlaceHolder
+                .transform.GetChild(0)
+                .gameObject.GetComponent<Tuile>()
+                .SetIsDeplacable(false);
+        }
+
+        PileDroitePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
             .SetIsDeplacable(false);
-        pileGauchePlaceHolder
-            .transform.GetChild(0)
-            .gameObject.GetComponent<Tuile>()
-            .SetIsInStack(true);
-        pileDroitePlaceHolder
+        JokerPlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
             .SetIsDeplacable(false);
-        jokerPlaceHolder
+        /*
+        PilePiochePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
             .SetIsDeplacable(false);
-        pilePiochePlaceHolder
+        PilePiochePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()
-            .SetIsDeplacable(false);
-        pilePiochePlaceHolder
-            .transform.GetChild(0)
-            .gameObject.GetComponent<Tuile>()
-            .SetIsInPioche(true);
+            .SetIsInPioche(true);*/
     }
 
-    public GameObject ClosestPlaceholder(Vector3 position)
+    public GameObject ClosestPlaceholder(Vector3 Position)
     {
         GameObject closestPlaceholder = null;
-        float closestDistance = Mathf.Infinity;
+        var closestDistance = Mathf.Infinity;
 
         // Loop through placeholders using absolute positions
-        foreach (GameObject placeholder in placeholders)
+        foreach (var placeholder in Placeholders)
         {
             if (placeholder != null)
             {
-                float distance = Vector3.Distance(position, placeholder.transform.position); // Absolute position
+                var distance = Vector3.Distance(Position, placeholder.transform.position); // Absolute position
                 if (distance < closestDistance)
                 {
                     closestPlaceholder = placeholder;
@@ -117,135 +198,207 @@ public class Chevalet : MonoBehaviour
         }
 
         // Check specific piles using absolute positions
-        float distancePileDroite = Vector3.Distance(
-            position,
-            pileDroitePlaceHolder.transform.position
+        var distancePileDroite = Vector3.Distance(
+            Position,
+            PileDroitePlaceHolder.transform.position
         ); // Absolute position
 
+        var distanceJoker = Vector3.Distance(Position, JokerPlaceHolder.transform.position);
+
         // Determine closest placeholder based on distance and tile number
-        if (distancePileDroite < closestDistance && getTilesNumber() == 15)
+        if (distancePileDroite < closestDistance && GetTilesNumber() == 15)
         {
             closestDistance = distancePileDroite;
-            closestPlaceholder = pileDroitePlaceHolder;
+            closestPlaceholder = PileDroitePlaceHolder;
         }
         else if (
-            position.y > 0
-            && getTilesNumber() == 15 /* et peut gagner*/
+            (distanceJoker < closestDistance && GetTilesNumber() == 15)
+            && (distanceJoker < distancePileDroite)
         )
         {
-            closestPlaceholder = pilePiochePlaceHolder;
+            closestDistance = distanceJoker;
+            closestPlaceholder = JokerPlaceHolder;
+        }
+        else if (
+            Position.y > 0
+            && GetTilesNumber() == 15 /* et peut gagner*/
+        )
+        {
+            closestPlaceholder = PilePiochePlaceHolder;
         }
         return closestPlaceholder;
     }
 
-    public void UpdateTiles(GameObject placeholder)
+    public void UpdateTiles(GameObject Placeholder)
     {
         // Vérifier si le placeholder a des enfants (des tuiles)
-        if (placeholder.transform.childCount > 1)
+        if (Placeholder.transform.childCount > 1)
         {
             // Déterminer le numéro du placeholder actuel
-            int currentPlaceholderNumber = GetPlaceholderNumber(placeholder.name);
-            int indexTab = currentPlaceholderNumber - 1;
+            var currentPlaceholderNumber = GetPlaceholderNumber(Placeholder.name);
+            var indexTab = currentPlaceholderNumber - 1;
 
             // Vérifier s'il y a un placeholder à droite et s'il n'est pas plein
             if (
                 currentPlaceholderNumber < 29
-                && placeholders[(indexTab + 1) % 28].transform.childCount <= 1
+                && Placeholders[(indexTab + 1) % 28].transform.childCount <= 1
             )
             {
                 // Déplacer la première tuile du placeholder actuel vers le placeholder à droite
-                GameObject tile = placeholder.transform.GetChild(0).gameObject;
-                tile.GetComponent<Tuile>().AttachToPlaceholder(placeholders[(indexTab + 1) % 28]);
+                var tile = Placeholder.transform.GetChild(0).gameObject;
+                tile.GetComponent<Tuile>().AttachToPlaceholder(Placeholders[(indexTab + 1) % 28]);
 
                 // Appeler récursivement la fonction UpdateTiles sur le placeholder à droite
-                UpdateTiles(placeholders[(indexTab + 1) % 28]);
+                this.UpdateTiles(Placeholders[(indexTab + 1) % 28]);
             }
         }
     }
 
-    public void draw(bool piocheDroite)
+    public void Draw(bool PiocheDroite)
     {
         if (
-            getTilesNumber() == 14 /* et c'est mon tour*/
+            GetTilesNumber() == 14 /* et c'est mon tour*/
         )
         {
-            if (piocheDroite)
+            if (PiocheDroite)
             {
-                pileGauchePlaceHolder
+                PileGauchePlaceHolder
                     .transform.GetChild(0)
                     .gameObject.GetComponent<Tuile>()
                     .SetIsDeplacable(true);
-                pileGauchePlaceHolder
+                PileGauchePlaceHolder
                     .transform.GetChild(0)
                     .gameObject.GetComponent<Tuile>()
                     .SetIsInStack(false);
-                pileGauche.Pop();
-                if (pileGauche.Count > 0)
+                this._pileGauche.Pop();
+                if (this._pileGauche.Count > 0)
                 {
-                    GameObject newChild = Instantiate(
-                        pileGauche.Peek().gameObject,
-                        pileGauchePlaceHolder.transform
+                    var newChild = Instantiate(
+                        this._pileGauche.Peek().gameObject,
+                        PileGauchePlaceHolder.transform
                     );
                     newChild.transform.localPosition = Vector3.zero;
                     newChild.GetComponent<Tuile>().SetIsInStack(true);
                     newChild.GetComponent<Tuile>().SetIsDeplacable(false);
                 }
-                //ToDo : Envoyer "Pioche à Droite"
             }
             else
             {
-                pilePiochePlaceHolder
+                PilePiochePlaceHolder
                     .transform.GetChild(0)
                     .gameObject.GetComponent<Tuile>()
                     .SetIsDeplacable(true);
-                pilePiochePlaceHolder
+                PilePiochePlaceHolder
                     .transform.GetChild(0)
                     .gameObject.GetComponent<Tuile>()
                     .SetIsInPioche(false);
-                pilePioche.Pop();
-                if (pilePioche.Count > 0)
+                this._pilePioche.Pop();
+                if (this._pilePioche.Count > 0)
                 {
-                    GameObject newChild = Instantiate(
-                        pilePioche.Peek().gameObject,
-                        pilePiochePlaceHolder.transform
+                    var newChild = Instantiate(
+                        this._pilePioche.Peek().gameObject,
+                        PilePiochePlaceHolder.transform
                     );
                     newChild.transform.localPosition = Vector3.zero;
                     newChild.GetComponent<Tuile>().SetIsInStack(true);
                     newChild.GetComponent<Tuile>().SetIsDeplacable(false);
                 }
-                //ToDo : Envoyer "Pioche au centre"
             }
         }
     }
 
-    public void throwTile(Tuile tuile)
+    public void ThrowTile(Tuile Tuile)
     {
-        pileDroite.Push(tuile);
-        TuileData tuileData = new TuileData(
-            ConvertToFrontendColorToBackendEnumName(tuile.GetCouleur()),
-            tuile.GetValeur(),
-            tuile.GetIsJoker()
-        );
-        //ToDo : Envoyer TuileData + Défausse droite
+        this._pileDroite.Push(Tuile);
+
+        Debug.Log($"Tuile recue {Tuile.GetCouleur()}");
+        var tuileData = this.GetTuilePacketFromChevalet(Tuile, false);
+        Debug.Log($"{tuileData.Y}, {tuileData.X}");
+        this.IsJete = true;
+        this.TuileJete = tuileData;
     }
 
-    public void throwTileToWin(Tuile tuile)
+    public void PiocheTile(bool isCenter)
     {
-        TuileData tuileData = new TuileData(
-            ConvertToFrontendColorToBackendEnumName(tuile.GetCouleur()),
-            tuile.GetValeur(),
-            tuile.GetIsJoker()
-        );
-        //ToDo : Envoyer TuileData + Pile Pioche + tuiles2D
-        //Attendre Vérif
-        //Et communiquer le résultat
-        //pilePioche.Push(tuile);
+        Debug.Log("Il faut piocher une tuile");
+        if (isCenter)
+        {
+            this.TuilePiochee = new PiochePacket { Centre = true, Defausse = false };
+        }
+        else
+        {
+            this.TuilePiochee = new PiochePacket { Centre = false, Defausse = true };
+        }
+        this.IsPiochee = true;
+    }
+
+    public void ThrowTileToWin(Tuile Tuile)
+    {
+        var tuileData = this.GetTuilePacketFromChevalet(Tuile, true);
+        Debug.Log($"{tuileData.Y}, {tuileData.X}, {tuileData.gagner}");
+        this.IsJete = true;
+        this.TuileJete = tuileData;
+    }
+
+    public TuilePacket GetTuilePacketFromChevalet(Tuile T, bool gain)
+    {
+        if (T != null)
+        {
+            for (var x = 0; x < 2; x++)
+            {
+                for (var y = 0; y < 14; y++)
+                {
+                    if (
+                        T.GetCouleur().Equals("V", StringComparison.Ordinal)
+                        || T.GetCouleur().Equals("J", StringComparison.Ordinal)
+                    )
+                    {
+                        if (
+                            this.TuilesPack[x, y].couleur.Equals("V", StringComparison.Ordinal)
+                            || this.TuilesPack[x, y].couleur.Equals("J", StringComparison.Ordinal)
+                        )
+                        {
+                            if (
+                                T.GetValeur() == this.TuilesPack[x, y].num
+                                && T.GetIsJoker() == this.TuilesPack[x, y].isJoker
+                            )
+                            {
+                                return new TuilePacket
+                                {
+                                    X = "" + y,
+                                    Y = "" + x,
+                                    gagner = gain
+                                };
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (
+                            T.GetCouleur()
+                                .Equals(this.TuilesPack[x, y].couleur, StringComparison.Ordinal)
+                            && T.GetValeur() == this.TuilesPack[x, y].num
+                        )
+                        {
+                            return new TuilePacket
+                            {
+                                X = "" + y,
+                                Y = "" + x,
+                                gagner = gain
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        Debug.Log("On jete une tuile nulle.");
+        return new TuilePacket();
     }
 
     // Fonction auxiliaire pour extraire le numéro du placeholder à partir de son nom
-    public static int GetPlaceholderNumber(string name)
+    public static int GetPlaceholderNumber(string Name)
     {
-        string numberString = name.Substring(11);
+        var numberString = Name.Substring(11);
         int number;
         int.TryParse(numberString, out number);
         return number;
@@ -253,12 +406,12 @@ public class Chevalet : MonoBehaviour
 
     private void InitializeBoardFromPlaceholders()
     {
-        for (var i = 0; i < placeholders.Length; i++)
+        for (var i = 0; i < Placeholders.Length; i++)
         {
             var x = i / 14; // Calculate the row based on index.
             var y = i % 14; // Calculate the column based on index.
 
-            GameObject placeholder = placeholders[i];
+            var placeholder = Placeholders[i];
 
             //Debug.Log($"Checking placeholder {i}, Child count: {placeholder.transform.childCount}");
 
@@ -266,9 +419,8 @@ public class Chevalet : MonoBehaviour
             {
                 // Get the first child of the placeholder
                 var child = placeholder.transform.GetChild(0).gameObject;
-                var childSpriteRenderer = child.GetComponent<SpriteRenderer>();
 
-                if (childSpriteRenderer != null)
+                if (child.TryGetComponent<SpriteRenderer>(out var childSpriteRenderer))
                 {
                     // note: "color_value" should be used for naming the sprites
                     var properties = childSpriteRenderer.sprite.name.Split('_');
@@ -280,8 +432,41 @@ public class Chevalet : MonoBehaviour
                         //                    Debug.Log(couleur);
                         var num = int.Parse(properties[1]);
                         var isJoker = properties[0] == "FakeJoker";
-                        this.tuiles2D[x, y] = new TuileData(couleur, num, isJoker);
+                        this.Tuiles2D[x, y] = new TuileData(couleur, num, isJoker);
+                        var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                        tuilePlaceHolder.SetCouleur(couleur.ToString());
+                        tuilePlaceHolder.SetValeur(num);
+                        tuilePlaceHolder.SetIsJoker(isJoker);
+                        //this.tuilesPack[x, y] = new TuileData(couleur, num, isJoker);
                         //Debug.Log("["+x+"]"+"["+y+"]"+" "+this.tuiles2D[x, y].couleur+ " " +this.tuiles2D[x, y].num+" "+this.tuiles2D[x, y].isJoker);
+                    }
+                    else if (
+                        childSpriteRenderer.sprite.name.Equals("Pioche", StringComparison.Ordinal)
+                    )
+                    {
+                        var tuile = child.GetComponent<Tuile>();
+
+                        var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                        tuilePlaceHolder.SetCouleur(tuile.GetCouleur());
+                        tuilePlaceHolder.SetValeur(tuile.GetValeur());
+
+                        this.Tuiles2D[x, y] = new TuileData(
+                            FromStringToCouleurTuile(tuilePlaceHolder.GetCouleur()),
+                            tuilePlaceHolder.GetValeur(),
+                            tuilePlaceHolder.GetIsJoker()
+                        );
+                        var mat = new Material(Shader.Find("Sprites/Default"))
+                        {
+                            color = new Color(
+                                0.9529411764705882f,
+                                0.9411764705882353f,
+                                0.8156862745098039f
+                            )
+                        };
+                        childSpriteRenderer.material = mat;
+                        childSpriteRenderer.sprite = spritesDic[
+                            FromTuileToSpriteName(this.Tuiles2D[x, y])
+                        ];
                     }
                     else
                     {
@@ -289,19 +474,124 @@ public class Chevalet : MonoBehaviour
                         Debug.LogError(
                             $"Child sprite of placeholder at index {i} does not have a properly formatted name."
                         );
-                        this.tuiles2D[x, y] = null;
+                        this.Tuiles2D[x, y] = null;
+                        var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                        tuilePlaceHolder.SetCouleur(null);
+                        tuilePlaceHolder.SetValeur(0);
+                        //this.tuilesPack[x, y] = null;
                     }
                 }
                 else
                 {
                     // If there is no SpriteRenderer component, set the corresponding array position to null
-                    this.tuiles2D[x, y] = null;
+                    this.Tuiles2D[x, y] = null;
+                    var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                    tuilePlaceHolder.SetCouleur(null);
+                    tuilePlaceHolder.SetValeur(0);
                 }
             }
             else //empty placeholder
             {
                 // If the placeholder is empty, set the corresponding array position to null
-                this.tuiles2D[x, y] = null;
+                this.Tuiles2D[x, y] = null;
+                var tuilePlaceHolder = placeholder.GetComponent<Tuile>();
+                tuilePlaceHolder.SetCouleur(null);
+                tuilePlaceHolder.SetValeur(0);
+            }
+        }
+    }
+
+    public static string FromTuileToSpriteName(TuileData Tuile)
+    {
+        if (
+            Tuile.isJoker
+            || Tuile.couleur.Equals("M", StringComparison.Ordinal)
+            || Tuile.couleur.Equals("X", StringComparison.Ordinal)
+        )
+        {
+            return "Fake Joker_1";
+        }
+        var name = "";
+        switch (Tuile.couleur)
+        {
+            case "B":
+                name = "Blue_";
+                break;
+            case "R":
+                name = "Red_";
+                break;
+            case "N":
+                name = "Black_";
+                break;
+            case "J":
+                name = "Green_";
+                break;
+        }
+
+        name += Tuile.num;
+        return name;
+    }
+
+    public static CouleurTuile FromStringToCouleurTuile(string CouleurString)
+    {
+        CouleurTuile coul;
+        switch (CouleurString)
+        {
+            case "J":
+                coul = CouleurTuile.J;
+                break;
+            case "N":
+                coul = CouleurTuile.N;
+                break;
+            case "R":
+                coul = CouleurTuile.R;
+                break;
+            case "B":
+                coul = CouleurTuile.B;
+                break;
+            case "M":
+                coul = CouleurTuile.M;
+                break;
+            case "X":
+                coul = CouleurTuile.X;
+                break;
+            default:
+                Debug.LogError(CouleurString);
+                throw new Exception();
+                break;
+        }
+        return coul;
+    }
+
+    private void InitializeBoardFromTuiles()
+    {
+        for (var i = 0; i < Placeholders.Length; i++)
+        {
+            var x = i / 14;
+            var y = i % 14;
+            var placeholder = Placeholders[i];
+            if (this.Tuiles2D[x, y] != null)
+            {
+                var childObject = new GameObject("SpriteChild");
+                childObject.transform.SetParent(placeholder.transform);
+                var spriteRen = childObject.AddComponent<SpriteRenderer>();
+                var mat = new Material(Shader.Find("Sprites/Default"))
+                {
+                    color = new Color(0.9529411764705882f, 0.9411764705882353f, 0.8156862745098039f)
+                };
+                spriteRen.material = mat;
+                spriteRen.sprite = spritesDic[FromTuileToSpriteName(this.Tuiles2D[x, y])];
+                spriteRen.sortingOrder = 3;
+                var transform1 = spriteRen.transform;
+                transform1.localPosition = new Vector3(0, 0, 0);
+                transform1.localScale = new Vector3(1, 1, 1);
+                childObject.AddComponent<Tuile>();
+                var boxCollider2D = childObject.AddComponent<BoxCollider2D>();
+                boxCollider2D.size = new Vector2((float)0.875, (float)1.25);
+
+                placeholder.GetComponent<Tuile>().SetValeur(this.Tuiles2D[x, y].num);
+                placeholder.GetComponent<Tuile>().SetCouleur(this.Tuiles2D[x, y].couleur);
+                placeholder.GetComponent<Tuile>().SetIsJoker(this.Tuiles2D[x, y].isJoker);
             }
         }
     }
@@ -325,8 +615,8 @@ public class Chevalet : MonoBehaviour
     private (int, int) ConvertPlaceHolderNumberToMatrixCoordinates(int PlaceholderNumber)
     {
         //conversion du numero du place holder 1->28 en coordonnées dans la matrice [2][14]
-        int x = (PlaceholderNumber - 1) / 14;
-        int y = (PlaceholderNumber - 1) % 14;
+        var x = (PlaceholderNumber - 1) / 14;
+        var y = (PlaceholderNumber - 1) % 14;
         return (x, y);
     }
 
@@ -336,73 +626,242 @@ public class Chevalet : MonoBehaviour
     )
     {
         //cas de deplacement a l'interieur du chevalet : Chevalet -> Chevalet
-        GameObject ChevaletFront = GameObject.Find("ChevaletFront");
+        var chevaletFront = GameObject.Find("ChevaletFront");
         if (
-            PreviousPlaceHolder.transform.IsChildOf(ChevaletFront.transform)
-            && NextPlaceholder.transform.IsChildOf(ChevaletFront.transform)
+            PreviousPlaceHolder.transform.IsChildOf(chevaletFront.transform)
+            && NextPlaceholder.transform.IsChildOf(chevaletFront.transform)
         )
         {
-            InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets pour recuperer les nouvelles position car il y'a le decalage des tuiles
+            if (!PreviousPlaceHolder.name.Equals(NextPlaceholder.name, StringComparison.Ordinal))
+            {
+                var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+                var nt = NextPlaceholder.GetComponent<Tuile>();
+                nt.SetCouleur(tuile.GetCouleur());
+                nt.SetValeur(tuile.GetValeur());
+                nt.SetIsJoker(tuile.GetIsJoker());
+
+                tuile.SetCouleur(null);
+                tuile.SetValeur(0);
+                this.InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets pour recuperer les nouvelles position car il y'a le decalage des tuiles
+            }
+            this.InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets pour recuperer les nouvelles position car il y'a le decalage des tuiles
         }
         //cas de tirage : pioche ou pile gauche -> Chevalet
         else if (
-            PreviousPlaceHolder == pileGauchePlaceHolder
-            || PreviousPlaceHolder == pilePiochePlaceHolder
-                && NextPlaceholder.transform.IsChildOf(ChevaletFront.transform)
+            (
+                PreviousPlaceHolder == PileGauchePlaceHolder
+                || PreviousPlaceHolder == PilePiochePlaceHolder
+            ) && NextPlaceholder.transform.IsChildOf(chevaletFront.transform)
         )
         {
-            (int, int) nxt_ph_pos = ConvertPlaceHolderNumberToMatrixCoordinates(
-                GetPlaceholderNumber(NextPlaceholder.name)
-            );
-
             //ajouter la piece pioché au chevalet
-            InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets car quand on pioche on peut la mettre entre 2 tuiles et ca crée un decalage
+            this.InitializeBoardFromPlaceholders(); // il faut re parcourir le chevalets car quand on pioche on peut la mettre entre 2 tuiles et ca crée un decalage
+            var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+            var nt = NextPlaceholder.GetComponent<Tuile>();
+
+            nt.SetCouleur(tuile.GetCouleur());
+            nt.SetValeur(tuile.GetValeur());
+            nt.SetIsJoker(tuile.GetIsJoker());
+
+            if (PreviousPlaceHolder == PilePiochePlaceHolder)
+            {
+                Debug.Log("Ici");
+                if (this._pilePioche.Count > 0)
+                {
+                    this._pilePioche.Pop();
+                    PilePiochePlaceHolder
+                        .GetComponent<Tuile>()
+                        .SetCouleur(this._pilePioche.Peek().GetCouleur());
+                    PilePiochePlaceHolder
+                        .GetComponent<Tuile>()
+                        .SetValeur(this._pilePioche.Peek().GetValeur());
+                }
+                this.PiocheTile(true);
+            }
+            else
+            {
+                Debug.Log("La");
+                this.PiocheTile(false);
+                this._pileGauche.Pop();
+                if (this._pileGauche.Count > 0)
+                {
+                    PileGauchePlaceHolder
+                        .GetComponent<Tuile>()
+                        .SetCouleur(this._pileGauche.Peek().GetCouleur());
+                    PileGauchePlaceHolder
+                        .GetComponent<Tuile>()
+                        .SetValeur(this._pileGauche.Peek().GetValeur());
+                }
+            }
 
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece pioché
         }
-        //cas de jet : Chevalet -> pile droite ou joker(gagné)
+        //cas de jet : Chevalet -> pile droite / tentative de gain
         else if (
-            PreviousPlaceHolder.transform.IsChildOf(ChevaletFront.transform)
-                && NextPlaceholder == pileDroitePlaceHolder
-            || NextPlaceholder == jokerPlaceHolder
+            PreviousPlaceHolder.transform.IsChildOf(chevaletFront.transform)
+            && (NextPlaceholder == PileDroitePlaceHolder || NextPlaceholder == JokerPlaceHolder)
         )
         {
             //enlever la piece jeté du chevalet
-            (int, int) prv_ph_pos = ConvertPlaceHolderNumberToMatrixCoordinates(
+            var prvPhPos = this.ConvertPlaceHolderNumberToMatrixCoordinates(
                 GetPlaceholderNumber(PreviousPlaceHolder.name)
             );
-            Debug.Log($"tuile[{prv_ph_pos.Item1}][{prv_ph_pos.Item1}] a été jeté");
+
+            //Debug.Log($"tuile[{prv_ph_pos.Item1}][{prv_ph_pos.Item1}] a été jeté");
             Debug.Log(
                 ""
-                    + this.tuiles2D[prv_ph_pos.Item1, prv_ph_pos.Item2].couleur
-                    + this.tuiles2D[prv_ph_pos.Item1, prv_ph_pos.Item2].num
-                    + this.tuiles2D[prv_ph_pos.Item1, prv_ph_pos.Item2].isJoker
+                    + this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2].couleur
+                    + this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2].num
+                    + this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2].isJoker
             );
-            this.tuiles2D[prv_ph_pos.Item1, prv_ph_pos.Item2] = null;
+
+            if (NextPlaceholder == PileDroitePlaceHolder)
+            {
+                this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
+
+                var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+                var nt = NextPlaceholder.GetComponent<Tuile>();
+                nt.SetCouleur(tuile.GetCouleur());
+                nt.SetValeur(tuile.GetValeur());
+                nt.SetIsJoker(tuile.GetIsJoker());
+                tuile.SetCouleur(null);
+                tuile.SetValeur(0);
+                for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
+                {
+                    PileDroitePlaceHolder
+                        .transform.GetChild(i)
+                        .GetComponent<SpriteRenderer>()
+                        .sortingOrder = i;
+                }
+            }
+            else
+            {
+                var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+                var nt = NextPlaceholder.GetComponent<Tuile>();
+                nt.SetCouleur(tuile.GetCouleur());
+                nt.SetValeur(tuile.GetValeur());
+                nt.SetIsJoker(tuile.GetIsJoker());
+            }
 
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece jeté
         }
         else //cas derreur
         {
-            Debug.Log("error updating matrix after movement");
+            Debug.LogError("error updating matrix after movement");
+
+            Debug.Log($"Source: {PreviousPlaceHolder.name}, Destination: {NextPlaceholder.name}");
         }
 
-        Print2DMatrix();
+        this.Print2DMatrix();
     }
 
-    private void Print2DMatrix() //Really useful to visualize tiles placement matrix
+    public void MoveFromChevaletToDefausse(TuilePacket tuile)
+    {
+        var xS = int.Parse(tuile.X);
+        var yS = int.Parse(tuile.Y);
+        var xChevalet = 0;
+        var yChevalet = 0;
+        var tuileServ = this.TuilesPack[xS, yS];
+
+        // Trouver les coordonnes actuelles sur le chevalet
+        TuileData tuileChevalet;
+        for (var xC = 0; xC < 2; xC++)
+        {
+            for (var yC = 0; yC < 14; yC++)
+            {
+                if (this.Tuiles2D[xC, yC] != null)
+                {
+                    if (
+                        (this.Tuiles2D[xC, yC].num == tuileServ.num)
+                        && (
+                            tuileServ.couleur.Equals(
+                                this.Tuiles2D[xC, yC].couleur,
+                                StringComparison.Ordinal
+                            )
+                        )
+                    )
+                    {
+                        tuileChevalet = this.Tuiles2D[xC, yC];
+                        xChevalet = xC;
+                        yChevalet = yC;
+                    }
+                }
+            }
+        }
+
+        int coordPlaceHolder = 0;
+
+        if (xChevalet == 0)
+        {
+            coordPlaceHolder = yChevalet;
+        }
+        else
+        {
+            coordPlaceHolder = yChevalet + 15;
+        }
+
+        var sourceplaceHolder = Placeholders[coordPlaceHolder];
+
+        sourceplaceHolder.GetComponent<Tuile>().SetCouleur(null);
+        sourceplaceHolder.GetComponent<Tuile>().SetValeur(0);
+
+        var spriteToDelete = sourceplaceHolder.transform.GetChild(0);
+        spriteToDelete.transform.SetParent(PileDroitePlaceHolder.transform);
+        var transform1 = spriteToDelete.transform;
+        transform1.localPosition = new Vector3(0, 0, 0);
+
+        for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
+        {
+            PileDroitePlaceHolder
+                .transform.GetChild(i)
+                .GetComponent<SpriteRenderer>()
+                .sortingOrder = i;
+        }
+    }
+
+    public void SetTuileCentre(TuileStringPacket tuile)
+    {
+        if (tuile.numero != null)
+        {
+            var tuileData = new TuileData(
+                FromStringToCouleurTuile(tuile.Couleur),
+                int.Parse(tuile.numero),
+                false
+            );
+
+            var childObject = new GameObject("SpriteChild");
+            childObject.transform.SetParent(JokerPlaceHolder.transform);
+            var spriteRen = childObject.AddComponent<SpriteRenderer>();
+            var mat = new Material(Shader.Find("Sprites/Default"))
+            {
+                color = new Color(0.9529411764705882f, 0.9411764705882353f, 0.8156862745098039f)
+            };
+            spriteRen.material = mat;
+            Debug.Log(FromTuileToSpriteName(tuileData));
+            spriteRen.sprite = spritesDic[FromTuileToSpriteName(tuileData)];
+            spriteRen.sortingOrder = 3;
+            var transform1 = spriteRen.transform;
+            transform1.localPosition = new Vector3(0, 0, 0);
+            transform1.localScale = new Vector3(1, 1, 1);
+            childObject.AddComponent<Tuile>();
+            var boxCollider2D = childObject.AddComponent<BoxCollider2D>();
+            boxCollider2D.size = new Vector2((float)0.875, (float)1.25);
+        }
+    }
+
+    public void Print2DMatrix() //Really useful to visualize tiles placement matrix
     {
         // Initialize a string to store the table
-        string table = "";
+        var table = "";
 
-        for (int x = 0; x < 2; x++) // Rows
+        for (var x = 0; x < 2; x++) // Rows
         {
-            for (int y = 0; y < 14; y++) // Columns
+            for (var y = 0; y < 14; y++) // Columns
             {
-                if (this.tuiles2D[x, y] != null)
+                if (this.Tuiles2D[x, y] != null)
                 {
                     table +=
-                        $"| {this.tuiles2D[x, y].couleur} {this.tuiles2D[x, y].num} {this.tuiles2D[x, y].isJoker} ";
+                        $"| {this.Tuiles2D[x, y].couleur} {this.Tuiles2D[x, y].num} {this.Tuiles2D[x, y].isJoker} ";
                 }
                 else
                 {
@@ -414,6 +873,11 @@ public class Chevalet : MonoBehaviour
 
         // Print the table
         Debug.Log(table);
+    }
+
+    public void SetTuiles(TuileData[,] Tuiles)
+    {
+        this.Tuiles2D = Tuiles;
     }
 
     //public void SetTuile(int x, int y, TuileData tuile)
@@ -437,7 +901,7 @@ public class Chevalet : MonoBehaviour
 
     public TuileData[,] GetTuilesArray()
     {
-        return this.tuiles2D;
+        return this.Tuiles2D;
     }
 
     private void PrintTuilesArray()
@@ -445,11 +909,11 @@ public class Chevalet : MonoBehaviour
         var sb = new StringBuilder();
         sb.AppendLine("Board State:");
 
-        for (int x = 0; x < this.tuiles2D.GetLength(0); x++)
+        for (var x = 0; x < this.Tuiles2D.GetLength(0); x++)
         {
-            for (int y = 0; y < this.tuiles2D.GetLength(1); y++)
+            for (var y = 0; y < this.Tuiles2D.GetLength(1); y++)
             {
-                TuileData tile = this.tuiles2D[x, y];
+                var tile = this.Tuiles2D[x, y];
                 if (tile != null)
                 {
                     sb.AppendLine(
@@ -466,10 +930,10 @@ public class Chevalet : MonoBehaviour
         Debug.Log(sb.ToString());
     }
 
-    public int getTilesNumber()
+    private static int GetTilesNumber()
     {
-        int num = 0;
-        foreach (GameObject placeholder in placeholders)
+        var num = 0;
+        foreach (var placeholder in Placeholders)
         {
             if (placeholder.transform.childCount == 1)
             {
@@ -478,13 +942,279 @@ public class Chevalet : MonoBehaviour
         }
         return num;
     }
+
+    /*private List<TuileData> TrierTuilesParNumero(List<TuileData> tuiles)
+    {
+        var tuilesTriees = tuiles.OrderBy(tuile => tuile.num).ToList();
+        return tuilesTriees;
+    }
+
+    private (List<TuileData>, List<TuileData>) TriCouleur(List<TuileData> tuiles)
+    {
+        List<TuileData> tuilesTriees = this.TrierTuilesParNumero(tuiles);
+        List<TuileData> series = new List<TuileData>();
+        List<TuileData> nonSeries = new List<TuileData>();
+
+        // Variables pour suivre la série actuelle
+        List<TuileData> currentSeries = new List<TuileData>();
+
+        for (int i = 0; i < tuilesTriees.Count; i++)
+        {
+            // Ajouter la tuile actuelle à la série en cours
+            currentSeries.Add(tuilesTriees[i]);
+
+            // Vérifier si la tuile suivante n'est pas consécutive ou s'il n'y a plus de tuiles
+            if (
+                i == tuilesTriees.Count - 1
+                || tuilesTriees[i + 1].Numero != tuilesTriees[i].Numero + 1
+            )
+            {
+                // Si la série est valide (au moins 3 tuiles), ajouter à la liste des séries
+                if (currentSeries.Count >= 3)
+                {
+                    series.AddRange(currentSeries);
+                    series.Add(null); // peut causer des erreus de debordements
+                }
+                else
+                {
+                    // Sinon, ajouter à la liste des non-séries
+                    nonSeries.AddRange(currentSeries);
+                }
+
+                // Réinitialiser la série en cours
+                currentSeries = new List<TuileData>();
+            }
+        }
+
+
+        return (series, nonSeries);
+    }
+
+    private (List<TuileData>, List<TuileData>) triChiffre(List<TuileData> nonSerie)
+    {
+        // Dictionnaire pour stocker les tuiles par numéro
+        Dictionary<int, List<TuileData>> tuilesParNumero = new Dictionary<int, List<TuileData>>();
+
+        // Parcourir les tuiles et les regrouper par numéro
+        foreach (var tuile in nonSerie)
+        {
+            if (!tuilesParNumero.ContainsKey(tuile.Numero))
+            {
+                tuilesParNumero[tuile.Numero] = new List<TuileData>();
+            }
+            tuilesParNumero[tuile.Numero].Add(tuile);
+        }
+
+        List<TuileData> memesNumeros = new List<TuileData>();
+        List<TuileData> restantes = new List<TuileData>();
+
+        // Vérifier les groupes de tuiles pour des couleurs différentes
+        foreach (var entry in tuilesParNumero)
+        {
+            var groupe = entry.Value;
+            if (groupe.Select(t => t.Couleur).Distinct().Count() > 1)
+            {
+                memesNumeros.AddRange(groupe);
+                memesNumeros.Add(null); // peut causer des erreurs
+            }
+            else
+            {
+                restantes.AddRange(groupe);
+            }
+        }
+
+        return (memesNumeros, restantes);
+    }
+
+    private List<List<TuileData>> GroupByCouleur(TuileData[,] Matrice)
+    {
+        List<TuileData> rouges = new List<TuileData>();
+        List<TuileData> bleus = new List<TuileData>();
+        List<TuileData> noirs = new List<TuileData>();
+        List<TuileData> jaunes = new List<TuileData>();
+        List<TuileData> okeys = new List<TuileData>();
+
+        for (int i = 0; i < Matrice.GetLength(0); i++)
+        {
+            for (int j = 0; j < Matrice.GetLength(1); j++)
+            {
+                TuileData tuile = Matrice[i, j];
+                if (tuile != null)
+                {
+                    switch (tuile.Couleur.ToLower())
+                    {
+                        case "rouge":
+                            rouges.Add(tuile);
+                            break;
+                        case "bleu":
+                            bleus.Add(tuile);
+                            break;
+                        case "noir":
+                            noirs.Add(tuile);
+                            break;
+                        case "jaune":
+                            jaunes.Add(tuile);
+                            break;
+                        case "multicolor":
+                            okeys.Add(tuile);
+                            break;
+                    }
+                }
+            }
+        }
+
+        return new List<List<TuileData>> { rouges, bleus, noirs, jaunes, okeys };
+    }
+
+    public void TriChevalet()
+    {
+        List<List<TuileData>> groupedByColor = this.GroupByCouleur(this.Tuiles2D); // 5 lists
+
+        List<TuileData> serieFinale = new List<TuileData>();
+        List<TuileData> resteDeMemeCouleurFinale = new List<TuileData>();
+
+        for (int i = 0; i < 4; i++)
+        {
+            List<TuileData> serieMemeCouleur = new List<TuileData>();
+            List<TuileData> resteDeMemeCouleur = new List<TuileData>();
+            (serieMemeCouleur, resteDeMemeCouleur) = this.TriCouleur(groupedByColor[i]);
+
+            serieFinale.AddRange(serieMemeCouleur);
+            resteDeMemeCouleurFinale.AddRange(resteDeMemeCouleur);
+        }
+
+        List<TuileData> serieDansReste = new List<TuileData>();
+        List<TuileData> resteDansReste = new List<TuileData>();
+
+        (serieDansReste, resteDansReste) = this.triChiffre(resteDeMemeCouleurFinale);
+        List<TuileData> okeys = groupedByColor[4];
+        resteDansReste.AddRange(okeys);
+
+        // on ajoute toutes les bonnes series ici.
+        serieFinale.AddRange(serieDansReste);
+
+        int i = 0, j = 0; // pour le parcours de chevalet
+
+        foreach (var tuile in serieFinale)
+        {
+            while (i < this.Tuiles2D.Count && j < this.Tuiles2D[i].Count && this.Tuiles2D[i][j] != null)
+            {
+                j++;
+                if (j >= this.Tuiles2D[i].Count)
+                {
+                    j = 0;
+                    i++;
+                }
+            }
+
+            if (i < this.Tuiles2D.Count && j < this.Tuiles2D[i].Count)
+            {
+                this.Tuiles2D[i][j] = tuile;
+            }
+        }
+
+        for (i = 0; i < this.Tuiles2D.Count; i++)
+        {
+            for (j = 0; j < this.Tuiles2D[i].Count; j++)
+            {
+                if (this.Tuiles2D[i][j] == null)
+                {
+                    // Ajout des tuiles dans resteDansReste a la fin
+                    if (resteDansReste.Count > 0)
+                    {
+                        this.Tuiles2D[i][j] = resteDansReste[0];
+                        resteDansReste.RemoveAt(0);
+                    }
+                }
+            }
+        }
+    }
+
+    public void TriEnCouple()
+    {
+        // Dictionnaire pour compter les tuiles par couleur et numéro
+        var tuileCount = new Dictionary<(string, int), List<TuileData>>();
+
+        // Parcourir le tableau 2D et remplir le dictionnaire
+        for (int i = 0; i < Tuiles2D.GetLength(0); i++)
+        {
+            for (int j = 0; j < Tuiles2D.GetLength(1); j++)
+            {
+                var tuile = Tuiles2D[i, j];
+                if (tuile != null)
+                {
+                    var key = (tuile.Couleur, tuile.Numero);
+                    if (!tuileCount.ContainsKey(key))
+                    {
+                        tuileCount[key] = new List<TuileData>();
+                    }
+                    tuileCount[key].Add(tuile);
+                }
+            }
+        }
+
+        // Réinitialiser Tuiles2D
+        Tuiles2D = new TuileData[2, 14];
+        int row = 0, col = 0;
+
+        List<TuileData> remainingTiles = new List<TuileData>();
+
+        // Parcourir le dictionnaire et placer les couples dans Tuiles2D
+        foreach (var kvp in tuileCount)
+        {
+            var tuileList = kvp.Value;
+            while (tuileList.Count >= 2)
+            {
+                if (col >= Tuiles2D.GetLength(1))
+                {
+                    col = 0;
+                    row++;
+                    if (row >= Tuiles2D.GetLength(0)) return; // Arrêter si on dépasse les limites
+                }
+
+                // Ajouter le couple
+                Tuiles2D[row, col] = tuileList[0];
+                Tuiles2D[row, col + 1] = tuileList[1];
+                // Supprimer les deux tuiles ajoutées
+                tuileList.RemoveAt(0);
+                tuileList.RemoveAt(0);
+
+                // Mettre null après le couple
+                if (col + 2 < Tuiles2D.GetLength(1))
+                {
+                    Tuiles2D[row, col + 2] = null;
+                    col += 3;
+                }
+                else
+                {
+                    col = 0;
+                    row++;
+                    if (row < Tuiles2D.GetLength(0))
+                    {
+                        Tuiles2D[row, col] = null;
+                        col++;
+                    }
+                }
+            }
+
+            // Ajouter les tuiles restantes au remainingTiles
+            remainingTiles.AddRange(tuileList);
+        }
+
+        // Ajouter les tuiles restantes à la fin de Tuiles2D
+        foreach (var tuile in remainingTiles)
+        {
+            if (col >= Tuiles2D.GetLength(1))
+            {
+                col = 0;
+                row++;
+                if (row >= Tuiles2D.GetLength(0)) return; // Arrêter si on dépasse les limites
+            }
+            Tuiles2D[row, col] = tuile;
+            col++;
+        }
+    }*/
 }
-
-
-
-
-
-
 
 
 /*
