@@ -154,6 +154,14 @@ public class Plateau2 : MonoBehaviour
         PlateauPanel.SetActive(false);
     }
 
+    public void QuitterPartie()
+    {
+        SignalRConnector._hubConnection.StopAsync();
+        SceneManager.LoadScene("Acceuil");
+        SceneManager.UnloadSceneAsync("SelectionTypeJeu");
+        SceneManager.UnloadSceneAsync("PlateauInit");
+    }
+
     public void toggleEmojiPanel()
     {
         EmojiPanel.SetActive(!EmojiPanel.activeSelf);

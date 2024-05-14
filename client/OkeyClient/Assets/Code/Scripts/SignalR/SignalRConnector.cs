@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 
 public class SignalRConnector : MonoBehaviour
 {
-    private static HubConnection _hubConnection;
+    public static HubConnection _hubConnection;
 
     public static SignalRConnector Instance { get; private set; }
 
@@ -269,7 +269,7 @@ public class SignalRConnector : MonoBehaviour
                     // LobbyManager.Instance.SetCurrentPlayerTurn(PlayerName);
                     // Timer.Instance.LaunchTimer();
                     // Debug.Log("Signal received");
-                    PlateauSignals.Instance.SetPlayerSignal(PlayerName);
+                    //PlateauSignals.Instance.SetPlayerSignal(PlayerName);
                     Timer.Instance.LaunchTimer();
                 });
             }
