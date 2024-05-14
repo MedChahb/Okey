@@ -714,10 +714,12 @@ public class SignalRConnector : MonoBehaviour
 
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    for (var i = 0; i < Chevalet.PilePiochePlaceHolder.transform.childCount; i++)
+                    if (Chevalet.PilePiochePlaceHolder.transform.childCount > 0)
                     {
                         Chevalet
-                            .PilePiochePlaceHolder.transform.GetChild(i)
+                            .PilePiochePlaceHolder.transform.GetChild(
+                                Chevalet.PilePiochePlaceHolder.transform.childCount - 1
+                            )
                             .GetComponent<Tuile>()
                             .SetIsDeplacable(true);
                     }
@@ -725,19 +727,10 @@ public class SignalRConnector : MonoBehaviour
                     if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
                     {
                         Chevalet
-                            .PileGauchePlaceHolder.transform.GetChild(0)
+                            .PileGauchePlaceHolder.transform.GetChild(
+                                Chevalet.PileGauchePlaceHolder.transform.childCount - 1
+                            )
                             .GetComponent<Tuile>()
-                            .SetIsDeplacable(true);
-                        Chevalet
-                            .PileGauchePlaceHolder.transform.GetComponent<Tuile>()
-                            .SetIsDeplacable(true);
-                    }
-
-                    if (Chevalet.Instance._pileGauche.Count > 0)
-                    {
-                        Chevalet
-                            .PilePiochePlaceHolder.transform.GetChild(0)
-                            .gameObject.GetComponent<Tuile>()
                             .SetIsDeplacable(true);
                     }
                 });
@@ -751,14 +744,12 @@ public class SignalRConnector : MonoBehaviour
                     Chevalet.IsPiochee = false;
                     MainThreadDispatcher.Enqueue(() =>
                     {
-                        for (
-                            var i = 0;
-                            i < Chevalet.PilePiochePlaceHolder.transform.childCount;
-                            i++
-                        )
+                        if (Chevalet.PilePiochePlaceHolder.transform.childCount > 0)
                         {
                             Chevalet
-                                .PilePiochePlaceHolder.transform.GetChild(i)
+                                .PilePiochePlaceHolder.transform.GetChild(
+                                    Chevalet.PilePiochePlaceHolder.transform.childCount - 1
+                                )
                                 .GetComponent<Tuile>()
                                 .SetIsDeplacable(false);
                         }
@@ -766,23 +757,11 @@ public class SignalRConnector : MonoBehaviour
                         if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
                         {
                             Chevalet
-                                .PileGauchePlaceHolder.transform.GetChild(0)
+                                .PileGauchePlaceHolder.transform.GetChild(
+                                    Chevalet.PileGauchePlaceHolder.transform.childCount - 1
+                                )
                                 .GetComponent<Tuile>()
                                 .SetIsDeplacable(false);
-                            Chevalet
-                                .PileGauchePlaceHolder.transform.GetComponent<Tuile>()
-                                .SetIsDeplacable(false);
-                        }
-
-                        if (Chevalet.Instance._pileGauche.Count > 0)
-                        {
-                            if (Chevalet.PilePiochePlaceHolder.transform.childCount > 0)
-                            {
-                                Chevalet
-                                    .PilePiochePlaceHolder.transform.GetChild(0)
-                                    .gameObject.GetComponent<Tuile>()
-                                    .SetIsDeplacable(false);
-                            }
                         }
                     });
                     return chevaletInstance.TuilePiochee;
