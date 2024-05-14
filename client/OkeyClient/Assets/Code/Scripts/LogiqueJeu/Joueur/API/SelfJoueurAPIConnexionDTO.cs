@@ -1,14 +1,14 @@
 namespace LogiqueJeu.Joueur
 {
-    public class SelfJoueurAPIConnexionResponseDTO
+    public class SelfJoueurAPIConnexionDTO
     {
-        public string userName;
-        public string token;
+        public string username { get; set; }
+        public string password { get; set; }
 
-        public SelfJoueurAPIConnexionResponseDTO(string userName, string token)
+        public SelfJoueurAPIConnexionDTO(string username, string password)
         {
-            this.userName = userName;
-            this.token = token;
+            this.username = username;
+            this.password = password;
         }
     }
 }

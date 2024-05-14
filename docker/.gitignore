@@ -2,3 +2,17 @@
 /projet-integrateur-cicd
 /okeyapi
 /server
+/db-init
+
+# Ignorer les fichiers persistants des conteneurs Docker
+/docker_data/*
+
+!/docker_data/mysql/
+/docker_data/mysql/*
+!/docker_data/mysql/mysql_init/
+!/docker_data/mysql/mysql_config/
+!/docker_data/mysql/init.sql
+
+!/docker_data/phpmyadmin/
+
+!/docker_data/nginx/

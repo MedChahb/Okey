@@ -25,14 +25,12 @@ public class UIManagerPFormulaire : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
 
-    [SerializeField]
-    private GameObject showRooms;
+    public GameObject showRooms;
 
     [SerializeField]
     private GameObject lobbyPrivateConfig;
 
-    [SerializeField]
-    private GameObject lobbyPlayerWaiting;
+    public GameObject lobbyPlayerWaiting;
 
     [SerializeField]
     private int SceneId;
@@ -51,7 +49,7 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     void Start()
     {
-        backBtnPrivate.onClick.AddListener(onBackBtnClicked);
+        backBtnPrivate.onClick.AddListener(onBackBtnPrivateClicked);
         backBtnPublic.onClick.AddListener(onBackBtnClicked);
         backBtn.onClick.AddListener(onBackBtnClicked);
         //joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
@@ -85,9 +83,17 @@ public class UIManagerPFormulaire : MonoBehaviour
         SceneManager.LoadScene(SceneId);
     }
 
+    void onBackBtnPrivateClicked()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        lobbyPrivateConfig.SetActive(false);
+        SignalRConnector.Instance.HubDisconnect();
+    }
+
     public void onPublicLobbyClicked()
     {
-        lobbyPlayerWaiting.SetActive(true);
+        // lobbyPlayerWaiting.SetActive(true);
+        onJoinLobbyButtonPressed();
     }
 
     public void onPrivateLobbyClicked()
@@ -149,4 +155,10 @@ public class UIManagerPFormulaire : MonoBehaviour
     //    buttonLabel.text = $"Rejoindre Room 1 {rooms.listRooms[0].Players.Count}/{rooms.listRooms[0].Capacity}";
 
     //}
+
+    public void setActiveShowRooms()
+    {
+        Debug.Log("setActiveShowRooms");
+        showRooms.SetActive(true);
+    }
 }

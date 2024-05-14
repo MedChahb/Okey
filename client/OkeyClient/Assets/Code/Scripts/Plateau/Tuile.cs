@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Tuile : MonoBehaviour
@@ -21,113 +22,153 @@ public class Tuile : MonoBehaviour
     private bool isInPioche = false;
     private Vector3 initialOffset;
 
-    void Start()
+    private void Start()
     {
-        this.sprite = GetComponent<SpriteRenderer>();
+        this.sprite = this.GetComponent<SpriteRenderer>();
         //chevalet = GetComponentInParent<Chevalet>(); // Find Chevalet script in the parent hierarchy
-        chevalet = GameObject.Find("ChevaletFront").GetComponent<Chevalet>();
-        placeholderActuel = transform.parent.gameObject;
+        this.chevalet = GameObject.Find("ChevaletFront").GetComponent<Chevalet>();
+        this.placeholderActuel = this.transform.parent.gameObject;
     }
 
-    void Update()
+    private void Update()
     {
-        if (estDeplace)
+        if (this.estDeplace)
         {
             // Update tile position based on mouse position
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            transform.position = new Vector3(
-                mousePosition.x + initialOffset.x,
-                mousePosition.y + initialOffset.y,
-                -7
-            );
+            if (Camera.main != null)
+            {
+                var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                this.transform.position = new Vector3(
+                    mousePosition.x + this.initialOffset.x,
+                    mousePosition.y + this.initialOffset.y,
+                    -7
+                );
+            }
         }
     }
 
-    void OnMouseDown() //click
+    private void OnMouseDown() //click
     {
-        if (isInStack)
+        if (this.isInStack)
         {
-            this.chevalet.draw(true);
+            this.chevalet.Draw(true);
         }
-        if (isInPioche)
+        if (this.isInPioche)
         {
-            this.chevalet.draw(false);
+            this.chevalet.Draw(false);
         }
-        if (deplacable)
+        if (this.deplacable)
         {
             // Save difference between mouse position and tile position
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            initialOffset = transform.position - mousePosition;
-            estDeplace = true;
+            if (Camera.main != null)
+            {
+                var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                this.initialOffset = this.transform.position - mousePosition;
+            }
+
+            this.estDeplace = true;
         }
     }
 
-    void OnMouseUp() //release
+    private void OnMouseUp() //release
     {
-        if (deplacable)
+        if (this.deplacable)
         {
-            estDeplace = false;
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            // Find the closest placeholder using the Chevalet's function
-            GameObject closestPlaceholder = chevalet.ClosestPlaceholder(
-                new Vector3(mousePosition.x, mousePosition.y, transform.localPosition.z)
-            );
-            //pour enregistrer le placeholder ou la tuile était avant que attach to placeholder modifie placeholderactuel
-            PreviousPlaceHolder = placeholderActuel;
-
-            if (closestPlaceholder != null)
+            this.estDeplace = false;
+            if (Camera.main != null)
             {
-                if (closestPlaceholder.transform.childCount == 0)
+                var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                // Find the closest placeholder using the Chevalet's function
+                var closestPlaceholder = this.chevalet.ClosestPlaceholder(
+                    new Vector3(mousePosition.x, mousePosition.y, this.transform.localPosition.z)
+                );
+                //pour enregistrer le placeholder ou la tuile était avant que attach to placeholder modifie placeholderactuel
+                this.PreviousPlaceHolder = this.placeholderActuel;
+
+                if (closestPlaceholder != null)
                 {
-                    // Attach the tile to the new placeholder
-                    AttachToPlaceholder(closestPlaceholder);
-                }
-                else
-                {
-                    AttachToPlaceholder(closestPlaceholder);
-                    if (
-                        closestPlaceholder != Chevalet.pileDroitePlaceHolder
-                        && closestPlaceholder != Chevalet.jokerPlaceHolder
-                    )
+                    if (closestPlaceholder.transform.childCount == 0)
                     {
-                        // The placeholder countains already a Tile, we must update before insert
-                        chevalet.UpdateTiles(closestPlaceholder);
+                        // Attach the tile to the new placeholder
+                        if (closestPlaceholder != Chevalet.JokerPlaceHolder)
+                        {
+                            this.AttachToPlaceholder(closestPlaceholder);
+                        }
                     }
                     else
                     {
-                        deplacable = false;
-                        if (closestPlaceholder == Chevalet.pileDroitePlaceHolder)
+                        if (closestPlaceholder != Chevalet.JokerPlaceHolder)
                         {
-                            this.chevalet.throwTile(this);
+                            this.AttachToPlaceholder(closestPlaceholder);
+                        }
+                        else
+                        {
+                            this.AttachToPlaceholder(this.PreviousPlaceHolder);
+                        }
+
+                        if (
+                            closestPlaceholder != Chevalet.PileDroitePlaceHolder
+                            && closestPlaceholder != Chevalet.JokerPlaceHolder
+                        )
+                        {
+                            // The placeholder countains already a Tile, we must update before insert
+                            this.chevalet.UpdateTiles(closestPlaceholder);
+                        }
+                        else
+                        {
+                            this.deplacable = false;
+                            if (closestPlaceholder == Chevalet.PileDroitePlaceHolder)
+                            {
+                                this.chevalet.ThrowTile(
+                                    this.PreviousPlaceHolder.GetComponent<Tuile>()
+                                );
+                            }
+                            else
+                            {
+                                this.deplacable = true;
+                                Debug.LogWarning(
+                                    $"On envoie le message {this.PreviousPlaceHolder.GetComponent<Tuile>()}"
+                                );
+                                this.chevalet.ThrowTileToWin(
+                                    this.PreviousPlaceHolder.GetComponent<Tuile>()
+                                );
+                            }
                         }
                     }
                 }
+                Debug.Log($"{this.PreviousPlaceHolder} {closestPlaceholder}");
+                this.chevalet.UpdateMatrixAfterMovement(
+                    this.PreviousPlaceHolder,
+                    closestPlaceholder
+                ); //placeholder ou la piece était avant le deplacement et le placeholder ou elle a été deplacé
+                if (closestPlaceholder != null)
+                {
+                    Debug.Log(
+                        "Tile changed position from : "
+                            + this.PreviousPlaceHolder.name
+                            + " to "
+                            + closestPlaceholder.name
+                    );
+                }
             }
-
-            chevalet.UpdateMatrixAfterMovement(PreviousPlaceHolder, closestPlaceholder); //placeholder ou la piece était avant le deplacement et le placeholder ou elle a été deplacé
-            Debug.Log(
-                "Tile changed position from : "
-                    + PreviousPlaceHolder.name
-                    + " to "
-                    + closestPlaceholder.name
-            );
         }
     }
 
     public void AttachToPlaceholder(GameObject placeholder)
     {
         // Detach tile from current parent (if any)
-        transform.parent = null;
+        var transform1 = this.transform;
+        transform1.parent = null;
 
         // Set tile position to placeholder position
-        transform.localPosition = placeholder.transform.position;
+        transform1.localPosition = placeholder.transform.position;
 
         // Set tile rotation to placeholder rotation
-        transform.rotation = placeholder.transform.rotation;
+        transform1.rotation = placeholder.transform.rotation;
 
         // Attach tile to the placeholder
-        transform.parent = placeholder.transform;
-        placeholderActuel = placeholder;
+        transform1.parent = placeholder.transform;
+        this.placeholderActuel = placeholder;
     }
 
     /*
@@ -151,6 +192,13 @@ public class Tuile : MonoBehaviour
     public int GetValeur()
     {
         return this.valeur;
+    }
+
+    public void SetTileData(TuileData t)
+    {
+        this.SetCouleur(t.couleur);
+        this.SetIsJoker(t.isJoker);
+        this.SetValeur(t.num);
     }
 
     public void SetValeur(int val)

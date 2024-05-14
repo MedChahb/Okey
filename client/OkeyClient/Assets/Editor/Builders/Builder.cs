@@ -191,6 +191,73 @@ public class Builder
         );
     }
 
+    [MenuItem("MyTools/Test Build/Linux x86_64 Local Test Build")]
+    public static void LinuxLocalTestBuild()
+    {
+        SetBaseSettings();
+        SetTestSettings();
+
+        // Save path for the build relative to the Unity project root
+        var RelativeSaveLocation = "Builds/Linux/OkeyTest";
+
+        // Build the player
+        var buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = GetEditorScenes().ToArray(),
+            locationPathName = RelativeSaveLocation,
+            target = BuildTarget.StandaloneLinux64,
+            options =
+                BuildOptions.Development
+                | BuildOptions.AllowDebugging
+                | BuildOptions.EnableDeepProfilingSupport
+                | BuildOptions.DetailedBuildReport,
+            extraScriptingDefines = new[] { "DEBUG", "LOCAL" }
+        };
+
+        BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        EditorUtility.DisplayDialog(
+            "Build Complete",
+            "Linux x86_64 Test Build Complete\n\nSaved to: "
+                + Path.Join(
+                    Directory.GetParent(Application.dataPath).ToString(),
+                    RelativeSaveLocation
+                ),
+            "OK"
+        );
+    }
+
+    [MenuItem("MyTools/Release Build/Linux x86_64 Release Build")]
+    public static void LinuxReleaseBuild()
+    {
+        SetBaseSettings();
+        SetReleaseSettings();
+
+        // Save path for the build relative to the Unity project root
+        var RelativeSaveLocation = "Builds/Linux/Okey";
+
+        // Build the player
+        var buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = GetEditorScenes().ToArray(),
+            locationPathName = RelativeSaveLocation,
+            target = BuildTarget.StandaloneLinux64,
+            options = BuildOptions.None
+        };
+
+        BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        EditorUtility.DisplayDialog(
+            "Build Complete",
+            "Linux x86_64 Release Build Complete\n\nSaved to: "
+                + Path.Join(
+                    Directory.GetParent(Application.dataPath).ToString(),
+                    RelativeSaveLocation
+                ),
+            "OK"
+        );
+    }
+
     [MenuItem("MyTools/Test Build/Mac Universal Test Build")]
     public static void MacTestBuild()
     {
@@ -212,6 +279,42 @@ public class Builder
                 | BuildOptions.EnableDeepProfilingSupport
                 | BuildOptions.DetailedBuildReport,
             extraScriptingDefines = new[] { "DEBUG" }
+        };
+
+        BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        EditorUtility.DisplayDialog(
+            "Build Complete",
+            "Mac Universal Test Build Complete\n\nSaved to: "
+                + Path.Join(
+                    Directory.GetParent(Application.dataPath).ToString(),
+                    RelativeSaveLocation
+                ),
+            "OK"
+        );
+    }
+
+    [MenuItem("MyTools/Test Build/Mac Universal Local Test Build")]
+    public static void MacLocalTestBuild()
+    {
+        SetBaseSettings();
+        SetTestSettings();
+
+        // Save path for the build relative to the Unity project root
+        var RelativeSaveLocation = "Builds/Mac/OkeyTest.app";
+
+        // Build the player
+        var buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = GetEditorScenes().ToArray(),
+            locationPathName = RelativeSaveLocation,
+            target = BuildTarget.StandaloneOSX,
+            options =
+                BuildOptions.Development
+                | BuildOptions.AllowDebugging
+                | BuildOptions.EnableDeepProfilingSupport
+                | BuildOptions.DetailedBuildReport,
+            extraScriptingDefines = new[] { "DEBUG", "LOCAL" }
         };
 
         BuildPipeline.BuildPlayer(buildPlayerOptions);
@@ -286,6 +389,73 @@ public class Builder
         EditorUtility.DisplayDialog(
             "Build Complete",
             "Windows x86_64 Test Build Complete\n\nSaved to: "
+                + Path.Join(
+                    Directory.GetParent(Application.dataPath).ToString(),
+                    RelativeSaveLocation
+                ),
+            "OK"
+        );
+    }
+
+    [MenuItem("MyTools/Test Build/Windows x86_64 Local Test Build")]
+    public static void WindowsLocalTestBuild()
+    {
+        SetBaseSettings();
+        SetTestSettings();
+
+        // Save path for the build relative to the Unity project root
+        var RelativeSaveLocation = "Builds/Windows/OkeyTest.exe";
+
+        // Build the player
+        var buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = GetEditorScenes().ToArray(),
+            locationPathName = RelativeSaveLocation,
+            target = BuildTarget.StandaloneWindows64,
+            options =
+                BuildOptions.Development
+                | BuildOptions.AllowDebugging
+                | BuildOptions.EnableDeepProfilingSupport
+                | BuildOptions.DetailedBuildReport,
+            extraScriptingDefines = new[] { "DEBUG", "LOCAL" }
+        };
+
+        BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        EditorUtility.DisplayDialog(
+            "Build Complete",
+            "Windows x86_64 Test Build Complete\n\nSaved to: "
+                + Path.Join(
+                    Directory.GetParent(Application.dataPath).ToString(),
+                    RelativeSaveLocation
+                ),
+            "OK"
+        );
+    }
+
+    [MenuItem("MyTools/Release Build/Windows x86_64 Release Build")]
+    public static void WindowsReleaseBuild()
+    {
+        SetBaseSettings();
+        SetReleaseSettings();
+
+        // Save path for the build relative to the Unity project root
+        var RelativeSaveLocation = "Builds/Windows/Okey.exe";
+
+        // Build the player
+        var buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = GetEditorScenes().ToArray(),
+            locationPathName = RelativeSaveLocation,
+            target = BuildTarget.StandaloneWindows64,
+            options = BuildOptions.None
+        };
+
+        BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        EditorUtility.DisplayDialog(
+            "Build Complete",
+            "Windows x86_64 Release Build Complete\n\nSaved to: "
                 + Path.Join(
                     Directory.GetParent(Application.dataPath).ToString(),
                     RelativeSaveLocation
