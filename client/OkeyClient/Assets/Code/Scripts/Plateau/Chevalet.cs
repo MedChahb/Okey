@@ -717,21 +717,24 @@ public class Chevalet : MonoBehaviour
 
             if (NextPlaceholder == PileDroitePlaceHolder)
             {
-                this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
-
-                var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
-                var nt = NextPlaceholder.GetComponent<Tuile>();
-                nt.SetCouleur(tuile.GetCouleur());
-                nt.SetValeur(tuile.GetValeur());
-                nt.SetIsJoker(tuile.GetIsJoker());
-                tuile.SetCouleur(null);
-                tuile.SetValeur(0);
-                for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
+                if (IsJete == true)
                 {
-                    PileDroitePlaceHolder
-                        .transform.GetChild(i)
-                        .GetComponent<SpriteRenderer>()
-                        .sortingOrder = i;
+                    this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
+
+                    var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+                    var nt = NextPlaceholder.GetComponent<Tuile>();
+                    nt.SetCouleur(tuile.GetCouleur());
+                    nt.SetValeur(tuile.GetValeur());
+                    nt.SetIsJoker(tuile.GetIsJoker());
+                    tuile.SetCouleur(null);
+                    tuile.SetValeur(0);
+                    for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
+                    {
+                        PileDroitePlaceHolder
+                            .transform.GetChild(i)
+                            .GetComponent<SpriteRenderer>()
+                            .sortingOrder = i;
+                    }
                 }
             }
             else
