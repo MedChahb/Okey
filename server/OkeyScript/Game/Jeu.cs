@@ -101,9 +101,9 @@ namespace Okey.Game
                     Random random = new Random();
                     int randIndex = random.Next(0, this.PacketTuile.Count - 1);
 
-                    Tuile toGive = this.PacketTuile[i];
+                    Tuile toGive = this.PacketTuile[randIndex];
 
-                    this.PacketTuile.RemoveAt(i);
+                    this.PacketTuile.RemoveAt(randIndex);
                     pl.AjoutTuileChevalet(toGive);
                 }
             }
