@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 
 public class SignalRConnector : MonoBehaviour
 {
-    private HubConnection _hubConnection;
+    private static HubConnection _hubConnection;
 
     public static SignalRConnector Instance { get; private set; }
 
@@ -32,13 +32,13 @@ public class SignalRConnector : MonoBehaviour
 
     public async void InitializeConnection()
     {
-        this._hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
+        _hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
 
         this.ConfigureHubEvents();
 
         try
         {
-            await this._hubConnection.StartAsync();
+            await _hubConnection.StartAsync();
             Debug.Log("SignalR connection established.");
             LobbyManager.Instance.SetConnectionStatus(true);
         }
@@ -50,41 +50,18 @@ public class SignalRConnector : MonoBehaviour
         await this.JoinRoom();
     }
 
+    public async void HubDisconnect()
+    {
+        MainThreadDispatcher.Enqueue(() =>
+        {
+            _hubConnection.StopAsync();
+        });
+        SceneManager.LoadScene("Acceuil");
+    }
+
     private void ConfigureHubEvents()
     {
-        /*
-        this._hubConnection.On<RoomsPacket>(
-            "UpdateRoomsRequest",
-            Rooms =>
-            {
-                Debug.Log("Received room update request.");
-                foreach (var room in Rooms.listRooms)
-                {
-                    if (room == null)
-                    {
-                        Debug.Log("Null");
-                        continue;
-                    }
-                    Debug.Log($"Room: {room.Name}, Players: {room.Players.Count}/{room.Capacity}");
-                }
-
-                if (UIManagerPFormulaire.Instance != null)
-                {
-                    MainThreadDispatcher.Enqueue(() =>
-                    {
-                        UIManagerPFormulaire.Instance.setActiveShowRooms();
-                        LobbyManager.Instance.playerCount = Rooms.listRooms[0].Players.Count;
-                        DisplayRooms.Instance.updateLabel();
-                    });
-                }
-                else
-                {
-                    Debug.LogError("UIManagerPFormulaire instance is null.");
-                }
-            }
-        );*/
-
-        this._hubConnection.On<PacketSignal>(
+        _hubConnection.On<PacketSignal>(
             "ReceiveMessage",
             Message =>
             {
@@ -92,7 +69,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<StartingGamePacket>(
+        _hubConnection.On<StartingGamePacket>(
             "StartGame",
             (players) =>
             {
@@ -102,26 +79,6 @@ public class SignalRConnector : MonoBehaviour
                 {
                     Debug.LogWarning(player);
                 }
-
-                //SceneManager.UnloadSceneAsync("SelectionTypeJeu");
-                //SceneManager.LoadScene("PlateauInit");
-
-
-                // if (players.playersList != null)
-                // {
-                //     LobbyManager.Instance.players.Clear();  // Clear existing players
-                //     foreach (var player in players.playersList)
-                //     {
-                //         Debug.LogWarning(player);
-
-                //         LobbyManager.Instance.players.Add(player);
-                //         if (player == _hubConnection.ConnectionId)
-                //         {
-                //             LobbyManager.Instance.mainPlayer = player;
-                //             Debug.Log("Current userID: " + player);
-                //         }
-                //     }
-                // }
 
                 MainThreadDispatcher.Enqueue(() =>
                 {
@@ -182,7 +139,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<TuilePiocheePacket>(
+        _hubConnection.On<TuilePiocheePacket>(
             "ReceiveTuilePiochee",
             (tuileInfos) =>
             {
@@ -262,7 +219,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<string>(
+        _hubConnection.On<string>(
             "TurnSignal",
             (PlayerName) =>
             {
@@ -281,7 +238,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On(
+        _hubConnection.On(
             "YourTurnSignal",
             () =>
             {
@@ -297,7 +254,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<TuilePacket>(
+        _hubConnection.On<TuilePacket>(
             "TuileJeteeAuto",
             (Tuile) =>
             {
@@ -311,7 +268,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<PiocheInfosPacket>(
+        _hubConnection.On<PiocheInfosPacket>(
             "ReceivePiocheUpdate",
             (Pioche) =>
             {
@@ -393,7 +350,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<PacketSignal>(
+        _hubConnection.On<PacketSignal>(
             "JoinRoomFail",
             (signal) =>
             {
@@ -401,7 +358,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<TuileStringPacket>(
+        _hubConnection.On<TuileStringPacket>(
             "ReceiveTuileCentre",
             (tuile) =>
             {
@@ -412,7 +369,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<TuileJeteePacket>(
+        _hubConnection.On<TuileJeteePacket>(
             "ReceiveTuileJete",
             (tuile) =>
             {
@@ -499,7 +456,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<TuilePacket>(
+        _hubConnection.On<TuilePacket>(
             "FirstJeterActionRequest",
             () =>
             {
@@ -529,7 +486,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<TuilePacket>(
+        _hubConnection.On<TuilePacket>(
             "JeterRequest",
             () =>
             {
@@ -564,7 +521,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<EmotePacket>(
+        _hubConnection.On<EmotePacket>(
             "ReceiveEmote",
             (packet) =>
             {
@@ -614,7 +571,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<DefaussePacket>(
+        _hubConnection.On<DefaussePacket>(
             "ReceiveListeDefausse",
             (Defausse) =>
             {
@@ -718,7 +675,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<string>(
+        _hubConnection.On<string>(
             "UsernameRequest",
             () =>
             {
@@ -732,7 +689,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On(
+        _hubConnection.On(
             "TuilesDistribueesSignal",
             () =>
             {
@@ -740,7 +697,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<PiochePacket>(
+        _hubConnection.On<PiochePacket>(
             "PiochePacketRequest",
             () =>
             {
@@ -766,7 +723,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<RoomState>(
+        _hubConnection.On<RoomState>(
             "SendRoomState",
             (roomState) =>
             {
@@ -784,7 +741,7 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
-        this._hubConnection.On<ChevaletPacket>(
+        _hubConnection.On<ChevaletPacket>(
             "ReceiveChevalet",
             (chevalet) =>
             {
@@ -1011,6 +968,8 @@ public class SignalRConnector : MonoBehaviour
         {
             var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
 
+            Debug.Log(PlayerData.Count);
+
             var bg = vue.transform.GetChild(0);
             var header = bg.transform.GetChild(0);
             var txtCounter = header.transform.GetChild(2);
@@ -1060,14 +1019,11 @@ public class SignalRConnector : MonoBehaviour
 
     public async Task JoinRoom() // takes parameter roomName in future
     {
-        if (
-            this._hubConnection != null
-            && this._hubConnection.State == HubConnectionState.Connected
-        )
+        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
         {
             try
             {
-                await this._hubConnection.SendAsync("LobbyConnection");
+                await _hubConnection.SendAsync("LobbyConnection");
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     UIManagerPFormulaire.Instance.showRooms.SetActive(false);
@@ -1093,22 +1049,19 @@ public class SignalRConnector : MonoBehaviour
         var emotePacket = new EmotePacket
         {
             EmoteValue = indexEmoji,
-            PlayerSource = this._hubConnection.ConnectionId
+            PlayerSource = _hubConnection.ConnectionId
         };
-        await this._hubConnection.SendAsync("EnvoyerEmoteAll", emotePacket);
+        await _hubConnection.SendAsync("EnvoyerEmoteAll", emotePacket);
     }
 
     public async void SendBoardState(TuileData[,] BoardState)
     {
         // Ensure the connection is open before attempting to send a message
-        if (
-            this._hubConnection != null
-            && this._hubConnection.State == HubConnectionState.Connected
-        )
+        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
         {
             try
             {
-                await this._hubConnection.InvokeAsync("SendBoardState", BoardState);
+                await _hubConnection.InvokeAsync("SendBoardState", BoardState);
                 Debug.Log("Board state sent successfully.");
             }
             catch (Exception ex)
@@ -1124,13 +1077,10 @@ public class SignalRConnector : MonoBehaviour
 
     private async void OnDestroy()
     {
-        if (
-            this._hubConnection != null
-            && this._hubConnection.State == HubConnectionState.Connected
-        )
+        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
         {
-            await this._hubConnection.StopAsync();
-            await this._hubConnection.DisposeAsync();
+            await _hubConnection.StopAsync();
+            await _hubConnection.DisposeAsync();
         }
     }
 
