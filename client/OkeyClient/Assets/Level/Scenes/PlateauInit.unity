@@ -3731,6 +3731,7 @@ GameObject:
   m_Component:
   - component: {fileID: 733754310}
   - component: {fileID: 733754311}
+  - component: {fileID: 733754312}
   m_Layer: 0
   m_Name: MainPlayer
   m_TagString: Untagged
@@ -3738,21 +3739,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &733754310
-Transform:
+--- !u!224 &733754310
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 733754309}
-  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.5999997, y: -65.30001, z: -8998.959}
+  m_LocalPosition: {x: 0, y: 0, z: -8998.959}
   m_LocalScale: {x: 30, y: 30, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1770219149}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -3.5999997, y: -65.30001}
+  m_SizeDelta: {x: 1.71, y: 1.81}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &733754311
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3805,6 +3810,14 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!222 &733754312
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733754309}
+  m_CullTransparentMesh: 1
 --- !u!1 &737373849 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7667345052201146288, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
@@ -9251,10 +9264,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c68ffb78510a479ebf5d279c97fa192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   mainPlayerRenderer: {fileID: 0}
   player2Renderer: {fileID: 0}
   player3Renderer: {fileID: 0}
   player4Renderer: {fileID: 0}
+=======
+  mainPlayerRenderer: {fileID: 733754311}
+  player2Renderer: {fileID: 81431516}
+  player3Renderer: {fileID: 1443884959}
+  player4Renderer: {fileID: 1810133569}
+>>>>>>> 43c93416143aba06a3b29932d129fb8031abf37a
 --- !u!114 &1770219151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10441,7 +10461,7 @@ GameObject:
   - component: {fileID: 1988457370}
   - component: {fileID: 1988457369}
   m_Layer: 5
-  m_Name: TurnSignal
+  m_Name: MainPlayerTurnSignal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10463,7 +10483,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.887, y: -106.16}
+  m_AnchoredPosition: {x: -0.00000011921, y: -121.5}
   m_SizeDelta: {x: 506.7878, y: 7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1988457369
