@@ -3,8 +3,8 @@
 FROM python:3.10.13-bookworm
 
 # https://stackoverflow.com/a/65588785
-COPY --from=docker:26.1.2-dind /usr/local/bin/docker /usr/local/bin/
-COPY --from=docker:26.1.2-dind /usr/local/bin/docker-compose /usr/local/bin/
+COPY --from=docker:26.1.2-cli /usr/local/bin/docker /usr/local/bin/
+COPY --from=docker:26.1.2-cli /usr/local/libexec/docker/cli-plugins/docker-compose /usr/local/bin/
 
 RUN apt update && \
     apt -y install \
