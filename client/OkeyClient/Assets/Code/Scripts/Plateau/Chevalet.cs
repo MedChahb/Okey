@@ -29,7 +29,7 @@ public class Chevalet : MonoBehaviour
     public bool IsJete { get; set; }
     public TuilePacket TuileJete { get; set; }
 
-    public bool IsPiochee { get; set; }
+    public static bool IsPiochee { get; set; }
 
     public PiochePacket TuilePiochee = null;
 
@@ -92,7 +92,7 @@ public class Chevalet : MonoBehaviour
         this.IsTireeHasard = false;
         this.TuileTireeHasard = null;
 
-        this.IsPiochee = false;
+        IsPiochee = false;
         this.TuilePiochee = null;
     }
 
@@ -323,7 +323,7 @@ public class Chevalet : MonoBehaviour
         {
             this.TuilePiochee = new PiochePacket { Centre = false, Defausse = true };
         }
-        this.IsPiochee = true;
+        IsPiochee = true;
     }
 
     public void ThrowTileToWin(Tuile Tuile)
@@ -687,7 +687,6 @@ public class Chevalet : MonoBehaviour
                         .SetValeur(this._pileGauche.Peek().GetValeur());
                 }
             }
-
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece pioché
         }
         //cas de jet : Chevalet -> pile droite / tentative de gain
