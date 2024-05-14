@@ -10,3 +10,4 @@ client/OkeyClient/Temp/
 
 ## More ignores
 client/OkeyClient/Assets/ThirdParty/
+server/OkeyApi/Migrations/
