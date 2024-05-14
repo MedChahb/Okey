@@ -29,7 +29,7 @@ public class Chevalet : MonoBehaviour
     public bool IsJete { get; set; }
     public TuilePacket TuileJete { get; set; }
 
-    public bool IsPiochee { get; set; }
+    public static bool IsPiochee { get; set; }
 
     public PiochePacket TuilePiochee = null;
 
@@ -92,7 +92,7 @@ public class Chevalet : MonoBehaviour
         this.IsTireeHasard = false;
         this.TuileTireeHasard = null;
 
-        this.IsPiochee = false;
+        IsPiochee = false;
         this.TuilePiochee = null;
     }
 
@@ -151,13 +151,7 @@ public class Chevalet : MonoBehaviour
                 .SetIsDeplacable(false);
         }
 
-        if (PilePiochePlaceHolder.transform.childCount > 0)
-        {
-            PilePiochePlaceHolder
-                .transform.GetChild(0)
-                .gameObject.GetComponent<Tuile>()
-                .SetIsDeplacable(false);
-        }
+        PilePiochePlaceHolder.transform.gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
 
         PileDroitePlaceHolder
             .transform.GetChild(0)
@@ -329,7 +323,7 @@ public class Chevalet : MonoBehaviour
         {
             this.TuilePiochee = new PiochePacket { Centre = false, Defausse = true };
         }
-        this.IsPiochee = true;
+        IsPiochee = true;
     }
 
     public void ThrowTileToWin(Tuile Tuile)
@@ -693,7 +687,6 @@ public class Chevalet : MonoBehaviour
                         .SetValeur(this._pileGauche.Peek().GetValeur());
                 }
             }
-
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece pioché
         }
         //cas de jet : Chevalet -> pile droite / tentative de gain
@@ -717,21 +710,24 @@ public class Chevalet : MonoBehaviour
 
             if (NextPlaceholder == PileDroitePlaceHolder)
             {
-                this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
-
-                var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
-                var nt = NextPlaceholder.GetComponent<Tuile>();
-                nt.SetCouleur(tuile.GetCouleur());
-                nt.SetValeur(tuile.GetValeur());
-                nt.SetIsJoker(tuile.GetIsJoker());
-                tuile.SetCouleur(null);
-                tuile.SetValeur(0);
-                for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
+                if (IsJete)
                 {
-                    PileDroitePlaceHolder
-                        .transform.GetChild(i)
-                        .GetComponent<SpriteRenderer>()
-                        .sortingOrder = i;
+                    this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
+
+                    var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+                    var nt = NextPlaceholder.GetComponent<Tuile>();
+                    nt.SetCouleur(tuile.GetCouleur());
+                    nt.SetValeur(tuile.GetValeur());
+                    nt.SetIsJoker(tuile.GetIsJoker());
+                    tuile.SetCouleur(null);
+                    tuile.SetValeur(0);
+                    for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
+                    {
+                        PileDroitePlaceHolder
+                            .transform.GetChild(i)
+                            .GetComponent<SpriteRenderer>()
+                            .sortingOrder = i;
+                    }
                 }
             }
             else

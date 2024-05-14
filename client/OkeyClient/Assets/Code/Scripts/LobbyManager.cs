@@ -28,6 +28,11 @@ public class LobbyManager : MonoBehaviour
     public string player3Username;
     public string player4Username;
 
+    public int mainPlayerAvatar;
+    public int player2Avatar;
+    public int player3Avatar;
+    public int player4Avatar;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
