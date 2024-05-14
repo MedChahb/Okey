@@ -508,6 +508,7 @@ unity-windows-release:
     - kubernetes
 deploy-backend-staging:
   stage: deploy
+  dependencies: []
   environment:
     name: Deploy/Staging
   variables:
@@ -516,7 +517,8 @@ deploy-backend-staging:
     SECURE_FILES_DOWNLOAD_PATH: "/ssh/"
   script:
     - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
-    - ls -lahFGR /ssh/
+    - cp -r /builds/okaybytes/okey/ssh /
+    - chmod -R 600 /ssh
     - cp /ssh/config /etc/ssh/ssh_config.d/config.conf # https://linuxize.com/post/using-the-ssh-config-file/
     - ansible-playbook -i scripts/ansible/inventory.yml scripts/ansible/playbook.yml --limit dev
     - scp -r docker/docker_data pi0:${PERSIST_PATH}
@@ -537,6 +539,8 @@ deploy-backend-production:
     TARGET: "$CI_COMMIT_TAG"
   script:
     - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
+    - cp -r /builds/okaybytes/okey/ssh /
+    - chmod -R 600 /ssh
     - cp /ssh/config /etc/ssh/ssh_config.d/config.conf # https://linuxize.com/post/using-the-ssh-config-file/
     - ansible-playbook -i scripts/ansible/inventory.yml scripts/ansible/playbook.yml --limit prod
     - scp -r docker/docker_data pi1:${PERSIST_PATH}

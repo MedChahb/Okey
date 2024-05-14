@@ -101,9 +101,9 @@ namespace Okey.Game
                     Random random = new Random();
                     int randIndex = random.Next(0, this.PacketTuile.Count - 1);
 
-                    Tuile toGive = this.PacketTuile[i];
+                    Tuile toGive = this.PacketTuile[randIndex];
 
-                    this.PacketTuile.RemoveAt(i);
+                    this.PacketTuile.RemoveAt(randIndex);
                     pl.AjoutTuileChevalet(toGive);
                 }
             }
@@ -122,7 +122,7 @@ namespace Okey.Game
 
             ShuffleStack(this.pioche);
 
-            this.JoueurActuel = this.Joueurs[randT % 4];
+            this.setJoueurActuel(this.Joueurs[randT % 4]);
         }
 
         /// <summary>
@@ -341,6 +341,8 @@ namespace Okey.Game
         public void setJoueurActuel(Joueur j)
         {
             this.JoueurActuel = j;
+            j.Ajouer();
+            j.Apiocher();
         }
 
         /// <summary>
