@@ -86,47 +86,13 @@ public class SignalRConnector : MonoBehaviour
                     if (players.playersList != null && players.playersList.Count > 0)
                     {
                         int otherPlayerIndex = 0;
-                        int index = 0;
-                        // for (int i = 0; i < players.playersList.Count; i++)
-                        // {
-                        //     string player = players.playersList[i].Trim().ToLower();
-                        //     // index = i;
-                        //     string username = players.playersUsernames[i];
-
-                        //     Debug.Log(
-                        //         "Main player: "
-                        //             + _hubConnection.ConnectionId
-                        //             + " Player iteration: "
-                        //             + player
-                        //     );
-                        //     if (player == _hubConnection.ConnectionId.Trim().ToLower())
-                        //     {
-                        //         LobbyManager.mainPlayer = player;
-                        //         LobbyManager.Instance.mainPlayerUsername = username;
-                        //         Debug.Log("MainPlayer: " + player);
-                        //         index = i;
-                        //     }
-                        // }
-                        // LobbyManager.player2 = players.playersList[(index + 1) % 4];
-                        // LobbyManager.player3 = players.playersList[(index + 2) % 4];
-                        // LobbyManager.player4 = players.playersList[(index + 3) % 4];
-                        // LobbyManager.Instance.player2Username = players.playersUsernames[
-                        //     (index + 1) % 4
-                        // ];
-                        // LobbyManager.Instance.player3Username = players.playersUsernames[
-                        //     (index + 2) % 4
-                        // ];
-                        // LobbyManager.Instance.player4Username = players.playersUsernames[
-                        //     (index + 3) % 4
-                        // ];
-
                         for (int i = 0; i < players.playersList.Count; i++)
                         {
                             // string player = players.playersList[i];
                             // store the player value as a string in lower case trim
                             string player = players.playersList[i].Trim().ToLower();
                             string username = players.playersUsernames[i];
-                            // // Debug.LogWarning($"Player {i + 1}: {player}");
+                            // Debug.LogWarning($"Player {i + 1}: {player}");
 
                             Debug.Log(
                                 "Main player: "
@@ -134,7 +100,6 @@ public class SignalRConnector : MonoBehaviour
                                     + " Player iteration: "
                                     + player
                             );
-
                             if (player == _hubConnection.ConnectionId.Trim().ToLower())
                             {
                                 LobbyManager.mainPlayer = player;
@@ -145,22 +110,20 @@ public class SignalRConnector : MonoBehaviour
                             {
                                 switch (otherPlayerIndex)
                                 {
-                                    case (index + 1) % 4:
+                                    case 0:
                                         LobbyManager.player2 = player;
                                         LobbyManager.Instance.player2Username = username;
                                         // Debug.Log($"Player 2 set to: {player}");
                                         break;
-                                    case (index + 2) % 4:
+                                    case 1:
                                         LobbyManager.player3 = player;
                                         LobbyManager.Instance.player3Username = username;
                                         // Debug.Log($"Player 3 set to: {player}");
                                         break;
-                                    case (index + 3) % 4:
+                                    case 2:
                                         LobbyManager.player4 = player;
                                         LobbyManager.Instance.player4Username = username;
                                         // Debug.Log($"Player 4 set to: {player}");
-                                        break;
-                                    case index:
                                         break;
                                 }
                                 otherPlayerIndex++;
@@ -365,11 +328,12 @@ public class SignalRConnector : MonoBehaviour
                         var boxCollider2D = childObject.AddComponent<BoxCollider2D>();
                         boxCollider2D.size = new Vector2((float)0.875, (float)1.25);
 
-                        Chevalet.Instance._pilePioche.Push(
-                            Chevalet
-                                .PilePiochePlaceHolder.transform.GetChild(0)
-                                .GetComponent<Tuile>()
-                        );
+                        for (int i = 0; i < piocheCentale.transform.childCount; i++)
+                        {
+                            Chevalet.Instance._pilePioche.Push(
+                                piocheCentale.transform.GetChild(i).GetComponent<Tuile>()
+                            );
+                        }
 
                         childObject.GetComponent<Tuile>().SetIsDeplacable(false);
                     }
@@ -448,18 +412,10 @@ public class SignalRConnector : MonoBehaviour
                         Chevalet.Instance._pileGauche.Push(
                             Chevalet.PileGauchePlaceHolder.GetComponent<Tuile>()
                         );
-
-                        for (
-                            int i = 0;
-                            i < Chevalet.PileGauchePlaceHolder.transform.childCount;
-                            i++
-                        )
-                        {
-                            Chevalet
-                                .PileGauchePlaceHolder.transform.GetChild(i)
-                                .GetComponent<Tuile>()
-                                .SetIsDeplacable(false);
-                        }
+                        Chevalet
+                            .PileGauchePlaceHolder.transform.GetChild(0)
+                            .GetComponent<Tuile>()
+                            .SetIsDeplacable(false);
                     });
                 }
                 else if (tuile.position == 1)
@@ -781,47 +737,23 @@ public class SignalRConnector : MonoBehaviour
 
                 var tuile = new PiochePacket { Centre = true, Defausse = false };
 
-                while (Chevalet.IsPiochee == false) { }
+                while (chevaletInstance.IsPiochee == false) { }
                 Debug.Log("La tuile vient d'etre piochee");
+
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
+                    {
+                        Chevalet
+                            .PileGauchePlaceHolder.transform.GetChild(0)
+                            .GetComponent<Tuile>()
+                            .SetIsDeplacable(false);
+                    }
+                });
+
                 if (chevaletInstance.TuilePiochee != null)
                 {
-                    Chevalet.IsPiochee = false;
-                    MainThreadDispatcher.Enqueue(() =>
-                    {
-                        for (
-                            var i = 0;
-                            i < Chevalet.PilePiochePlaceHolder.transform.childCount;
-                            i++
-                        )
-                        {
-                            Chevalet
-                                .PilePiochePlaceHolder.transform.GetChild(i)
-                                .GetComponent<Tuile>()
-                                .SetIsDeplacable(false);
-                        }
-
-                        if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
-                        {
-                            Chevalet
-                                .PileGauchePlaceHolder.transform.GetChild(0)
-                                .GetComponent<Tuile>()
-                                .SetIsDeplacable(false);
-                            Chevalet
-                                .PileGauchePlaceHolder.transform.GetComponent<Tuile>()
-                                .SetIsDeplacable(false);
-                        }
-
-                        if (Chevalet.Instance._pileGauche.Count > 0)
-                        {
-                            if (Chevalet.PilePiochePlaceHolder.transform.childCount > 0)
-                            {
-                                Chevalet
-                                    .PilePiochePlaceHolder.transform.GetChild(0)
-                                    .gameObject.GetComponent<Tuile>()
-                                    .SetIsDeplacable(false);
-                            }
-                        }
-                    });
+                    chevaletInstance.IsPiochee = false;
                     return chevaletInstance.TuilePiochee;
                 }
 
