@@ -663,12 +663,15 @@ public class Chevalet : MonoBehaviour
                 if (this._pilePioche.Count > 0)
                 {
                     this._pilePioche.Pop();
-                    PilePiochePlaceHolder
-                        .GetComponent<Tuile>()
-                        .SetCouleur(this._pilePioche.Peek().GetCouleur());
-                    PilePiochePlaceHolder
-                        .GetComponent<Tuile>()
-                        .SetValeur(this._pilePioche.Peek().GetValeur());
+                    if (this._pilePioche.Count > 0)
+                    {
+                        PilePiochePlaceHolder
+                            .GetComponent<Tuile>()
+                            .SetCouleur(this._pilePioche.Peek().GetCouleur());
+                        PilePiochePlaceHolder
+                            .GetComponent<Tuile>()
+                            .SetValeur(this._pilePioche.Peek().GetValeur());
+                    }
                 }
                 this.PiocheTile(true);
             }

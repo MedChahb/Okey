@@ -156,10 +156,13 @@ public class Plateau2 : MonoBehaviour
 
     public void QuitterPartie()
     {
-        SignalRConnector._hubConnection.StopAsync();
-        SceneManager.LoadScene("Acceuil");
-        SceneManager.UnloadSceneAsync("SelectionTypeJeu");
-        SceneManager.UnloadSceneAsync("PlateauInit");
+        MainThreadDispatcher.Enqueue(() =>
+        {
+            SignalRConnector._hubConnection.StopAsync();
+            SceneManager.LoadScene("Acceuil");
+            SceneManager.UnloadSceneAsync("SelectionTypeJeu");
+            SceneManager.UnloadSceneAsync("PlateauInit");
+        });
     }
 
     public void toggleEmojiPanel()

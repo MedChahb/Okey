@@ -730,7 +730,7 @@ public class SignalRConnector : MonoBehaviour
 
                 var tuile = new PiochePacket { Centre = true, Defausse = false };
 
-                while (chevaletInstance.IsPiochee == false) { }
+                while (Chevalet.IsPiochee == false) { }
                 Debug.Log("La tuile vient d'etre piochee");
                 if (chevaletInstance.TuilePiochee != null)
                 {
