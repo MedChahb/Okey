@@ -526,7 +526,7 @@ GameObject:
   - component: {fileID: 81431515}
   - component: {fileID: 81431516}
   m_Layer: 0
-  m_Name: Player2
+  m_Name: P2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3733,7 +3733,7 @@ GameObject:
   - component: {fileID: 733754311}
   - component: {fileID: 733754312}
   m_Layer: 0
-  m_Name: MainPlayer
+  m_Name: P1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7331,7 +7331,7 @@ GameObject:
   - component: {fileID: 1443884958}
   - component: {fileID: 1443884959}
   m_Layer: 0
-  m_Name: Player3
+  m_Name: P3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8035,6 +8035,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1512583200}
+  - component: {fileID: 1512583201}
   m_Layer: 5
   m_Name: PlateauUIManager
   m_TagString: Untagged
@@ -8061,6 +8062,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1512583201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512583199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcf7e71da23f74bafa11ccf4c4ddbe81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerAvatars: {fileID: 1770219148}
 --- !u!1 &1513304766
 GameObject:
   m_ObjectHideFlags: 0
@@ -9449,7 +9463,7 @@ GameObject:
   - component: {fileID: 1810133568}
   - component: {fileID: 1810133569}
   m_Layer: 0
-  m_Name: Player4
+  m_Name: P4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
