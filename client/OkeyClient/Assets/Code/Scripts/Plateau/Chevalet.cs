@@ -61,27 +61,49 @@ public class Chevalet : MonoBehaviour
 
         for (var i = 0; i < 13; i++)
         {
-            spritesDic.Add($"Black_{i + 1}", sprites[i]);
+            if (!spritesDic.ContainsKey($"Black_{i + 1}"))
+            {
+                spritesDic.TryAdd($"Black_{i + 1}", sprites[i]);
+            }
         }
 
         for (var i = 13; i < 26; i++)
         {
-            spritesDic.Add($"Blue_{(i + 1) - 13}", sprites[i]);
+            if (!spritesDic.ContainsKey($"Black_{i + 1}"))
+            {
+                spritesDic.TryAdd($"Blue_{(i + 1) - 13}", sprites[i]);
+            }
         }
 
-        spritesDic.Add("Fake Joker_1", sprites[26]);
-        spritesDic.Add("Fake Joker_2", sprites[27]);
+        if (!spritesDic.ContainsKey("Fake Joker_1"))
+        {
+            spritesDic.TryAdd("Fake Joker_1", sprites[26]);
+        }
+
+        if (!spritesDic.ContainsKey("Fake Joker_2"))
+        {
+            spritesDic.TryAdd("Fake Joker_2", sprites[27]);
+        }
 
         for (var i = 28; i < 41; i++)
         {
-            spritesDic.Add($"Green_{(i + 1) - 28}", sprites[i]);
+            if (!spritesDic.ContainsKey($"Green_{(i + 1) - 28}"))
+            {
+                spritesDic.TryAdd($"Green_{(i + 1) - 28}", sprites[i]);
+            }
         }
 
-        spritesDic.Add($"Pioche", sprites[41]);
+        if (!spritesDic.ContainsKey("Pioche"))
+        {
+            spritesDic.TryAdd($"Pioche", sprites[41]);
+        }
 
         for (var i = 42; i < 55; i++)
         {
-            spritesDic.Add($"Red_{(i + 1) - 42}", sprites[i]);
+            if (!spritesDic.ContainsKey($"Red_{(i + 1) - 42}"))
+            {
+                spritesDic.TryAdd($"Red_{(i + 1) - 42}", sprites[i]);
+            }
         }
 
         this.InitPlaceholders();

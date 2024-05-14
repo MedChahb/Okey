@@ -792,6 +792,7 @@ public class SignalRConnector : MonoBehaviour
             "ReceiveChevalet",
             (chevalet) =>
             {
+                Debug.Log("On a bien recu le chevalet");
                 var chevaletInstance = Chevalet.Instance;
                 MainThreadDispatcher.Enqueue(() =>
                 {
