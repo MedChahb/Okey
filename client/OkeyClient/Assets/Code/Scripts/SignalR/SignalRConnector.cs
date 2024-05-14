@@ -309,7 +309,9 @@ public class SignalRConnector : MonoBehaviour
                         childObject.AddComponent<Tuile>();
                         childObject.GetComponent<Tuile>().SetCouleur(piocheTuileData.couleur);
                         childObject.GetComponent<Tuile>().SetValeur(piocheTuileData.num);
-                        childObject.GetComponent<Tuile>().SetIsDeplacable(false);
+
+                        Debug.Log("On a bien defini le child en non deplacable");
+
                         var spriteRen = childObject.AddComponent<SpriteRenderer>();
                         var mat = new Material(Shader.Find("Sprites/Default"))
                         {
@@ -328,6 +330,10 @@ public class SignalRConnector : MonoBehaviour
                         var boxCollider2D = childObject.AddComponent<BoxCollider2D>();
                         boxCollider2D.size = new Vector2((float)0.875, (float)1.25);
                         Chevalet.Instance._pilePioche.Push(piocheCentale);
+
+                        piocheCentale.SetIsDeplacable(false);
+                        childObject.GetComponent<Tuile>().SetIsDeplacable(false);
+
                         Chevalet
                             .PilePiochePlaceHolder.transform.GetChild(0)
                             .gameObject.GetComponent<Tuile>()
@@ -703,10 +709,17 @@ public class SignalRConnector : MonoBehaviour
 
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    Chevalet
-                        .PileGauchePlaceHolder.transform.GetChild(0)
-                        .GetComponent<Tuile>()
-                        .SetIsDeplacable(true);
+                    if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
+                    {
+                        Chevalet
+                            .PileGauchePlaceHolder.transform.GetChild(0)
+                            .GetComponent<Tuile>()
+                            .SetIsDeplacable(true);
+                        Chevalet
+                            .PileGauchePlaceHolder.transform.GetComponent<Tuile>()
+                            .SetIsDeplacable(true);
+                    }
+
                     if (Chevalet.Instance._pileGauche.Count > 0)
                     {
                         Chevalet
