@@ -121,6 +121,7 @@ public class Chevalet : MonoBehaviour
                 Debug.LogError("PlaceHolder" + i + " not found!");
             }
         }
+
         //ToDo : Instancier les piles en fonction de ce qu'on reçoit du Back
         PileGauchePlaceHolder = GameObject.Find("PileGauchePlaceHolder");
         PileDroitePlaceHolder = GameObject.Find("PileDroitePlaceHolder");
@@ -137,14 +138,27 @@ public class Chevalet : MonoBehaviour
         //this._pilePioche.Push(
         //    PilePiochePlaceHolder.transform.GetChild(0).gameObject.GetComponent<Tuile>()
         //);
-        //PileGauchePlaceHolder
-        //    .transform.GetChild(0)
-        //    .gameObject.GetComponent<Tuile>()
-        //    .SetIsDeplacable(false);
-        //PileGauchePlaceHolder
-        //   .transform.GetChild(0)
-        //   .gameObject.GetComponent<Tuile>()
-        //   .SetIsInStack(true);
+
+        if (PileGauchePlaceHolder.transform.childCount > 0)
+        {
+            PileGauchePlaceHolder
+                .transform.GetChild(0)
+                .gameObject.GetComponent<Tuile>()
+                .SetIsInStack(true);
+            PileGauchePlaceHolder
+                .transform.GetChild(0)
+                .gameObject.GetComponent<Tuile>()
+                .SetIsDeplacable(false);
+        }
+
+        if (PilePiochePlaceHolder.transform.childCount > 0)
+        {
+            PilePiochePlaceHolder
+                .transform.GetChild(0)
+                .gameObject.GetComponent<Tuile>()
+                .SetIsDeplacable(false);
+        }
+
         PileDroitePlaceHolder
             .transform.GetChild(0)
             .gameObject.GetComponent<Tuile>()

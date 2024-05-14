@@ -273,6 +273,15 @@ public sealed class OkeyHub : Hub
     }
 
     /// <summary>
+    /// appel permettant de modifier la photo de profil du client à sa demande
+    /// </summary>
+    /// <param name="Photo"></param>
+    public async Task UpdateAvatar(int Photo)
+    {
+        await _connectedUsers[this.Context.ConnectionId].UpdateAvatar(this._dbContext, Photo);
+    }
+
+    /// <summary>
     /// Envoi un message à tous les membres d'un groupe.
     /// </summary>
     /// <param name="lobbyName">Nom du groupe qui reçoit le message.</param>
