@@ -7,49 +7,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <nav id="navbar" class="fixed w-full z-10 h-28 flex justify-center items-center bg-transparent backdrop-filter backdrop-blur-lg bg-green-800">
-        <nav id="navbar" class="fixed w-full z-10 h-28 flex justify-center items-center bg-transparent backdrop-filter backdrop-blur-lg bg-green-800">
-            <nav id="navbar" class="fixed w-full z-10 h-28 flex justify-between items-center bg-transparent backdrop-filter backdrop-blur-lg bg-green-800">
-                <nav id="navbar" class="fixed w-full z-10 h-28 flex justify-between items-center backdrop-filter backdrop-blur-lg bg-green-800/75">
-                    <div class="px-4 max-w-7xl w-full mx-auto flex justify-between items-center">
-
-                        <div class="flex items-center">
-                            <img src="./resources/imgs/logo.png" alt="Logo" width="100" height="100">
-                        </div>
-                
-
-                        <div class="flex items-center">
-                            <div class="hidden md:flex items-center space-x-4">
-                                <a href="#tutoriel" class="text-white px-3 py-2 rounded-md text-sm font-medium">Tutoriel</a>
-                                <a href="#download" class="text-white px-3 py-2 rounded-md text-sm font-medium">Télécharger le jeu</a>
-                                <div class="relative">
-                                    <button id="toggleButton" class="text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none">Langue</button>
-                                    <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-green-800 rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
-                                        <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">Français</a>
-                                        <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">English</a>
-                                        <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">Türkçe</a>
-                                    </div>
-                                </div>
-                            </div>
-                
-
-                            <button id="toggleMobileMenu" class="ml-4 md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white">
-                                <svg id="openIcon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                                </svg>
-                                <svg id="closeIcon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
+    <nav id="navbar" class="fixed w-full z-10 h-28 flex items-center bg-transparent backdrop-filter backdrop-blur-lg bg-green-800">
+        <div class="flex items-center justify-center w-full">
+            <img src="./resources/imgs/logo.png" alt="Logo" class="h-20 mr-4">
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="#tutoriel" class="text-white px-3 py-2 rounded-md text-sm font-medium">Tutoriel</a>
+                <a href="#download" class="text-white px-3 py-2 rounded-md text-sm font-medium">Télécharger le jeu</a>
+                <div class="relative">
+                    <button id="toggleButton" class="text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none">Langue</button>
+                    <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-green-800 rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
+                        <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">Français</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">English</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">Türkçe</a>
                     </div>
-                </nav>
-                
-            </nav>
-            
-        </nav>
-        
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center pr-4">
+            <button id="toggleMobileMenu" class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white">
+                <svg id="openIcon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+                <svg id="closeIcon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
     </nav>
+    
     
         <!-- <div id="mobileMenu" class="hidden md:hidden">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
@@ -78,7 +63,7 @@
         
        
         
-    </nav>
+    <!-- </nav> -->
 
 
       <div class='text-white bg-cover bg-center h-screen'>
