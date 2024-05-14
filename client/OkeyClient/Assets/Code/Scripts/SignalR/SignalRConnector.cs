@@ -87,11 +87,46 @@ public class SignalRConnector : MonoBehaviour
                     {
                         int otherPlayerIndex = 0;
                         int index = 0;
+                        // for (int i = 0; i < players.playersList.Count; i++)
+                        // {
+                        //     string player = players.playersList[i].Trim().ToLower();
+                        //     // index = i;
+                        //     string username = players.playersUsernames[i];
+
+                        //     Debug.Log(
+                        //         "Main player: "
+                        //             + _hubConnection.ConnectionId
+                        //             + " Player iteration: "
+                        //             + player
+                        //     );
+                        //     if (player == _hubConnection.ConnectionId.Trim().ToLower())
+                        //     {
+                        //         LobbyManager.mainPlayer = player;
+                        //         LobbyManager.Instance.mainPlayerUsername = username;
+                        //         Debug.Log("MainPlayer: " + player);
+                        //         index = i;
+                        //     }
+                        // }
+                        // LobbyManager.player2 = players.playersList[(index + 1) % 4];
+                        // LobbyManager.player3 = players.playersList[(index + 2) % 4];
+                        // LobbyManager.player4 = players.playersList[(index + 3) % 4];
+                        // LobbyManager.Instance.player2Username = players.playersUsernames[
+                        //     (index + 1) % 4
+                        // ];
+                        // LobbyManager.Instance.player3Username = players.playersUsernames[
+                        //     (index + 2) % 4
+                        // ];
+                        // LobbyManager.Instance.player4Username = players.playersUsernames[
+                        //     (index + 3) % 4
+                        // ];
+
                         for (int i = 0; i < players.playersList.Count; i++)
                         {
+                            // string player = players.playersList[i];
+                            // store the player value as a string in lower case trim
                             string player = players.playersList[i].Trim().ToLower();
-                            // index = i;
                             string username = players.playersUsernames[i];
+                            // // Debug.LogWarning($"Player {i + 1}: {player}");
 
                             Debug.Log(
                                 "Main player: "
@@ -99,73 +134,38 @@ public class SignalRConnector : MonoBehaviour
                                     + " Player iteration: "
                                     + player
                             );
+
                             if (player == _hubConnection.ConnectionId.Trim().ToLower())
                             {
                                 LobbyManager.mainPlayer = player;
                                 LobbyManager.Instance.mainPlayerUsername = username;
                                 Debug.Log("MainPlayer: " + player);
-                                index = i;
+                            }
+                            else
+                            {
+                                switch (otherPlayerIndex)
+                                {
+                                    case (index + 1) % 4:
+                                        LobbyManager.player2 = player;
+                                        LobbyManager.Instance.player2Username = username;
+                                        // Debug.Log($"Player 2 set to: {player}");
+                                        break;
+                                    case (index + 2) % 4:
+                                        LobbyManager.player3 = player;
+                                        LobbyManager.Instance.player3Username = username;
+                                        // Debug.Log($"Player 3 set to: {player}");
+                                        break;
+                                    case (index + 3) % 4:
+                                        LobbyManager.player4 = player;
+                                        LobbyManager.Instance.player4Username = username;
+                                        // Debug.Log($"Player 4 set to: {player}");
+                                        break;
+                                    case index:
+                                        break;
+                                }
+                                otherPlayerIndex++;
                             }
                         }
-                        LobbyManager.player2 = players.playersList[(index + 1) % 4];
-                        LobbyManager.player3 = players.playersList[(index + 2) % 4];
-                        LobbyManager.player4 = players.playersList[(index + 3) % 4];
-                        LobbyManager.Instance.player2Username = players.playersUsernames[
-                            (index + 1) % 4
-                        ];
-                        LobbyManager.Instance.player3Username = players.playersUsernames[
-                            (index + 2) % 4
-                        ];
-                        LobbyManager.Instance.player4Username = players.playersUsernames[
-                            (index + 3) % 4
-                        ];
-
-                        // for (int i = 0; i < players.playersList.Count; i++)
-                        // {
-                        //     // string player = players.playersList[i];
-                        //     // store the player value as a string in lower case trim
-                        //     string player = players.playersList[i].Trim().ToLower();
-                        //     string username = players.playersUsernames[i];
-                        //     // // Debug.LogWarning($"Player {i + 1}: {player}");
-
-                        //     // Debug.Log(
-                        //     //     "Main player: "
-                        //     //         + _hubConnection.ConnectionId
-                        //     //         + " Player iteration: "
-                        //     //         + player
-                        //     // );
-
-                        //     // if (player == _hubConnection.ConnectionId.Trim().ToLower())
-                        //     // {
-                        //     //     LobbyManager.mainPlayer = player;
-                        //     //     LobbyManager.Instance.mainPlayerUsername = username;
-                        //     //     Debug.Log("MainPlayer: " + player);
-                        //     // }
-                        //     // else
-                        //     // {
-                        //         switch (otherPlayerIndex)
-                        //         {
-                        //             case (index+1)%4:
-                        //                 LobbyManager.player2 = player;
-                        //                 LobbyManager.Instance.player2Username = username;
-                        //                 // Debug.Log($"Player 2 set to: {player}");
-                        //                 break;
-                        //             case (index+2)%4:
-                        //                 LobbyManager.player3 = player;
-                        //                 LobbyManager.Instance.player3Username = username;
-                        //                 // Debug.Log($"Player 3 set to: {player}");
-                        //                 break;
-                        //             case (index+3)%4:
-                        //                 LobbyManager.player4 = player;
-                        //                 LobbyManager.Instance.player4Username = username;
-                        //                 // Debug.Log($"Player 4 set to: {player}");
-                        //                 break;
-                        //             case index:
-                        //                 break;
-                        //         }
-                        //         otherPlayerIndex++;
-                        //     // }
-                        // }
                     }
                     else
                     {
