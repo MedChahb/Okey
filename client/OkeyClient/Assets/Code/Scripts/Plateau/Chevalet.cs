@@ -151,13 +151,7 @@ public class Chevalet : MonoBehaviour
                 .SetIsDeplacable(false);
         }
 
-        if (PilePiochePlaceHolder.transform.childCount > 0)
-        {
-            PilePiochePlaceHolder
-                .transform.GetChild(0)
-                .gameObject.GetComponent<Tuile>()
-                .SetIsDeplacable(false);
-        }
+        PilePiochePlaceHolder.transform.gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
 
         PileDroitePlaceHolder
             .transform.GetChild(0)
@@ -717,7 +711,7 @@ public class Chevalet : MonoBehaviour
 
             if (NextPlaceholder == PileDroitePlaceHolder)
             {
-                if (IsJete == true)
+                if (IsJete)
                 {
                     this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
 
