@@ -523,6 +523,7 @@ deploy-backend-staging:
     - ansible-playbook -i scripts/ansible/inventory.yml scripts/ansible/playbook.yml --limit dev
     - scp -r docker/docker_data pi0:${PERSIST_PATH}
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin # https://medium.com/@vitalypanukhin/docker-compose-and-gitlab-b209d09210f6
+    - cd docker/
     - docker-compose -H "ssh://pi0" --profile extra down --remove-orphans
     - docker-compose -H "ssh://pi0" --profile extra pull
     - docker-compose -H "ssh://pi0" --profile extra up -d
@@ -545,6 +546,7 @@ deploy-backend-production:
     - ansible-playbook -i scripts/ansible/inventory.yml scripts/ansible/playbook.yml --limit prod
     - scp -r docker/docker_data pi1:${PERSIST_PATH}
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin # https://medium.com/@vitalypanukhin/docker-compose-and-gitlab-b209d09210f6
+    - cd docker/
     - docker-compose -H "ssh://pi1" --profile extra down --remove-orphans
     - docker-compose -H "ssh://pi1" --profile extra pull
     - docker-compose -H "ssh://pi1" --profile extra up -d
