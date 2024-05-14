@@ -85,7 +85,9 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     void onBackBtnPrivateClicked()
     {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         lobbyPrivateConfig.SetActive(false);
+        SignalRConnector.Instance.HubDisconnect();
     }
 
     public void onPublicLobbyClicked()
