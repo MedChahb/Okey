@@ -31,6 +31,11 @@ namespace Okey.Joueurs
         private bool tour;
 
         /// <summary>
+        /// Indique si le joueur peut piocher.
+        /// </summary>
+        private bool peutPiocher;
+
+        /// <summary>
         /// Indique si le joueur est gagnant.
         /// </summary>
         private bool gagnant;
@@ -85,6 +90,7 @@ namespace Okey.Joueurs
             this.id = id;
             this.name = Name;
             this.tour = false;
+            this.peutPiocher = false;
             this.gagnant = false;
 
             this.K = Elo.ComputeK(this);
@@ -184,6 +190,22 @@ namespace Okey.Joueurs
         }
 
         /// <summary>
+        /// Indique que le joueur peut piocher.
+        /// </summary>
+        public void Apiocher()
+        {
+            this.peutPiocher = true;
+        }
+
+        /// <summary>
+        /// Indique que le joueur ne peut pas piocher.
+        /// </summary>
+        public void PeutPasPiocher()
+        {
+            this.peutPiocher = false;
+        }
+
+        /// <summary>
         /// Ajoute une tuile au chevalet du joueur.
         /// </summary>
         /// <param name="t">Tuile à ajouter.</param>
@@ -209,34 +231,41 @@ namespace Okey.Joueurs
         /// <param name="j">Instance du jeu.</param>
         public void JeterTuile(Coord? c, Jeu j)
         {
-            if (this == null || c == null)
-                return;
-
-            int x = c.getX();
-            int y = c.getY();
-
-            if (x >= 0 && x < tuilesDansEtage && (y >= 0 || y < etage))
+            if (this.tour)
             {
-                Tuile? t = this.chevalet[y][x];
-                if (t == null)
-                {
-                    Console.WriteLine("erreur dans JeterTuile. (pas de tuile)");
+                if (this == null || c == null)
                     return;
+
+                int x = c.getX();
+                int y = c.getY();
+
+                if (x >= 0 && x < tuilesDansEtage && (y >= 0 || y < etage))
+                {
+                    Tuile? t = this.chevalet[y][x];
+                    if (t == null)
+                    {
+                        Console.WriteLine("erreur dans JeterTuile. (pas de tuile)");
+                        return;
+                    }
+                    this.chevalet[y][x] = null; // enlever la tuile du chevalet
+                    t?.SetDefause(); // devient défausse
+                    this.JeteTuileDefausse(t); // la poser dans la défausse
+                    this.EstPlusTour(); // plus son tour
+                    j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour au prochain joueur
+
+                    Console.WriteLine($"{this.Name} a jeté la tuile {t}\n");
+
+                    if (t != null)
+                        j.AddToListeDefausse(t);
                 }
-                this.chevalet[y][x] = null; // enlever la tuile du chevalet
-                t?.SetDefause(); // devient défausse
-                this.JeteTuileDefausse(t); // la poser dans la défausse
-                this.EstPlusTour(); // plus son tour
-                j.setJoueurActuel(j.getNextJoueur(this)); // passer le tour au prochain joueur
-
-                Console.WriteLine($"{this.Name} a jeté la tuile {t}\n");
-
-                if (t != null)
-                    j.AddToListeDefausse(t);
+                else
+                {
+                    Console.WriteLine("erreur dans JeterTuile. (coords invalides)");
+                }
             }
             else
             {
-                Console.WriteLine("erreur dans JeterTuile. (coords invalides)");
+                Console.WriteLine("Pas ton tour.");
             }
         }
 
@@ -248,47 +277,48 @@ namespace Okey.Joueurs
         /// <returns>La tuile piochée ou null si aucune tuile disponible.</returns>
         public Tuile? PiocherTuile(string? OuPiocher, Jeu j)
         {
-            if (OuPiocher == null)
+            if (this.peutPiocher && this.tour)
             {
-                Console.WriteLine("OuPiocher est null");
-                return null;
-            }
-
-            if (string.Equals(OuPiocher, "Centre", StringComparison.OrdinalIgnoreCase))
-            {
-                var tuilePiochee = j.PopPiocheCentre();
-
-                this.AjoutTuileChevalet(tuilePiochee);
-
-                if (j.isPiocheCentreEmpty())
+                if (OuPiocher == null)
                 {
-                    Console.WriteLine("\nLa pile au centre est vide, jeu terminé.");
-                    j.JeuTermine();
-                }
-
-                return null;
-            }
-            else if (string.Equals(OuPiocher, "Defausse", StringComparison.OrdinalIgnoreCase))
-            {
-                Joueur PreviousPlayer = j.getPreviousPlayer(this);
-
-                if (PreviousPlayer.isDefausseEmpty())
-                {
-                    Console.WriteLine("La défausse du joueur est vide, impossible à piocher");
-                }
-                else
-                {
-                    Tuile tuilePiochee = PreviousPlayer.PopDefausseJoueur();
-                    this.AjoutTuileChevalet(tuilePiochee);
-
-                    if (PreviousPlayer.defausse.Count > 1)
-                    {
-                        return PreviousPlayer.defausse.Peek();
-                    }
+                    Console.WriteLine("OuPiocher est null");
                     return null;
                 }
-            }
 
+                if (string.Equals(OuPiocher, "Centre", StringComparison.OrdinalIgnoreCase))
+                {
+                    var tuilePiochee = j.PopPiocheCentre();
+
+                    this.AjoutTuileChevalet(tuilePiochee);
+
+                    if (j.isPiocheCentreEmpty())
+                    {
+                        Console.WriteLine("\nLa pile au centre est vide, jeu terminé.");
+                        j.JeuTermine();
+                    }
+                }
+                else if (string.Equals(OuPiocher, "Defausse", StringComparison.OrdinalIgnoreCase))
+                {
+                    Joueur PreviousPlayer = j.getPreviousPlayer(this);
+
+                    if (PreviousPlayer.isDefausseEmpty())
+                    {
+                        Console.WriteLine("La défausse du joueur est vide, impossible à piocher");
+                    }
+                    else
+                    {
+                        Tuile tuilePiochee = PreviousPlayer.PopDefausseJoueur();
+                        this.AjoutTuileChevalet(tuilePiochee);
+
+                        if (PreviousPlayer.defausse.Count > 1)
+                        {
+                            return PreviousPlayer.defausse.Peek();
+                        }
+                    }
+                }
+
+                this.PeutPasPiocher();
+            }
             return null;
         }
 
@@ -300,29 +330,34 @@ namespace Okey.Joueurs
         /// <returns>Vrai si la tuile a été jetée pour terminer, sinon faux.</returns>
         public bool JeteTuilePourTerminer(Coord c, Jeu j)
         {
-            if (this.CountTuileDansChevalet() == 14)
+            if (this.tour)
             {
-                Console.WriteLine("Pioche une tuile!!");
-                return false;
+                if (this.CountTuileDansChevalet() == 14)
+                {
+                    Console.WriteLine("Pioche une tuile!!");
+                    return false;
+                }
+
+                int x = c.getX();
+                int y = c.getY();
+                Tuile? toThrow = this.chevalet[y][x];
+
+                this.chevalet[y][x] = null;
+                if (this.VerifSerieChevalet()) // ici le joueur gagne
+                {
+                    j.PushPiocheCentre(toThrow); // on met la tuile que le joueur désire finir avec sur la pioche
+                    j.JeuTermine(this); // ici on met à jour le Elo et K
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Vous n'avez pas de série dans votre chevalet !");
+                    this.chevalet[y][x] = toThrow; // annuler les changements
+                    return false;
+                }
             }
 
-            int x = c.getX();
-            int y = c.getY();
-            Tuile? toThrow = this.chevalet[y][x];
-
-            this.chevalet[y][x] = null;
-            if (this.VerifSerieChevalet()) // ici le joueur gagne
-            {
-                j.PushPiocheCentre(toThrow); // on met la tuile que le joueur désire finir avec sur la pioche
-                j.JeuTermine(this); // ici on met à jour le Elo et K
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("Vous n'avez pas de série dans votre chevalet !");
-                this.chevalet[y][x] = toThrow; // annuler les changements
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
