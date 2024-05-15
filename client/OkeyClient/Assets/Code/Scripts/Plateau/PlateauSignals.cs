@@ -47,6 +47,7 @@ public class PlateauSignals : MonoBehaviour
         // Debug.Log($"Setting turn signal for player: {playerName}");
 
         TuileCentre.gameObject.SetActive(false);
+        TuileGauche.gameObject.SetActive(false);
         player2TurnSignal.gameObject.SetActive(false);
         player3TurnSignal.gameObject.SetActive(false);
         player4TurnSignal.gameObject.SetActive(false);
