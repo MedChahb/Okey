@@ -377,6 +377,11 @@ public sealed class OkeyHub : Hub
         await this.SendRoomListUpdate();
     }
 
+    public async Task SendResetTimer(string roomId)
+    {
+        await this._hubContext.Clients.Group(roomId).SendAsync("ResetTimer");
+    }
+
     /// <summary>
     /// Lit les coordonnées à partir d'une chaîne.
     /// </summary>
@@ -1515,6 +1520,7 @@ public sealed class OkeyHub : Hub
 
         var joueurStarter = jeu.getJoueurActuel();
         var playerName = string.Empty;
+        await this.SendResetTimer(roomName);
         this.SetPlayerTurn(joueurStarter?.getName() ?? playerName, true);
         await this.TourSignalRequest(roomName, joueurStarter?.getName());
         if (joueurStarter != null)
@@ -1564,6 +1570,7 @@ public sealed class OkeyHub : Hub
             this.SetPlayerTurn(joueurStarter.getName(), false);
         }
 
+        await this.SendResetTimer(roomName);
         this.SetPlayerTurn(
             jeu.getJoueurActuel()?.getName() ?? throw new InvalidOperationException(),
             true
@@ -1655,6 +1662,7 @@ public sealed class OkeyHub : Hub
                     }
                 }
 
+                await this.SendResetTimer(roomName);
                 this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
             }
         }
