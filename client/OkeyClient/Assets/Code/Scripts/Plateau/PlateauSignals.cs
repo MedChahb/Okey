@@ -31,6 +31,7 @@ public class PlateauSignals : MonoBehaviour
         Debug.Log("Setting main player turn signal.");
 
         TuileCentre.gameObject.SetActive(true);
+        TuileGauche.gameObject.SetActive(true);
         Debug.Log("Main player turn signal set to active.");
         player2TurnSignal.gameObject.SetActive(false);
         player3TurnSignal.gameObject.SetActive(false);
@@ -39,7 +40,7 @@ public class PlateauSignals : MonoBehaviour
         Debug.Log("Main player turn signal setup complete.");
     }
 
-    public void SetPlayerSignal(string playerName)
+    public void SetPlayerSignal(string? playerName)
     {
         Debug.Log("SetPlayerSignal called.");
         // MainThreadDispatcher.Enqueue(() =>
