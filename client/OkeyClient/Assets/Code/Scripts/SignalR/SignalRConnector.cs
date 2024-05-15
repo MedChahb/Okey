@@ -243,7 +243,39 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est le tour de {PlayerName}");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    PlateauSignals.Instance.SetPlayerSignal(PlayerName);
+                    // PlateauSignals.Instance.SetPlayerSignal(PlayerName);
+
+                    PlateauSignals.Instance.TuileCentre.gameObject.SetActive(false);
+                    PlateauSignals.Instance.TuileGauche.gameObject.SetActive(false);
+                    PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(false);
+                    PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(false);
+                    PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(false);
+
+                    //  Debug.Log("player 2:" + LobbyManager.Instance.player2);
+                    //  Debug.Log("player 3:" + LobbyManager.Instance.player3);
+                    //  Debug.Log("player 4:" + LobbyManager.Instance.player4);
+
+                    var player = PlayerName.Trim().ToLower();
+                    if (LobbyManager.player2.Equals(player))
+                    {
+                        PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(true);
+                        Debug.Log("Player 2 turn signal set.");
+                    }
+                    else if (LobbyManager.player3.Equals(player))
+                    {
+                        PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(true);
+                        Debug.Log("Player 3 turn signal set.");
+                    }
+                    else if (LobbyManager.player4.Equals(player))
+                    {
+                        PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(true);
+                        Debug.Log("Player 4 turn signal set.");
+                    }
+                    else
+                    {
+                        Debug.LogError($"Player name {player} does not match any known player.");
+                    }
+
                     Timer.Instance.LaunchTimer();
                 });
             }
@@ -256,9 +288,16 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est votre tour");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    PlateauSignals.Instance.SetMainPlayerTurnSignal();
+                    // PlateauSignals.Instance.SetMainPlayerTurnSignal();
+                    // PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
+                    // PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
+
                     PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
                     PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
+                    PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(false);
+                    PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(false);
+                    PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(false);
+
                     Timer.Instance.LaunchTimer();
                 });
             }
