@@ -445,6 +445,26 @@ public class SignalRConnector : MonoBehaviour
                         ];
                     });
                 }
+                else if (tuile.position == 3)
+                {
+                    for (var y = 0; y < 2; y++)
+                    {
+                        for (int x = 0; x < 14; x++)
+                        {
+                            if (
+                                Chevalet.Instance.Tuiles2D[y, x].num == int.Parse(tuile.numero)
+                                && Chevalet
+                                    .Instance.Tuiles2D[y, x]
+                                    .couleur.Equals(tuile.Couleur, StringComparison.Ordinal)
+                            )
+                            {
+                                // On la deplace en pioche
+                                // D'abord on efface pour tester
+                                Chevalet.Instance.Tuiles2D[y, x] = null;
+                            }
+                        }
+                    }
+                }
                 else
                 {
                     MainThreadDispatcher.Enqueue(() =>

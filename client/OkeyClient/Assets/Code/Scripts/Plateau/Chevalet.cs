@@ -365,35 +365,17 @@ public class Chevalet : MonoBehaviour
                 for (var y = 0; y < 14; y++)
                 {
                     if (
-                        (T.GetCouleur().Equals("V", StringComparison.Ordinal))
-                        || (T.GetCouleur().Equals("J", StringComparison.Ordinal))
+                        this.TuilesPack[x, y]
+                            .couleur.Equals(T.GetCouleur(), StringComparison.Ordinal)
+                        && this.TuilesPack[x, y].num == T.GetValeur()
                     )
                     {
-                        if (this.TuilesPack[x, y].num == T.GetValeur())
+                        return new TuilePacket
                         {
-                            return new TuilePacket
-                            {
-                                X = "" + y,
-                                Y = "" + x,
-                                gagner = gain
-                            };
-                        }
-                    }
-                    else
-                    {
-                        if (
-                            this.TuilesPack[x, y]
-                                .couleur.Equals(T.GetCouleur(), StringComparison.Ordinal)
-                            && this.TuilesPack[x, y].num == T.GetValeur()
-                        )
-                        {
-                            return new TuilePacket
-                            {
-                                X = "" + y,
-                                Y = "" + x,
-                                gagner = gain
-                            };
-                        }
+                            X = "" + y,
+                            Y = "" + x,
+                            gagner = gain
+                        };
                     }
                 }
             }
