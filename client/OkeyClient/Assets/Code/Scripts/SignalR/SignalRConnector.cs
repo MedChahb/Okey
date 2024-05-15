@@ -75,10 +75,10 @@ public class SignalRConnector : MonoBehaviour
             {
                 Debug.LogWarning("La partie peut commencer");
 
-                foreach (var player in players.playersUsernames)
-                {
-                    Debug.LogWarning(player);
-                }
+                // foreach (var player in players.playersUsernames)
+                // {
+                //     Debug.LogWarning(player);
+                // }
 
                 MainThreadDispatcher.Enqueue(() =>
                 {
@@ -228,11 +228,7 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est le tour de {PlayerName}");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    // LobbyManager.Instance.SetMyTurn(false);
-                    // LobbyManager.Instance.SetCurrentPlayerTurn(PlayerName);
-                    // Timer.Instance.LaunchTimer();
-                    // Debug.Log("Signal received");
-                    //PlateauSignals.Instance.SetPlayerSignal(PlayerName);
+                    PlateauSignals.Instance.SetPlayerSignal(PlayerName);
                     Timer.Instance.LaunchTimer();
                 });
             }
@@ -245,10 +241,9 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est votre tour");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    // LobbyManager.Instance.SetMyTurn(true);
-                    // Debug.Log("Signal received");
                     PlateauSignals.Instance.SetMainPlayerTurnSignal();
-                    // Debug.Log("restarting timer");
+                    PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
+                    PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
                     Timer.Instance.LaunchTimer();
                 });
             }
@@ -1104,7 +1099,6 @@ public class SignalRConnector : MonoBehaviour
 
     public async void SendBoardState(TuileData[,] BoardState)
     {
-        // Ensure the connection is open before attempting to send a message
         if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
         {
             try
