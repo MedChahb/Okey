@@ -340,7 +340,6 @@ namespace Okey.Joueurs
 
                 int x = c.getX();
                 int y = c.getY();
-                Console.WriteLine("coordonnée tuile ignore :" + x + ";" + y);
                 Tuile? toThrow = this.chevalet[y][x];
 
                 this.chevalet[y][x] = null;
