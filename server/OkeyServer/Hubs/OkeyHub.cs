@@ -126,12 +126,8 @@ public sealed class OkeyHub : Hub
                 await this
                     ._hubContext.Clients.Group(roomId)
                     .SendAsync(
-                        "ReceiveMessage",
-                        new PacketSignal
-                        {
-                            message =
-                                $"Player {this.Context.ConnectionId} has left the {roomId} lobby."
-                        }
+                        "GameCancelled",
+                        new GameCancelled { playerSource = this.Context.ConnectionId }
                     );
                 foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
                 {
