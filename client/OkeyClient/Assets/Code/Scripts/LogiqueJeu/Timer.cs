@@ -30,6 +30,7 @@ public class Timer : MonoBehaviour
 
     void Start()
     {
+        // Optionally start the timer
         // LaunchTimer();
     }
 
@@ -44,7 +45,8 @@ public class Timer : MonoBehaviour
             }
             else
             {
-                ResetAndRestartTimer();
+                TimerOn = false;
+                UpdateTimerDisplay();
             }
         }
     }
@@ -60,17 +62,12 @@ public class Timer : MonoBehaviour
     {
         this.TimerOn = true;
         this.RemainingTime = TimerValue;
+        UpdateTimerDisplay();
     }
 
     public void StopTimer()
     {
         this.TimerOn = false;
-    }
-
-    private void ResetAndRestartTimer()
-    {
-        RemainingTime = TimerValue;
-        TimerOn = true;
         UpdateTimerDisplay();
     }
 }

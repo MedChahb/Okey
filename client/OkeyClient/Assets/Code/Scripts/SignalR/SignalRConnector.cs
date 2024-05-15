@@ -276,7 +276,7 @@ public class SignalRConnector : MonoBehaviour
                         Debug.LogError($"Player name {player} does not match any known player.");
                     }
 
-                    Timer.Instance.LaunchTimer();
+                    // Timer.Instance.LaunchTimer();
                 });
             }
         );
@@ -298,7 +298,7 @@ public class SignalRConnector : MonoBehaviour
                     PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(false);
                     PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(false);
 
-                    Timer.Instance.LaunchTimer();
+                    // Timer.Instance.LaunchTimer();
                 });
             }
         );
@@ -1063,6 +1063,14 @@ public class SignalRConnector : MonoBehaviour
                     }
                 });
             }
+
+            _hubConnection.On("ResetTimer", () =>
+            {
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    Timer.Instance.ResetTimer();
+                });
+            });
         );
     }
 
