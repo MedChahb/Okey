@@ -436,7 +436,6 @@ public class Chevalet : MonoBehaviour
                     if (properties.Length == 2)
                     {
                         var couleur = this.ConvertToFrontendColorToBackendEnumName(properties[0]);
-                        //                    Debug.Log(couleur);
                         var num = int.Parse(properties[1]);
                         var isJoker = properties[0] == "FakeJoker";
                         this.Tuiles2D[x, y] = new TuileData(couleur, num, isJoker);
@@ -532,6 +531,9 @@ public class Chevalet : MonoBehaviour
             case "J":
                 name = "Green_";
                 break;
+            case "V":
+                name = "Green_";
+                break;
         }
 
         name += Tuile.num;
@@ -544,6 +546,9 @@ public class Chevalet : MonoBehaviour
         switch (CouleurString)
         {
             case "J":
+                coul = CouleurTuile.J;
+                break;
+            case "V":
                 coul = CouleurTuile.J;
                 break;
             case "N":
@@ -604,14 +609,14 @@ public class Chevalet : MonoBehaviour
 
     private CouleurTuile ConvertToFrontendColorToBackendEnumName(string FrontendColor)
     {
-        //Debug.Log(FrontendColor);
         return FrontendColor.ToLower() switch
         {
             "yellow" => CouleurTuile.J,
+            "green" => CouleurTuile.J,
             "black" => CouleurTuile.N,
             "red" => CouleurTuile.R,
             "blue" => CouleurTuile.B,
-            "green" => CouleurTuile.V,
+
             // other cases still needed
             "fakejoker" => CouleurTuile.X,
             _ => CouleurTuile.M, // the okey

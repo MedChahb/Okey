@@ -20,6 +20,7 @@ namespace LogiqueJeu.Joueur
     public class API
     {
         public const double REQUEST_TIMEOUT = 5;
+
         private static readonly HttpClient SharedClient =
             new(
                 new HttpClientHandler
