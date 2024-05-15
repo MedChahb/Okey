@@ -1651,12 +1651,10 @@ public sealed class OkeyHub : Hub
         // on met à jour les informations des différents joueurs
         if (jeu.isTermine())
         {
-            var winner = jeu.getJoueurActuel();
-
             for (var i = 0; i < 4; i++)
             {
                 // TODO appliquer des valeurs de score et de elo a l'aide de calculs
-                if (joueurs[i] == winner)
+                if (joueurs[i].isGagnant())
                 {
                     await _connectedUsers[playerIds[i]]
                         .UpdateStats(this._dbContext, 10, 5, true, true);
