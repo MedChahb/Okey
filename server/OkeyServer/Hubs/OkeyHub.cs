@@ -753,6 +753,20 @@ public sealed class OkeyHub : Hub
                     pl.getName(),
                     $"Temps écoulé. La tuile ({coord}) a été jetée aléatoirement."
                 );
+
+                var tuile = pl.GetChevalet()[RandTuileCoord.getY()][RandTuileCoord.getX()];
+
+                var tuileStringPacket = new TuileJeteePacket
+                {
+                    Couleur = tuile?.GetCouleur().ToString(),
+                    numero = tuile?.GetNum().ToString(),
+                    isDefausse = "true",
+                    position = 3
+                };
+                await this
+                    ._hubContext.Clients.Client(this.Context.ConnectionId)
+                    .SendAsync("ReceiveTuileJete", tuileStringPacket);
+
                 return RandTuileCoord.getY() + ";" + RandTuileCoord.getX(); // return random coords
             }
             else
@@ -1289,6 +1303,7 @@ public sealed class OkeyHub : Hub
                         /* Position == 0 -> pile de gauche
                          * Position == 1 -> Pile en haut à droite
                          * Position == 2 -> Pile en haut à gauche
+                         * Position == 3 -> Pile de droite (utilisé pour des "checks")
                         */
 
                         TuileJeteePacket tuileStringPacket;
