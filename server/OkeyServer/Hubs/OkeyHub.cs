@@ -1675,6 +1675,9 @@ public sealed class OkeyHub : Hub
                 // TODO appliquer des valeurs de score et de elo a l'aide de calculs
                 if (joueurs[i].isGagnant())
                 {
+                    await this
+                        ._hubContext.Clients.Group(roomName)
+                        .SendAsync("WinInfos", joueurs[i].getName());
                     await _connectedUsers[playerIds[i]]
                         .UpdateStats(this._dbContext, 10, 5, true, true);
                 }
