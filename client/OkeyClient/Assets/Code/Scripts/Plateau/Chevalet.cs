@@ -327,7 +327,7 @@ public class Chevalet : MonoBehaviour
     {
         this._pileDroite.Push(Tuile);
 
-        Debug.Log($"Tuile recue {Tuile.GetCouleur()}");
+        Debug.Log($"Tuile recue {Tuile.GetCouleur()}, {Tuile.GetValeur()}");
         var tuileData = this.GetTuilePacketFromChevalet(Tuile, false);
         Debug.Log($"{tuileData.Y}, {tuileData.X}");
         this.IsJete = true;
@@ -390,19 +390,12 @@ public class Chevalet : MonoBehaviour
                     }
                     else
                     {
-                        if (
-                            T.GetCouleur()
-                                .Equals(this.TuilesPack[x, y].couleur, StringComparison.Ordinal)
-                            && T.GetValeur() == this.TuilesPack[x, y].num
-                        )
+                        return new TuilePacket
                         {
-                            return new TuilePacket
-                            {
-                                X = "" + y,
-                                Y = "" + x,
-                                gagner = gain
-                            };
-                        }
+                            X = "" + y,
+                            Y = "" + x,
+                            gagner = gain
+                        };
                     }
                 }
             }
@@ -700,7 +693,6 @@ public class Chevalet : MonoBehaviour
             else
             {
                 Debug.Log("La");
-                this.PiocheTile(false);
                 this._pileGauche.Pop();
                 if (this._pileGauche.Count > 0)
                 {
@@ -711,6 +703,7 @@ public class Chevalet : MonoBehaviour
                         .GetComponent<Tuile>()
                         .SetValeur(this._pileGauche.Peek().GetValeur());
                 }
+                this.PiocheTile(false);
             }
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece pioché
         }
@@ -740,6 +733,7 @@ public class Chevalet : MonoBehaviour
                     this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
 
                     var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+
                     var nt = NextPlaceholder.GetComponent<Tuile>();
                     nt.SetCouleur(tuile.GetCouleur());
                     nt.SetValeur(tuile.GetValeur());
