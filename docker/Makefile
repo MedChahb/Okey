@@ -31,7 +31,7 @@ $(IMG_NAME_DB-INIT): DB-Init.Dockerfile ../server/OkeyApi/
 	touch $@
 
 website: $(IMG_NAME_WEBSITE)
-$(IMG_NAME_WEBSITE): OkeyWebsite.Dockerfile ../server/okeywebsite/new_app/
+$(IMG_NAME_WEBSITE): OkeyWebsite.Dockerfile OkeyWebsite.Dockerfile.dockerignore ../server/okeywebsite/new_app/
 	docker build -t $(REGISTRY)/$@ -f $< ..
 	touch $@
 
