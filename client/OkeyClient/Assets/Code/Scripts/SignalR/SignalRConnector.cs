@@ -554,6 +554,15 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        _hubConnection.On<string>(
+            "WinInfos",
+            (playerId) =>
+            {
+                //Histoire que l'on remarque bien...
+                Debug.LogError($"Le gagnant est {playerId}");
+            }
+        );
+
         _hubConnection.On<TuilePacket>(
             "JeterRequest",
             () =>
