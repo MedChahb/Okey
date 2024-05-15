@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Code.Scripts.SignalR.Packets;
 using Code.Scripts.SignalR.Packets.Emojis;
 using Code.Scripts.SignalR.Packets.Rooms;
-using LogiqueJeu.Joueur;
 using Microsoft.AspNetCore.SignalR.Client;
 using TMPro;
 using UnityEngine;
@@ -32,7 +31,7 @@ public class SignalRConnector : MonoBehaviour
 
     public async void InitializeConnection()
     {
-        _hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
+        _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost/OkeyHub").Build();
 
         this.ConfigureHubEvents();
 
@@ -135,6 +134,22 @@ public class SignalRConnector : MonoBehaviour
                         Debug.LogError("No players found in playersList.");
                     }
                     SceneManager.LoadSceneAsync("PlateauInit");
+                });
+            }
+        );
+
+        _hubConnection.On<GameCancelled>(
+            "GameCancelled",
+            (packet) =>
+            {
+                // On fait quitter le joueur (simple a faire)
+
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    Debug.Log($"Le joueur {packet.playerSource} nous a fait quitter");
+                    _hubConnection.StopAsync();
+                    Chevalet.neverReceivedChevalet = true;
+                    SceneManager.LoadScene("Acceuil");
                 });
             }
         );
