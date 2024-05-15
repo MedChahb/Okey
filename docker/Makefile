@@ -15,17 +15,17 @@ $(IMG_NAME_CICD): CICD.Dockerfile ../requirements.txt ../.config/dotnet-tools.js
 	touch $@
 
 api: $(IMG_NAME_API)
-$(IMG_NAME_API): OkeyApi.Dockerfile ../server/OkeyApi/
+$(IMG_NAME_API): OkeyApi.Dockerfile OkeyApi.Dockerfile.dockerignore ../server/OkeyApi/
 	docker build -t $(REGISTRY)/$@ -f $< ..
 	touch $@
 
 server: $(IMG_NAME_SERVER)
-$(IMG_NAME_SERVER): OkeyServer.Dockerfile ../server/OkeyServer/
+$(IMG_NAME_SERVER): OkeyServer.Dockerfile OkeyServer.Dockerfile.dockerignore ../server/OkeyServer/
 	docker build -t $(REGISTRY)/$@ -f $< ..
 	touch $@
 
 db-init: $(IMG_NAME_DB-INIT)
-$(IMG_NAME_DB-INIT): DB-Init.Dockerfile ../server/OkeyApi/
+$(IMG_NAME_DB-INIT): DB-Init.Dockerfile DB-Init.Dockerfile.dockerignore ../server/OkeyApi/
 	docker build -t $(REGISTRY)/$@ -f $< ..
 	touch $@
 
