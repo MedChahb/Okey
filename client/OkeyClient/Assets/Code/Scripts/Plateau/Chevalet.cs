@@ -369,24 +369,12 @@ public class Chevalet : MonoBehaviour
                         || T.GetCouleur().Equals("J", StringComparison.Ordinal)
                     )
                     {
-                        if (
-                            this.TuilesPack[x, y].couleur.Equals("V", StringComparison.Ordinal)
-                            || this.TuilesPack[x, y].couleur.Equals("J", StringComparison.Ordinal)
-                        )
+                        return new TuilePacket
                         {
-                            if (
-                                T.GetValeur() == this.TuilesPack[x, y].num
-                                && T.GetIsJoker() == this.TuilesPack[x, y].isJoker
-                            )
-                            {
-                                return new TuilePacket
-                                {
-                                    X = "" + y,
-                                    Y = "" + x,
-                                    gagner = gain
-                                };
-                            }
-                        }
+                            X = "" + y,
+                            Y = "" + x,
+                            gagner = gain
+                        };
                     }
                     else
                     {
