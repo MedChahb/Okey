@@ -229,7 +229,7 @@ public class SignalRConnector : MonoBehaviour
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     PlateauSignals.Instance.SetPlayerSignal(PlayerName);
-                    Timer.Instance.LaunchTimer();
+                    // Timer.Instance.LaunchTimer();
                 });
             }
         );
@@ -244,7 +244,7 @@ public class SignalRConnector : MonoBehaviour
                     PlateauSignals.Instance.SetMainPlayerTurnSignal();
                     PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
                     PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
-                    Timer.Instance.LaunchTimer();
+                    // Timer.Instance.LaunchTimer();
                 });
             }
         );
