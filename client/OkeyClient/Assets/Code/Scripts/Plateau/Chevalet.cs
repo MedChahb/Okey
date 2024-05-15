@@ -365,25 +365,35 @@ public class Chevalet : MonoBehaviour
                 for (var y = 0; y < 14; y++)
                 {
                     if (
-                        T.GetCouleur().Equals("V", StringComparison.Ordinal)
-                        || T.GetCouleur().Equals("J", StringComparison.Ordinal)
+                        (T.GetCouleur().Equals("V", StringComparison.Ordinal))
+                        || (T.GetCouleur().Equals("J", StringComparison.Ordinal))
                     )
                     {
-                        return new TuilePacket
+                        if (this.TuilesPack[x, y].num == T.GetValeur())
                         {
-                            X = "" + y,
-                            Y = "" + x,
-                            gagner = gain
-                        };
+                            return new TuilePacket
+                            {
+                                X = "" + y,
+                                Y = "" + x,
+                                gagner = gain
+                            };
+                        }
                     }
                     else
                     {
-                        return new TuilePacket
+                        if (
+                            this.TuilesPack[x, y]
+                                .couleur.Equals(T.GetCouleur(), StringComparison.Ordinal)
+                            && this.TuilesPack[x, y].num == T.GetValeur()
+                        )
                         {
-                            X = "" + y,
-                            Y = "" + x,
-                            gagner = gain
-                        };
+                            return new TuilePacket
+                            {
+                                X = "" + y,
+                                Y = "" + x,
+                                gagner = gain
+                            };
+                        }
                     }
                 }
             }
@@ -501,8 +511,7 @@ public class Chevalet : MonoBehaviour
     public static string FromTuileToSpriteName(TuileData Tuile)
     {
         if (
-            Tuile.isJoker
-            || Tuile.couleur.Equals("M", StringComparison.Ordinal)
+            Tuile.couleur.Equals("M", StringComparison.Ordinal)
             || Tuile.couleur.Equals("X", StringComparison.Ordinal)
         )
         {
