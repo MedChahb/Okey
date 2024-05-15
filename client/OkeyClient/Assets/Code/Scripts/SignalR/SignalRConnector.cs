@@ -234,6 +234,17 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        _hubConnection.On(
+            "ResetTimer",
+            () =>
+            {
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    Timer.Instance.LaunchTimer();
+                });
+            }
+        );
+
         _hubConnection.On<string>(
             "TurnSignal",
             (PlayerName) =>
@@ -1063,14 +1074,6 @@ public class SignalRConnector : MonoBehaviour
                     }
                 });
             }
-
-            _hubConnection.On("ResetTimer", () =>
-            {
-                MainThreadDispatcher.Enqueue(() =>
-                {
-                    Timer.Instance.ResetTimer();
-                });
-            });
         );
     }
 
