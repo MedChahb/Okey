@@ -66,10 +66,10 @@ services:
     restart: always
     container_name: mysql
     volumes:
-      - ${PERSIST_PATH:-./}docker_data/mysql/mysql_data:/var/lib/mysql
-      - ${PERSIST_PATH:-./}docker_data/mysql/mysql_config:/etc/mysql/conf.d:ro
-      - ${PERSIST_PATH:-./}docker_data/mysql/mysql_init:/docker-entrypoint-initdb.d:ro
-      - ${PERSIST_PATH:-./}docker_data/mysql/init.sql:/init.sql:ro
+      - ${PERSIST_PATH:-./}docker_data/data/mysql/mysql_data:/var/lib/mysql
+      - ${PERSIST_PATH:-./}docker_data/config/mysql/mysql_config:/etc/mysql/conf.d:ro
+      - ${PERSIST_PATH:-./}docker_data/config/mysql/mysql_init:/docker-entrypoint-initdb.d:ro
+      - ${PERSIST_PATH:-./}docker_data/config/mysql/init.sql:/init.sql:ro
     networks:
       - okey
     expose: # ça ne sert strictement à rien, aucun effet
@@ -87,7 +87,7 @@ services:
     restart: always
     container_name: phpmyadmin
     volumes:
-      - ${PERSIST_PATH:-./}docker_data/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+      - ${PERSIST_PATH:-./}docker_data/config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
     networks:
       - okey
     depends_on:
@@ -109,7 +109,7 @@ services:
     restart: always
     container_name: portainer
     volumes:
-      - ${PERSIST_PATH:-./}docker_data/portainer:/data
+      - ${PERSIST_PATH:-./}docker_data/data/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - okey
@@ -123,7 +123,7 @@ services:
     restart: always
     container_name: nginx-core
     volumes:
-      - ${PERSIST_PATH:-./}docker_data/nginx/nginx-core.conf:/etc/nginx/nginx.conf:ro
+      - ${PERSIST_PATH:-./}docker_data/config/nginx/nginx-core.conf:/etc/nginx/nginx.conf:ro
     networks:
       - okey
     ports:
@@ -136,7 +136,7 @@ services:
     restart: always
     container_name: nginx-extra
     volumes:
-      - ${PERSIST_PATH:-./}docker_data/nginx/nginx-extra.conf:/etc/nginx/nginx.conf:ro
+      - ${PERSIST_PATH:-./}docker_data/config/nginx/nginx-extra.conf:/etc/nginx/nginx.conf:ro
     networks:
       - okey
     ports:
