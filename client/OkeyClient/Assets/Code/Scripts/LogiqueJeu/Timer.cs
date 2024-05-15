@@ -30,7 +30,7 @@ public class Timer : MonoBehaviour
 
     void Start()
     {
-        LaunchTimer();
+        // LaunchTimer();
     }
 
     void Update()
