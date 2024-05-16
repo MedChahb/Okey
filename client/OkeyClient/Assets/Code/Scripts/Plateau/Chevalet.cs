@@ -26,6 +26,8 @@ public class Chevalet : MonoBehaviour
 
     public static Dictionary<string, Sprite> spritesDic = new Dictionary<string, Sprite>();
 
+    public static bool PiocheIsVide = false;
+
     public bool IsJete { get; set; }
     public TuilePacket TuileJete { get; set; }
 

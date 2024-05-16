@@ -334,7 +334,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    if (Pioche.PiocheTete != null)
+                    if (Pioche.PiocheTete != null && Pioche.PiocheTaille > 0)
                     {
                         var piocheCentale = Chevalet.PilePiochePlaceHolder.GetComponent<Tuile>();
 
@@ -396,6 +396,25 @@ public class SignalRConnector : MonoBehaviour
                         }
 
                         childObject.GetComponent<Tuile>().SetIsDeplacable(false);
+                    }
+                    else
+                    {
+                        Chevalet.PiocheIsVide = true;
+                        MainThreadDispatcher.Enqueue(() =>
+                        {
+                            Chevalet.PilePiochePlaceHolder.GetComponent<SpriteRenderer>().sprite =
+                                null;
+
+                            if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
+                            {
+                                Chevalet
+                                    .PileGauchePlaceHolder.transform.GetChild(
+                                        Chevalet.PileGauchePlaceHolder.transform.childCount - 1
+                                    )
+                                    .GetComponent<Tuile>()
+                                    .SetIsDeplacable(true);
+                            }
+                        });
                     }
                 });
             }
@@ -796,7 +815,10 @@ public class SignalRConnector : MonoBehaviour
 
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    if (Chevalet.PilePiochePlaceHolder.transform.childCount > 0)
+                    if (
+                        Chevalet.PilePiochePlaceHolder.transform.childCount > 0
+                        && Chevalet.PiocheIsVide == false
+                    )
                     {
                         Chevalet
                             .PilePiochePlaceHolder.transform.GetChild(
