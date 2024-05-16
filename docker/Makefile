@@ -15,17 +15,17 @@ $(IMG_NAME_CICD): CICD.Dockerfile ../requirements.txt ../.config/dotnet-tools.js
 	touch $@
 
 api: $(IMG_NAME_API)
-$(IMG_NAME_API): OkeyApi.Dockerfile ../server/OkeyApi/
+$(IMG_NAME_API): OkeyApi.Dockerfile OkeyApi.Dockerfile.dockerignore ../server/OkeyApi/
 	docker build -t $(REGISTRY)/$@ -f $< ..
 	touch $@
 
 server: $(IMG_NAME_SERVER)
-$(IMG_NAME_SERVER): OkeyServer.Dockerfile ../server/OkeyServer/
+$(IMG_NAME_SERVER): OkeyServer.Dockerfile OkeyServer.Dockerfile.dockerignore ../server/OkeyServer/
 	docker build -t $(REGISTRY)/$@ -f $< ..
 	touch $@
 
 db-init: $(IMG_NAME_DB-INIT)
-$(IMG_NAME_DB-INIT): DB-Init.Dockerfile ../server/OkeyApi/
+$(IMG_NAME_DB-INIT): DB-Init.Dockerfile DB-Init.Dockerfile.dockerignore ../server/OkeyApi/
 	docker build -t $(REGISTRY)/$@ -f $< ..
 	touch $@
 
@@ -50,7 +50,7 @@ stop-core:
 	docker compose --profile core down
 
 clean:
-	rm -rf $(IMG_NAME_CICD) $(IMG_NAME_API) $(IMG_NAME_SERVER) $(IMG_NAME_DB-INIT) docker_data/mysql/mysql_data/ docker_data/portainer/
+	rm -rf $(IMG_NAME_CICD) $(IMG_NAME_API) $(IMG_NAME_SERVER) $(IMG_NAME_DB-INIT) docker_data/data/
 	@echo "Makefile: artifacts cleaned."
 	@echo "Makefile: this does not remove the docker images or containers. Use 'docker rmi' and/or 'docker container rm' for that."
 	@echo "Makefile: compose persistant data cleaned."

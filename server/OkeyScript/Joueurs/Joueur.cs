@@ -23,7 +23,7 @@ namespace Okey.Joueurs
         /// <summary>
         /// Chevalet du joueur, contenant les tuiles.
         /// </summary>
-        private List<List<Tuile?>> chevalet = new List<List<Tuile?>>(); // 15 tuiles + 1 case vide
+        private List<List<Tuile?>> chevalet = new List<List<Tuile?>>();
 
         /// <summary>
         /// Indique si c'est le tour du joueur.
@@ -382,17 +382,18 @@ namespace Okey.Joueurs
         /// </summary>
         /// <param name="tuiles">Liste de tuiles.</param>
         /// <returns>Vrai si c'est une série de même chiffre, sinon faux.</returns>
-        private static bool Est_serie_de_meme_chiffre(List<Tuile> tuiles)
+        private static bool EstSerieDeMemeChiffre(List<Tuile> tuiles)
         {
             if (tuiles.Count <= 2)
                 return false;
             List<CouleurTuile> CouleurVues = new List<CouleurTuile>();
+            int premierNum = tuiles[0].GetNum();
 
             foreach (Tuile tuile in tuiles)
             {
                 if (tuile is Okay)
                     continue;
-                if (tuiles[0].GetNum() != tuile.GetNum())
+                if (premierNum != tuile.GetNum())
                     return false; // deux tuiles pas même numéro -> faux
 
                 if (CouleurVues.Contains(tuile.GetCouleur()))
@@ -414,12 +415,20 @@ namespace Okey.Joueurs
         {
             if (t.Count < 3)
                 return false;
+
+            var sortedTuiles = t.OrderBy(t => t.GetNum()).ToList(); // to comment (ajouté lors de detection de serie sans ordre)
+
             for (int i = 0; i < t.Count - 1; i++)
             {
                 int j = i + 1;
 
-                if (!t[i].MemeCouleur(t[j]) || !t[i].estSuivant(t[j]))
+                if (
+                    !sortedTuiles[i].MemeCouleur(sortedTuiles[j])
+                    || !sortedTuiles[i].estSuivant(sortedTuiles[j])
+                )
                     return false;
+                /*if (!t[i].MemeCouleur(t[j]) || !t[i].estSuivant(t[j]))
+                    return false;*/
             }
             return true;
         }
@@ -431,7 +440,35 @@ namespace Okey.Joueurs
         /// <returns>Vrai si c'est une série, sinon faux.</returns>
         private static bool EstSerie(List<Tuile> tuiles)
         {
-            return Est_serie_de_meme_chiffre(tuiles) || EstSerieDeCouleur(tuiles);
+            return EstSerieDeMemeChiffre(tuiles) || EstSerieDeCouleur(tuiles);
+        }
+
+        /// <summary>
+        /// Calcule le nombre d'occurence de la tuile t dans le chevalet.
+        /// </summary>
+        /// <param name="t">La tuiles.</param>
+        /// <returns>Le nombre d'occurence de t dans le chevalet.</returns>
+        public int OccurenceTuileInChevalet(Tuile? t)
+        {
+            int res = 0;
+            if (t != null)
+            {
+                foreach (var tuile in this.chevalet[0])
+                {
+                    if (tuile != null && t.TuileEquals(tuile))
+                    {
+                        res++;
+                    }
+                }
+                foreach (var tuile in this.chevalet[1])
+                {
+                    if (tuile != null && t.TuileEquals(tuile))
+                    {
+                        res++;
+                    }
+                }
+            }
+            return res;
         }
 
         /// <summary>
@@ -466,7 +503,7 @@ namespace Okey.Joueurs
         /// Vérifie si le chevalet contient uniquement des couples.
         /// </summary>
         /// <returns>Vrai si le chevalet contient uniquement des couples, sinon faux.</returns>
-        private bool ChevaletHasCouples()
+        /*private bool ChevaletHasCouples()
         {
             Tuile t0,
                 t1;
@@ -494,13 +531,72 @@ namespace Okey.Joueurs
             }
 
             return true;
+        }*/
+        public bool ChevaletHasCouples()
+        {
+            foreach (var tuile in this.chevalet[0])
+            {
+                if (tuile != null)
+                {
+                    int occ = this.OccurenceTuileInChevalet(tuile);
+                    if (occ % 2 != 0)
+                        return false;
+                }
+            }
+            foreach (var tuile in this.chevalet[1])
+            {
+                if (tuile != null)
+                {
+                    int occ = this.OccurenceTuileInChevalet(tuile);
+                    if (occ % 2 != 0)
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Calcule tous les series possible dans le chevalet.
+        /// </summary>
+        /// <returns>Renvoie une list des serie possible.</returns>
+        private static List<List<Tuile>> GetAllPossibleSeries(List<Tuile> tuiles) // ajouter lors serie sans ordre (to comment)
+        {
+            var possibleSeries = new List<List<Tuile>>();
+
+            // Check for series of the same number with different colors
+            var numberGroups = tuiles.GroupBy(t => t.GetNum());
+            foreach (var group in numberGroups)
+            {
+                var sortedGroup = group.OrderBy(t => t.GetCouleur()).ToList();
+                if (sortedGroup.Count >= 3 && EstSerieDeMemeChiffre(sortedGroup))
+                {
+                    possibleSeries.Add(sortedGroup);
+                }
+            }
+
+            // Check for series of the same color with consecutive numbers
+            var colorGroups = tuiles.GroupBy(t => t.GetCouleur());
+            foreach (var group in colorGroups)
+            {
+                var sortedGroup = group.OrderBy(t => t.GetNum()).ToList();
+                for (int i = 0; i <= sortedGroup.Count - 3; i++)
+                {
+                    var series = sortedGroup.Skip(i).Take(3).ToList();
+                    if (EstSerieDeCouleur(series))
+                    {
+                        possibleSeries.Add(series);
+                    }
+                }
+            }
+
+            return possibleSeries;
         }
 
         /// <summary>
         /// Vérifie si le chevalet contient des séries valides.
         /// </summary>
         /// <returns>Vrai si le chevalet contient des séries valides, sinon faux.</returns>
-        private bool VerifSerieChevalet()
+        /*private bool VerifSerieChevalet()
         {
             if (this.ChevaletHasCouples())
                 return true;
@@ -521,6 +617,30 @@ namespace Okey.Joueurs
             }
 
             return true;
+        }*/
+
+        public bool VerifSerieChevalet()
+        {
+            var nonNullTuiles = this
+                .chevalet.SelectMany(row => row)
+                .Where(t => t != null)
+                .Cast<Tuile>()
+                .ToList();
+
+            if (nonNullTuiles.Count != 14)
+                return false;
+
+            if (this.ChevaletHasCouples())
+                return true;
+
+            var possibleSeries = GetAllPossibleSeries(nonNullTuiles);
+
+            foreach (var series in possibleSeries)
+            {
+                nonNullTuiles = nonNullTuiles.Except(series).ToList();
+            }
+
+            return nonNullTuiles.Count == 0;
         }
 
         /// <summary>
