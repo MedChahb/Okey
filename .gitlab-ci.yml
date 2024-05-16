@@ -518,18 +518,8 @@ deploy-backend-staging:
     PERSIST_PATH: '/home/ubuntu/'
     SECURE_FILES_DOWNLOAD_PATH: "/ssh/"
   script:
-    - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
-    - cp -r /builds/okaybytes/okey/ssh /
-    - chmod -R 600 /ssh
-    - cp /ssh/config /etc/ssh/ssh_config.d/config.conf # https://linuxize.com/post/using-the-ssh-config-file/
-    - ansible-playbook -i scripts/ansible/inventory.yml scripts/ansible/playbook.yml --limit dev
-    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin # https://medium.com/@vitalypanukhin/docker-compose-and-gitlab-b209d09210f6
-    - cd docker/
-    - docker-compose -H "ssh://pi0" --profile extra down --remove-orphans
-    - ssh pi0 "rm -rf docker_data/config/ ; mkdir -p docker_data/"
-    - scp -r docker_data/config pi0:${PERSIST_PATH}/docker_data/
-    - docker-compose -H "ssh://pi0" --profile extra pull
-    - docker-compose -H "ssh://pi0" --profile extra up -d
+    - echo "This job is under maintenance"
+    - exit 1
   rules:
     - if: $CI_COMMIT_BRANCH == "back-end"
   tags:
