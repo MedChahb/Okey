@@ -149,6 +149,7 @@ public class SignalRConnector : MonoBehaviour
                     Debug.Log($"Le joueur {packet.playerSource} nous a fait quitter");
                     _hubConnection.StopAsync();
                     Chevalet.neverReceivedChevalet = true;
+                    Chevalet.PiocheIsVide = false;
                     SceneManager.LoadScene("Acceuil");
                 });
             }
@@ -240,6 +241,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 MainThreadDispatcher.Enqueue(() =>
                 {
+                    Debug.Log("Resetting timer.");
                     Timer.Instance.LaunchTimer();
                 });
             }
@@ -256,31 +258,36 @@ public class SignalRConnector : MonoBehaviour
                 {
                     // PlateauSignals.Instance.SetPlayerSignal(PlayerName);
 
-                    PlateauSignals.Instance.TuileCentre.gameObject.SetActive(false);
-                    PlateauSignals.Instance.TuileGauche.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(false);
 
-                    //  Debug.Log("player 2:" + LobbyManager.Instance.player2);
-                    //  Debug.Log("player 3:" + LobbyManager.Instance.player3);
-                    //  Debug.Log("player 4:" + LobbyManager.Instance.player4);
+                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+
+                    Debug.Log("All signals set to invisible.");
 
                     var player = PlayerName.Trim().ToLower();
                     if (LobbyManager.player2.Equals(player))
                     {
-                        PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(true);
-                        Debug.Log("Player 2 turn signal set.");
+                        PlateauSignals
+                            .Instance.player2TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 2 turn signal set to visible.");
                     }
                     else if (LobbyManager.player3.Equals(player))
                     {
-                        PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(true);
-                        Debug.Log("Player 3 turn signal set.");
+                        PlateauSignals
+                            .Instance.player3TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 3 turn signal set to visible.");
                     }
                     else if (LobbyManager.player4.Equals(player))
                     {
-                        PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(true);
-                        Debug.Log("Player 4 turn signal set.");
+                        PlateauSignals
+                            .Instance.player4TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 4 turn signal set to visible.");
                     }
                     else
                     {
@@ -334,7 +341,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    if (Pioche.PiocheTete != null)
+                    if (Pioche.PiocheTete != null && Pioche.PiocheTaille > 0)
                     {
                         var piocheCentale = Chevalet.PilePiochePlaceHolder.GetComponent<Tuile>();
 
@@ -396,6 +403,11 @@ public class SignalRConnector : MonoBehaviour
                         }
 
                         childObject.GetComponent<Tuile>().SetIsDeplacable(false);
+                    }
+                    else
+                    {
+                        Chevalet.PiocheIsVide = true;
+                        Chevalet.PilePiochePlaceHolder.GetComponent<SpriteRenderer>().sprite = null;
                     }
                 });
             }
@@ -796,7 +808,10 @@ public class SignalRConnector : MonoBehaviour
 
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    if (Chevalet.PilePiochePlaceHolder.transform.childCount > 0)
+                    if (
+                        Chevalet.PilePiochePlaceHolder.transform.childCount > 0
+                        && Chevalet.PiocheIsVide == false
+                    )
                     {
                         Chevalet
                             .PilePiochePlaceHolder.transform.GetChild(
@@ -859,6 +874,40 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        _hubConnection.On<string>(
+            "TileThrown",
+            (cords) =>
+            {
+                string[] parts = cords.Split(':');
+
+                var x = parts[0];
+                var y = parts[1];
+                var tile = Chevalet.Instance.TuilesPack[int.Parse(x), int.Parse(y)];
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    for (var i = 0; i < 2; i++)
+                    {
+                        for (var j = 0; j < 14; j++)
+                        {
+                            if (
+                                Chevalet
+                                    .Instance.Tuiles2D[i, j]
+                                    .couleur.Equals(tile.couleur, StringComparison.Ordinal)
+                                && Chevalet.Instance.Tuiles2D[i, j].num == tile.num
+                            )
+                            {
+                                Chevalet.Instance.Tuiles2D[i, j] = null;
+                                if (Chevalet.Placeholders[i * 14 + j].transform.childCount > 0)
+                                {
+                                    Destroy(Chevalet.Placeholders[i * 14 + j].gameObject);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        );
+
         _hubConnection.On<RoomState>(
             "SendRoomState",
             (roomState) =>
@@ -866,6 +915,8 @@ public class SignalRConnector : MonoBehaviour
                 if (roomState.playerDatas != null)
                 {
                     this.UpdateWaitingPlayerUI(roomState.playerDatas);
+                    // this.LoadAvatarsInLobby(roomState.playerDatas);
+
                     foreach (var data in roomState.playerDatas)
                     {
                         var dSplit = data.Split(';');
@@ -1071,6 +1122,7 @@ public class SignalRConnector : MonoBehaviour
                     else
                     {
                         chevaletInstance.TuilesPack = tuilesData;
+                        chevaletInstance.InitializeBoardFromTuiles();
                     }
                 });
             }
@@ -1153,6 +1205,37 @@ public class SignalRConnector : MonoBehaviour
             }
         });
     }
+
+    // private void LoadAvatarsInLobby(List<string> PlayerData)
+    // {
+    //     MainThreadDispatcher.Enqueue(() =>
+    //     {
+    //         var vue = PlateauUIManager.Instance.playerAvatars;
+    //         var P1 = vue.transform.GetChild(1);
+    //         var P2 = vue.transform.GetChild(2);
+    //         var P3 = vue.transform.GetChild(3);
+    //         var P4 = vue.transform.GetChild(4);
+
+    //         var tabP = new List<Transform>();
+    //         tabP.Add(P1);
+    //         tabP.Add(P2);
+    //         tabP.Add(P3);
+    //         tabP.Add(P4);
+    //         for (var i = 0; i < PlayerData.Count; i++)
+    //         {
+    //             var dSplit = PlayerData[i].Split(';');
+    //             var avatar = tabP[i].transform.GetChild(0);
+    //             var res = Resources.Load<Sprite>("Avatar/avatarn" + dSplit[1]);
+    //             avatar.transform.GetComponent<SpriteRenderer>().transform.localScale = new Vector3(
+    //                 50f,
+    //                 50f,
+    //                 1f
+    //             );
+    //             avatar.transform.GetComponent<SpriteRenderer>().sortingOrder = 5;
+    //             avatar.transform.GetComponent<SpriteRenderer>().sprite = res;
+    //         }
+    //     });
+    // }
 
     public async Task JoinRoom() // takes parameter roomName in future
     {

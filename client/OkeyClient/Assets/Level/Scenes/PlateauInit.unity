@@ -2478,13 +2478,14 @@ GameObject:
   - component: {fileID: 500712417}
   - component: {fileID: 500712419}
   - component: {fileID: 500712418}
+  - component: {fileID: 500712420}
   m_Layer: 5
   m_Name: TuileCentre
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &500712417
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2542,6 +2543,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 500712416}
   m_CullTransparentMesh: 1
+--- !u!225 &500712420
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 500712416}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &508548175
 GameObject:
   m_ObjectHideFlags: 0
@@ -2553,13 +2566,14 @@ GameObject:
   - component: {fileID: 508548176}
   - component: {fileID: 508548178}
   - component: {fileID: 508548177}
+  - component: {fileID: 508548179}
   m_Layer: 5
   m_Name: TurnSignal3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &508548176
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2617,6 +2631,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 508548175}
   m_CullTransparentMesh: 1
+--- !u!225 &508548179
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508548175}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &550843543
 GameObject:
   m_ObjectHideFlags: 0
@@ -3051,13 +3077,14 @@ GameObject:
   - component: {fileID: 639636884}
   - component: {fileID: 639636886}
   - component: {fileID: 639636885}
+  - component: {fileID: 639636887}
   m_Layer: 5
   m_Name: TuileGauche
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &639636884
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3115,6 +3142,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 639636883}
   m_CullTransparentMesh: 1
+--- !u!225 &639636887
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 639636883}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &647037296
 GameObject:
   m_ObjectHideFlags: 0
@@ -8064,13 +8103,14 @@ GameObject:
   - component: {fileID: 1683240394}
   - component: {fileID: 1683240396}
   - component: {fileID: 1683240395}
+  - component: {fileID: 1683240397}
   m_Layer: 5
   m_Name: TurnSignal2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1683240394
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8128,6 +8168,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1683240393}
   m_CullTransparentMesh: 1
+--- !u!225 &1683240397
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683240393}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &1687264646
 GameObject:
   m_ObjectHideFlags: 0
@@ -8900,13 +8952,14 @@ GameObject:
   - component: {fileID: 1829035517}
   - component: {fileID: 1829035519}
   - component: {fileID: 1829035518}
+  - component: {fileID: 1829035520}
   m_Layer: 5
   m_Name: TurnSignal4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1829035517
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8964,6 +9017,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1829035516}
   m_CullTransparentMesh: 1
+--- !u!225 &1829035520
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1829035516}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!114 &1832046259
 MonoBehaviour:
   m_ObjectHideFlags: 0

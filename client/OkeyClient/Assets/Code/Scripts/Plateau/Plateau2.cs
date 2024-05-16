@@ -158,6 +158,7 @@ public class Plateau2 : MonoBehaviour
     {
         SignalRConnector._hubConnection.StopAsync();
         Chevalet.neverReceivedChevalet = true;
+        Chevalet.PiocheIsVide = false;
         SceneManager.LoadScene("Acceuil");
     }
 
