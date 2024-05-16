@@ -22,7 +22,7 @@ const OkeyHistory = () => {
           <p className="font-normal text-m">Notre jeu est disponnible sur Windows, MacOS, Linux ainsi que Android.</p>
         </div>
       </div>
-    );   
+    );
 
 };
 
