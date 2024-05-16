@@ -39,7 +39,7 @@ test 2/2:
     - dotnet docfx docs/docfx.json
     - cp -r docs/_site public
   rules:
-    - if: $CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH
   artifacts:
     paths:
       - public
@@ -509,6 +509,7 @@ unity-windows-release:
 deploy-backend-staging:
   stage: deploy
   dependencies: []
+  resource_group: staging
   environment:
     name: Deploy/Staging
   variables:
@@ -533,6 +534,7 @@ deploy-backend-staging:
 deploy-backend-production:
   # https://forum.gitlab.com/t/how-can-i-set-the-stage-environment-from-a-condition/67401/2
   extends: deploy-backend-staging
+  resource_group: production
   environment:
     name: Deploy/Production
   variables:
