@@ -509,6 +509,7 @@ unity-windows-release:
 deploy-backend-staging:
   stage: deploy
   dependencies: []
+  # process_mode=oldest_first
   resource_group: staging
   environment:
     name: Deploy/Staging
@@ -536,6 +537,7 @@ deploy-backend-staging:
 deploy-backend-production:
   # https://forum.gitlab.com/t/how-can-i-set-the-stage-environment-from-a-condition/67401/2
   extends: deploy-backend-staging
+  # process_mode=oldest_first
   resource_group: production
   environment:
     name: Deploy/Production
