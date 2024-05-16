@@ -149,6 +149,7 @@ public class SignalRConnector : MonoBehaviour
                     Debug.Log($"Le joueur {packet.playerSource} nous a fait quitter");
                     _hubConnection.StopAsync();
                     Chevalet.neverReceivedChevalet = true;
+                    Chevalet.PiocheIsVide = false;
                     SceneManager.LoadScene("Acceuil");
                 });
             }
@@ -406,21 +407,7 @@ public class SignalRConnector : MonoBehaviour
                     else
                     {
                         Chevalet.PiocheIsVide = true;
-                        MainThreadDispatcher.Enqueue(() =>
-                        {
-                            Chevalet.PilePiochePlaceHolder.GetComponent<SpriteRenderer>().sprite =
-                                null;
-
-                            if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
-                            {
-                                Chevalet
-                                    .PileGauchePlaceHolder.transform.GetChild(
-                                        Chevalet.PileGauchePlaceHolder.transform.childCount - 1
-                                    )
-                                    .GetComponent<Tuile>()
-                                    .SetIsDeplacable(true);
-                            }
-                        });
+                        Chevalet.PilePiochePlaceHolder.GetComponent<SpriteRenderer>().sprite = null;
                     }
                 });
             }
