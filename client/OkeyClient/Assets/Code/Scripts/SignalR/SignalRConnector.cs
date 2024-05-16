@@ -928,7 +928,7 @@ public class SignalRConnector : MonoBehaviour
                 if (roomState.playerDatas != null)
                 {
                     this.UpdateWaitingPlayerUI(roomState.playerDatas);
-                    this.LoadAvatarsInLobby(roomState.playerDatas);
+                    // this.LoadAvatarsInLobby(roomState.playerDatas);
 
                     foreach (var data in roomState.playerDatas)
                     {
@@ -1219,36 +1219,36 @@ public class SignalRConnector : MonoBehaviour
         });
     }
 
-    private void LoadAvatarsInLobby(List<string> PlayerData)
-    {
-        MainThreadDispatcher.Enqueue(() =>
-        {
-            var vue = PlateauUIManager.Instance.playerAvatars;
-            var P1 = vue.transform.GetChild(1);
-            var P2 = vue.transform.GetChild(2);
-            var P3 = vue.transform.GetChild(3);
-            var P4 = vue.transform.GetChild(4);
+    // private void LoadAvatarsInLobby(List<string> PlayerData)
+    // {
+    //     MainThreadDispatcher.Enqueue(() =>
+    //     {
+    //         var vue = PlateauUIManager.Instance.playerAvatars;
+    //         var P1 = vue.transform.GetChild(1);
+    //         var P2 = vue.transform.GetChild(2);
+    //         var P3 = vue.transform.GetChild(3);
+    //         var P4 = vue.transform.GetChild(4);
 
-            var tabP = new List<Transform>();
-            tabP.Add(P1);
-            tabP.Add(P2);
-            tabP.Add(P3);
-            tabP.Add(P4);
-            for (var i = 0; i < PlayerData.Count; i++)
-            {
-                var dSplit = PlayerData[i].Split(';');
-                var avatar = tabP[i].transform.GetChild(0);
-                var res = Resources.Load<Sprite>("Avatar/avatarn" + dSplit[1]);
-                avatar.transform.GetComponent<SpriteRenderer>().transform.localScale = new Vector3(
-                    50f,
-                    50f,
-                    1f
-                );
-                avatar.transform.GetComponent<SpriteRenderer>().sortingOrder = 5;
-                avatar.transform.GetComponent<SpriteRenderer>().sprite = res;
-            }
-        });
-    }
+    //         var tabP = new List<Transform>();
+    //         tabP.Add(P1);
+    //         tabP.Add(P2);
+    //         tabP.Add(P3);
+    //         tabP.Add(P4);
+    //         for (var i = 0; i < PlayerData.Count; i++)
+    //         {
+    //             var dSplit = PlayerData[i].Split(';');
+    //             var avatar = tabP[i].transform.GetChild(0);
+    //             var res = Resources.Load<Sprite>("Avatar/avatarn" + dSplit[1]);
+    //             avatar.transform.GetComponent<SpriteRenderer>().transform.localScale = new Vector3(
+    //                 50f,
+    //                 50f,
+    //                 1f
+    //             );
+    //             avatar.transform.GetComponent<SpriteRenderer>().sortingOrder = 5;
+    //             avatar.transform.GetComponent<SpriteRenderer>().sprite = res;
+    //         }
+    //     });
+    // }
 
     public async Task JoinRoom() // takes parameter roomName in future
     {
