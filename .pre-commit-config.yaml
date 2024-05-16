@@ -74,7 +74,6 @@ repos:
         entry: dotnet tool run roslynator analyze server/OkeyApi/OkeyApi.csproj
         language: system
         files: '^server/OkeyApi/'
-        exclude: 'server/OkeyApi/Migrations/.*'
         types:
           - c#
         verbose: true

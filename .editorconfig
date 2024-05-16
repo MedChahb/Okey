@@ -398,3 +398,9 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 ##########################################
+
+[server/OkeyApi/Migrations/*]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none
+dotnet_diagnostic.CS8019.severity = none
+dotnet_diagnostic.CS8933.severity = none

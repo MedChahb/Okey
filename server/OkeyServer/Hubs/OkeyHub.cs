@@ -126,12 +126,8 @@ public sealed class OkeyHub : Hub
                 await this
                     ._hubContext.Clients.Group(roomId)
                     .SendAsync(
-                        "ReceiveMessage",
-                        new PacketSignal
-                        {
-                            message =
-                                $"Player {this.Context.ConnectionId} has left the {roomId} lobby."
-                        }
+                        "GameCancelled",
+                        new GameCancelled { playerSource = this.Context.ConnectionId }
                     );
                 foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
                 {
@@ -381,6 +377,11 @@ public sealed class OkeyHub : Hub
         await this.SendRoomListUpdate();
     }
 
+    public async Task SendResetTimer(string roomId)
+    {
+        await this._hubContext.Clients.Group(roomId).SendAsync("ResetTimer");
+    }
+
     /// <summary>
     /// Lit les coordonnées à partir d'une chaîne.
     /// </summary>
@@ -525,7 +526,8 @@ public sealed class OkeyHub : Hub
     /// <returns>Centre ou défausse.</returns>
     public async Task<string> PiochePacketRequest(
         string connectionId,
-        CancellationTokenSource token
+        CancellationTokenSource token,
+        Joueur currentPlayer
     )
     {
         try
@@ -556,7 +558,7 @@ public sealed class OkeyHub : Hub
                     {
                         return "FIN";
                     }
-                    return "Centre";
+                    return "Centrer";
                 }
 
                 if (!this._cts.Token.IsCancellationRequested)
@@ -706,13 +708,16 @@ public sealed class OkeyHub : Hub
                                     gagner = null
                                 }
                             );
-
                             pl?.JeterTuile(
                                 this.ReadCoords(
                                     RandTuileCoord.getY() + ";" + RandTuileCoord.getX()
                                 ),
                                 jeu
                             );
+                            if (pl != null)
+                            {
+                                await this.SendChevalet(pl.getName(), pl);
+                            }
                             return "";
                         }
                     }
@@ -757,6 +762,20 @@ public sealed class OkeyHub : Hub
                     pl.getName(),
                     $"Temps écoulé. La tuile ({coord}) a été jetée aléatoirement."
                 );
+
+                var tuile = pl.GetChevalet()[RandTuileCoord.getY()][RandTuileCoord.getX()];
+
+                var tuileStringPacket = new TuileJeteePacket
+                {
+                    Couleur = tuile?.GetCouleur().ToString(),
+                    numero = tuile?.GetNum().ToString(),
+                    isDefausse = "true",
+                    position = 3
+                };
+                await this
+                    ._hubContext.Clients.Client(this.Context.ConnectionId)
+                    .SendAsync("ReceiveTuileJete", tuileStringPacket);
+
                 return RandTuileCoord.getY() + ";" + RandTuileCoord.getX(); // return random coords
             }
             else
@@ -1293,6 +1312,7 @@ public sealed class OkeyHub : Hub
                         /* Position == 0 -> pile de gauche
                          * Position == 1 -> Pile en haut à droite
                          * Position == 2 -> Pile en haut à gauche
+                         * Position == 3 -> Pile de droite (utilisé pour des "checks")
                         */
 
                         TuileJeteePacket tuileStringPacket;
@@ -1504,6 +1524,7 @@ public sealed class OkeyHub : Hub
 
         var joueurStarter = jeu.getJoueurActuel();
         var playerName = string.Empty;
+        await this.SendResetTimer(roomName);
         this.SetPlayerTurn(joueurStarter?.getName() ?? playerName, true);
         await this.TourSignalRequest(roomName, joueurStarter?.getName());
         if (joueurStarter != null)
@@ -1553,6 +1574,7 @@ public sealed class OkeyHub : Hub
             this.SetPlayerTurn(joueurStarter.getName(), false);
         }
 
+        await this.SendResetTimer(roomName);
         this.SetPlayerTurn(
             jeu.getJoueurActuel()?.getName() ?? throw new InvalidOperationException(),
             true
@@ -1567,7 +1589,11 @@ public sealed class OkeyHub : Hub
                 {
                     await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                    var pioche = await this.PiochePacketRequest(currentPlayer.getName(), this._cts);
+                    var pioche = await this.PiochePacketRequest(
+                        currentPlayer.getName(),
+                        this._cts,
+                        currentPlayer
+                    );
                     if (pioche.Equals("Move", StringComparison.Ordinal))
                     {
                         //await this.MoveInLoop(currentPlayer, jeu);
@@ -1588,6 +1614,12 @@ public sealed class OkeyHub : Hub
                     if (pioche.Equals("Centre", StringComparison.OrdinalIgnoreCase))
                     {
                         var tuilePiochee = currentPlayer.PiocherTuile(pioche, jeu);
+                        await this.SendPiocheInfosToAll(playerIds, jeu);
+                    }
+                    else if (pioche.Equals("Centrer", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var tuilePiochee = currentPlayer.PiocherTuile("Centre", jeu);
+                        await this.SendChevalet(currentPlayer.getName(), currentPlayer);
                         await this.SendPiocheInfosToAll(playerIds, jeu);
                     }
                     else if (string.Equals(pioche, "Defausse", StringComparison.OrdinalIgnoreCase))
@@ -1644,6 +1676,7 @@ public sealed class OkeyHub : Hub
                     }
                 }
 
+                await this.SendResetTimer(roomName);
                 this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
             }
         }
@@ -1651,13 +1684,14 @@ public sealed class OkeyHub : Hub
         // on met à jour les informations des différents joueurs
         if (jeu.isTermine())
         {
-            var winner = jeu.getJoueurActuel();
-
             for (var i = 0; i < 4; i++)
             {
                 // TODO appliquer des valeurs de score et de elo a l'aide de calculs
-                if (joueurs[i] == winner)
+                if (joueurs[i].isGagnant())
                 {
+                    await this
+                        ._hubContext.Clients.Group(roomName)
+                        .SendAsync("WinInfos", joueurs[i].getName());
                     await _connectedUsers[playerIds[i]]
                         .UpdateStats(this._dbContext, 10, 5, true, true);
                 }

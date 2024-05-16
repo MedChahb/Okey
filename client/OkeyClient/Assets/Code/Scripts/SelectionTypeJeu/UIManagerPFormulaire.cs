@@ -50,7 +50,7 @@ public class UIManagerPFormulaire : MonoBehaviour
     void Start()
     {
         backBtnPrivate.onClick.AddListener(onBackBtnPrivateClicked);
-        backBtnPublic.onClick.AddListener(onBackBtnClicked);
+        backBtnPublic.onClick.AddListener(onBackBtnPrivateClicked);
         backBtn.onClick.AddListener(onBackBtnClicked);
         //joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
         joinPublicLobbyBtn.onClick.AddListener(onPublicLobbyClicked);
@@ -86,7 +86,7 @@ public class UIManagerPFormulaire : MonoBehaviour
     void onBackBtnPrivateClicked()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        lobbyPrivateConfig.SetActive(false);
+        //lobbyPrivateConfig.SetActive(false);
         SignalRConnector.Instance.HubDisconnect();
     }
 

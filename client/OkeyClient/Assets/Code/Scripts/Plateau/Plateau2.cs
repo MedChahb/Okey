@@ -154,6 +154,13 @@ public class Plateau2 : MonoBehaviour
         PlateauPanel.SetActive(false);
     }
 
+    public void QuitterPartie()
+    {
+        SignalRConnector._hubConnection.StopAsync();
+        Chevalet.neverReceivedChevalet = true;
+        SceneManager.LoadScene("Acceuil");
+    }
+
     public void toggleEmojiPanel()
     {
         EmojiPanel.SetActive(!EmojiPanel.activeSelf);
@@ -171,13 +178,13 @@ public class Plateau2 : MonoBehaviour
             return;
 
         // Change le sprite de l'objet Image pour correspondre à l'émoji sélectionné
-        //EmojiDisplay.sprite = emojiSprites[emojiIndex];
+        EmojiDisplay.sprite = emojiSprites[emojiIndex];
         SignalRConnector.Instance.SendEmoji(emojiIndex);
         Debug.LogWarning("On a bien envoyé l'emoji");
 
         // Active l'objet Image pour afficher l'émoji et le désactive après 2 secondes
         EmojiDisplay.gameObject.SetActive(true);
-        //StartCoroutine(DisableAfterDelay(EmojiDisplay.gameObject, 2f));
+        StartCoroutine(DisableAfterDelay(EmojiDisplay.gameObject, 2f));
 
         // Cache le panneau d'emojis après sélection
         EmojiPanel.SetActive(false);
