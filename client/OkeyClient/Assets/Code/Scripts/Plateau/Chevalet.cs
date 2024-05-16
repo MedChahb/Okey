@@ -29,7 +29,7 @@ public class Chevalet : MonoBehaviour
     public bool IsJete { get; set; }
     public TuilePacket TuileJete { get; set; }
 
-    public bool IsPiochee { get; set; }
+    public static bool IsPiochee { get; set; }
 
     public PiochePacket TuilePiochee = null;
 
@@ -61,27 +61,49 @@ public class Chevalet : MonoBehaviour
 
         for (var i = 0; i < 13; i++)
         {
-            spritesDic.Add($"Black_{i + 1}", sprites[i]);
+            if (!spritesDic.ContainsKey($"Black_{i + 1}"))
+            {
+                spritesDic.TryAdd($"Black_{i + 1}", sprites[i]);
+            }
         }
 
         for (var i = 13; i < 26; i++)
         {
-            spritesDic.Add($"Blue_{(i + 1) - 13}", sprites[i]);
+            if (!spritesDic.ContainsKey($"Black_{i + 1}"))
+            {
+                spritesDic.TryAdd($"Blue_{(i + 1) - 13}", sprites[i]);
+            }
         }
 
-        spritesDic.Add("Fake Joker_1", sprites[26]);
-        spritesDic.Add("Fake Joker_2", sprites[27]);
+        if (!spritesDic.ContainsKey("Fake Joker_1"))
+        {
+            spritesDic.TryAdd("Fake Joker_1", sprites[26]);
+        }
+
+        if (!spritesDic.ContainsKey("Fake Joker_2"))
+        {
+            spritesDic.TryAdd("Fake Joker_2", sprites[27]);
+        }
 
         for (var i = 28; i < 41; i++)
         {
-            spritesDic.Add($"Green_{(i + 1) - 28}", sprites[i]);
+            if (!spritesDic.ContainsKey($"Green_{(i + 1) - 28}"))
+            {
+                spritesDic.TryAdd($"Green_{(i + 1) - 28}", sprites[i]);
+            }
         }
 
-        spritesDic.Add($"Pioche", sprites[41]);
+        if (!spritesDic.ContainsKey("Pioche"))
+        {
+            spritesDic.TryAdd($"Pioche", sprites[41]);
+        }
 
         for (var i = 42; i < 55; i++)
         {
-            spritesDic.Add($"Red_{(i + 1) - 42}", sprites[i]);
+            if (!spritesDic.ContainsKey($"Red_{(i + 1) - 42}"))
+            {
+                spritesDic.TryAdd($"Red_{(i + 1) - 42}", sprites[i]);
+            }
         }
 
         this.InitPlaceholders();
@@ -92,7 +114,7 @@ public class Chevalet : MonoBehaviour
         this.IsTireeHasard = false;
         this.TuileTireeHasard = null;
 
-        this.IsPiochee = false;
+        IsPiochee = false;
         this.TuilePiochee = null;
     }
 
@@ -151,13 +173,7 @@ public class Chevalet : MonoBehaviour
                 .SetIsDeplacable(false);
         }
 
-        if (PilePiochePlaceHolder.transform.childCount > 0)
-        {
-            PilePiochePlaceHolder
-                .transform.GetChild(0)
-                .gameObject.GetComponent<Tuile>()
-                .SetIsDeplacable(false);
-        }
+        PilePiochePlaceHolder.transform.gameObject.GetComponent<Tuile>().SetIsDeplacable(false);
 
         PileDroitePlaceHolder
             .transform.GetChild(0)
@@ -311,7 +327,7 @@ public class Chevalet : MonoBehaviour
     {
         this._pileDroite.Push(Tuile);
 
-        Debug.Log($"Tuile recue {Tuile.GetCouleur()}");
+        Debug.Log($"Tuile recue {Tuile.GetCouleur()}, {Tuile.GetValeur()}");
         var tuileData = this.GetTuilePacketFromChevalet(Tuile, false);
         Debug.Log($"{tuileData.Y}, {tuileData.X}");
         this.IsJete = true;
@@ -329,7 +345,7 @@ public class Chevalet : MonoBehaviour
         {
             this.TuilePiochee = new PiochePacket { Centre = false, Defausse = true };
         }
-        this.IsPiochee = true;
+        IsPiochee = true;
     }
 
     public void ThrowTileToWin(Tuile Tuile)
@@ -349,35 +365,26 @@ public class Chevalet : MonoBehaviour
                 for (var y = 0; y < 14; y++)
                 {
                     if (
-                        T.GetCouleur().Equals("V", StringComparison.Ordinal)
-                        || T.GetCouleur().Equals("J", StringComparison.Ordinal)
+                        (T.GetCouleur().Equals("V", StringComparison.Ordinal))
+                        || (T.GetCouleur().Equals("J", StringComparison.Ordinal))
                     )
                     {
-                        if (
-                            this.TuilesPack[x, y].couleur.Equals("V", StringComparison.Ordinal)
-                            || this.TuilesPack[x, y].couleur.Equals("J", StringComparison.Ordinal)
-                        )
+                        if (this.TuilesPack[x, y].num == T.GetValeur())
                         {
-                            if (
-                                T.GetValeur() == this.TuilesPack[x, y].num
-                                && T.GetIsJoker() == this.TuilesPack[x, y].isJoker
-                            )
+                            return new TuilePacket
                             {
-                                return new TuilePacket
-                                {
-                                    X = "" + y,
-                                    Y = "" + x,
-                                    gagner = gain
-                                };
-                            }
+                                X = "" + y,
+                                Y = "" + x,
+                                gagner = gain
+                            };
                         }
                     }
                     else
                     {
                         if (
-                            T.GetCouleur()
-                                .Equals(this.TuilesPack[x, y].couleur, StringComparison.Ordinal)
-                            && T.GetValeur() == this.TuilesPack[x, y].num
+                            this.TuilesPack[x, y]
+                                .couleur.Equals(T.GetCouleur(), StringComparison.Ordinal)
+                            && this.TuilesPack[x, y].num == T.GetValeur()
                         )
                         {
                             return new TuilePacket
@@ -504,8 +511,7 @@ public class Chevalet : MonoBehaviour
     public static string FromTuileToSpriteName(TuileData Tuile)
     {
         if (
-            Tuile.isJoker
-            || Tuile.couleur.Equals("M", StringComparison.Ordinal)
+            Tuile.couleur.Equals("M", StringComparison.Ordinal)
             || Tuile.couleur.Equals("X", StringComparison.Ordinal)
         )
         {
@@ -669,19 +675,21 @@ public class Chevalet : MonoBehaviour
                 if (this._pilePioche.Count > 0)
                 {
                     this._pilePioche.Pop();
-                    PilePiochePlaceHolder
-                        .GetComponent<Tuile>()
-                        .SetCouleur(this._pilePioche.Peek().GetCouleur());
-                    PilePiochePlaceHolder
-                        .GetComponent<Tuile>()
-                        .SetValeur(this._pilePioche.Peek().GetValeur());
+                    if (this._pilePioche.Count > 0)
+                    {
+                        PilePiochePlaceHolder
+                            .GetComponent<Tuile>()
+                            .SetCouleur(this._pilePioche.Peek().GetCouleur());
+                        PilePiochePlaceHolder
+                            .GetComponent<Tuile>()
+                            .SetValeur(this._pilePioche.Peek().GetValeur());
+                    }
                 }
                 this.PiocheTile(true);
             }
             else
             {
                 Debug.Log("La");
-                this.PiocheTile(false);
                 this._pileGauche.Pop();
                 if (this._pileGauche.Count > 0)
                 {
@@ -692,8 +700,8 @@ public class Chevalet : MonoBehaviour
                         .GetComponent<Tuile>()
                         .SetValeur(this._pileGauche.Peek().GetValeur());
                 }
+                this.PiocheTile(false);
             }
-
             //Faudra parler a lequipe du backend pour savoir si ca leur suffit la matrice mis a jour et le contenu des defausses ou ils veulent exactement la piece pioché
         }
         //cas de jet : Chevalet -> pile droite / tentative de gain
@@ -717,21 +725,25 @@ public class Chevalet : MonoBehaviour
 
             if (NextPlaceholder == PileDroitePlaceHolder)
             {
-                this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
-
-                var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
-                var nt = NextPlaceholder.GetComponent<Tuile>();
-                nt.SetCouleur(tuile.GetCouleur());
-                nt.SetValeur(tuile.GetValeur());
-                nt.SetIsJoker(tuile.GetIsJoker());
-                tuile.SetCouleur(null);
-                tuile.SetValeur(0);
-                for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
+                if (IsJete)
                 {
-                    PileDroitePlaceHolder
-                        .transform.GetChild(i)
-                        .GetComponent<SpriteRenderer>()
-                        .sortingOrder = i;
+                    this.Tuiles2D[prvPhPos.Item1, prvPhPos.Item2] = null;
+
+                    var tuile = PreviousPlaceHolder.GetComponent<Tuile>();
+
+                    var nt = NextPlaceholder.GetComponent<Tuile>();
+                    nt.SetCouleur(tuile.GetCouleur());
+                    nt.SetValeur(tuile.GetValeur());
+                    nt.SetIsJoker(tuile.GetIsJoker());
+                    tuile.SetCouleur(null);
+                    tuile.SetValeur(0);
+                    for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
+                    {
+                        PileDroitePlaceHolder
+                            .transform.GetChild(i)
+                            .GetComponent<SpriteRenderer>()
+                            .sortingOrder = i;
+                    }
                 }
             }
             else

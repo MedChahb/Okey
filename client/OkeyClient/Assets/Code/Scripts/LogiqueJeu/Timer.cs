@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    // make this class an instance
+    // Singleton instance
     public static Timer Instance;
 
     [SerializeField]
     private TextMeshProUGUI TimerTxt;
 
+    // Changed from static to instance variable
     [SerializeField]
-    public static float TimerValue = 59;
-    private float RemainingTime = TimerValue;
+    private float TimerValue = 40;
+    private float RemainingTime;
     private bool TimerOn;
 
     private void Awake()
@@ -21,6 +22,7 @@ public class Timer : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else if (Instance != this)
         {
@@ -28,13 +30,12 @@ public class Timer : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
+        // Optional: Automatically start the timer or call from outside
         // this.LaunchTimer();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (TimerOn)
@@ -42,16 +43,20 @@ public class Timer : MonoBehaviour
             if (RemainingTime > 0)
             {
                 RemainingTime -= Time.deltaTime;
+                UpdateTimerDisplay();
             }
             else
             {
-                TimerOn = false;
-                RemainingTime = 0;
+                StopTimer();
             }
-            int min = Mathf.FloorToInt(RemainingTime / 60);
-            int sec = Mathf.FloorToInt(RemainingTime % 60);
-            TimerTxt.text = string.Format("{0:00}:{1:00}", min, sec);
         }
+    }
+
+    private void UpdateTimerDisplay()
+    {
+        int min = Mathf.FloorToInt(RemainingTime / 60);
+        int sec = Mathf.FloorToInt(RemainingTime % 60);
+        TimerTxt.text = string.Format("{0:00}:{1:00}", min, sec);
     }
 
     public float GetRemainingTime()
@@ -62,8 +67,7 @@ public class Timer : MonoBehaviour
     public void LaunchTimer()
     {
         this.TimerOn = true;
-        // reset the timer t 59 seconds
-        RemainingTime = TimerValue;
+        this.RemainingTime = TimerValue;
     }
 
     public void StopTimer()
@@ -71,9 +75,10 @@ public class Timer : MonoBehaviour
         this.TimerOn = false;
     }
 
+    // Uncomment and update if needed
     // public void ResetTimer()
     // {
-    //     // this.TimerOn = false;
-    //     RemainingTime = TimerValue;
+    //     this.TimerOn = false;
+    //     this.RemainingTime = TimerValue;  // Reset the time
     // }
 }

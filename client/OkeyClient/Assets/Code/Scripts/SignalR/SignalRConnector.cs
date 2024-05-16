@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 
 public class SignalRConnector : MonoBehaviour
 {
-    private static HubConnection _hubConnection;
+    public static HubConnection _hubConnection;
 
     public static SignalRConnector Instance { get; private set; }
 
@@ -232,7 +232,7 @@ public class SignalRConnector : MonoBehaviour
                     // LobbyManager.Instance.SetCurrentPlayerTurn(PlayerName);
                     // Timer.Instance.LaunchTimer();
                     // Debug.Log("Signal received");
-                    PlateauSignals.Instance.SetPlayerSignal(PlayerName);
+                    //PlateauSignals.Instance.SetPlayerSignal(PlayerName);
                     Timer.Instance.LaunchTimer();
                 });
             }
@@ -309,7 +309,7 @@ public class SignalRConnector : MonoBehaviour
                         childObject.AddComponent<Tuile>();
                         childObject.GetComponent<Tuile>().SetCouleur(piocheTuileData.couleur);
                         childObject.GetComponent<Tuile>().SetValeur(piocheTuileData.num);
-                        childObject.GetComponent<Tuile>().SetIsDeplacable(false);
+
                         var spriteRen = childObject.AddComponent<SpriteRenderer>();
                         var mat = new Material(Shader.Find("Sprites/Default"))
                         {
@@ -327,11 +327,15 @@ public class SignalRConnector : MonoBehaviour
                         transform1.localScale = new Vector3(1, 1, 1);
                         var boxCollider2D = childObject.AddComponent<BoxCollider2D>();
                         boxCollider2D.size = new Vector2((float)0.875, (float)1.25);
-                        Chevalet.Instance._pilePioche.Push(piocheCentale);
-                        Chevalet
-                            .PilePiochePlaceHolder.transform.GetChild(0)
-                            .gameObject.GetComponent<Tuile>()
-                            .SetIsInPioche(true);
+
+                        for (int i = 0; i < piocheCentale.transform.childCount; i++)
+                        {
+                            Chevalet.Instance._pilePioche.Push(
+                                piocheCentale.transform.GetChild(i).GetComponent<Tuile>()
+                            );
+                        }
+
+                        childObject.GetComponent<Tuile>().SetIsDeplacable(false);
                     }
                 });
             }
@@ -703,38 +707,56 @@ public class SignalRConnector : MonoBehaviour
 
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    Chevalet
-                        .PileGauchePlaceHolder.transform.GetChild(0)
-                        .GetComponent<Tuile>()
-                        .SetIsDeplacable(true);
-                    if (Chevalet.Instance._pileGauche.Count > 0)
+                    if (Chevalet.PilePiochePlaceHolder.transform.childCount > 0)
                     {
                         Chevalet
-                            .PilePiochePlaceHolder.transform.GetChild(0)
-                            .gameObject.GetComponent<Tuile>()
+                            .PilePiochePlaceHolder.transform.GetChild(
+                                Chevalet.PilePiochePlaceHolder.transform.childCount - 1
+                            )
+                            .GetComponent<Tuile>()
+                            .SetIsDeplacable(true);
+                    }
+
+                    if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
+                    {
+                        Chevalet
+                            .PileGauchePlaceHolder.transform.GetChild(
+                                Chevalet.PileGauchePlaceHolder.transform.childCount - 1
+                            )
+                            .GetComponent<Tuile>()
                             .SetIsDeplacable(true);
                     }
                 });
 
                 var tuile = new PiochePacket { Centre = true, Defausse = false };
 
-                while (chevaletInstance.IsPiochee == false) { }
+                while (Chevalet.IsPiochee == false) { }
                 Debug.Log("La tuile vient d'etre piochee");
-
-                MainThreadDispatcher.Enqueue(() =>
-                {
-                    if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
-                    {
-                        Chevalet
-                            .PileGauchePlaceHolder.transform.GetChild(0)
-                            .GetComponent<Tuile>()
-                            .SetIsDeplacable(false);
-                    }
-                });
-
                 if (chevaletInstance.TuilePiochee != null)
                 {
-                    chevaletInstance.IsPiochee = false;
+                    Chevalet.IsPiochee = false;
+                    MainThreadDispatcher.Enqueue(() =>
+                    {
+                        if (Chevalet.PilePiochePlaceHolder.transform.childCount > 0)
+                        {
+                            Chevalet
+                                .PilePiochePlaceHolder.transform.GetChild(
+                                    Chevalet.PilePiochePlaceHolder.transform.childCount - 1
+                                )
+                                .GetComponent<Tuile>()
+                                .SetIsDeplacable(false);
+                        }
+
+                        if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
+                        {
+                            Chevalet
+                                .PileGauchePlaceHolder.transform.GetChild(
+                                    Chevalet.PileGauchePlaceHolder.transform.childCount - 1
+                                )
+                                .GetComponent<Tuile>()
+                                .SetIsDeplacable(false);
+                        }
+                    });
                     return chevaletInstance.TuilePiochee;
                 }
 
@@ -770,6 +792,7 @@ public class SignalRConnector : MonoBehaviour
             "ReceiveChevalet",
             (chevalet) =>
             {
+                Debug.Log("On a bien recu le chevalet");
                 var chevaletInstance = Chevalet.Instance;
                 MainThreadDispatcher.Enqueue(() =>
                 {
