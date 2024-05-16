@@ -526,7 +526,8 @@ public sealed class OkeyHub : Hub
     /// <returns>Centre ou défausse.</returns>
     public async Task<string> PiochePacketRequest(
         string connectionId,
-        CancellationTokenSource token
+        CancellationTokenSource token,
+        Joueur currentPlayer
     )
     {
         try
@@ -557,7 +558,7 @@ public sealed class OkeyHub : Hub
                     {
                         return "FIN";
                     }
-                    return "Centre";
+                    return "Centrer";
                 }
 
                 if (!this._cts.Token.IsCancellationRequested)
@@ -707,13 +708,16 @@ public sealed class OkeyHub : Hub
                                     gagner = null
                                 }
                             );
-
                             pl?.JeterTuile(
                                 this.ReadCoords(
                                     RandTuileCoord.getY() + ";" + RandTuileCoord.getX()
                                 ),
                                 jeu
                             );
+                            if (pl != null)
+                            {
+                                await this.SendChevalet(pl.getName(), pl);
+                            }
                             return "";
                         }
                     }
@@ -1585,7 +1589,11 @@ public sealed class OkeyHub : Hub
                 {
                     await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                    var pioche = await this.PiochePacketRequest(currentPlayer.getName(), this._cts);
+                    var pioche = await this.PiochePacketRequest(
+                        currentPlayer.getName(),
+                        this._cts,
+                        currentPlayer
+                    );
                     if (pioche.Equals("Move", StringComparison.Ordinal))
                     {
                         //await this.MoveInLoop(currentPlayer, jeu);
@@ -1606,6 +1614,12 @@ public sealed class OkeyHub : Hub
                     if (pioche.Equals("Centre", StringComparison.OrdinalIgnoreCase))
                     {
                         var tuilePiochee = currentPlayer.PiocherTuile(pioche, jeu);
+                        await this.SendPiocheInfosToAll(playerIds, jeu);
+                    }
+                    else if (pioche.Equals("Centrer", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var tuilePiochee = currentPlayer.PiocherTuile("Centre", jeu);
+                        await this.SendChevalet(currentPlayer.getName(), currentPlayer);
                         await this.SendPiocheInfosToAll(playerIds, jeu);
                     }
                     else if (string.Equals(pioche, "Defausse", StringComparison.OrdinalIgnoreCase))
