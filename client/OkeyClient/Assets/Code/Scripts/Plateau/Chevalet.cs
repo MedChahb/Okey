@@ -556,7 +556,7 @@ public class Chevalet : MonoBehaviour
         return coul;
     }
 
-    private void InitializeBoardFromTuiles()
+    public void InitializeBoardFromTuiles()
     {
         for (var i = 0; i < Placeholders.Length; i++)
         {
@@ -565,6 +565,10 @@ public class Chevalet : MonoBehaviour
             var placeholder = Placeholders[i];
             if (this.Tuiles2D[x, y] != null)
             {
+                if (placeholder.transform.childCount > 0)
+                {
+                    Destroy(placeholder.transform.GetChild(0).gameObject);
+                }
                 var childObject = new GameObject("SpriteChild");
                 childObject.transform.SetParent(placeholder.transform);
                 var spriteRen = childObject.AddComponent<SpriteRenderer>();
@@ -585,6 +589,13 @@ public class Chevalet : MonoBehaviour
                 placeholder.GetComponent<Tuile>().SetValeur(this.Tuiles2D[x, y].num);
                 placeholder.GetComponent<Tuile>().SetCouleur(this.Tuiles2D[x, y].couleur);
                 placeholder.GetComponent<Tuile>().SetIsJoker(this.Tuiles2D[x, y].isJoker);
+            }
+            else
+            {
+                if (placeholder.transform.childCount > 0)
+                {
+                    Destroy(placeholder.transform.GetChild(0).gameObject);
+                }
             }
         }
     }
@@ -783,38 +794,39 @@ public class Chevalet : MonoBehaviour
                         tuileChevalet = this.Tuiles2D[xC, yC];
                         xChevalet = xC;
                         yChevalet = yC;
+                        int coordPlaceHolder = 0;
+
+                        if (xChevalet == 0)
+                        {
+                            coordPlaceHolder = yChevalet;
+                        }
+                        else
+                        {
+                            coordPlaceHolder = yChevalet + 15;
+                        }
+
+                        var sourceplaceHolder = Placeholders[coordPlaceHolder];
+
+                        sourceplaceHolder.GetComponent<Tuile>().SetCouleur(null);
+                        sourceplaceHolder.GetComponent<Tuile>().SetValeur(0);
+                        var spriteToDelete = sourceplaceHolder.transform.GetChild(0);
+                        spriteToDelete.transform.SetParent(PileDroitePlaceHolder.transform);
+
+                        var transform1 = spriteToDelete.transform;
+                        transform1.localPosition = new Vector3(0, 0, 0);
+
+                        for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
+                        {
+                            PileDroitePlaceHolder
+                                .transform.GetChild(i)
+                                .GetComponent<SpriteRenderer>()
+                                .sortingOrder = i;
+                        }
+
+                        this.Tuiles2D[xC, yC] = null;
                     }
                 }
             }
-        }
-
-        int coordPlaceHolder = 0;
-
-        if (xChevalet == 0)
-        {
-            coordPlaceHolder = yChevalet;
-        }
-        else
-        {
-            coordPlaceHolder = yChevalet + 15;
-        }
-
-        var sourceplaceHolder = Placeholders[coordPlaceHolder];
-
-        sourceplaceHolder.GetComponent<Tuile>().SetCouleur(null);
-        sourceplaceHolder.GetComponent<Tuile>().SetValeur(0);
-
-        var spriteToDelete = sourceplaceHolder.transform.GetChild(0);
-        spriteToDelete.transform.SetParent(PileDroitePlaceHolder.transform);
-        var transform1 = spriteToDelete.transform;
-        transform1.localPosition = new Vector3(0, 0, 0);
-
-        for (var i = 0; i < PileDroitePlaceHolder.transform.childCount; i++)
-        {
-            PileDroitePlaceHolder
-                .transform.GetChild(i)
-                .GetComponent<SpriteRenderer>()
-                .sortingOrder = i;
         }
     }
 

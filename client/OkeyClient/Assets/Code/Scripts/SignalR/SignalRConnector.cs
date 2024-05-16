@@ -859,6 +859,40 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        _hubConnection.On<string>(
+            "TileThrown",
+            (cords) =>
+            {
+                string[] parts = cords.Split(':');
+
+                var x = parts[0];
+                var y = parts[1];
+                var tile = Chevalet.Instance.TuilesPack[int.Parse(x), int.Parse(y)];
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    for (var i = 0; i < 2; i++)
+                    {
+                        for (var j = 0; j < 14; j++)
+                        {
+                            if (
+                                Chevalet
+                                    .Instance.Tuiles2D[i, j]
+                                    .couleur.Equals(tile.couleur, StringComparison.Ordinal)
+                                && Chevalet.Instance.Tuiles2D[i, j].num == tile.num
+                            )
+                            {
+                                Chevalet.Instance.Tuiles2D[i, j] = null;
+                                if (Chevalet.Placeholders[i * 14 + j].transform.childCount > 0)
+                                {
+                                    Destroy(Chevalet.Placeholders[i * 14 + j].gameObject);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        );
+
         _hubConnection.On<RoomState>(
             "SendRoomState",
             (roomState) =>
@@ -1071,6 +1105,7 @@ public class SignalRConnector : MonoBehaviour
                     else
                     {
                         chevaletInstance.TuilesPack = tuilesData;
+                        chevaletInstance.InitializeBoardFromTuiles();
                     }
                 });
             }
