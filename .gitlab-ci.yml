@@ -18,7 +18,7 @@ stages:
   - release
 variables:
   PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
-  RELEASE_TAG: '/^v\d+\.\d+\.\d+\.*$/'
+  RELEASE_TAG: '/^v\d+\.\d+\.\d+.*$/'
   CLIENT_PACKAGE_NAME: "Unity-Client"
 test 1/2:
   stage: test
