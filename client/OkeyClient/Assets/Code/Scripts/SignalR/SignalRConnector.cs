@@ -240,6 +240,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 MainThreadDispatcher.Enqueue(() =>
                 {
+                    Debug.Log("Resetting timer.");
                     Timer.Instance.LaunchTimer();
                 });
             }
@@ -256,31 +257,36 @@ public class SignalRConnector : MonoBehaviour
                 {
                     // PlateauSignals.Instance.SetPlayerSignal(PlayerName);
 
-                    PlateauSignals.Instance.TuileCentre.gameObject.SetActive(false);
-                    PlateauSignals.Instance.TuileGauche.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(false);
 
-                    //  Debug.Log("player 2:" + LobbyManager.Instance.player2);
-                    //  Debug.Log("player 3:" + LobbyManager.Instance.player3);
-                    //  Debug.Log("player 4:" + LobbyManager.Instance.player4);
+                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+
+                    Debug.Log("All signals set to invisible.");
 
                     var player = PlayerName.Trim().ToLower();
                     if (LobbyManager.player2.Equals(player))
                     {
-                        PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(true);
-                        Debug.Log("Player 2 turn signal set.");
+                        PlateauSignals
+                            .Instance.player2TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 2 turn signal set to visible.");
                     }
                     else if (LobbyManager.player3.Equals(player))
                     {
-                        PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(true);
-                        Debug.Log("Player 3 turn signal set.");
+                        PlateauSignals
+                            .Instance.player3TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 3 turn signal set to visible.");
                     }
                     else if (LobbyManager.player4.Equals(player))
                     {
-                        PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(true);
-                        Debug.Log("Player 4 turn signal set.");
+                        PlateauSignals
+                            .Instance.player4TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 4 turn signal set to visible.");
                     }
                     else
                     {
