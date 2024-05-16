@@ -340,7 +340,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    if (Pioche.PiocheTete != null)
+                    if (Pioche.PiocheTete != null && Pioche.PiocheTaille > 0)
                     {
                         var piocheCentale = Chevalet.PilePiochePlaceHolder.GetComponent<Tuile>();
 
@@ -402,6 +402,25 @@ public class SignalRConnector : MonoBehaviour
                         }
 
                         childObject.GetComponent<Tuile>().SetIsDeplacable(false);
+                    }
+                    else
+                    {
+                        Chevalet.PiocheIsVide = true;
+                        MainThreadDispatcher.Enqueue(() =>
+                        {
+                            Chevalet.PilePiochePlaceHolder.GetComponent<SpriteRenderer>().sprite =
+                                null;
+
+                            if (Chevalet.PileGauchePlaceHolder.transform.childCount > 0)
+                            {
+                                Chevalet
+                                    .PileGauchePlaceHolder.transform.GetChild(
+                                        Chevalet.PileGauchePlaceHolder.transform.childCount - 1
+                                    )
+                                    .GetComponent<Tuile>()
+                                    .SetIsDeplacable(true);
+                            }
+                        });
                     }
                 });
             }
@@ -802,7 +821,10 @@ public class SignalRConnector : MonoBehaviour
 
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    if (Chevalet.PilePiochePlaceHolder.transform.childCount > 0)
+                    if (
+                        Chevalet.PilePiochePlaceHolder.transform.childCount > 0
+                        && Chevalet.PiocheIsVide == false
+                    )
                     {
                         Chevalet
                             .PilePiochePlaceHolder.transform.GetChild(
@@ -862,6 +884,40 @@ public class SignalRConnector : MonoBehaviour
                 //     // Plateau
                 // });
                 return tuile;
+            }
+        );
+
+        _hubConnection.On<string>(
+            "TileThrown",
+            (cords) =>
+            {
+                string[] parts = cords.Split(':');
+
+                var x = parts[0];
+                var y = parts[1];
+                var tile = Chevalet.Instance.TuilesPack[int.Parse(x), int.Parse(y)];
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    for (var i = 0; i < 2; i++)
+                    {
+                        for (var j = 0; j < 14; j++)
+                        {
+                            if (
+                                Chevalet
+                                    .Instance.Tuiles2D[i, j]
+                                    .couleur.Equals(tile.couleur, StringComparison.Ordinal)
+                                && Chevalet.Instance.Tuiles2D[i, j].num == tile.num
+                            )
+                            {
+                                Chevalet.Instance.Tuiles2D[i, j] = null;
+                                if (Chevalet.Placeholders[i * 14 + j].transform.childCount > 0)
+                                {
+                                    Destroy(Chevalet.Placeholders[i * 14 + j].gameObject);
+                                }
+                            }
+                        }
+                    }
+                });
             }
         );
 
@@ -1077,6 +1133,7 @@ public class SignalRConnector : MonoBehaviour
                     else
                     {
                         chevaletInstance.TuilesPack = tuilesData;
+                        chevaletInstance.InitializeBoardFromTuiles();
                     }
                 });
             }

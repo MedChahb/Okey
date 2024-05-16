@@ -18,7 +18,7 @@ stages:
   - release
 variables:
   PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
-  RELEASE_TAG: '/^v\d+\.\d+\.\d+\.*$/'
+  RELEASE_TAG: '/^v\d+\.\d+\.\d+.*$/'
   CLIENT_PACKAGE_NAME: "Unity-Client"
 test 1/2:
   stage: test
@@ -39,7 +39,7 @@ test 2/2:
     - dotnet docfx docs/docfx.json
     - cp -r docs/_site public
   rules:
-    - if: $CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH
   artifacts:
     paths:
       - public
@@ -509,6 +509,8 @@ unity-windows-release:
 deploy-backend-staging:
   stage: deploy
   dependencies: []
+  # process_mode=oldest_first
+  resource_group: staging
   environment:
     name: Deploy/Staging
   variables:
@@ -521,9 +523,11 @@ deploy-backend-staging:
     - chmod -R 600 /ssh
     - cp /ssh/config /etc/ssh/ssh_config.d/config.conf # https://linuxize.com/post/using-the-ssh-config-file/
     - ansible-playbook -i scripts/ansible/inventory.yml scripts/ansible/playbook.yml --limit dev
-    - scp -r docker/docker_data pi0:${PERSIST_PATH}
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin # https://medium.com/@vitalypanukhin/docker-compose-and-gitlab-b209d09210f6
+    - cd docker/
     - docker-compose -H "ssh://pi0" --profile extra down --remove-orphans
+    - ssh pi0 "rm -rf docker_data/config/ ; mkdir -p docker_data/"
+    - scp -r docker_data/config pi0:${PERSIST_PATH}/docker_data/
     - docker-compose -H "ssh://pi0" --profile extra pull
     - docker-compose -H "ssh://pi0" --profile extra up -d
   rules:
@@ -533,6 +537,8 @@ deploy-backend-staging:
 deploy-backend-production:
   # https://forum.gitlab.com/t/how-can-i-set-the-stage-environment-from-a-condition/67401/2
   extends: deploy-backend-staging
+  # process_mode=oldest_first
+  resource_group: production
   environment:
     name: Deploy/Production
   variables:
@@ -543,9 +549,11 @@ deploy-backend-production:
     - chmod -R 600 /ssh
     - cp /ssh/config /etc/ssh/ssh_config.d/config.conf # https://linuxize.com/post/using-the-ssh-config-file/
     - ansible-playbook -i scripts/ansible/inventory.yml scripts/ansible/playbook.yml --limit prod
-    - scp -r docker/docker_data pi1:${PERSIST_PATH}
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin # https://medium.com/@vitalypanukhin/docker-compose-and-gitlab-b209d09210f6
+    - cd docker/
     - docker-compose -H "ssh://pi1" --profile extra down --remove-orphans
+    - ssh pi1 "rm -rf docker_data/config/ ; mkdir -p docker_data/"
+    - scp -r docker_data/config pi1:${PERSIST_PATH}/docker_data/
     - docker-compose -H "ssh://pi1" --profile extra pull
     - docker-compose -H "ssh://pi1" --profile extra up -d
   rules:
