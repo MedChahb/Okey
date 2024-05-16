@@ -5,13 +5,11 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    // Singleton instance
     public static Timer Instance;
 
     [SerializeField]
     private TextMeshProUGUI TimerTxt;
 
-    // Changed from static to instance variable
     [SerializeField]
     private float TimerValue = 40;
     private float RemainingTime;
@@ -32,8 +30,8 @@ public class Timer : MonoBehaviour
 
     void Start()
     {
-        // Optional: Automatically start the timer or call from outside
-        // this.LaunchTimer();
+        // Optionally start the timer
+        // LaunchTimer();
     }
 
     void Update()
@@ -47,7 +45,8 @@ public class Timer : MonoBehaviour
             }
             else
             {
-                StopTimer();
+                TimerOn = false;
+                UpdateTimerDisplay();
             }
         }
     }
@@ -59,26 +58,16 @@ public class Timer : MonoBehaviour
         TimerTxt.text = string.Format("{0:00}:{1:00}", min, sec);
     }
 
-    public float GetRemainingTime()
-    {
-        return RemainingTime;
-    }
-
     public void LaunchTimer()
     {
         this.TimerOn = true;
         this.RemainingTime = TimerValue;
+        UpdateTimerDisplay();
     }
 
     public void StopTimer()
     {
         this.TimerOn = false;
+        UpdateTimerDisplay();
     }
-
-    // Uncomment and update if needed
-    // public void ResetTimer()
-    // {
-    //     this.TimerOn = false;
-    //     this.RemainingTime = TimerValue;  // Reset the time
-    // }
 }
