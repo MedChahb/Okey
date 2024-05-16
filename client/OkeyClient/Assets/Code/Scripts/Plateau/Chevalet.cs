@@ -364,18 +364,38 @@ public class Chevalet : MonoBehaviour
             {
                 for (var y = 0; y < 14; y++)
                 {
-                    if (
-                        this.TuilesPack[x, y]
-                            .couleur.Equals(T.GetCouleur(), StringComparison.Ordinal)
-                        && this.TuilesPack[x, y].num == T.GetValeur()
-                    )
+                    if (T.GetCouleur() == "M" && T.GetValeur() == 1)
                     {
-                        return new TuilePacket
+                        Debug.Log("On veut jeter le okey");
+
+                        if (
+                            this.TuilesPack[x, y].couleur.Equals("M", StringComparison.Ordinal)
+                            && this.TuilesPack[x, y].num == 0
+                        )
                         {
-                            X = "" + y,
-                            Y = "" + x,
-                            gagner = gain
-                        };
+                            return new TuilePacket
+                            {
+                                X = "" + y,
+                                Y = "" + x,
+                                gagner = gain
+                            };
+                        }
+                    }
+                    else
+                    {
+                        if (
+                            this.TuilesPack[x, y]
+                                .couleur.Equals(T.GetCouleur(), StringComparison.Ordinal)
+                            && this.TuilesPack[x, y].num == T.GetValeur()
+                        )
+                        {
+                            return new TuilePacket
+                            {
+                                X = "" + y,
+                                Y = "" + x,
+                                gagner = gain
+                            };
+                        }
                     }
                 }
             }
@@ -546,7 +566,7 @@ public class Chevalet : MonoBehaviour
                 coul = CouleurTuile.M;
                 break;
             case "X":
-                coul = CouleurTuile.X;
+                coul = CouleurTuile.M;
                 break;
             default:
                 Debug.LogError(CouleurString);
@@ -611,7 +631,7 @@ public class Chevalet : MonoBehaviour
             "blue" => CouleurTuile.B,
 
             // other cases still needed
-            "fakejoker" => CouleurTuile.X,
+            "fakejoker" => CouleurTuile.M,
             _ => CouleurTuile.M, // the okey
         };
     }
