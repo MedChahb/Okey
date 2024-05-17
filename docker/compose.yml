@@ -103,7 +103,7 @@ services:
     restart: always
     container_name: phpmyadmin
     volumes:
-      - ${PERSIST_PATH:-./}docker_data/config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+      - ${PERSIST_PATH:-./}docker_data/config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
     networks:
       - okey
     depends_on:
