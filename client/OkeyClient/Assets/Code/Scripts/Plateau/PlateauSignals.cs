@@ -9,9 +9,15 @@ public class PlateauSignals : MonoBehaviour
 
     public Image TuileCentre;
     public Image TuileGauche;
+    public Image TuileDroite;
+    public Image MainSignal;
     public Image player2TurnSignal;
     public Image player3TurnSignal;
     public Image player4TurnSignal;
+
+    public Color ping1;
+    public Color ping2;
+    public float speedPing;
 
     private void Awake()
     {
@@ -23,6 +29,18 @@ public class PlateauSignals : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void Update()
+    {
+        float lerpFactor = Mathf.PingPong(Time.unscaledTime * speedPing, 1);
+        MainSignal.color = Color.Lerp(ping1, ping2, lerpFactor);
+        TuileGauche.color = Color.Lerp(ping1, ping2, lerpFactor);
+        TuileDroite.color = Color.Lerp(ping1, ping2, lerpFactor);
+        TuileCentre.color = Color.Lerp(ping1, ping2, lerpFactor);
+        player2TurnSignal.color = Color.Lerp(ping1, ping2, lerpFactor);
+        player3TurnSignal.color = Color.Lerp(ping1, ping2, lerpFactor);
+        player4TurnSignal.color = Color.Lerp(ping1, ping2, lerpFactor);
     }
 
     public void SetMainPlayerTurnSignal()
