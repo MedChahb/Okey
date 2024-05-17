@@ -1606,8 +1606,6 @@ public sealed class OkeyHub : Hub
             true
         );
 
-        await this._hubContext.Clients.Group(roomName).SendAsync("WinInfos", joueurs[0].getName());
-
         while (!jeu.isTermine())
         {
             var currentPlayer = jeu.getJoueurActuel();
