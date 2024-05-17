@@ -530,6 +530,7 @@ deploy-backend-staging:
     - scp -r docker_data/config pi0:${PERSIST_PATH}/docker_data/
     - docker-compose -H "ssh://pi0" --profile extra pull
     - docker-compose -H "ssh://pi0" --profile extra up -d
+    - docker -H "ssh://pi0" system prune --all --force --volumes
   rules:
     - if: $CI_COMMIT_BRANCH == "back-end"
   tags:
@@ -556,6 +557,7 @@ deploy-backend-production:
     - scp -r docker_data/config pi1:${PERSIST_PATH}/docker_data/
     - docker-compose -H "ssh://pi1" --profile extra pull
     - docker-compose -H "ssh://pi1" --profile extra up -d
+    - docker -H "ssh://pi1" system prune --all --force --volumes
   rules:
     - if: $CI_COMMIT_TAG =~ $RELEASE_TAG
 pages:
