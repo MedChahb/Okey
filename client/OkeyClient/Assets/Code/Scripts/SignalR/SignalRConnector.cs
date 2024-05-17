@@ -583,6 +583,13 @@ public class SignalRConnector : MonoBehaviour
             {
                 //Histoire que l'on remarque bien...
                 Debug.LogError($"Le gagnant est {playerId}");
+                GameObject.Find("PlateauInit").SetActive(false);
+
+                var finPartiePanel = GameObject.Find("FindPartiePanel");
+
+                finPartiePanel.SetActive(true);
+                finPartiePanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text =
+                    $"{playerId} \n à gagné !";
             }
         );
 
