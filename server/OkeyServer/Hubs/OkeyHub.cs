@@ -1412,14 +1412,24 @@ public sealed class OkeyHub : Hub
 
     private async Task SendPlayerOrder(Jeu j, string roomName)
     {
-        var packet = new List<string>();
+        var packet = new OrderPacket();
 
-        packet.Add(j.getJoueurActuel()!.getName());
-        packet.Add(j.getNextJoueur(j.getJoueurActuel()!).getName());
-        packet.Add(j.getNextJoueur(j.getNextJoueur(j.getJoueurActuel()!)).getName());
-        packet.Add(
+        packet.playerConnectionIds = new List<string>();
+        packet.playerUsernames = new List<string>();
+
+        packet.playerConnectionIds.Add(j.getJoueurActuel()!.getName());
+        packet.playerConnectionIds.Add(j.getNextJoueur(j.getJoueurActuel()!).getName());
+        packet.playerConnectionIds.Add(
+            j.getNextJoueur(j.getNextJoueur(j.getJoueurActuel()!)).getName()
+        );
+        packet.playerConnectionIds.Add(
             j.getNextJoueur(j.getNextJoueur(j.getNextJoueur(j.getJoueurActuel()!))).getName()
         );
+
+        packet.playerUsernames.Add(_connectedUsers[packet.playerConnectionIds[0]].GetUsername());
+        packet.playerUsernames.Add(_connectedUsers[packet.playerConnectionIds[1]].GetUsername());
+        packet.playerUsernames.Add(_connectedUsers[packet.playerConnectionIds[2]].GetUsername());
+        packet.playerUsernames.Add(_connectedUsers[packet.playerConnectionIds[3]].GetUsername());
 
         await this._hubContext.Clients.Group(roomName).SendAsync("PlayerOrdered", packet);
     }
