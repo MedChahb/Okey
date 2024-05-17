@@ -1410,6 +1410,20 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    private async Task SendPlayerOrder(Jeu j, string roomName)
+    {
+        var packet = new List<string>();
+
+        packet.Add(j.getJoueurActuel()!.getName());
+        packet.Add(j.getNextJoueur(j.getJoueurActuel()!).getName());
+        packet.Add(j.getNextJoueur(j.getNextJoueur(j.getJoueurActuel()!)).getName());
+        packet.Add(
+            j.getNextJoueur(j.getNextJoueur(j.getNextJoueur(j.getJoueurActuel()!))).getName()
+        );
+
+        await this._hubContext.Clients.Group(roomName).SendAsync("PlayerOrdered", packet);
+    }
+
     /// <summary>
     /// Convertit une couleur de tuile énumérée en chaîne.
     /// </summary>
@@ -1519,6 +1533,8 @@ public sealed class OkeyHub : Hub
         jeu.DistibuerTuile();
 
         Thread.Sleep(5000);
+
+        await this.SendPlayerOrder(jeu, roomName);
 
         await this.TuilesDistribueesSignal(roomName);
 
