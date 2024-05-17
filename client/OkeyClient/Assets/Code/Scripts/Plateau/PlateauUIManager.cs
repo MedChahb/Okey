@@ -9,6 +9,8 @@ public class PlateauUIManager : MonoBehaviour
 
     public GameObject playerAvatars;
 
+    public GameObject FindPartiePanel;
+
     // awake
     private void Awake()
     {
@@ -22,5 +24,13 @@ public class PlateauUIManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject);
+    }
+
+    public void QuitterPartie()
+    {
+        SignalRConnector._hubConnection.StopAsync();
+        Chevalet.neverReceivedChevalet = true;
+        Chevalet.PiocheIsVide = false;
+        SceneManager.LoadScene("Acceuil");
     }
 }

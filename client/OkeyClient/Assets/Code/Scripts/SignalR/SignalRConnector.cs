@@ -31,7 +31,11 @@ public class SignalRConnector : MonoBehaviour
 
     public async void InitializeConnection()
     {
-        _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost/OkeyHub").Build();
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(
+                "http://localhost/OkeyHub" /* Remettre Constants.SIGNALR_HUB_URL*/
+            )
+            .Build();
 
         this.ConfigureHubEvents();
 
@@ -622,12 +626,14 @@ public class SignalRConnector : MonoBehaviour
                 Debug.LogError($"Le gagnant est {playerId}");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    GameObject.Find("PlateauInit").SetActive(false);
-                    var finPartiePanel = GameObject.Find("FindPartiePanel");
+                    GameObject.Find("PlateauPanel").SetActive(false);
 
-                    finPartiePanel.SetActive(true);
-                    finPartiePanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text =
-                        $"{playerId} \n à gagné !";
+                    Plateau2.Instance.Awake();
+                    PlateauUIManager.Instance.FindPartiePanel.SetActive(true);
+                    PlateauUIManager
+                        .Instance.FindPartiePanel.transform.GetChild(2)
+                        .GetComponent<TextMeshProUGUI>()
+                        .text = $"{playerId} \n à gagné !";
                 });
             }
         );
