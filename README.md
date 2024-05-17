@@ -123,7 +123,7 @@ for i in $(seq 1 4); do OkeyTest.app/Contents/MacOS/Okey & done # Lancer 4 insta
 * Il faut utiliser le client Unity compilé avec la variante `local-test` pour tester le jeu en local avec le backend en local avec Docker Compose.
 * Il faut utiliser le client Unity compilé avec la variante `test` pour tester le jeu avec le serveur "Staging" (dernier commit de la branche `back-end`).
 * Il faut utiliser le client Unity compilé avec la variante `release` pour jouer au jeu en production avec le serveur "Production" (dernier tag de version).
-* Il faut utiliser les variantes `*test` du client Unity (dernier commit de la branche `front-end`) pour le testing et le développement.
+* Il faut utiliser les variantes `*-test` du client Unity (dernier commit de la branche `front-end`) pour le testing et le développement.
 * Il faut distribuer seulement les variantes `release` pour la publication.
 * Dans le cas des variantes qui utilisent les serveurs distants (donc `test` et `release`), il n'y a rien à faire pour lancer le backend, car la bonne version actuelle tourne et est déployé en continue sur ces serveur 24h/24h.
 
@@ -146,7 +146,6 @@ Cette liste indique les versions minimales recommandées ou des versions exactes
 * [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) 8.0.1 LTS
   * [csharpier](https://csharpier.com/) >= 0.27.2
   * [docfx](https://dotnet.github.io/docfx/index.html) >= 2.75.2
-  * [xunit](
   * [roslynator](https://josefpihrt.github.io/docs/roslynator/) >= 0.8.3
 * [Unity](https://unity.com/fr) 2022.3.19f1 LTS
 
