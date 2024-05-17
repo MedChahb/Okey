@@ -59,7 +59,7 @@ Le projet est divisé en deux parties principales : le backend et le frontend. L
 
 Le backend est dans le répertoire `server/` et le frontend est dans le répertoire `client/`. Les autres répertoires contiennent des outils, des scripts, des configurations, des documents et des fichiers de configuration pour le déploiement. Notamment le répertoire `docker/` contient les fichiers Dockerfile et docker-compose pour le déploiement des applications sur un serveur ou en local. Le répertoire `scripts/` contient des scripts pour l'automatisation de certaines tâches utilisé surtout dans le CI/CD ou en tant que hooks Git.
 
-Vous pouvez lire les README des sous-projets pour plus de détails sur l'organisation et le développement de chaque partie du projet une vous aurez lu ce README général :
+Vous pouvez lire les README des sous-projets pour plus de détails sur l'organisation et le développement de chaque partie du projet une fois vous aurez lu ce README général :
 
 * [Backend](server/README.md)
 * [Frontend](client/README.md)
