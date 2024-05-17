@@ -9,14 +9,14 @@
 </head>
 <body>
     <nav id="navbar" class="fixed w-full z-10 h-28 flex items-center bg-transparent backdrop-filter backdrop-blur-lg bg-green-800">
-        <div class="flex items-center justify-center w-full overflow-x-auto">
+        <div class="flex items-center justify-center w-full">
             <img src="./resources/imgs/logo.png" alt="Logo" class="h-20 mr-4">
             <div class="hidden md:flex items-center space-x-4">
                 <a href="#tutoriel" class="text-white px-3 py-2 rounded-md text-sm font-medium">Tutoriel</a>
                 <a href="#download" class="text-white px-3 py-2 rounded-md text-sm font-medium">Télécharger le jeu</a>
                 <div class="relative">
                     <button id="toggleButton" class="text-white px-3 py-2 rounded-md text-sm font-medium focus:outline-none">Langue</button>
-                    <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-green-800 rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
+                    <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-green-800 rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-20">
                         <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">Français</a>
                         <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">English</a>
                         <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-green-700">Türkçe</a>
@@ -36,6 +36,7 @@
         </div>
     </nav>
     
+
     <div id="mobileMenu" class="hidden fixed top-0 left-0 w-full h-full bg-green-800 pt-5 pb-3 px-3 flex flex-col items-center z-50 shadow-lg overflow-scroll">
             <button id="closeMobileMenu" class="self-end pr-3 pt-3 text-gray-700">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -73,7 +74,7 @@
                         Essayer sur iOS
                     </button>
                     <style>
-                        .button{ 
+                        .button{
                             background-color: #E3E3BB;
                             color: black;
                         }
@@ -140,7 +141,7 @@
                 </button>
 
                 <style>
-                    .button{ 
+                    .button{
                         background-color: #E3E3BB;
                         color: black;
                     }
