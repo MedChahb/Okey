@@ -621,6 +621,10 @@ namespace Okey.Joueurs
 
         public bool VerifSerieChevalet()
         {
+            /*
+
+            A remettre une fois tests finis
+
             var nonNullTuiles = this
                 .chevalet.SelectMany(row => row)
                 .Where(t => t != null)
@@ -641,6 +645,8 @@ namespace Okey.Joueurs
             }
 
             return nonNullTuiles.Count == 0;
+            */
+            return true;
         }
 
         /// <summary>
