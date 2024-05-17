@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>OkeyGame: Le meilleur jeu de Okey en ligne</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 <body>
     <nav id="navbar" class="fixed w-full z-10 h-28 flex items-center bg-transparent backdrop-filter backdrop-blur-lg bg-green-800">
@@ -34,7 +35,8 @@
             </button>
         </div>
     </nav>
-        <div id="mobileMenu" class="hidden fixed top-0 left-0 w-full h-full bg-green-800 pt-5 pb-3 px-3 flex flex-col items-center z-50 shadow-lg overflow-scroll">
+    
+    <div id="mobileMenu" class="hidden fixed top-0 left-0 w-full h-full bg-green-800 pt-5 pb-3 px-3 flex flex-col items-center z-50 shadow-lg overflow-scroll">
             <button id="closeMobileMenu" class="self-end pr-3 pt-3 text-gray-700">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -46,41 +48,44 @@
                 <a href="#download" class="text-white px-6 py-5 rounded-md text-3xl font-light">Télécharger</a>
                 <a href="#" class="text-white px-6 py-5 rounded-md text-3xl font-light">Langue</a>
             </div>
-        </div>
-
-
-
-
-    <!-- </nav> -->
-
-
-      <div class='text-white bg-cover bg-center h-screen'>
-  <div class='bg-cover h-screen bg-center flex flex-col justify-center items-center' style="background-image: url('./resources/imgs/bg-green.png')">
-    <div class='max-w-[1000px] mx-4 flex-1'>
-      <div class="md:flex md:justify-between items-center">
-        <div class="md:w-full md:mb-4">
-          <h1 class='md:text-4xl text-4xl font-bold mb-2 text-center'>OkeyGame: Partout avec qui vous voulez</h1>
-          <p class='font-normal md:text-l text-white mb-4 text-center'>Faites preuve de stratégie dans ce jeu excitant et compétitif, jouez en ligne avec vos amis, votre famille ou avec notre communauté de joueurs.</p>
-        </div>
-
-        <div class="md:flex md:flex-col md:items-center md:w-full">
-          <video class='max-w-full h-auto md:max-w-[500px] md:h-auto md:w-full' controls>
-            Your browser does not support the video tag.
-          </video>
-
-          <div class="md:mt-4 space-y-4 md:space-y-0 md:space-x-4 md:flex md:justify-center">
-            <button id="osButton" class="btn hover:bg-primaryColorHover text-black py-2 px-4 rounded">
-              Essayer sur Android
-            </button>
-            <button class="btn hover:bg-primaryColorHover text-black py-2 px-4 rounded">
-              Essayer sur iOS
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
-</div>
+
+        <div class='text-white bg-cover bg-center h-screen'>
+          <div class='bg-cover h-screen bg-center flex flex-col justify-center items-center' style="background-image: url('./resources/imgs/bg-green.png')">
+            <div class='max-w-[1000px] mx-4 flex-1 pt-52'>
+                <div class="md:flex md:justify-between items-center">
+                    <div class="ml-1 md:w-full md:mb-4">
+                        <h1 class='md:text-4xl text-4xl font-bold mb-2'>OkeyGame: Partout avec qui vous voulez</h1>
+                        <p class='font-normal md:text-l text-white mb-4'>Faites preuve de stratégie dans ce jeu excitant et compétitif, jouez en ligne avec vos amis, votre famille ou avec notre communauté de joueurs.</p>
+                    </div>
+                    <div class="md:flex md:flex-col md:items-center md:w-full">
+                        <video class='max-w-full h-auto md:max-w-[500px] md:h-auto md:w-full' autoplay muted loop>
+                            <source src="resources/vids/video-site.mp4" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="md:mt-4 space-y-4 md:space-y-0 md:space-x-4 md:flex md:justify-center">
+                    <button id="osButton" class="button btn hover:text-black py-2 px-4 rounded">
+                        Essayer sur Android
+                    </button>
+                    <button class="button btn hover:text-black py-2 px-4 rounded">
+                        Essayer sur iOS
+                    </button>
+                    <style>
+                        .button{ 
+                            background-color: #E3E3BB;
+                            color: black;
+                        }
+                        .button:hover{
+                            background-color: #d1d1ae;
+                            color: black;
+                        }
+                    </style>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -119,20 +124,32 @@
             <div class="w-1/2 pt-3 flex flex-col justify-center mx-10">
 
                 <div class="pb-5 flex justify-between">
-                    <button class="btn text-black py-2 px-4 rounded">
+                    <button class="button btn text-black py-2 px-4 rounded">
                         Essayer sur Windows
                     </button>
-                    <button class="btn text-black py-2 px-4 rounded">
+                    <button class="button btn text-black py-2 px-4 rounded">
                       Essayer sur MacOS
                     </button>
-                    <button class="btn text-black py-2 px-4 rounded">
+                    <button class="button btn text-black py-2 px-4 rounded">
                       Essayer sur Linux
                     </button>
                 </div>
 
-                <button class="btn text-black py-2 px-4 rounded">
+                <button class="button btn text-black py-2 px-4 rounded">
                   Essayer sur Android
                 </button>
+
+                <style>
+                    .button{ 
+                        background-color: #E3E3BB;
+                        color: black;
+                    }
+                    .button:hover{
+                        background-color: #d1d1ae;
+                        color: black;
+                    }
+                </style>
+
             </div>
         </div>
     </div>
