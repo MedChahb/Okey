@@ -260,6 +260,7 @@ public class SignalRConnector : MonoBehaviour
 
                     PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
@@ -309,11 +310,14 @@ public class SignalRConnector : MonoBehaviour
                     // PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
                     // PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
 
-                    PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
-                    PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
-                    PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(false);
+                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 1;
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 1;
+                    PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 1;
+
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
 
                     // Timer.Instance.LaunchTimer();
                 });
@@ -566,6 +570,14 @@ public class SignalRConnector : MonoBehaviour
             {
                 var chevaletInstance = Chevalet.Instance;
                 Debug.Log("Ok il faut jeter une tuile");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 1;
+                });
+
                 var tuile = new TuilePacket
                 {
                     X = "0",
@@ -605,6 +617,16 @@ public class SignalRConnector : MonoBehaviour
             {
                 var chevaletInstance = Chevalet.Instance;
                 Debug.Log("Ok il faut jeter une tuile");
+
+                Debug.Log("signalllsssssssssssssssssss");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 1;
+                });
+
                 var tuile = new TuilePacket
                 {
                     X = "0",
