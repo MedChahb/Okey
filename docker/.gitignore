@@ -3,6 +3,7 @@
 /okeyapi
 /server
 /db-init
+/okeywebsite
 
 # Ignorer les fichiers persistants des conteneurs Docker
 /docker_data/data/
