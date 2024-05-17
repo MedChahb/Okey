@@ -23,7 +23,7 @@ public static class Constants
 #if LOCAL
         "http://localhost/OkeyHub";
 #elif (DEBUG || UNITY_EDITOR)
-        "http://localhost/OkeyHub";
+        "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-0/OkeyHub";
 #else
         "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-1/OkeyHub";
 #endif
