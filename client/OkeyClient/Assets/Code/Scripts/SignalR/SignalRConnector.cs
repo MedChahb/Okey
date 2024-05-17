@@ -68,6 +68,20 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        _hubConnection.On<OrderPacket>(
+            "PlayerOrdered",
+            (playerList) =>
+            {
+                Debug.Log("Affichage des joueurs dans l'ordre de tour");
+                for (var i = 0; i < playerList.playerUsernames.Count; i++)
+                {
+                    Debug.Log(
+                        $"{playerList.playerUsernames[i]} -> {playerList.playerConnectionIds[i]}"
+                    );
+                }
+            }
+        );
+
         _hubConnection.On<StartingGamePacket>(
             "StartGame",
             (players) =>
@@ -82,6 +96,7 @@ public class SignalRConnector : MonoBehaviour
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     Debug.LogWarning($"Le jeu a commence");
+
                     if (players.playersList != null && players.playersList.Count > 0)
                     {
                         int otherPlayerIndex = 0;
@@ -849,6 +864,22 @@ public class SignalRConnector : MonoBehaviour
 
                 MainThreadDispatcher.Enqueue(() =>
                 {
+                    // PlateauSignals.Instance.SetMainPlayerTurnSignal();
+                    // PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
+                    // PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
+
+                    if (!Chevalet.PiocheIsVide)
+                    {
+                        PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 1;
+                    }
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 1;
+                    PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 1;
+
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+
                     if (
                         Chevalet.PilePiochePlaceHolder.transform.childCount > 0
                         && Chevalet.PiocheIsVide == false
