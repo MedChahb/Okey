@@ -1086,7 +1086,7 @@ public sealed class OkeyHub : Hub
             {
                 var ListeDefausseSend = new List<string>();
 
-                foreach (var tuile in jeu.ListeDefausse)
+                foreach (var tuile in jeu.GetListeDefausse())
                 {
                     // Construire la chaîne de caractères représentant la tuile( pas besoin d'envoyer defausse est DansPioche mais je fais qd meme)
                     var tuileString =
