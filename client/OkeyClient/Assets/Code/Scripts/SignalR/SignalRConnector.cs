@@ -261,6 +261,8 @@ public class SignalRConnector : MonoBehaviour
 
                     PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
+
                     PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
