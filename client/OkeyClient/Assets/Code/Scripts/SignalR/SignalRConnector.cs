@@ -313,7 +313,10 @@ public class SignalRConnector : MonoBehaviour
                     // PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
                     // PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
 
-                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 1;
+                    if (!Chevalet.PiocheIsVide)
+                    {
+                        PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 1;
+                    }
                     PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 1;
                     PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 1;
 
@@ -575,6 +578,11 @@ public class SignalRConnector : MonoBehaviour
                 };
 
                 while (chevaletInstance.IsJete == false) { }
+
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
+                });
                 Debug.Log("La tuile vient d'etre jetee");
 
                 if (chevaletInstance.TuileJete != null)
