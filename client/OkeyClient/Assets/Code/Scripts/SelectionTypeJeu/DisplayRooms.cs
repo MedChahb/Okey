@@ -11,6 +11,9 @@ public class DisplayRooms : MonoBehaviour
     [SerializeField]
     private Button room1;
 
+    [SerializeField]
+    private Button CreateAndJoin;
+
     public TextMeshProUGUI label;
     public List<string> messageLogs;
 
@@ -28,7 +31,8 @@ public class DisplayRooms : MonoBehaviour
 
     void Start()
     {
-        room1.onClick.AddListener(() => onJoinRoomPressed());
+        room1.onClick.AddListener(() => this.onJoinRoomPressed());
+        this.CreateAndJoin.onClick.AddListener(() => this.onCreateAndJoinPrivateRoom());
     }
 
     public void onJoinRoomPressed()
@@ -39,6 +43,16 @@ public class DisplayRooms : MonoBehaviour
             return;
         }
         LobbyManager.Instance.JoinRoom();
+    }
+
+    public void onCreateAndJoinPrivateRoom()
+    {
+        if (LobbyManager.Instance == null)
+        {
+            Debug.LogError("LobbyManager instance is null.");
+            return;
+        }
+        LobbyManager.Instance.JoinPrivateRoom();
     }
 
     public void updateLabel()

@@ -1,5 +1,4 @@
 using System.Collections.Generic; // Add this line
-using System.Linq;
 using UnityEngine;
 
 public class LobbyManager : MonoBehaviour
@@ -84,6 +83,16 @@ public class LobbyManager : MonoBehaviour
     public async void JoinRoom()
     {
         await signalRConnector.JoinRoom(); // Awaiting the async operation
+    }
+
+    public async void CreateJoinPrivateRoom()
+    {
+        await this.signalRConnector.CreateAndJoinPrivateRoom();
+    }
+
+    public async void JoinPrivateRoom()
+    {
+        // To be implemented
     }
 
     public void SetConnectionStatus(bool value)

@@ -23,6 +23,9 @@ public class UIManagerPFormulaire : MonoBehaviour
     private Button joinPublicLobbyBtn;
 
     [SerializeField]
+    private Button CreateAndJoinBtn;
+
+    [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
 
     public GameObject showRooms;
@@ -56,6 +59,8 @@ public class UIManagerPFormulaire : MonoBehaviour
         joinPublicLobbyBtn.onClick.AddListener(onPublicLobbyClicked);
         joinPrivateLobbyBtn.onClick.AddListener(onPrivateLobbyClicked);
 
+        this.CreateAndJoinBtn.onClick.AddListener(CreateJoinPrivateRoom);
+
         showRooms.SetActive(false);
         lobbyPlayerWaiting.SetActive(false);
         lobbyPrivateConfig.SetActive(false);
@@ -76,6 +81,16 @@ public class UIManagerPFormulaire : MonoBehaviour
         {
             showRooms.SetActive(true);
         }*/
+    }
+
+    public async void CreateJoinPrivateRoom()
+    {
+        if (LobbyManager.Instance == null)
+        {
+            Debug.LogError("LobbyManager instance is null.");
+            return;
+        }
+        await LobbyManager.Instance.signalRConnector.CreateAndJoinPrivateRoom();
     }
 
     void onBackBtnClicked()
@@ -99,6 +114,7 @@ public class UIManagerPFormulaire : MonoBehaviour
     public void onPrivateLobbyClicked()
     {
         lobbyPrivateConfig.SetActive(true);
+        LobbyManager.Instance.signalRConnector.InitializeConnectionPrivate();
     }
 
     public void onLoadBtnClicked()

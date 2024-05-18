@@ -53,6 +53,28 @@ public class SignalRConnector : MonoBehaviour
         await this.JoinRoom();
     }
 
+    public async void InitializeConnectionPrivate()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(
+                "http://localhost/OkeyHub" /* Remettre Constants.SIGNALR_HUB_URL*/
+            )
+            .Build();
+
+        this.ConfigureHubEvents();
+
+        try
+        {
+            await _hubConnection.StartAsync();
+            Debug.Log("SignalR connection established.");
+            LobbyManager.Instance.SetConnectionStatus(true);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"SignalR connection failed: {ex.Message}");
+        }
+    }
+
     public async void HubDisconnect()
     {
         MainThreadDispatcher.Enqueue(() =>
@@ -1334,6 +1356,34 @@ public class SignalRConnector : MonoBehaviour
             catch (Exception ex)
             {
                 Debug.LogError($"Failed to join room 1: {ex.Message}");
+            }
+        }
+        else
+        {
+            Debug.LogError("Cannot join room. Hub connection is not established.");
+        }
+    }
+
+    public async Task CreateAndJoinPrivateRoom()
+    {
+        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
+        {
+            try
+            {
+                await _hubConnection.SendAsync("CreatePrivateRoom");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    Debug.Log("On est en partie privee");
+                    UIManagerPFormulaire.Instance.showRooms.SetActive(false);
+                    UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
+
+                    var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
+                });
+                Debug.Log($"Request to create private room sent.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to create the private room {ex.Message}");
             }
         }
         else
