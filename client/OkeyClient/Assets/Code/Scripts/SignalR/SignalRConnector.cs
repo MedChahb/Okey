@@ -1014,7 +1014,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 if (roomState.playerDatas != null)
                 {
-                    this.UpdateWaitingPlayerUI(roomState.playerDatas);
+                    this.UpdateWaitingPlayerUI(roomState.playerDatas, roomState.roomName);
                     // this.LoadAvatarsInLobby(roomState.playerDatas);
 
                     foreach (var data in roomState.playerDatas)
@@ -1251,7 +1251,7 @@ public class SignalRConnector : MonoBehaviour
 
     //}
 
-    private void UpdateWaitingPlayerUI(List<string> PlayerData)
+    private void UpdateWaitingPlayerUI(List<string> PlayerData, string roomName)
     {
         MainThreadDispatcher.Enqueue(() =>
         {
@@ -1268,6 +1268,12 @@ public class SignalRConnector : MonoBehaviour
             var P2 = bg.transform.GetChild(2);
             var P3 = bg.transform.GetChild(3);
             var P4 = bg.transform.GetChild(4);
+
+            if (!roomName.Contains("room", StringComparison.Ordinal))
+            {
+                bg.transform.GetChild(5).GetComponent<TextMeshProUGUI>().text =
+                    $"Code de la partie:\n{roomName}";
+            }
 
             var tabP = new List<Transform>();
             tabP.Add(P1);
