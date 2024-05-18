@@ -334,6 +334,7 @@ public sealed class OkeyHub : Hub
 
                 foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
                 {
+                    Console.WriteLine(player);
                     packet.playerDatas.Add(
                         $"{_connectedUsers[player].GetUsername()};{_connectedUsers[player].GetPhoto()};{_connectedUsers[player].GetElo()};{_connectedUsers[player].GetExperience()}"
                     );
