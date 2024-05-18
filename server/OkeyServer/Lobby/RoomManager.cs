@@ -107,10 +107,18 @@ public class RoomManager : IRoomManager
     /// <param name="roomName">Le nom de la salle.</param>
     public void ResetRoom(string roomName)
     {
-        var room = this.GetRoomById(roomName);
-        room.Players = new List<string>();
-        this.RoomsBusy = new ConcurrentBag<Room>(this.RoomsBusy.Except(new[] { room }));
-        this.roomsAvailable.Add(room);
+        // On vérifie si la room est priveée --> on la supprime et on annule tout
+        if (!roomName.Contains("room", StringComparison.Ordinal))
+        {
+            this._rooms.Remove(roomName);
+        }
+        else
+        {
+            var room = this.GetRoomById(roomName);
+            room.Players = new List<string>();
+            this.RoomsBusy = new ConcurrentBag<Room>(this.RoomsBusy.Except(new[] { room }));
+            this.roomsAvailable.Add(room);
+        }
     }
 
     /// <summary>

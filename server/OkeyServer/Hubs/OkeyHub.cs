@@ -323,7 +323,6 @@ public sealed class OkeyHub : Hub
                 );
 
                 await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, roomId);
-                await this.SendRoomListUpdate();
                 UsersInRooms.TryUpdate(this.Context.ConnectionId, roomId, "Hub");
 
                 var packet = new RoomState();
@@ -337,7 +336,7 @@ public sealed class OkeyHub : Hub
                 }
 
                 await this._hubContext.Clients.Group(roomId).SendAsync("SendRoomState", packet);
-
+                await this.SendRoomListUpdate();
                 if (this._roomManager.IsRoomFull(roomId))
                 {
                     this.OnGameStarted(roomId);
