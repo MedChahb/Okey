@@ -332,6 +332,7 @@ public sealed class OkeyHub : Hub
 
                 var packet = new RoomState();
                 packet.playerDatas = new List<string?>();
+                packet.roomName = roomId;
 
                 foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
                 {
