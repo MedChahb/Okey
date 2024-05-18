@@ -32,8 +32,8 @@ public class RoomManager : IRoomManager
         this._privateRooms = new Dictionary<string, Room>();
 
         this._rooms.Add("room1", new Room("room1"));
-        this._rooms.Add("room2", new Room("room2"));
-        this._rooms.Add("room3", new Room("room3"));
+        //this._rooms.Add("room2", new Room("room2"));
+        //this._rooms.Add("room3", new Room("room3"));
 
         foreach (var room in this._rooms)
         {
