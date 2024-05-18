@@ -1799,6 +1799,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   room1: {fileID: 1367975279}
   CreateAndJoin: {fileID: 1033405242}
+  JoinPrivate: {fileID: 0}
+  RoomCode: {fileID: 0}
   label: {fileID: 1042074267}
   messageLogs: []
 --- !u!1 &472982981
@@ -4523,6 +4525,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   room1: {fileID: 1998555810}
   CreateAndJoin: {fileID: 1033405242}
+  JoinPrivate: {fileID: 417337798}
+  RoomCode: {fileID: 0}
   label: {fileID: 1037727107}
   messageLogs: []
 --- !u!1 &1121941970
@@ -5482,7 +5486,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Code de partie
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
