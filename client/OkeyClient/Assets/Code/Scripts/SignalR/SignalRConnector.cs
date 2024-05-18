@@ -1061,7 +1061,10 @@ public class SignalRConnector : MonoBehaviour
             {
                 if (roomState.playerDatas != null)
                 {
-                    this.UpdateWaitingPlayerUI(roomState.playerDatas, roomState.roomName);
+                    if (roomState.roomName != null)
+                    {
+                        this.UpdateWaitingPlayerUI(roomState.playerDatas, roomState.roomName);
+                    }
                     // this.LoadAvatarsInLobby(roomState.playerDatas);
 
                     foreach (var data in roomState.playerDatas)
