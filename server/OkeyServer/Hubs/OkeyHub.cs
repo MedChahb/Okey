@@ -323,6 +323,7 @@ public sealed class OkeyHub : Hub
                 );
 
                 await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, roomId);
+                await this.SendRoomListUpdate();
                 UsersInRooms.TryUpdate(this.Context.ConnectionId, roomId, "Hub");
 
                 var packet = new RoomState();
