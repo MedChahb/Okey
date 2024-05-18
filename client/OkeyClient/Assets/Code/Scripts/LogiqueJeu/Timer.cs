@@ -38,21 +38,18 @@ public class Timer : MonoBehaviour
     {
         if (TimerOn)
         {
-            RemainingTime -= Time.deltaTime;
-            if (RemainingTime <= 0)
+            if (RemainingTime > 0)
             {
-                RemainingTime = 0;
-                TimerOn = false;
-                //OnTimerComplete();
+                RemainingTime -= Time.deltaTime;
+                UpdateTimerDisplay();
             }
-            UpdateTimerDisplay();
+            else
+            {
+                TimerOn = false;
+                UpdateTimerDisplay();
+            }
         }
     }
-
-    //private void OnTimerComplete()
-    //{
-    //    Debug.Log("Timer completed!");
-    //}
 
     private void UpdateTimerDisplay()
     {

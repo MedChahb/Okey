@@ -7,6 +7,5 @@ namespace Code.Scripts.SignalR.Packets.Rooms
     {
         [CanBeNull]
         public List<string?> playerDatas { get; set; }
-        public string? roomName { get; set; }
     }
 }

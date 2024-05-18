@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.SignalR.Client;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,15 +10,6 @@ public class DisplayRooms : MonoBehaviour
 
     [SerializeField]
     private Button room1;
-
-    [SerializeField]
-    private Button CreateAndJoin;
-
-    [SerializeField]
-    private Button JoinPrivate;
-
-    [SerializeField]
-    private TMP_InputField RoomCode;
 
     public TextMeshProUGUI label;
     public List<string> messageLogs;
@@ -39,8 +28,7 @@ public class DisplayRooms : MonoBehaviour
 
     void Start()
     {
-        room1.onClick.AddListener(() => this.onJoinRoomPressed());
-        this.CreateAndJoin.onClick.AddListener(() => this.onCreateAndJoinPrivateRoom());
+        room1.onClick.AddListener(() => onJoinRoomPressed());
     }
 
     public void onJoinRoomPressed()
@@ -51,29 +39,6 @@ public class DisplayRooms : MonoBehaviour
             return;
         }
         LobbyManager.Instance.JoinRoom();
-    }
-
-    public void onCreateAndJoinPrivateRoom()
-    {
-        if (LobbyManager.Instance == null)
-        {
-            Debug.LogError("LobbyManager instance is null.");
-            return;
-        }
-        LobbyManager.Instance.JoinPrivateRoom();
-    }
-
-    public void onJoinPrivateRoom()
-    {
-        var s = this.RoomCode.text.ToUpper();
-        if (!s.Equals("", StringComparison.Ordinal))
-        {
-            SignalRConnector._hubConnection.SendAsync("TryJoinPrivateRoom", s);
-        }
-        else
-        {
-            Debug.LogError("Il faut remplir le texte");
-        }
     }
 
     public void updateLabel()

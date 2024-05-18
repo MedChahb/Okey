@@ -53,28 +53,6 @@ public class SignalRConnector : MonoBehaviour
         await this.JoinRoom();
     }
 
-    public async void InitializeConnectionPrivate()
-    {
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl(
-                "http://localhost/OkeyHub" /* Remettre Constants.SIGNALR_HUB_URL*/
-            )
-            .Build();
-
-        this.ConfigureHubEvents();
-
-        try
-        {
-            await _hubConnection.StartAsync();
-            Debug.Log("SignalR connection established.");
-            LobbyManager.Instance.SetConnectionStatus(true);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"SignalR connection failed: {ex.Message}");
-        }
-    }
-
     public async void HubDisconnect()
     {
         MainThreadDispatcher.Enqueue(() =>
@@ -98,60 +76,13 @@ public class SignalRConnector : MonoBehaviour
             "PlayerOrdered",
             (playerList) =>
             {
-                MainThreadDispatcher.Enqueue(() =>
+                Debug.Log("Affichage des joueurs dans l'ordre de tour");
+                for (var i = 0; i < playerList.playerUsernames.Count; i++)
                 {
-                    int mainPlayerIndex = -1;
-                    for (var i = 0; i < playerList.playerUsernames.Count; i++)
-                    {
-                        Debug.Log(
-                            $"{playerList.playerUsernames[i]} -> {playerList.playerConnectionIds[i]}"
-                        );
-
-                        var playerID = playerList.playerConnectionIds[i].Trim().ToLower();
-                        var playerUsername = playerList.playerUsernames[i];
-
-                        if (playerID == _hubConnection.ConnectionId.Trim().ToLower())
-                        {
-                            mainPlayerIndex = i;
-                            LobbyManager.mainPlayer = playerID;
-                            LobbyManager.Instance.mainPlayerUsername = playerUsername;
-                        }
-                    }
-
-                    if (mainPlayerIndex == -1)
-                    {
-                        Debug.LogError("Main player not found in the player list.");
-                        return;
-                    }
-
-                    int otherPlayerIndex = 0;
-                    for (var i = 0; i < playerList.playerUsernames.Count; i++)
-                    {
-                        if (i == mainPlayerIndex)
-                            continue;
-
-                        var playerID = playerList.playerConnectionIds[i].Trim().ToLower();
-                        var playerUsername = playerList.playerUsernames[i];
-
-                        switch (otherPlayerIndex)
-                        {
-                            case 0:
-                                LobbyManager.player2 = playerID;
-                                LobbyManager.Instance.player2Username = playerUsername;
-                                break;
-                            case 1:
-                                LobbyManager.player3 = playerID;
-                                LobbyManager.Instance.player3Username = playerUsername;
-                                break;
-                            case 2:
-                                LobbyManager.player4 = playerID;
-                                LobbyManager.Instance.player4Username = playerUsername;
-                                break;
-                        }
-
-                        otherPlayerIndex++;
-                    }
-                });
+                    Debug.Log(
+                        $"{playerList.playerUsernames[i]} -> {playerList.playerConnectionIds[i]}"
+                    );
+                }
             }
         );
 
@@ -166,63 +97,63 @@ public class SignalRConnector : MonoBehaviour
                 //     Debug.LogWarning(player);
                 // }
 
-                //MainThreadDispatcher.Enqueue(() =>
-                //{
-                //    Debug.LogWarning($"Le jeu a commence");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    Debug.LogWarning($"Le jeu a commence");
 
-                //    if (players.playersList != null && players.playersList.Count > 0)
-                //    {
-                //        int otherPlayerIndex = 0;
-                //        for (int i = 0; i < players.playersList.Count; i++)
-                //        {
-                //            // string player = players.playersList[i];
-                //            // store the player value as a string in lower case trim
-                //            string player = players.playersList[i].Trim().ToLower();
-                //            string username = players.playersUsernames[i];
-                //            // Debug.LogWarning($"Player {i + 1}: {player}");
+                    if (players.playersList != null && players.playersList.Count > 0)
+                    {
+                        int otherPlayerIndex = 0;
+                        for (int i = 0; i < players.playersList.Count; i++)
+                        {
+                            // string player = players.playersList[i];
+                            // store the player value as a string in lower case trim
+                            string player = players.playersList[i].Trim().ToLower();
+                            string username = players.playersUsernames[i];
+                            // Debug.LogWarning($"Player {i + 1}: {player}");
 
-                //            Debug.Log(
-                //                "Main player: "
-                //                    + _hubConnection.ConnectionId
-                //                    + " Player iteration: "
-                //                    + player
-                //            );
-                //            if (player == _hubConnection.ConnectionId.Trim().ToLower())
-                //            {
-                //                LobbyManager.mainPlayer = player;
-                //                LobbyManager.Instance.mainPlayerUsername = username;
-                //                Debug.Log("MainPlayer: " + player);
-                //            }
-                //            else
-                //            {
-                //                switch (otherPlayerIndex)
-                //                {
-                //                    case 0:
-                //                        LobbyManager.player2 = player;
-                //                        LobbyManager.Instance.player2Username = username;
-                //                        // Debug.Log($"Player 2 set to: {player}");
-                //                        break;
-                //                    case 1:
-                //                        LobbyManager.player3 = player;
-                //                        LobbyManager.Instance.player3Username = username;
-                //                        // Debug.Log($"Player 3 set to: {player}");
-                //                        break;
-                //                    case 2:
-                //                        LobbyManager.player4 = player;
-                //                        LobbyManager.Instance.player4Username = username;
-                //                        // Debug.Log($"Player 4 set to: {player}");
-                //                        break;
-                //                }
-                //                otherPlayerIndex++;
-                //            }
-                //        }
-                //    }
-                //    else
-                //    {
-                //        Debug.LogError("No players found in playersList.");
-                //    }
-                //    SceneManager.LoadSceneAsync("PlateauInit");
-                //});
+                            Debug.Log(
+                                "Main player: "
+                                    + _hubConnection.ConnectionId
+                                    + " Player iteration: "
+                                    + player
+                            );
+                            if (player == _hubConnection.ConnectionId.Trim().ToLower())
+                            {
+                                LobbyManager.mainPlayer = player;
+                                LobbyManager.Instance.mainPlayerUsername = username;
+                                Debug.Log("MainPlayer: " + player);
+                            }
+                            else
+                            {
+                                switch (otherPlayerIndex)
+                                {
+                                    case 0:
+                                        LobbyManager.player2 = player;
+                                        LobbyManager.Instance.player2Username = username;
+                                        // Debug.Log($"Player 2 set to: {player}");
+                                        break;
+                                    case 1:
+                                        LobbyManager.player3 = player;
+                                        LobbyManager.Instance.player3Username = username;
+                                        // Debug.Log($"Player 3 set to: {player}");
+                                        break;
+                                    case 2:
+                                        LobbyManager.player4 = player;
+                                        LobbyManager.Instance.player4Username = username;
+                                        // Debug.Log($"Player 4 set to: {player}");
+                                        break;
+                                }
+                                otherPlayerIndex++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("No players found in playersList.");
+                    }
+                    SceneManager.LoadSceneAsync("PlateauInit");
+                });
             }
         );
 
@@ -1061,7 +992,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 if (roomState.playerDatas != null)
                 {
-                    this.UpdateWaitingPlayerUI(roomState.playerDatas, roomState.roomName);
+                    this.UpdateWaitingPlayerUI(roomState.playerDatas);
                     // this.LoadAvatarsInLobby(roomState.playerDatas);
 
                     foreach (var data in roomState.playerDatas)
@@ -1298,7 +1229,7 @@ public class SignalRConnector : MonoBehaviour
 
     //}
 
-    private void UpdateWaitingPlayerUI(List<string> PlayerData, string roomName)
+    private void UpdateWaitingPlayerUI(List<string> PlayerData)
     {
         MainThreadDispatcher.Enqueue(() =>
         {
@@ -1315,12 +1246,6 @@ public class SignalRConnector : MonoBehaviour
             var P2 = bg.transform.GetChild(2);
             var P3 = bg.transform.GetChild(3);
             var P4 = bg.transform.GetChild(4);
-
-            if (roomName != null && !roomName.Contains("room", StringComparison.Ordinal))
-            {
-                bg.transform.GetChild(5).GetComponent<TextMeshProUGUI>().text =
-                    $"Code de la partie:\n{roomName}";
-            }
 
             var tabP = new List<Transform>();
             tabP.Add(P1);
@@ -1409,34 +1334,6 @@ public class SignalRConnector : MonoBehaviour
             catch (Exception ex)
             {
                 Debug.LogError($"Failed to join room 1: {ex.Message}");
-            }
-        }
-        else
-        {
-            Debug.LogError("Cannot join room. Hub connection is not established.");
-        }
-    }
-
-    public async Task CreateAndJoinPrivateRoom()
-    {
-        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
-        {
-            try
-            {
-                await _hubConnection.SendAsync("CreatePrivateRoom");
-                MainThreadDispatcher.Enqueue(() =>
-                {
-                    Debug.Log("On est en partie privee");
-                    UIManagerPFormulaire.Instance.showRooms.SetActive(false);
-                    UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
-
-                    var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
-                });
-                Debug.Log($"Request to create private room sent.");
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Failed to create the private room {ex.Message}");
             }
         }
         else
