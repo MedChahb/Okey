@@ -314,6 +314,10 @@ public sealed class OkeyHub : Hub
         }
         else
         {
+            Console.WriteLine(
+                $"Nouvelle room: {roomId} {this._roomManager.GetRoomById(roomId).Name}"
+            );
+
             var success = this._roomManager.TryJoinPrivateRoom(roomId, this.Context.ConnectionId);
             if (success)
             {
