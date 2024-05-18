@@ -113,7 +113,7 @@ public class SignalRConnector : MonoBehaviour
                         if (playerID == _hubConnection.ConnectionId.Trim().ToLower())
                         {
                             mainPlayerIndex = i;
-                            LobbyManager.Instance.mainPlayer = playerID;
+                            LobbyManager.mainPlayer = playerID;
                             LobbyManager.Instance.mainPlayerUsername = playerUsername;
                         }
                     }
@@ -136,15 +136,15 @@ public class SignalRConnector : MonoBehaviour
                         switch (otherPlayerIndex)
                         {
                             case 0:
-                                LobbyManager.Instance.player2 = playerID;
+                                LobbyManager.player2 = playerID;
                                 LobbyManager.Instance.player2Username = playerUsername;
                                 break;
                             case 1:
-                                LobbyManager.Instance.player3 = playerID;
+                                LobbyManager.player3 = playerID;
                                 LobbyManager.Instance.player3Username = playerUsername;
                                 break;
                             case 2:
-                                LobbyManager.Instance.player4 = playerID;
+                                LobbyManager.player4 = playerID;
                                 LobbyManager.Instance.player4Username = playerUsername;
                                 break;
                         }
