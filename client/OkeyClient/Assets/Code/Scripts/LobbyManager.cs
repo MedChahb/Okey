@@ -17,10 +17,10 @@ public class LobbyManager : MonoBehaviour
 
     public string currentPlayerTurn;
 
-    public static string mainPlayer;
-    public static string player2;
-    public static string player3;
-    public static string player4;
+    public string mainPlayer;
+    public string player2;
+    public string player3;
+    public string player4;
 
     public string mainPlayerUsername;
     public string player2Username;
