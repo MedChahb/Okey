@@ -314,6 +314,7 @@ public sealed class OkeyHub : Hub
         }
         else
         {
+            Thread.Sleep(1000);
             Console.WriteLine(
                 $"Nouvelle room: {roomId} {this._roomManager.GetRoomById(roomId).Name}"
             );

@@ -67,13 +67,15 @@ public class RoomManager : IRoomManager
 
     public bool TryJoinPrivateRoom(string roomId, string playerId)
     {
-        if (this._privateRooms.TryGetValue(roomId, out var room) && !room.IsFull())
+        Console.WriteLine("On veut ajouter un joueur");
+        var room = this._rooms[roomId];
+        if (!room.IsFull())
         {
             room.AddPlayer(playerId);
 
             if (room.IsFull())
             {
-                this._privateRooms.Remove(roomId);
+                this._rooms.Remove(roomId);
             }
             return true;
         }
