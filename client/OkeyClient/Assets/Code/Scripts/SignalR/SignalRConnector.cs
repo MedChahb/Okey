@@ -1061,10 +1061,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 if (roomState.playerDatas != null)
                 {
-                    if (roomState.roomName != null)
-                    {
-                        this.UpdateWaitingPlayerUI(roomState.playerDatas, roomState.roomName);
-                    }
+                    this.UpdateWaitingPlayerUI(roomState.playerDatas, roomState.roomName);
                     // this.LoadAvatarsInLobby(roomState.playerDatas);
 
                     foreach (var data in roomState.playerDatas)
@@ -1319,7 +1316,7 @@ public class SignalRConnector : MonoBehaviour
             var P3 = bg.transform.GetChild(3);
             var P4 = bg.transform.GetChild(4);
 
-            if (!roomName.Contains("room", StringComparison.Ordinal))
+            if (roomName != null && !roomName.Contains("room", StringComparison.Ordinal))
             {
                 bg.transform.GetChild(5).GetComponent<TextMeshProUGUI>().text =
                     $"Code de la partie:\n{roomName}";
