@@ -297,6 +297,66 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    public async Task CreatePrivateRoom()
+    {
+        await this.GetUserNameFromClient(this.Context.ConnectionId);
+
+        var roomId = this._roomManager.CreatePrivateRoom();
+
+        if (roomId == null)
+        {
+            await this
+                ._hubContext.Clients.Client(this.Context.ConnectionId)
+                .SendAsync(
+                    "JoinRoomFail",
+                    new PacketSignal { message = "Impossible de créer une room priveée l'instant." }
+                );
+        }
+        else
+        {
+            var success = this._roomManager.TryJoinPrivateRoom(roomId, this.Context.ConnectionId);
+            if (success)
+            {
+                await this._hubContext.Groups.RemoveFromGroupAsync(
+                    this.Context.ConnectionId,
+                    "Hub"
+                );
+
+                await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, roomId);
+                UsersInRooms.TryUpdate(this.Context.ConnectionId, roomId, "Hub");
+
+                var packet = new RoomState();
+                packet.playerDatas = new List<string?>();
+
+                foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
+                {
+                    packet.playerDatas.Add(
+                        $"{_connectedUsers[player].GetUsername()};{_connectedUsers[player].GetPhoto()};{_connectedUsers[player].GetElo()};{_connectedUsers[player].GetExperience()}"
+                    );
+                }
+
+                await this._hubContext.Clients.Group(roomId).SendAsync("SendRoomState", packet);
+
+                if (this._roomManager.IsRoomFull(roomId))
+                {
+                    this.OnGameStarted(roomId);
+                }
+            }
+            else
+            {
+                await this
+                    ._hubContext.Clients.Client(this.Context.ConnectionId)
+                    .SendAsync(
+                        "JoinRoomFail",
+                        new PacketSignal
+                        {
+                            message = "Impossible de rejoindre une room, réessayer plus tard"
+                        }
+                    );
+            }
+        }
+    }
+
     /// <summary>
     /// Effectue la connexion au lobby si ce lobby est joignable.
     /// </summary>
@@ -1718,7 +1778,7 @@ public sealed class OkeyHub : Hub
                 {
                     await this
                         ._hubContext.Clients.Group(roomName)
-                        .SendAsync("WinInfos", joueurs[i].getName());
+                        .SendAsync("WinInfos", _connectedUsers[joueurs[i].getName()].GetUsername());
                     await _connectedUsers[playerIds[i]]
                         .UpdateStats(this._dbContext, 10, 5, true, true);
                 }
