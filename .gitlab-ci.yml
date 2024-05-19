@@ -397,6 +397,8 @@ unity-android-local-test:
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.AndroidLocalTestBuild
     # - chmod a+x ${BUILD_PATH}/OkeyTest.app/Contents/MacOS/Okey
     # - tar cJf "OkeyTest_Android_ARM64_${OKEY_BUILD_VERSION}_Local.tar.xz" ${BUILD_PATH}/OkeyTest.app
+    - ls -lahFG ${BUILD_PATH}/../../
+    - ls -lahFGR ${BUILD_PATH}/../
     - ls -lahFGR ${BUILD_PATH}
     - tar cJf "OkeyTest_Android_ARM64_${OKEY_BUILD_VERSION}_Local.tar.xz" ${BUILD_PATH}/OkeyTest/
     # - tar cJf "OkeyTest_Android_ARM64_${OKEY_BUILD_VERSION}_Local.tar.xz" ${BUILD_PATH}
