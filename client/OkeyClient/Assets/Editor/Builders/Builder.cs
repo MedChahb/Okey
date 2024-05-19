@@ -137,7 +137,7 @@ public class Builder
         SetTestSettings();
 
         // Save path for the build relative to the Unity project root
-        var RelativeSaveLocation = "Builds/Android/OkeyTest";
+        var RelativeSaveLocation = "Builds/Android/OkeyTest.apk";
 
         // Build the player
         var buildPlayerOptions = new BuildPlayerOptions
