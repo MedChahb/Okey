@@ -359,34 +359,34 @@ public class SignalRConnector : MonoBehaviour
                     PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
 
-                    Debug.Log("All signals set to invisible.");
+                    //Debug.Log("All signals set to invisible.");
 
-                    var player = PlayerName.Trim().ToLower();
-                    if (LobbyManager.player2.Equals(player))
-                    {
-                        PlateauSignals
-                            .Instance.player2TurnSignal.GetComponent<CanvasGroup>()
-                            .alpha = 1;
-                        Debug.Log("Player 2 turn signal set to visible.");
-                    }
-                    else if (LobbyManager.player3.Equals(player))
-                    {
-                        PlateauSignals
-                            .Instance.player3TurnSignal.GetComponent<CanvasGroup>()
-                            .alpha = 1;
-                        Debug.Log("Player 3 turn signal set to visible.");
-                    }
-                    else if (LobbyManager.player4.Equals(player))
-                    {
-                        PlateauSignals
-                            .Instance.player4TurnSignal.GetComponent<CanvasGroup>()
-                            .alpha = 1;
-                        Debug.Log("Player 4 turn signal set to visible.");
-                    }
-                    else
-                    {
-                        Debug.LogError($"Player name {player} does not match any known player.");
-                    }
+                    //var player = PlayerName.Trim().ToLower();
+                    //if (LobbyManager.player2.Equals(player))
+                    //{
+                    //    PlateauSignals
+                    //        .Instance.player2TurnSignal.GetComponent<CanvasGroup>()
+                    //        .alpha = 1;
+                    //    Debug.Log("Player 2 turn signal set to visible.");
+                    //}
+                    //else if (LobbyManager.player3.Equals(player))
+                    //{
+                    //    PlateauSignals
+                    //        .Instance.player3TurnSignal.GetComponent<CanvasGroup>()
+                    //        .alpha = 1;
+                    //    Debug.Log("Player 3 turn signal set to visible.");
+                    //}
+                    //else if (LobbyManager.player4.Equals(player))
+                    //{
+                    //    PlateauSignals
+                    //        .Instance.player4TurnSignal.GetComponent<CanvasGroup>()
+                    //        .alpha = 1;
+                    //    Debug.Log("Player 4 turn signal set to visible.");
+                    //}
+                    //else
+                    //{
+                    //    Debug.LogError($"Player name {player} does not match any known player.");
+                    //}
 
                     // Timer.Instance.LaunchTimer();
                 });
