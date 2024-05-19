@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEngine;
 
 public class Builder
@@ -135,6 +136,10 @@ public class Builder
     {
         SetBaseSettings();
         SetTestSettings();
+        PlayerSettings.SetScriptingBackend(
+            NamedBuildTarget.Android,
+            ScriptingImplementation.Mono2x
+        );
 
         // Save path for the build relative to the Unity project root
         var RelativeSaveLocation = "Builds/Android/OkeyTest.apk";
@@ -145,6 +150,7 @@ public class Builder
             scenes = GetEditorScenes().ToArray(),
             locationPathName = RelativeSaveLocation,
             target = BuildTarget.Android,
+            targetGroup = BuildTargetGroup.Android,
             options =
                 BuildOptions.Development
                 | BuildOptions.AllowDebugging
