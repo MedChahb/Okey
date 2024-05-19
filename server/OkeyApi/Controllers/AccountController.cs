@@ -2,6 +2,7 @@ namespace OkeyApi.Controllers;
 
 using Data;
 using Dtos.Compte;
+using Dtos.PutsDtos;
 using Interfaces;
 using Mappers;
 using Microsoft.AspNetCore.Identity;
@@ -243,6 +244,7 @@ public class AccountController : ControllerBase
                             Photo = utilisateur.Result.Photo,
                             Experience = utilisateur.Result.Experience,
                             Elo = utilisateur.Result.Elo,
+                            DateInscription = utilisateur.Result.DateInscription,
                             Achievements = list,
                             NombreParties = utilisateur.Result.NombreParties,
                             NombrePartiesGagnees = utilisateur.Result.NombrePartiesGagnees
@@ -252,6 +254,115 @@ public class AccountController : ControllerBase
             }
         }
         return this.Ok(user.ToPublicUtilisateurDto());
+    }
+
+    [HttpPut("photo")]
+    public async Task<IActionResult> PostChangePhoto([FromBody] PhotoDto PhotoDto)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.BadRequest(this.ModelState);
+        }
+        var user = this.GetCurrentUser();
+        var userIdentity = this.User.Identity;
+        if (userIdentity is { IsAuthenticated: true })
+        {
+            if (PhotoDto.photo is >= 1 and <= 4)
+            {
+                if (user.Result.Username != null)
+                {
+                    await this._utilisateurRepository.UpdatePhotoAsync(
+                        user.Result.Username,
+                        PhotoDto.photo
+                    );
+                }
+                return this.Ok("La photo a bien été modifié");
+            }
+            return this.StatusCode(400, "La photo doit etre comprise entre 1 et 4.");
+        }
+
+        return this.StatusCode(
+            500,
+            "Veuillez vous connecter au compte pour pouvoir changer ces attributs."
+        );
+    }
+
+    [HttpPut("username")]
+    public async Task<IActionResult> PostChangeUsername([FromBody] UsernameDto UsernameDto)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.BadRequest(this.ModelState);
+        }
+
+        var userIdentity = this.User.Identity;
+        if (userIdentity is { IsAuthenticated: true })
+        {
+            var user = this.GetCurrentUser();
+            await this._utilisateurRepository.UpdateUsernameAsync(
+                user.Result.Username!,
+                UsernameDto.new_username
+            );
+
+            var newUser = this._utilisateurManager.Users.FirstOrDefaultAsync(s =>
+                (s.UserName != null)
+                && s.UserName.Equals(UsernameDto.new_username, StringComparison.Ordinal)
+            );
+
+            if (newUser.Result != null)
+            {
+                return this.Ok(
+                    new NewUtilisateurDto
+                    {
+                        Username = newUser.Result.UserName,
+                        Photo = newUser.Result.Photo,
+                        Token = this._tokenService.CreateToken(newUser.Result)
+                    }
+                );
+            }
+        }
+
+        return this.StatusCode(
+            500,
+            "Veuillez vous connecter au compte pour pouvoir changer ces attributs."
+        );
+    }
+
+    [HttpPut("password")]
+    public async Task<IActionResult> PostChangePassword([FromBody] PasswordDto PasswordDto)
+    {
+        if (!this.ModelState.IsValid)
+        {
+            return this.BadRequest(this.ModelState);
+        }
+
+        var user = this.GetCurrentUser();
+        var userIdentity = this.User.Identity;
+        if (userIdentity is { IsAuthenticated: true })
+        {
+            try
+            {
+                if (user.Result.Username != null)
+                {
+                    await this._utilisateurRepository.UpdatePasswordAsync(
+                        user.Result.Username,
+                        PasswordDto.old_password,
+                        PasswordDto.new_password
+                    );
+                }
+                return this.Ok("Mot de passe modifié");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return this.StatusCode(400, "Le mot de passe est mauvais");
+            }
+        }
+
+        return this.StatusCode(
+            500,
+            "Veuillez vous connecter au compte pour pouvoir changer ces attributs."
+        );
     }
 
     /// <summary>

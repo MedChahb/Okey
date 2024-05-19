@@ -12,6 +12,10 @@ public class RoomManager : IRoomManager
     private ConcurrentBag<Room> roomsAvailable;
     private ConcurrentBag<Room> RoomsBusy;
 
+    private Dictionary<string, Room> _privateRooms;
+
+    private static Random random = new Random();
+
     /// <summary>
     /// Événement déclenché lorsque le jeu commence dans une salle.
     /// </summary>
@@ -25,13 +29,57 @@ public class RoomManager : IRoomManager
         this._rooms = new Dictionary<string, Room>();
         this.roomsAvailable = new ConcurrentBag<Room>();
         this.RoomsBusy = new ConcurrentBag<Room>();
+        this._privateRooms = new Dictionary<string, Room>();
 
         this._rooms.Add("room1", new Room("room1"));
+        //this._rooms.Add("room2", new Room("room2"));
+        //this._rooms.Add("room3", new Room("room3"));
 
         foreach (var room in this._rooms)
         {
             this.roomsAvailable.Add(room.Value);
         }
+    }
+
+    private static string GenerateRandomPossibleRoomName()
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return new string(
+            Enumerable.Repeat(chars, 5).Select(s => s[random.Next(s.Length)]).ToArray()
+        );
+    }
+
+    public string? CreatePrivateRoom()
+    {
+        var roomName = GenerateRandomPossibleRoomName();
+
+        if (
+            !this._privateRooms.TryGetValue(roomName, out _)
+            && !this._rooms.TryGetValue(roomName, out _)
+        )
+        {
+            this._rooms.Add(roomName, new Room(roomName));
+            this._privateRooms.Add(roomName, new Room(roomName));
+            return roomName;
+        }
+        return null;
+    }
+
+    public bool TryJoinPrivateRoom(string roomId, string playerId)
+    {
+        Console.WriteLine("On veut ajouter un joueur");
+        var room = this._rooms[roomId];
+        if (!room.IsFull())
+        {
+            room.AddPlayer(playerId);
+
+            if (room.IsFull())
+            {
+                this._privateRooms.Remove(roomId);
+            }
+            return true;
+        }
+        return false;
     }
 
     /// <summary>
@@ -61,10 +109,18 @@ public class RoomManager : IRoomManager
     /// <param name="roomName">Le nom de la salle.</param>
     public void ResetRoom(string roomName)
     {
-        var room = this.GetRoomById(roomName);
-        room.Players = new List<string>();
-        this.RoomsBusy = new ConcurrentBag<Room>(this.RoomsBusy.Except(new[] { room }));
-        this.roomsAvailable.Add(room);
+        // On vérifie si la room est priveée --> on la supprime et on annule tout
+        if (!roomName.Contains("room", StringComparison.Ordinal))
+        {
+            this._rooms.Remove(roomName);
+        }
+        else
+        {
+            var room = this.GetRoomById(roomName);
+            room.Players = new List<string>();
+            this.RoomsBusy = new ConcurrentBag<Room>(this.RoomsBusy.Except(new[] { room }));
+            this.roomsAvailable.Add(room);
+        }
     }
 
     /// <summary>
