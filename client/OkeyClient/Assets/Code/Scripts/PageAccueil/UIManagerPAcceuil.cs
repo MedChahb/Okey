@@ -21,6 +21,8 @@ public class UIManagerPAcceuil : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI playBtnTxt;
 
+    public TextMeshProUGUI parametreLabel;
+
     [SerializeField]
     private int sceneId;
 
@@ -55,11 +57,15 @@ public class UIManagerPAcceuil : MonoBehaviour
     {
         if (UIManager.singleton.language)
         {
+            connexionBtnTxt.text = "Log In";
             playBtnTxt.text = "Play";
+            parametreLabel.text = "Connect";
         }
         else
         {
+            connexionBtnTxt.text = "Connexion";
             playBtnTxt.text = "Jouer";
+            parametreLabel.text = "Paramètres";
         }
     }
 
