@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Code.Scripts.SignalR.Packets;
 using Code.Scripts.SignalR.Packets.Emojis;
 using Code.Scripts.SignalR.Packets.Rooms;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.SignalR.Client;
 using TMPro;
 using UnityEngine;
@@ -51,6 +52,28 @@ public class SignalRConnector : MonoBehaviour
         }
 
         await this.JoinRoom();
+    }
+
+    public async void InitializeConnectionForPrivate()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(
+                "http://localhost/OkeyHub" /* Remettre Constants.SIGNALR_HUB_URL*/
+            )
+            .Build();
+
+        this.ConfigureHubEvents();
+
+        try
+        {
+            await _hubConnection.StartAsync();
+            Debug.Log("SignalR connection established.");
+            LobbyManager.Instance.SetConnectionStatus(true);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"SignalR connection failed: {ex.Message}");
+        }
     }
 
     public async void HubDisconnect()
@@ -992,7 +1015,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 if (roomState.playerDatas != null)
                 {
-                    this.UpdateWaitingPlayerUI(roomState.playerDatas);
+                    this.UpdateWaitingPlayerUI(roomState.playerDatas, roomState.roomName);
                     // this.LoadAvatarsInLobby(roomState.playerDatas);
 
                     foreach (var data in roomState.playerDatas)
@@ -1229,7 +1252,7 @@ public class SignalRConnector : MonoBehaviour
 
     //}
 
-    private void UpdateWaitingPlayerUI(List<string> PlayerData)
+    private void UpdateWaitingPlayerUI(List<string> PlayerData, string roomName)
     {
         MainThreadDispatcher.Enqueue(() =>
         {
@@ -1246,6 +1269,14 @@ public class SignalRConnector : MonoBehaviour
             var P2 = bg.transform.GetChild(2);
             var P3 = bg.transform.GetChild(3);
             var P4 = bg.transform.GetChild(4);
+
+            Debug.Log($"Nom de room: {roomName}");
+
+            if (!roomName.Contains("room", StringComparison.Ordinal))
+            {
+                bg.transform.GetChild(5).GetComponent<TextMeshProUGUI>().text =
+                    $"Code de la partie:\n{roomName}";
+            }
 
             var tabP = new List<Transform>();
             tabP.Add(P1);
@@ -1314,6 +1345,60 @@ public class SignalRConnector : MonoBehaviour
     //         }
     //     });
     // }
+
+    public async Task CreateJoinPrivateRoom()
+    {
+        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
+        {
+            try
+            {
+                await _hubConnection.SendAsync("CreatePrivateRoom");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    UIManagerPFormulaire.Instance.showRooms.SetActive(false);
+                    UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
+
+                    var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
+                });
+                Debug.Log($"Request to join private room sent.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to join private room : {ex.Message}");
+            }
+        }
+        else
+        {
+            Debug.LogError("Cannot join private room. Hub connection is not established.");
+        }
+    }
+
+    public async Task JoinWithCodePrivate(string code)
+    {
+        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
+        {
+            try
+            {
+                await _hubConnection.SendAsync("TryJoinPrivateRoom", code);
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    UIManagerPFormulaire.Instance.showRooms.SetActive(false);
+                    UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
+
+                    var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
+                });
+                Debug.Log($"Request to join room 1 sent.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to join room 1: {ex.Message}");
+            }
+        }
+        else
+        {
+            Debug.LogError("Cannot join room. Hub connection is not established.");
+        }
+    }
 
     public async Task JoinRoom() // takes parameter roomName in future
     {
