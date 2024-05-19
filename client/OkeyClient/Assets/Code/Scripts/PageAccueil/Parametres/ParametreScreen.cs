@@ -1,9 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Unity.VisualScripting.Icons;
-
-//using UnityEngine.UIElements;
 
 public class ParametreScreen : MonoBehaviour
 {
@@ -56,7 +53,7 @@ public class ParametreScreen : MonoBehaviour
         {
             soundEffects.text = "Effet Sonores";
             music.text = "Ambiance Musique";
-            language.text = "Language";
+            language.text = "Langue";
         }
     }
 }
