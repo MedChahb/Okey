@@ -61,6 +61,22 @@ services:
     profiles:
       - core
       - extra
+  okey-website:
+    image: registry.app.unistra.fr/okaybytes/okey/okeywebsite:${TARGET:-dev}
+    build:
+      context: ../
+      dockerfile: docker/OkeyWebsite.Dockerfile
+      tags:
+        - registry.app.unistra.fr/okaybytes/okey/okeywebsite
+    restart: always
+    container_name: okey-website
+    networks:
+      - okey
+    expose: # ça ne sert strictement à rien, aucun effet
+      - 3000
+    profiles:
+      - core
+      - extra
   db:
     image: mysql:8.0.36
     restart: always
@@ -87,7 +103,7 @@ services:
     restart: always
     container_name: phpmyadmin
     volumes:
-      - ${PERSIST_PATH:-./}docker_data/config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+      - ${PERSIST_PATH:-./}docker_data/config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
     networks:
       - okey
     depends_on:
