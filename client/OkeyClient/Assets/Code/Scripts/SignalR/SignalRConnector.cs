@@ -100,12 +100,61 @@ public class SignalRConnector : MonoBehaviour
             (playerList) =>
             {
                 Debug.Log("Affichage des joueurs dans l'ordre de tour");
-                for (var i = 0; i < playerList.playerUsernames.Count; i++)
+
+                MainThreadDispatcher.Enqueue(() =>
                 {
-                    Debug.Log(
-                        $"{playerList.playerUsernames[i]} -> {playerList.playerConnectionIds[i]}"
-                    );
-                }
+                    int mainPlayerIndex = -1;
+                    for (var i = 0; i < playerList.playerUsernames.Count; i++)
+                    {
+                        Debug.Log(
+                            $"{playerList.playerUsernames[i]} -> {playerList.playerConnectionIds[i]}"
+                        );
+
+                        var playerID = playerList.playerConnectionIds[i].Trim().ToLower();
+                        var playerUsername = playerList.playerUsernames[i];
+
+                        if (playerID == _hubConnection.ConnectionId.Trim().ToLower())
+                        {
+                            mainPlayerIndex = i;
+                            LobbyManager.mainPlayer = playerID;
+                            LobbyManager.Instance.mainPlayerUsername = playerUsername;
+                        }
+                    }
+
+                    if (mainPlayerIndex == -1)
+                    {
+                        Debug.LogError("Main player not found in the player list.");
+                        return;
+                    }
+
+                    int otherPlayerIndex = 0;
+                    for (var i = 0; i < playerList.playerUsernames.Count; i++)
+                    {
+                        if (i == mainPlayerIndex)
+                            continue;
+
+                        var playerID = playerList.playerConnectionIds[i].Trim().ToLower();
+                        var playerUsername = playerList.playerUsernames[i];
+
+                        switch (otherPlayerIndex)
+                        {
+                            case 0:
+                                LobbyManager.player2 = playerID;
+                                LobbyManager.Instance.player2Username = playerUsername;
+                                break;
+                            case 1:
+                                LobbyManager.player3 = playerID;
+                                LobbyManager.Instance.player3Username = playerUsername;
+                                break;
+                            case 2:
+                                LobbyManager.player4 = playerID;
+                                LobbyManager.Instance.player4Username = playerUsername;
+                                break;
+                        }
+
+                        otherPlayerIndex++;
+                    }
+                });
             }
         );
 
