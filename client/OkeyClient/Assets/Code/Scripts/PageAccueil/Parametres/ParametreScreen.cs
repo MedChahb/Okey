@@ -2,8 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-//using UnityEngine.UIElements;
-
 public class ParametreScreen : MonoBehaviour
 {
     public Image parametresImage; // Reference to the image object
@@ -55,7 +53,7 @@ public class ParametreScreen : MonoBehaviour
         {
             soundEffects.text = "Effet Sonores";
             music.text = "Ambiance Musique";
-            language.text = "Language";
+            language.text = "Langue";
         }
     }
 }
