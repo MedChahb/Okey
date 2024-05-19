@@ -405,8 +405,8 @@ unity-android-local-test:
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
   rules:
     - if: $CI_COMMIT_BRANCH == "front-end"
-      changes:
-        - client/OkeyClient/**/*
+      # changes:
+      #   - client/OkeyClient/**/*
       when: always
     - if: $CI_COMMIT_TAG =~ $RELEASE_TAG
       when: always
