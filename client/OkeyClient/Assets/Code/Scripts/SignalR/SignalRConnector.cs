@@ -113,7 +113,12 @@ public class SignalRConnector : MonoBehaviour
                         var playerID = playerList.playerConnectionIds[i].Trim().ToLower();
                         var playerUsername = playerList.playerUsernames[i];
 
-                        if (playerID == _hubConnection.ConnectionId.Trim().ToLower())
+                        if (
+                            playerID.Equals(
+                                _hubConnection.ConnectionId.Trim().ToLower(),
+                                StringComparison.Ordinal
+                            )
+                        )
                         {
                             mainPlayerIndex = i;
                             LobbyManager.mainPlayer = playerID;
@@ -127,7 +132,33 @@ public class SignalRConnector : MonoBehaviour
                         return;
                     }
 
-                    int otherPlayerIndex = 0;
+                    //int otherPlayerIndex = 0;
+
+                    LobbyManager.player2 = playerList
+                        .playerConnectionIds[(mainPlayerIndex + 1) % 4]
+                        .Trim()
+                        .ToLower();
+                    LobbyManager.Instance.player2Username = playerList.playerUsernames[
+                        (mainPlayerIndex + 1) % 4
+                    ];
+
+                    LobbyManager.player3 = playerList
+                        .playerConnectionIds[(mainPlayerIndex + 2) % 4]
+                        .Trim()
+                        .ToLower();
+                    LobbyManager.Instance.player3Username = playerList.playerUsernames[
+                        (mainPlayerIndex + 2) % 4
+                    ];
+
+                    LobbyManager.player4 = playerList
+                        .playerConnectionIds[(mainPlayerIndex + 3) % 4]
+                        .Trim()
+                        .ToLower();
+                    LobbyManager.Instance.player4Username = playerList.playerUsernames[
+                        (mainPlayerIndex + 3) % 4
+                    ];
+
+                    /*
                     for (var i = 0; i < playerList.playerUsernames.Count; i++)
                     {
                         if (i == mainPlayerIndex)
@@ -153,7 +184,8 @@ public class SignalRConnector : MonoBehaviour
                         }
 
                         otherPlayerIndex++;
-                    }
+
+                    }*/
                 });
             }
         );
@@ -349,7 +381,6 @@ public class SignalRConnector : MonoBehaviour
                 {
                     // PlateauSignals.Instance.SetPlayerSignal(PlayerName);
 
-
                     PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
@@ -359,36 +390,35 @@ public class SignalRConnector : MonoBehaviour
                     PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
                     PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
 
-                    //Debug.Log("All signals set to invisible.");
+                    Debug.Log("All signals set to invisible.");
 
-                    //var player = PlayerName.Trim().ToLower();
-                    //if (LobbyManager.player2.Equals(player))
-                    //{
-                    //    PlateauSignals
-                    //        .Instance.player2TurnSignal.GetComponent<CanvasGroup>()
-                    //        .alpha = 1;
-                    //    Debug.Log("Player 2 turn signal set to visible.");
-                    //}
-                    //else if (LobbyManager.player3.Equals(player))
-                    //{
-                    //    PlateauSignals
-                    //        .Instance.player3TurnSignal.GetComponent<CanvasGroup>()
-                    //        .alpha = 1;
-                    //    Debug.Log("Player 3 turn signal set to visible.");
-                    //}
-                    //else if (LobbyManager.player4.Equals(player))
-                    //{
-                    //    PlateauSignals
-                    //        .Instance.player4TurnSignal.GetComponent<CanvasGroup>()
-                    //        .alpha = 1;
-                    //    Debug.Log("Player 4 turn signal set to visible.");
-                    //}
-                    //else
-                    //{
-                    //    Debug.LogError($"Player name {player} does not match any known player.");
-                    //}
-
-                    // Timer.Instance.LaunchTimer();
+                    var player = PlayerName.Trim().ToLower();
+                    if (LobbyManager.player2.Equals(player, StringComparison.Ordinal))
+                    {
+                        PlateauSignals
+                            .Instance.player2TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 2 turn signal set to visible.");
+                    }
+                    else if (LobbyManager.player3.Equals(player, StringComparison.Ordinal))
+                    {
+                        PlateauSignals
+                            .Instance.player3TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 3 turn signal set to visible.");
+                    }
+                    else if (LobbyManager.player4.Equals(player, StringComparison.Ordinal))
+                    {
+                        PlateauSignals
+                            .Instance.player4TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 4 turn signal set to visible.");
+                    }
+                    else
+                    {
+                        Debug.LogError($"Player name {player} does not match any known player.");
+                    }
+                    Timer.Instance.LaunchTimer();
                 });
             }
         );
@@ -400,9 +430,18 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est votre tour");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    // PlateauSignals.Instance.SetMainPlayerTurnSignal();
-                    // PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
-                    // PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
+                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
+
+                    PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+
+                    PlateauSignals.Instance.SetMainPlayerTurnSignal();
+                    PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
+                    PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
 
                     if (!Chevalet.PiocheIsVide)
                     {
@@ -410,11 +449,6 @@ public class SignalRConnector : MonoBehaviour
                     }
                     PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 1;
                     PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 1;
-
-                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
-                    PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
-                    PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
-                    PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
 
                     // Timer.Instance.LaunchTimer();
                 });
