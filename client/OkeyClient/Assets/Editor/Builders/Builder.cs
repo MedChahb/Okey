@@ -37,6 +37,9 @@ public class Builder
         PlayerSettings.statusBarHidden = true;
         PlayerSettings.SetStackTraceLogType(LogType.Error, StackTraceLogType.Full);
         PlayerSettings.SetStackTraceLogType(LogType.Exception, StackTraceLogType.Full);
+        PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Standalone, "");
+        PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Unknown, "");
+        PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Android, "");
 
         // Android settings
         PlayerSettings.Android.androidIsGame = true;
