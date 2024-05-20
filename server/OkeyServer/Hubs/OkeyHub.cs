@@ -1799,11 +1799,12 @@ public sealed class OkeyHub : Hub
                 this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
             }
         }
-        // modification des elos desjoueurs
+        /* TODO dbContext is disposed of and can't be used
+        // modification des elos des joueurs
         for (var i = 0; i < 4; i++)
         {
             var joueur = jeu.GetJoueurs()[i];
-            // TODO appliquer des valeurs de score et de elo a l'aide de calculs
+
             if (jeu.GetJoueurs()[i].isGagnant())
             {
                 Console.WriteLine("est-ce qu'on arrive ici ?");
@@ -1816,6 +1817,7 @@ public sealed class OkeyHub : Hub
                     .UpdateStats(this._dbContext, ((Humain)joueur).GetElo(), 3, true, false);
             }
         }
+        */
     }
 
     /// <summary>
