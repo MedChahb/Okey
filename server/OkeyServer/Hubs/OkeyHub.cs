@@ -692,17 +692,16 @@ public sealed class OkeyHub : Hub
             if (coordinates.gagner == true)
             {
                 Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
-                var winner = pl?.getName();
                 if (pl?.VerifSerieChevalet() == true)
                 {
+                    Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
                     // Le joueur gagne
                     //jeu.PushPiocheCentre();
                     //await this.PlayerWon(roomName, winner);
-                    //if (pl != null)
-                    //{
-                    //  jeu.JeuTermine(pl);
-                    // }
-
+                    if (pl != null)
+                    {
+                        jeu.JeuTermine(pl);
+                    }
 
                     Thread.Sleep(10000);
                     return "FIN";
