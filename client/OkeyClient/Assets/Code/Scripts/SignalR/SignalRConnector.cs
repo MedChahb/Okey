@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Code.Scripts.SignalR.Packets;
 using Code.Scripts.SignalR.Packets.Emojis;
@@ -34,7 +35,7 @@ public class SignalRConnector : MonoBehaviour
     {
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(
-                "http://localhost/OkeyHub" /* Remettre Constants.SIGNALR_HUB_URL*/
+                "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-0/OkeyHub"
             )
             .Build();
 
