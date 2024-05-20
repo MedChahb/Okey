@@ -702,9 +702,6 @@ public sealed class OkeyHub : Hub
                     {
                         jeu.JeuTermine(pl);
                     }
-
-                    Thread.Sleep(10000);
-                    return "FIN";
                 }
                 else
                 {
