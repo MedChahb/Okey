@@ -20,7 +20,7 @@ using Security;
 /// </summary>
 public sealed class OkeyHub : Hub
 {
-    private static readonly int time = 20000;
+    private static readonly int time = 59000;
 
     private static ConcurrentDictionary<string, PlayerDatas> _connectedUsers =
         new ConcurrentDictionary<string, PlayerDatas>();
