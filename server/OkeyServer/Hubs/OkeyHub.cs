@@ -675,12 +675,7 @@ public sealed class OkeyHub : Hub
     /// <param name="jeu">Instance de jeu.</param>
     /// <param name="token">Jeton d'annulation.</param>
     /// <returns>Coordonnées de la tuile jetée.</returns>
-    private async Task<string> JeterRequest(
-        Joueur pl,
-        string roomName,
-        Jeu jeu,
-        CancellationTokenSource token
-    )
+    private async Task<string> JeterRequest(Joueur pl, string roomName, Jeu jeu)
     {
         try
         {
@@ -701,14 +696,11 @@ public sealed class OkeyHub : Hub
                 var coordinates = await invokeTask;
                 if (coordinates.gagner == true)
                 {
-                    if (
-                        pl?.JeteTuilePourTerminer(
-                            this.ReadCoords(coordinates.Y + ";" + coordinates.X),
-                            jeu
-                        ) == true
-                    )
+                    if (pl?.VerifSerieChevalet() == true)
                     {
                         // Le joueur gagne
+                        //jeu.PushPiocheCentre();
+                        jeu.JeuTermine(pl);
                         await this.PlayerWon(roomName, pl.getName());
                     }
 
@@ -1764,7 +1756,7 @@ public sealed class OkeyHub : Hub
 
                     await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                    var res = await this.JeterRequest(currentPlayer, roomName, jeu, this._cts);
+                    var res = await this.JeterRequest(currentPlayer, roomName, jeu);
                     if (res.Equals("FIN", StringComparison.Ordinal))
                     {
                         await this.BroadCastInRoom(
