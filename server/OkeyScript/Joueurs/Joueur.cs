@@ -342,6 +342,19 @@ namespace Okey.Joueurs
                 int y = c.getY();
                 Tuile? toThrow = this.chevalet[y][x];
 
+                // debugging
+                Console.WriteLine("tuile jetée fin de partie : x : " + x + " y : " + y);
+                for (int i2 = 0; i2 < etage; i2++)
+                {
+                    for (int j2 = 0; j2 < tuilesDansEtage; j2++)
+                    {
+                        Console.Write(this.chevalet[i2][j2].ToString() + " : ");
+                    }
+                    Console.WriteLine();
+                }
+                // fin debugging
+
+
                 this.chevalet[y][x] = null;
                 if (this.VerifSerieChevalet()) // ici le joueur gagne
                 {
