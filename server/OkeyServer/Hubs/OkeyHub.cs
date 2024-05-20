@@ -702,31 +702,33 @@ public sealed class OkeyHub : Hub
                         jeu.JeuTermine(pl);
                     }
                 }
-
-                if (pl != null)
+                else
                 {
-                    await this.SendMpToPlayer(
-                        pl.getName(),
-                        "Vous n'avez pas de serie dans votre chevalet !"
-                    );
-                    var randTuileCoord = pl.GetRandomTuileCoords();
-                    var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
+                    if (pl != null)
+                    {
+                        await this.SendMpToPlayer(
+                            pl.getName(),
+                            "Vous n'avez pas de serie dans votre chevalet !"
+                        );
+                        var randTuileCoord = pl.GetRandomTuileCoords();
+                        var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
 
-                    await this.SendTuileJeteeToPlayer(
-                        pl.getName(),
-                        new TuilePacket
-                        {
-                            X = randTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
-                            Y = randTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
-                            gagner = null
-                        }
-                    );
+                        await this.SendTuileJeteeToPlayer(
+                            pl.getName(),
+                            new TuilePacket
+                            {
+                                X = randTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
+                                Y = randTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
+                                gagner = null
+                            }
+                        );
 
-                    pl?.JeterTuile(
-                        this.ReadCoords(randTuileCoord.getY() + ";" + randTuileCoord.getX()),
-                        jeu
-                    );
-                    return "";
+                        pl?.JeterTuile(
+                            this.ReadCoords(randTuileCoord.getY() + ";" + randTuileCoord.getX()),
+                            jeu
+                        );
+                        return "";
+                    }
                 }
             }
             else
