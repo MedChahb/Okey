@@ -713,22 +713,30 @@ public sealed class OkeyHub : Hub
                         // modification des elos desjoueurs
                         for (var i = 0; i < 4; i++)
                         {
+                            var joueur = jeu.GetJoueurs()[i];
                             // TODO appliquer des valeurs de score et de elo a l'aide de calculs
                             if (jeu.GetJoueurs()[i].isGagnant())
                             {
-                                await this
-                                    ._hubContext.Clients.Group(roomName)
-                                    .SendAsync(
-                                        "WinInfos",
-                                        _connectedUsers[jeu.GetJoueurs()[i].getName()].GetUsername()
+                                Console.WriteLine("est-ce qu'on arrive ici ?");
+                                await _connectedUsers[joueur.getName()]
+                                    .UpdateStats(
+                                        this._dbContext,
+                                        ((Humain)joueur).GetElo(),
+                                        5,
+                                        true,
+                                        true
                                     );
-                                await _connectedUsers[jeu.GetJoueurs()[i].getName()]
-                                    .UpdateStats(this._dbContext, 10, 5, true, true);
                             }
                             else
                             {
-                                await _connectedUsers[jeu.GetJoueurs()[i].getName()]
-                                    .UpdateStats(this._dbContext, -5, 3, true, false);
+                                await _connectedUsers[joueur.getName()]
+                                    .UpdateStats(
+                                        this._dbContext,
+                                        ((Humain)joueur).GetElo(),
+                                        3,
+                                        true,
+                                        false
+                                    );
                             }
                         }
 

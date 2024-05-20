@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Code.Scripts.SignalR.Packets;
 using Code.Scripts.SignalR.Packets.Emojis;
 using Code.Scripts.SignalR.Packets.Rooms;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.SignalR.Client;
 using TMPro;
 using UnityEngine;
@@ -49,6 +51,28 @@ public class SignalRConnector : MonoBehaviour
         await this.JoinRoom();
     }
 
+    public async void InitializeConnectionForPrivate()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(
+                "http://localhost/OkeyHub" /* Remettre Constants.SIGNALR_HUB_URL*/
+            )
+            .Build();
+
+        this.ConfigureHubEvents();
+
+        try
+        {
+            await _hubConnection.StartAsync();
+            Debug.Log("SignalR connection established.");
+            LobbyManager.Instance.SetConnectionStatus(true);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"SignalR connection failed: {ex.Message}");
+        }
+    }
+
     public async void HubDisconnect()
     {
         MainThreadDispatcher.Enqueue(() =>
@@ -68,6 +92,101 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        _hubConnection.On<OrderPacket>(
+            "PlayerOrdered",
+            (playerList) =>
+            {
+                Debug.Log("Affichage des joueurs dans l'ordre de tour");
+
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    int mainPlayerIndex = -1;
+                    for (var i = 0; i < playerList.playerUsernames.Count; i++)
+                    {
+                        Debug.Log(
+                            $"{playerList.playerUsernames[i]} -> {playerList.playerConnectionIds[i]}"
+                        );
+
+                        var playerID = playerList.playerConnectionIds[i].Trim().ToLower();
+                        var playerUsername = playerList.playerUsernames[i];
+
+                        if (
+                            playerID.Equals(
+                                _hubConnection.ConnectionId.Trim().ToLower(),
+                                StringComparison.Ordinal
+                            )
+                        )
+                        {
+                            mainPlayerIndex = i;
+                            LobbyManager.mainPlayer = playerID;
+                            LobbyManager.Instance.mainPlayerUsername = playerUsername;
+                        }
+                    }
+
+                    if (mainPlayerIndex == -1)
+                    {
+                        Debug.LogError("Main player not found in the player list.");
+                        return;
+                    }
+
+                    //int otherPlayerIndex = 0;
+
+                    LobbyManager.player2 = playerList
+                        .playerConnectionIds[(mainPlayerIndex + 1) % 4]
+                        .Trim()
+                        .ToLower();
+                    LobbyManager.Instance.player2Username = playerList.playerUsernames[
+                        (mainPlayerIndex + 1) % 4
+                    ];
+
+                    LobbyManager.player3 = playerList
+                        .playerConnectionIds[(mainPlayerIndex + 2) % 4]
+                        .Trim()
+                        .ToLower();
+                    LobbyManager.Instance.player3Username = playerList.playerUsernames[
+                        (mainPlayerIndex + 2) % 4
+                    ];
+
+                    LobbyManager.player4 = playerList
+                        .playerConnectionIds[(mainPlayerIndex + 3) % 4]
+                        .Trim()
+                        .ToLower();
+                    LobbyManager.Instance.player4Username = playerList.playerUsernames[
+                        (mainPlayerIndex + 3) % 4
+                    ];
+
+                    /*
+                    for (var i = 0; i < playerList.playerUsernames.Count; i++)
+                    {
+                        if (i == mainPlayerIndex)
+                            continue;
+
+                        var playerID = playerList.playerConnectionIds[i].Trim().ToLower();
+                        var playerUsername = playerList.playerUsernames[i];
+
+                        switch (otherPlayerIndex)
+                        {
+                            case 0:
+                                LobbyManager.player2 = playerID;
+                                LobbyManager.Instance.player2Username = playerUsername;
+                                break;
+                            case 1:
+                                LobbyManager.player3 = playerID;
+                                LobbyManager.Instance.player3Username = playerUsername;
+                                break;
+                            case 2:
+                                LobbyManager.player4 = playerID;
+                                LobbyManager.Instance.player4Username = playerUsername;
+                                break;
+                        }
+
+                        otherPlayerIndex++;
+
+                    }*/
+                });
+            }
+        );
+
         _hubConnection.On<StartingGamePacket>(
             "StartGame",
             (players) =>
@@ -82,57 +201,58 @@ public class SignalRConnector : MonoBehaviour
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     Debug.LogWarning($"Le jeu a commence");
-                    if (players.playersList != null && players.playersList.Count > 0)
-                    {
-                        int otherPlayerIndex = 0;
-                        for (int i = 0; i < players.playersList.Count; i++)
-                        {
-                            // string player = players.playersList[i];
-                            // store the player value as a string in lower case trim
-                            string player = players.playersList[i].Trim().ToLower();
-                            string username = players.playersUsernames[i];
-                            // Debug.LogWarning($"Player {i + 1}: {player}");
 
-                            Debug.Log(
-                                "Main player: "
-                                    + _hubConnection.ConnectionId
-                                    + " Player iteration: "
-                                    + player
-                            );
-                            if (player == _hubConnection.ConnectionId.Trim().ToLower())
-                            {
-                                LobbyManager.mainPlayer = player;
-                                LobbyManager.Instance.mainPlayerUsername = username;
-                                Debug.Log("MainPlayer: " + player);
-                            }
-                            else
-                            {
-                                switch (otherPlayerIndex)
-                                {
-                                    case 0:
-                                        LobbyManager.player2 = player;
-                                        LobbyManager.Instance.player2Username = username;
-                                        // Debug.Log($"Player 2 set to: {player}");
-                                        break;
-                                    case 1:
-                                        LobbyManager.player3 = player;
-                                        LobbyManager.Instance.player3Username = username;
-                                        // Debug.Log($"Player 3 set to: {player}");
-                                        break;
-                                    case 2:
-                                        LobbyManager.player4 = player;
-                                        LobbyManager.Instance.player4Username = username;
-                                        // Debug.Log($"Player 4 set to: {player}");
-                                        break;
-                                }
-                                otherPlayerIndex++;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogError("No players found in playersList.");
-                    }
+                    //if (players.playersList != null && players.playersList.Count > 0)
+                    //{
+                    //    int otherPlayerIndex = 0;
+                    //    for (int i = 0; i < players.playersList.Count; i++)
+                    //    {
+                    //        // string player = players.playersList[i];
+                    //        // store the player value as a string in lower case trim
+                    //        string player = players.playersList[i].Trim().ToLower();
+                    //        string username = players.playersUsernames[i];
+                    //        // Debug.LogWarning($"Player {i + 1}: {player}");
+
+                    //        Debug.Log(
+                    //            "Main player: "
+                    //                + _hubConnection.ConnectionId
+                    //                + " Player iteration: "
+                    //                + player
+                    //        );
+                    //        if (player == _hubConnection.ConnectionId.Trim().ToLower())
+                    //        {
+                    //            LobbyManager.mainPlayer = player;
+                    //            LobbyManager.Instance.mainPlayerUsername = username;
+                    //            Debug.Log("MainPlayer: " + player);
+                    //        }
+                    //        else
+                    //        {
+                    //            switch (otherPlayerIndex)
+                    //            {
+                    //                case 0:
+                    //                    LobbyManager.player2 = player;
+                    //                    LobbyManager.Instance.player2Username = username;
+                    //                    // Debug.Log($"Player 2 set to: {player}");
+                    //                    break;
+                    //                case 1:
+                    //                    LobbyManager.player3 = player;
+                    //                    LobbyManager.Instance.player3Username = username;
+                    //                    // Debug.Log($"Player 3 set to: {player}");
+                    //                    break;
+                    //                case 2:
+                    //                    LobbyManager.player4 = player;
+                    //                    LobbyManager.Instance.player4Username = username;
+                    //                    // Debug.Log($"Player 4 set to: {player}");
+                    //                    break;
+                    //            }
+                    //            otherPlayerIndex++;
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    Debug.LogError("No players found in playersList.");
+                    //}
                     SceneManager.LoadSceneAsync("PlateauInit");
                 });
             }
@@ -149,6 +269,7 @@ public class SignalRConnector : MonoBehaviour
                     Debug.Log($"Le joueur {packet.playerSource} nous a fait quitter");
                     _hubConnection.StopAsync();
                     Chevalet.neverReceivedChevalet = true;
+                    Chevalet.PiocheIsVide = false;
                     SceneManager.LoadScene("Acceuil");
                 });
             }
@@ -240,6 +361,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 MainThreadDispatcher.Enqueue(() =>
                 {
+                    Debug.Log("Resetting timer.");
                     Timer.Instance.LaunchTimer();
                 });
             }
@@ -256,38 +378,44 @@ public class SignalRConnector : MonoBehaviour
                 {
                     // PlateauSignals.Instance.SetPlayerSignal(PlayerName);
 
-                    PlateauSignals.Instance.TuileCentre.gameObject.SetActive(false);
-                    PlateauSignals.Instance.TuileGauche.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(false);
+                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
 
-                    //  Debug.Log("player 2:" + LobbyManager.Instance.player2);
-                    //  Debug.Log("player 3:" + LobbyManager.Instance.player3);
-                    //  Debug.Log("player 4:" + LobbyManager.Instance.player4);
+                    PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+
+                    Debug.Log("All signals set to invisible.");
 
                     var player = PlayerName.Trim().ToLower();
-                    if (LobbyManager.player2.Equals(player))
+                    if (LobbyManager.player2.Equals(player, StringComparison.Ordinal))
                     {
-                        PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(true);
-                        Debug.Log("Player 2 turn signal set.");
+                        PlateauSignals
+                            .Instance.player2TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 2 turn signal set to visible.");
                     }
-                    else if (LobbyManager.player3.Equals(player))
+                    else if (LobbyManager.player3.Equals(player, StringComparison.Ordinal))
                     {
-                        PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(true);
-                        Debug.Log("Player 3 turn signal set.");
+                        PlateauSignals
+                            .Instance.player3TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 3 turn signal set to visible.");
                     }
-                    else if (LobbyManager.player4.Equals(player))
+                    else if (LobbyManager.player4.Equals(player, StringComparison.Ordinal))
                     {
-                        PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(true);
-                        Debug.Log("Player 4 turn signal set.");
+                        PlateauSignals
+                            .Instance.player4TurnSignal.GetComponent<CanvasGroup>()
+                            .alpha = 1;
+                        Debug.Log("Player 4 turn signal set to visible.");
                     }
                     else
                     {
                         Debug.LogError($"Player name {player} does not match any known player.");
                     }
-
-                    // Timer.Instance.LaunchTimer();
+                    Timer.Instance.LaunchTimer();
                 });
             }
         );
@@ -299,15 +427,25 @@ public class SignalRConnector : MonoBehaviour
                 Debug.Log($"C'est votre tour");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    // PlateauSignals.Instance.SetMainPlayerTurnSignal();
-                    // PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
-                    // PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
+                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
 
+                    PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+
+                    PlateauSignals.Instance.SetMainPlayerTurnSignal();
                     PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
                     PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
-                    PlateauSignals.Instance.player2TurnSignal.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player3TurnSignal.gameObject.SetActive(false);
-                    PlateauSignals.Instance.player4TurnSignal.gameObject.SetActive(false);
+
+                    if (!Chevalet.PiocheIsVide)
+                    {
+                        PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 1;
+                    }
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 1;
+                    PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 1;
 
                     // Timer.Instance.LaunchTimer();
                 });
@@ -334,7 +472,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    if (Pioche.PiocheTete != null)
+                    if (Pioche.PiocheTete != null && Pioche.PiocheTaille > 0)
                     {
                         var piocheCentale = Chevalet.PilePiochePlaceHolder.GetComponent<Tuile>();
 
@@ -396,6 +534,11 @@ public class SignalRConnector : MonoBehaviour
                         }
 
                         childObject.GetComponent<Tuile>().SetIsDeplacable(false);
+                    }
+                    else
+                    {
+                        Chevalet.PiocheIsVide = true;
+                        Chevalet.PilePiochePlaceHolder.GetComponent<SpriteRenderer>().sprite = null;
                     }
                 });
             }
@@ -541,6 +684,14 @@ public class SignalRConnector : MonoBehaviour
             {
                 var chevaletInstance = Chevalet.Instance;
                 Debug.Log("Ok il faut jeter une tuile");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 1;
+                });
+
                 var tuile = new TuilePacket
                 {
                     X = "0",
@@ -549,6 +700,11 @@ public class SignalRConnector : MonoBehaviour
                 };
 
                 while (chevaletInstance.IsJete == false) { }
+
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
+                });
                 Debug.Log("La tuile vient d'etre jetee");
 
                 if (chevaletInstance.TuileJete != null)
@@ -571,6 +727,16 @@ public class SignalRConnector : MonoBehaviour
             {
                 //Histoire que l'on remarque bien...
                 Debug.LogError($"Le gagnant est {playerId}");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    GameObject.Find("PlateauPanel").SetActive(false);
+                    Plateau2.Instance.Awake();
+                    PlateauUIManager.Instance.FindPartiePanel.SetActive(true);
+                    PlateauUIManager
+                        .Instance.FindPartiePanel.transform.GetChild(2)
+                        .GetComponent<TextMeshProUGUI>()
+                        .text = $"{playerId} \n à gagné !";
+                });
             }
         );
 
@@ -580,6 +746,16 @@ public class SignalRConnector : MonoBehaviour
             {
                 var chevaletInstance = Chevalet.Instance;
                 Debug.Log("Ok il faut jeter une tuile");
+
+                Debug.Log("signalllsssssssssssssssssss");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 0;
+
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 1;
+                });
+
                 var tuile = new TuilePacket
                 {
                     X = "0",
@@ -599,12 +775,12 @@ public class SignalRConnector : MonoBehaviour
                 }
 
                 // add code here signal
-                // MainThreadDispatcher.Enqueue(() =>
-                // {
-                //     LobbyManager.Instance.SetMyTurn(false);
-                //     PlateauSignals.Instance.mainPlayerTurnSignal.gameObject.SetActive(false);
-                //     Timer.Instance.ResetTimer();
-                // });
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    LobbyManager.Instance.SetMyTurn(false);
+                    //PlateauSignals.Instance.SetMainPlayerTurnSignal();
+                    //Timer.Instance.ResetTimer();
+                });
                 return tuile;
             }
         );
@@ -796,7 +972,26 @@ public class SignalRConnector : MonoBehaviour
 
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    if (Chevalet.PilePiochePlaceHolder.transform.childCount > 0)
+                    // PlateauSignals.Instance.SetMainPlayerTurnSignal();
+                    // PlateauSignals.Instance.TuileCentre.gameObject.SetActive(true);
+                    // PlateauSignals.Instance.TuileGauche.gameObject.SetActive(true);
+
+                    if (!Chevalet.PiocheIsVide)
+                    {
+                        PlateauSignals.Instance.TuileCentre.GetComponent<CanvasGroup>().alpha = 1;
+                    }
+                    PlateauSignals.Instance.TuileGauche.GetComponent<CanvasGroup>().alpha = 1;
+                    PlateauSignals.Instance.MainSignal.GetComponent<CanvasGroup>().alpha = 1;
+
+                    PlateauSignals.Instance.TuileDroite.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player2TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player3TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+                    PlateauSignals.Instance.player4TurnSignal.GetComponent<CanvasGroup>().alpha = 0;
+
+                    if (
+                        Chevalet.PilePiochePlaceHolder.transform.childCount > 0
+                        && Chevalet.PiocheIsVide == false
+                    )
                     {
                         Chevalet
                             .PilePiochePlaceHolder.transform.GetChild(
@@ -859,13 +1054,49 @@ public class SignalRConnector : MonoBehaviour
             }
         );
 
+        _hubConnection.On<string>(
+            "TileThrown",
+            (cords) =>
+            {
+                string[] parts = cords.Split(':');
+
+                var x = parts[0];
+                var y = parts[1];
+                var tile = Chevalet.Instance.TuilesPack[int.Parse(x), int.Parse(y)];
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    for (var i = 0; i < 2; i++)
+                    {
+                        for (var j = 0; j < 14; j++)
+                        {
+                            if (
+                                Chevalet
+                                    .Instance.Tuiles2D[i, j]
+                                    .couleur.Equals(tile.couleur, StringComparison.Ordinal)
+                                && Chevalet.Instance.Tuiles2D[i, j].num == tile.num
+                            )
+                            {
+                                Chevalet.Instance.Tuiles2D[i, j] = null;
+                                if (Chevalet.Placeholders[i * 14 + j].transform.childCount > 0)
+                                {
+                                    Destroy(Chevalet.Placeholders[i * 14 + j].gameObject);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        );
+
         _hubConnection.On<RoomState>(
             "SendRoomState",
             (roomState) =>
             {
                 if (roomState.playerDatas != null)
                 {
-                    this.UpdateWaitingPlayerUI(roomState.playerDatas);
+                    this.UpdateWaitingPlayerUI(roomState.playerDatas, roomState.roomName);
+                    // this.LoadAvatarsInLobby(roomState.playerDatas);
+
                     foreach (var data in roomState.playerDatas)
                     {
                         var dSplit = data.Split(';');
@@ -1071,6 +1302,7 @@ public class SignalRConnector : MonoBehaviour
                     else
                     {
                         chevaletInstance.TuilesPack = tuilesData;
+                        chevaletInstance.InitializeBoardFromTuiles();
                     }
                 });
             }
@@ -1099,7 +1331,7 @@ public class SignalRConnector : MonoBehaviour
 
     //}
 
-    private void UpdateWaitingPlayerUI(List<string> PlayerData)
+    private void UpdateWaitingPlayerUI(List<string> PlayerData, string roomName)
     {
         MainThreadDispatcher.Enqueue(() =>
         {
@@ -1116,6 +1348,14 @@ public class SignalRConnector : MonoBehaviour
             var P2 = bg.transform.GetChild(2);
             var P3 = bg.transform.GetChild(3);
             var P4 = bg.transform.GetChild(4);
+
+            Debug.Log($"Nom de room: {roomName}");
+
+            if (!roomName.Contains("room", StringComparison.Ordinal))
+            {
+                bg.transform.GetChild(5).GetComponent<TextMeshProUGUI>().text =
+                    $"Code de la partie:\n{roomName}";
+            }
 
             var tabP = new List<Transform>();
             tabP.Add(P1);
@@ -1154,6 +1394,89 @@ public class SignalRConnector : MonoBehaviour
         });
     }
 
+    // private void LoadAvatarsInLobby(List<string> PlayerData)
+    // {
+    //     MainThreadDispatcher.Enqueue(() =>
+    //     {
+    //         var vue = PlateauUIManager.Instance.playerAvatars;
+    //         var P1 = vue.transform.GetChild(1);
+    //         var P2 = vue.transform.GetChild(2);
+    //         var P3 = vue.transform.GetChild(3);
+    //         var P4 = vue.transform.GetChild(4);
+
+    //         var tabP = new List<Transform>();
+    //         tabP.Add(P1);
+    //         tabP.Add(P2);
+    //         tabP.Add(P3);
+    //         tabP.Add(P4);
+    //         for (var i = 0; i < PlayerData.Count; i++)
+    //         {
+    //             var dSplit = PlayerData[i].Split(';');
+    //             var avatar = tabP[i].transform.GetChild(0);
+    //             var res = Resources.Load<Sprite>("Avatar/avatarn" + dSplit[1]);
+    //             avatar.transform.GetComponent<SpriteRenderer>().transform.localScale = new Vector3(
+    //                 50f,
+    //                 50f,
+    //                 1f
+    //             );
+    //             avatar.transform.GetComponent<SpriteRenderer>().sortingOrder = 5;
+    //             avatar.transform.GetComponent<SpriteRenderer>().sprite = res;
+    //         }
+    //     });
+    // }
+
+    public async Task CreateJoinPrivateRoom()
+    {
+        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
+        {
+            try
+            {
+                await _hubConnection.SendAsync("CreatePrivateRoom");
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
+
+                    var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
+                });
+                Debug.Log($"Request to join private room sent.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to join private room : {ex.Message}");
+            }
+        }
+        else
+        {
+            Debug.LogError("Cannot join private room. Hub connection is not established.");
+        }
+    }
+
+    public async Task JoinWithCodePrivate(string code)
+    {
+        if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
+        {
+            try
+            {
+                await _hubConnection.SendAsync("TryJoinPrivateRoom", code);
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
+
+                    var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
+                });
+                Debug.Log($"Request to join room 1 sent.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to join room 1: {ex.Message}");
+            }
+        }
+        else
+        {
+            Debug.LogError("Cannot join room. Hub connection is not established.");
+        }
+    }
+
     public async Task JoinRoom() // takes parameter roomName in future
     {
         if (_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
@@ -1163,7 +1486,6 @@ public class SignalRConnector : MonoBehaviour
                 await _hubConnection.SendAsync("LobbyConnection");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    UIManagerPFormulaire.Instance.showRooms.SetActive(false);
                     UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
 
                     var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;

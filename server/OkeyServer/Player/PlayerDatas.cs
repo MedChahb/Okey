@@ -177,7 +177,7 @@ public class PlayerDatas
             var userUpdate = dbContext.Users.SingleOrDefault(u => u.UserName == this.Username);
             if (userUpdate != null)
             {
-                this.Elo += elo;
+                this.Elo = elo;
                 this.Experience += experience;
 
                 if (this.NombreParties == 4 && partieJouee)
@@ -189,14 +189,17 @@ public class PlayerDatas
                 {
                     this.NombreParties++;
                 }
+
                 if (this.NombrePartiesGagnees == 0 && PartieGagnee)
                 {
                     await this.UpdateAchievement(dbContext, "GagnerUneFois");
                 }
+
                 if (PartieGagnee)
                 {
                     this.NombrePartiesGagnees++;
                 }
+
                 userUpdate.Elo = this.Elo;
                 userUpdate.Experience = this.Experience;
                 userUpdate.NombreParties = this.NombreParties;
