@@ -692,11 +692,12 @@ public sealed class OkeyHub : Hub
             if (coordinates.gagner == true)
             {
                 Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
+                var winner = pl?.getName();
                 if (pl?.VerifSerieChevalet() == true)
                 {
                     // Le joueur gagne
                     //jeu.PushPiocheCentre();
-                    await this.PlayerWon(roomName, pl?.getName());
+                    await this.PlayerWon(roomName, winner);
                     //if (pl != null)
                     //{
                     //  jeu.JeuTermine(pl);
@@ -1594,10 +1595,7 @@ public sealed class OkeyHub : Hub
     /// <param name="winner">Nom du joueur gagnant.</param>
     private async Task PlayerWon(string roomName, string? winner)
     {
-        foreach (var player in this._roomManager.GetRoomById(roomName).GetPlayerIds())
-        {
-            await this.Clients.Client(player).SendAsync("PlayerWon", winner); //TODO: Faire la distinction entre le gagnant et les autres
-        }
+        await this.Clients.Group(roomName).SendAsync("PlayerWon", winner); //TODO: Faire la distinction entre le gagnant et les autres
     }
 
     /// <summary>
