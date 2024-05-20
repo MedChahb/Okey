@@ -701,8 +701,9 @@ public sealed class OkeyHub : Hub
                     {
                         // Le joueur gagne
                         //jeu.PushPiocheCentre();
-                        jeu.JeuTermine(pl);
                         await this.PlayerWon(roomName, pl.getName());
+                        Thread.Sleep(2000);
+                        jeu.JeuTermine(pl);
                     }
 
                     if (pl != null)
