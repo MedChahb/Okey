@@ -36,7 +36,7 @@
             </button>
         </div>
     </nav>
-    
+
 
     <div id="mobileMenu" class="hidden fixed top-0 left-0 w-full h-full bg-green-800 pt-5 pb-3 px-3 flex flex-col items-center z-50 shadow-lg overflow-scroll">
             <button id="closeMobileMenu" class="self-end pr-3 pt-3 text-gray-700">
@@ -110,11 +110,92 @@
       </div>
 
 
-    <div id="tutoriel" class="text-center py-32">
+    <div id="tutoriel" class="text-center pt-32">
         <h3 id="tutovid" class="text-3xl md:text-4xl font-bold">Apprendre à jouer</h3>
-        <video class='max-w-full h-auto items-center md:h-80 mt-4 mx-auto' controls>
-            Your browser does not support the video tag.
-        </video>
+    </div>
+    <div class="px-20">
+        <h4 id="tuto-head" class="text-3xl md:text-3xl font-bold pt-10">Objectif du jeu</h4>
+        <p id="tuto-obj" class="text-justify">Le but du jeu est d'être le premier joueur à former une main complète, composée d'ensembles
+            (trois tuiles ou plus de même nombre mais de couleurs différentes, par exemple : rouge 7, noir 7, bleu 7)
+            et/ou de suites (trois tuiles ou plus de la même couleur qui se suivent, par exemple : rouge 3, 4, 5). Le joker
+            peut remplacer n'importe quelle tuile pour compléter une série ou une manche.
+            Un joueur peut déclarer sa main s'il a formé une combinaison valide (un mélange d'ensembles et de séries).
+            La partie se termine immédiatement et le joueur est déclaré vainqueur.</p>
+
+        <h4 id="tuto-equip" class="text-3xl md:text-3xl font-bold pt-10">Objets du jeu</h4>
+        <p id="tuto-obj" class="text-justify">Le but du jeu est d'être le premier joueur à former une main complète, composée d'ensembles</p>
+        <ul id="tuto-list" class="list-disc px-10">
+
+            <ul id="tuto-list" class="list-disc px-10">
+                <li class="flex items-center justify-between">
+                    <p>104 tuiles numérotées de 1 à 13 dans quatre couleurs différentes (rouge, noir, bleu et jaune), chaque couleur comportant deux séries de chaque numéro.</p>
+                    <img src="./resources/imgs/img1.png" alt="image description" class="ml-1"/>
+                </li>
+                <li class="flex items-center justify-between">
+                    <p>2 jokers marqués d'une étoile.</p>
+                    <img src="./resources/imgs/jokers.png" alt="image description" class="ml-1"/>
+                </li>
+            </ul>
+            <li>104 tuiles numérotées de 1 à 13 dans quatre couleurs différentes (rouge, noir, bleu et jaune), chaque couleur comportant deux séries de chaque chiffre.</li>
+        </ul>
+        <p id="tuto-equip2" class="text-justify">Les joueurs utilisent également des casiers pour cacher leurs tuiles aux autres joueurs.</p>
+
+        <h4 id="start-head" class="text-3xl md:text-3xl font-bold pt-10">Joueur débutant </h4>
+        <p id="start" class="text-justify">The player with the turn indicator green begins the game by discarding one tile to the center of
+            the table.</p>
+                <img src="./resources/imgs/start.png" class="">
+
+
+        <h4 id="turns-head" class="text-3xl md:text-3xl font-bold pt-10">Tours</h4>
+        <p id="turns-desc" class="text-justify">Players take turns in a anti-clockwise direction.</p>
+        <p id="turns-desc" class="text-justify">During their turn, a player can:</p>
+        <ul id="tuto-list" class="list-disc px-10">
+            <li>Draw a tile from the stock from the center of the table (the pile of face-down tiles).</li>
+            <li>Draw the most recently discarded tile from the pile to the left of the player.</li>
+        </ul>
+
+        <img class="h-36" src="./resources/imgs/turns.png" alt="">
+
+        <h4 id="end-head" class="text-3xl md:text-3xl font-bold pt-10">Arrangement des tuiles</h4>
+
+        <p>Le but est d'organiser les tuiles sur le support en ensembles et en séries :</p>
+
+        <ul id="tuto-list" class="list-disc px-10">
+            <li>Ensembles : Groupes de trois tuiles ou plus du même nombre mais de couleurs différentes.</li>
+            <li>Série : Séquence de trois nombres consécutifs ou plus de la même couleur.</li>
+        </ul>
+
+        <h4 id="joker-head" class="text-3xl md:text-3xl font-bold pt-10">Jokers</h4>
+        <p id="joker-desc" class="text-justify">Les jokers peuvent être utilisés pour remplacer la tuile au milieu + 1 (dans ce cas 5 + 1 = 6 c'est le joker):</p>
+
+        <img class="h-36" src="./resources/imgs/joker-head.png" alt="">
+
+        <ul id="tuto-list" class="list-disc px-10">
+
+
+            <li class="flex items-center justify-between pb-10">
+                <span> Dans une série: Les jokers peuvent remplacer la tuile 6 pour compléter une série de trois tuiles ou plus du même numéro mais de couleur différentes:</span>
+                <img class="h-36" src="./resources/imgs/suite-1.png" alt="">
+            </li>
+
+
+
+            <li class="flex items-center justify-between">
+                <span> Dans une suite: Les jokers peuvent remplacer la tuile 6 rouge pour compléter une séquence de trois numéros consécutifs ou plus de la même couleur: </span>
+                <img class="h-36" src="./resources/imgs/suite-2.png" alt="">
+            </li>
+
+        </ul>
+
+        <h4 id="end-head" class="text-3xl md:text-3xl font-bold pt-10">Finir un tour</h4>
+        <p id="end-desc" class="text-justify">À la fin de son tour, le joueur doit défausser une tuile sur la pile située à sa droite.</p>
+        <img class="h-36" src="./resources/imgs/end-tour.png" alt="">
+
+        <h4 id="win-head" class="text-3xl md:text-3xl font-bold pt-10">Gagner</h4>
+        <p id="win-desc" class="text-justify pb-10">Un joueur gagne en organisant les 14 tuiles de son rack en ensembles valides et en courses et en se débarrassant de sa dernière tuile.</p>
+
+
+
     </div>
 
     <div id="download" class="bg-green-800 text-white">
@@ -196,7 +277,7 @@
                 heading: {
                     first: "OkeyGame: Partout avec qui vous voulez",
                     second: "Faites preuve de stratégie dans ce jeu excitant et compétitif, jouez en ligne avec vos amis, votre famille ou avec notre communauté de joueurs."
-                    
+
                 },
                 history: {
                     first:{
@@ -446,7 +527,7 @@
             document.getElementById("osButton").textContent = osName + " " + translations.tr.tryon;
 
 
-                
+
             } else if(lang == "en") {
                 document.getElementById("tutoNav").textContent = translations.en.nav.tuto;
                 document.getElementById("downNav").textContent = translations.en.nav.download;
@@ -543,9 +624,9 @@
 
             }
 
-            
 
-            
+
+
 
         }
 
