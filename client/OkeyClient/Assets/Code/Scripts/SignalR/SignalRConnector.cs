@@ -33,11 +33,7 @@ public class SignalRConnector : MonoBehaviour
 
     public async void InitializeConnection()
     {
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl(
-                "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-0/OkeyHub"
-            )
-            .Build();
+        _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost/OkeyHub").Build();
 
         this.ConfigureHubEvents();
 
@@ -734,7 +730,6 @@ public class SignalRConnector : MonoBehaviour
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     GameObject.Find("PlateauPanel").SetActive(false);
-
                     Plateau2.Instance.Awake();
                     PlateauUIManager.Instance.FindPartiePanel.SetActive(true);
                     PlateauUIManager
@@ -780,12 +775,12 @@ public class SignalRConnector : MonoBehaviour
                 }
 
                 // add code here signal
-                // MainThreadDispatcher.Enqueue(() =>
-                // {
-                //     LobbyManager.Instance.SetMyTurn(false);
-                //     PlateauSignals.Instance.mainPlayerTurnSignal.gameObject.SetActive(false);
-                //     Timer.Instance.ResetTimer();
-                // });
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    LobbyManager.Instance.SetMyTurn(false);
+                    //PlateauSignals.Instance.SetMainPlayerTurnSignal();
+                    //Timer.Instance.ResetTimer();
+                });
                 return tuile;
             }
         );
