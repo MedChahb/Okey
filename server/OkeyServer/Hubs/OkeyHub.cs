@@ -698,9 +698,19 @@ public sealed class OkeyHub : Hub
                     // Le joueur gagne
                     //jeu.PushPiocheCentre();
                     //await this.PlayerWon(roomName, winner);
+
+
+
                     if (pl != null)
                     {
+                        await this
+                            ._hubContext.Clients.Group(roomName)
+                            .SendAsync("WinInfos", _connectedUsers[pl.getName()].GetUsername());
+
+                        Thread.Sleep(2000);
+
                         jeu.JeuTermine(pl);
+                        return "";
                     }
                 }
                 else
