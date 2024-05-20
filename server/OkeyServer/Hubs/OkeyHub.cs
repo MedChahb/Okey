@@ -696,6 +696,7 @@ public sealed class OkeyHub : Hub
                 var coordinates = await invokeTask;
                 if (coordinates.gagner == true)
                 {
+                    Console.WriteLine($"Vous essayez de gagner {pl.getName()}");
                     if (pl?.VerifSerieChevalet() == true)
                     {
                         // Le joueur gagne
