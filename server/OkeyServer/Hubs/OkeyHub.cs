@@ -710,6 +710,28 @@ public sealed class OkeyHub : Hub
                         Thread.Sleep(2000);
 
                         jeu.JeuTermine(pl);
+                        // modification des elos desjoueurs
+                        for (var i = 0; i < 4; i++)
+                        {
+                            // TODO appliquer des valeurs de score et de elo a l'aide de calculs
+                            if (jeu.GetJoueurs()[i].isGagnant())
+                            {
+                                await this
+                                    ._hubContext.Clients.Group(roomName)
+                                    .SendAsync(
+                                        "WinInfos",
+                                        _connectedUsers[jeu.GetJoueurs()[i].getName()].GetUsername()
+                                    );
+                                await _connectedUsers[jeu.GetJoueurs()[i].getName()]
+                                    .UpdateStats(this._dbContext, 10, 5, true, true);
+                            }
+                            else
+                            {
+                                await _connectedUsers[jeu.GetJoueurs()[i].getName()]
+                                    .UpdateStats(this._dbContext, -5, 3, true, false);
+                            }
+                        }
+
                         return "";
                     }
                 }
