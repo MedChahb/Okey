@@ -142,9 +142,14 @@ services:
       - ${PERSIST_PATH:-./}docker_data/config/nginx/nginx-core.conf:/etc/nginx/nginx.conf:ro
     networks:
       - okey
+    depends_on:
+      - db
+      - okey-api
+      - okey-server
+      - db-init
+      - okey-website
     ports:
       - '80:80' # Public HTTP Port
-      - '443:443' # Public HTTPS Port
     profiles:
       - core
   nginx-extra:
@@ -155,8 +160,15 @@ services:
       - ${PERSIST_PATH:-./}docker_data/config/nginx/nginx-extra.conf:/etc/nginx/nginx.conf:ro
     networks:
       - okey
+    depends_on:
+      - db
+      - okey-api
+      - okey-server
+      - db-init
+      - okey-website
+      - phpmyadmin
+      - portainer
     ports:
       - '80:80' # Public HTTP Port
-      - '443:443' # Public HTTPS Port
     profiles:
       - extra
