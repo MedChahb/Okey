@@ -348,7 +348,7 @@ namespace Okey.Joueurs
                 {
                     for (int j2 = 0; j2 < tuilesDansEtage; j2++)
                     {
-                        Console.Write(this.chevalet[i2][j2].ToString() + " : ");
+                        Console.Write(this.chevalet[i2][j2]?.ToString() + " : ");
                     }
                     Console.WriteLine();
                 }
