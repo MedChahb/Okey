@@ -710,35 +710,6 @@ public sealed class OkeyHub : Hub
                         Thread.Sleep(2000);
 
                         jeu.JeuTermine(pl);
-                        // modification des elos desjoueurs
-                        for (var i = 0; i < 4; i++)
-                        {
-                            var joueur = jeu.GetJoueurs()[i];
-                            // TODO appliquer des valeurs de score et de elo a l'aide de calculs
-                            if (jeu.GetJoueurs()[i].isGagnant())
-                            {
-                                Console.WriteLine("est-ce qu'on arrive ici ?");
-                                await _connectedUsers[joueur.getName()]
-                                    .UpdateStats(
-                                        this._dbContext,
-                                        ((Humain)joueur).GetElo(),
-                                        5,
-                                        true,
-                                        true
-                                    );
-                            }
-                            else
-                            {
-                                await _connectedUsers[joueur.getName()]
-                                    .UpdateStats(
-                                        this._dbContext,
-                                        ((Humain)joueur).GetElo(),
-                                        3,
-                                        true,
-                                        false
-                                    );
-                            }
-                        }
 
                         return "";
                     }
@@ -1826,6 +1797,23 @@ public sealed class OkeyHub : Hub
 
                 await this.SendResetTimer(roomName);
                 this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
+            }
+        }
+        // modification des elos desjoueurs
+        for (var i = 0; i < 4; i++)
+        {
+            var joueur = jeu.GetJoueurs()[i];
+            // TODO appliquer des valeurs de score et de elo a l'aide de calculs
+            if (jeu.GetJoueurs()[i].isGagnant())
+            {
+                Console.WriteLine("est-ce qu'on arrive ici ?");
+                await _connectedUsers[joueur.getName()]
+                    .UpdateStats(this._dbContext, ((Humain)joueur).GetElo(), 5, true, true);
+            }
+            else
+            {
+                await _connectedUsers[joueur.getName()]
+                    .UpdateStats(this._dbContext, ((Humain)joueur).GetElo(), 3, true, false);
             }
         }
     }
