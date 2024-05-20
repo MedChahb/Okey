@@ -684,115 +684,94 @@ public sealed class OkeyHub : Hub
     {
         try
         {
-            if (this._cts != null)
+            var invokeTask = this
+                ._hubContext.Clients.Client(pl.getName())
+                .InvokeAsync<TuilePacket>(
+                    "JeterRequest",
+                    cancellationToken: CancellationToken.None
+                );
+            // attend soit la saisie du client, soit les 20sec
+            // si le client saisie alors    completedTask <- invokeTask
+            // sinon                        completedTask <- Task.Delay()
+
+            var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
+
+            if (completedTask == invokeTask) // TODO: if non optimal du tout, discussion nécessaire
             {
-                var invokeTask = this
-                    ._hubContext.Clients.Client(pl.getName())
-                    .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: this._cts.Token);
-                token.Token.ThrowIfCancellationRequested();
-                // attend soit la saisie du client, soit les 20sec
-                // si le client saisie alors    completedTask <- invokeTask
-                // sinon                        completedTask <- Task.Delay()
-
-                if (!token.IsCancellationRequested)
+                var coordinates = await invokeTask;
+                if (coordinates.gagner == true)
                 {
-                    var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
-
-                    if (completedTask == invokeTask) // TODO: if non optimal du tout, discussion nécessaire
+                    if (
+                        pl?.JeteTuilePourTerminer(
+                            this.ReadCoords(coordinates.Y + ";" + coordinates.X),
+                            jeu
+                        ) == true
+                    )
                     {
-                        var coordinates = await invokeTask;
-                        if (coordinates.gagner == true)
-                        {
-                            if (
-                                pl?.JeteTuilePourTerminer(
-                                    this.ReadCoords(coordinates.Y + ";" + coordinates.X),
-                                    jeu
-                                ) == true
-                            )
-                            {
-                                // Le joueur gagne
-                                await this.PlayerWon(roomName, pl.getName());
-                            }
-
-                            if (pl != null)
-                            {
-                                await this.SendMpToPlayer(
-                                    pl.getName(),
-                                    "Vous n'avez pas de serie dans votre chevalet !"
-                                );
-                                var randTuileCoord = pl.GetRandomTuileCoords();
-                                var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
-
-                                await this.SendTuileJeteeToPlayer(
-                                    pl.getName(),
-                                    new TuilePacket
-                                    {
-                                        X = randTuileCoord
-                                            .getY()
-                                            .ToString(CultureInfo.InvariantCulture),
-                                        Y = randTuileCoord
-                                            .getX()
-                                            .ToString(CultureInfo.InvariantCulture),
-                                        gagner = null
-                                    }
-                                );
-
-                                pl?.JeterTuile(
-                                    this.ReadCoords(
-                                        randTuileCoord.getY() + ";" + randTuileCoord.getX()
-                                    ),
-                                    jeu
-                                );
-                                return "";
-                            }
-                        }
-                        else
-                        {
-                            pl?.JeterTuile(
-                                this.ReadCoords(coordinates.Y + ";" + coordinates.X),
-                                jeu
-                            );
-                            return "";
-                        }
+                        // Le joueur gagne
+                        await this.PlayerWon(roomName, pl.getName());
                     }
 
-                    if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
+                    if (pl != null)
                     {
-                        if (pl != null)
-                        {
-                            var RandTuileCoord = pl.GetRandomTuileCoords();
-                            var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
+                        await this.SendMpToPlayer(
+                            pl.getName(),
+                            "Vous n'avez pas de serie dans votre chevalet !"
+                        );
+                        var randTuileCoord = pl.GetRandomTuileCoords();
+                        var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
 
-                            await this.SendTuileJeteeToPlayer(
-                                pl.getName(),
-                                new TuilePacket
-                                {
-                                    X = RandTuileCoord
-                                        .getY()
-                                        .ToString(CultureInfo.InvariantCulture),
-                                    Y = RandTuileCoord
-                                        .getX()
-                                        .ToString(CultureInfo.InvariantCulture),
-                                    gagner = null
-                                }
-                            );
-                            pl?.JeterTuile(
-                                this.ReadCoords(
-                                    RandTuileCoord.getY() + ";" + RandTuileCoord.getX()
-                                ),
-                                jeu
-                            );
-                            if (pl != null)
+                        await this.SendTuileJeteeToPlayer(
+                            pl.getName(),
+                            new TuilePacket
                             {
-                                await this.SendChevalet(pl.getName(), pl);
+                                X = randTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
+                                Y = randTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
+                                gagner = null
                             }
-                            return "";
-                        }
+                        );
+
+                        pl?.JeterTuile(
+                            this.ReadCoords(randTuileCoord.getY() + ";" + randTuileCoord.getX()),
+                            jeu
+                        );
+                        return "";
                     }
                 }
-                return "FIN";
+                else
+                {
+                    pl?.JeterTuile(this.ReadCoords(coordinates.Y + ";" + coordinates.X), jeu);
+                    return "";
+                }
             }
 
+            if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
+            {
+                if (pl != null)
+                {
+                    var RandTuileCoord = pl.GetRandomTuileCoords();
+                    var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
+
+                    await this.SendTuileJeteeToPlayer(
+                        pl.getName(),
+                        new TuilePacket
+                        {
+                            X = RandTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
+                            Y = RandTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
+                            gagner = null
+                        }
+                    );
+                    pl?.JeterTuile(
+                        this.ReadCoords(RandTuileCoord.getY() + ";" + RandTuileCoord.getX()),
+                        jeu
+                    );
+                    if (pl != null)
+                    {
+                        await this.SendChevalet(pl.getName(), pl);
+                    }
+                    return "";
+                }
+            }
             return "FIN";
         }
         catch (Exception e)
