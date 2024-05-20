@@ -75,7 +75,7 @@ public class RoomManager : IRoomManager
 
             if (room.IsFull())
             {
-                this._privateRooms.Remove(roomId);
+                //this._privateRooms.Remove(roomId);
             }
             return true;
         }
