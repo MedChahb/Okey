@@ -92,6 +92,7 @@ docker-api:
     - if: $CI_COMMIT_BRANCH == "back-end"
       changes:
         - docker/OkeyApi.Dockerfile
+        - docker/OkeyApi.Dockerfile.dockerignore
         - server/OkeyApi/**/*.cs
         - server/OkeyApi/appsettings*.json
         - server/OkeyApi/**/launchSettings.json
@@ -124,6 +125,7 @@ docker-server:
     - if: $CI_COMMIT_BRANCH == "back-end"
       changes:
         - docker/OkeyServer.Dockerfile
+        - docker/OkeyServer.Dockerfile.dockerignore
         - server/OkeyServer/**/*.cs
         - server/OkeyServer/*.csproj
         - server/OkeyServer/*.sln
@@ -154,6 +156,7 @@ docker-db-init:
     - if: $CI_COMMIT_BRANCH == "back-end"
       changes:
         - docker/DB-Init.Dockerfile
+        - docker/DB-Init.Dockerfile.dockerignore
         - server/OkeyApi/**/*.cs
         - server/OkeyApi/appsettings*.json
         - server/OkeyApi/**/launchSettings.json
