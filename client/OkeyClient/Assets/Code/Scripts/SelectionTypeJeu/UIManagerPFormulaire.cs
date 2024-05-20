@@ -26,8 +26,6 @@ public class UIManagerPFormulaire : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
 
-    public GameObject showRooms;
-
     [SerializeField]
     private GameObject lobbyPrivateConfig;
 
@@ -68,7 +66,6 @@ public class UIManagerPFormulaire : MonoBehaviour
         this.CreatePrivateParty.onClick.AddListener(CreateAndJoinPrivateParty);
         this.JoinPrivateParty.onClick.AddListener(JoinParty);
 
-        showRooms.SetActive(false);
         lobbyPlayerWaiting.SetActive(false);
         lobbyPrivateConfig.SetActive(false);
 
@@ -191,6 +188,5 @@ public class UIManagerPFormulaire : MonoBehaviour
     public void setActiveShowRooms()
     {
         Debug.Log("setActiveShowRooms");
-        showRooms.SetActive(true);
     }
 }

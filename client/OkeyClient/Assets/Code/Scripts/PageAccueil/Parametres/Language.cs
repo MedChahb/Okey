@@ -26,6 +26,23 @@ public class Language : MonoBehaviour
 
         enButton.onClick.AddListener(onEnClicked);
         frButton.onClick.AddListener(onFnClicked);
+
+        if (UIManager.singleton.language)
+        {
+            frLabel.color = Color.black;
+            enLabel.color = Color.white;
+
+            enImage.color = color;
+            frImage.color = Color.white;
+        }
+        else
+        {
+            frLabel.color = Color.white;
+            enLabel.color = Color.black;
+
+            frImage.color = color;
+            enImage.color = Color.white;
+        }
     }
 
     public void onEnClicked()

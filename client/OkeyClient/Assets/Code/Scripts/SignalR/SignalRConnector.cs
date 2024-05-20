@@ -1438,7 +1438,6 @@ public class SignalRConnector : MonoBehaviour
                 await _hubConnection.SendAsync("CreatePrivateRoom");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    UIManagerPFormulaire.Instance.showRooms.SetActive(false);
                     UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
 
                     var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
@@ -1465,7 +1464,6 @@ public class SignalRConnector : MonoBehaviour
                 await _hubConnection.SendAsync("TryJoinPrivateRoom", code);
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    UIManagerPFormulaire.Instance.showRooms.SetActive(false);
                     UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
 
                     var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
@@ -1492,7 +1490,6 @@ public class SignalRConnector : MonoBehaviour
                 await _hubConnection.SendAsync("LobbyConnection");
                 MainThreadDispatcher.Enqueue(() =>
                 {
-                    UIManagerPFormulaire.Instance.showRooms.SetActive(false);
                     UIManagerPFormulaire.Instance.lobbyPlayerWaiting.SetActive(true);
 
                     var vue = UIManagerPFormulaire.Instance.lobbyPlayerWaiting;
