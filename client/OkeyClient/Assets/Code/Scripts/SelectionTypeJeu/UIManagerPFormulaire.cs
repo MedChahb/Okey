@@ -25,6 +25,11 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
+    public TextMeshProUGUI partiePriveeTxt;
+    public TextMeshProUGUI createPrivateLobbyTitle;
+    public TextMeshProUGUI joinPrivateLobbyTitle;
+    public TextMeshProUGUI createPrivateLbbyBtnLabel;
+    public TextMeshProUGUI joinLbbyPrivateLbl;
 
     [SerializeField]
     private GameObject lobbyPrivateConfig;
@@ -57,6 +62,25 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     void Start()
     {
+        if (UIManager.singleton.language)
+        {
+            partieSimpleTxt.text = "Public Lobby";
+            partiePriveeTxt.text = "Private Lobby";
+            createPrivateLobbyTitle.text = "Create a private lobby";
+            joinPrivateLobbyTitle.text = "Join a private lobby";
+            createPrivateLbbyBtnLabel.text = "Create";
+            joinLbbyPrivateLbl.text = "Join";
+        }
+        else
+        {
+            partieSimpleTxt.text = "Lobby public";
+            partiePriveeTxt.text = "Lobby Privée";
+            createPrivateLobbyTitle.text = "Créer un lobby privé";
+            joinPrivateLobbyTitle.text = "Rejoindre un lobby privé";
+            createPrivateLbbyBtnLabel.text = "Créer une partie privée";
+            joinLbbyPrivateLbl.text = "Rejoindre";
+        }
+
         backBtnPrivate.onClick.AddListener(onBackBtnPrivateClicked);
         backBtnPublic.onClick.AddListener(onBackBtnPrivateClicked);
         backBtn.onClick.AddListener(onBackBtnClicked);

@@ -6,6 +6,7 @@ using Code.Scripts.SignalR.Packets;
 using Code.Scripts.SignalR.Packets.Emojis;
 using Code.Scripts.SignalR.Packets.Rooms;
 using JetBrains.Annotations;
+using LogiqueJeu.Joueur;
 using Microsoft.AspNetCore.SignalR.Client;
 using TMPro;
 using UnityEngine;
@@ -94,7 +95,7 @@ public class SignalRConnector : MonoBehaviour
             {
                 Debug.Log("Affichage des joueurs dans l'ordre de tour");
 
-                MainThreadDispatcher.Enqueue(() =>
+                MainThreadDispatcher.Enqueue(async () =>
                 {
                     int mainPlayerIndex = -1;
                     for (var i = 0; i < playerList.playerUsernames.Count; i++)
@@ -179,6 +180,16 @@ public class SignalRConnector : MonoBehaviour
                         otherPlayerIndex++;
 
                     }*/
+
+                    await UpdatePlayerAvatars(
+                        new List<string>
+                        {
+                            LobbyManager.Instance.mainPlayerUsername,
+                            LobbyManager.Instance.player2Username,
+                            LobbyManager.Instance.player3Username,
+                            LobbyManager.Instance.player4Username
+                        }
+                    );
                 });
             }
         );
@@ -1550,4 +1561,59 @@ public class SignalRConnector : MonoBehaviour
     //     Debug.Log("setActiveShowRooms");
     //     UIManagerPFormulaire.Instance.setActiveShowRooms();
     // }
+    private async Task UpdatePlayerAvatars(List<string> playerUsernames)
+    {
+        List<Task<Sprite>> avatarTasks = new List<Task<Sprite>>();
+        foreach (var username in playerUsernames)
+        {
+            avatarTasks.Add(FetchPlayerAvatarAsync(username));
+        }
+
+        Sprite[] avatars = await Task.WhenAll(avatarTasks);
+
+        if (avatars.Length >= 4)
+        {
+            LobbyManager.Instance.mainPlayerAvatar = avatars[0];
+            LobbyManager.Instance.player2Avatar = avatars[1];
+            LobbyManager.Instance.player3Avatar = avatars[2];
+            LobbyManager.Instance.player4Avatar = avatars[3];
+
+            MainThreadDispatcher.Enqueue(() =>
+            {
+                PlayerAvatarsLobby.Instance.LoadAndDisplayAvatars(
+                    new List<Sprite>
+                    {
+                        LobbyManager.Instance.mainPlayerAvatar,
+                        LobbyManager.Instance.player2Avatar,
+                        LobbyManager.Instance.player3Avatar,
+                        LobbyManager.Instance.player4Avatar
+                    }
+                );
+            });
+        }
+    }
+
+    private async Task<Sprite> FetchPlayerAvatarAsync(string username)
+    {
+        try
+        {
+            var joueur = await API.FetchJoueurAsync(username);
+            if (joueur != null)
+            {
+                string avatarPath = $"Avatar/avatarn{joueur.photo}";
+                Sprite avatarSprite = Resources.Load<Sprite>(avatarPath);
+                return avatarSprite;
+            }
+            else
+            {
+                Debug.LogWarning($"No avatar found for user: {username}");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to fetch avatar for user {username}: {ex.Message}");
+            return null;
+        }
+    }
 }

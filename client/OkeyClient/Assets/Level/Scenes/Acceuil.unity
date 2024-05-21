@@ -27144,6 +27144,8 @@ MonoBehaviour:
   connexionBtnTxt: {fileID: 1967579652}
   playBtnTxt: {fileID: 1932895623}
   parametreLabel: {fileID: 2021752838}
+  classementLabel: {fileID: 1346930645}
+  classementTitle: {fileID: 774249491}
   sceneId: 1
   parametres: {fileID: 1518135836}
   login: {fileID: 790733547}
@@ -39196,7 +39198,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 10, y: -0.0000038147}
+  m_AnchoredPosition: {x: 10, y: -0.0000038146973}
   m_SizeDelta: {x: -20, y: -32.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2064498043
