@@ -34,7 +34,7 @@ public class Plateau2 : MonoBehaviour
     // Tableau des mots, assurez-vous que cela correspond à l'ordre des boutons
 
 
-    private void Awake()
+    public void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -158,6 +158,7 @@ public class Plateau2 : MonoBehaviour
     {
         SignalRConnector._hubConnection.StopAsync();
         Chevalet.neverReceivedChevalet = true;
+        Chevalet.PiocheIsVide = false;
         SceneManager.LoadScene("Acceuil");
     }
 

@@ -21,10 +21,10 @@ public static class Constants
     public const string ANONYMOUS_PLAYER_NAME = "Anonyme";
     public const string SIGNALR_HUB_URL =
 #if LOCAL
-        "http://localhost/OkeyHub";
+        "http://localhost:10000/OkeyHub";
 #elif (DEBUG || UNITY_EDITOR)
-        "http://localhost/OkeyHub";
+        "http://mai-projet-integrateur.u-strasbg.fr:10000/OkeyHub";
 #else
-        "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-1/OkeyHub";
+        "http://mai-projet-integrateur.u-strasbg.fr:10008/OkeyHub";
 #endif
 }

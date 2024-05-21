@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,12 +26,19 @@ public class UIManagerPFormulaire : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
 
-    public GameObject showRooms;
-
     [SerializeField]
     private GameObject lobbyPrivateConfig;
 
     public GameObject lobbyPlayerWaiting;
+
+    [SerializeField]
+    public Button CreatePrivateParty;
+
+    [SerializeField]
+    public TMP_InputField PartyCode;
+
+    [SerializeField]
+    public Button JoinPrivateParty;
 
     [SerializeField]
     private int SceneId;
@@ -55,10 +63,13 @@ public class UIManagerPFormulaire : MonoBehaviour
         //joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
         joinPublicLobbyBtn.onClick.AddListener(onPublicLobbyClicked);
         joinPrivateLobbyBtn.onClick.AddListener(onPrivateLobbyClicked);
+        this.CreatePrivateParty.onClick.AddListener(CreateAndJoinPrivateParty);
+        this.JoinPrivateParty.onClick.AddListener(JoinParty);
 
-        showRooms.SetActive(false);
         lobbyPlayerWaiting.SetActive(false);
         lobbyPrivateConfig.SetActive(false);
+
+        SignalRConnector.Instance.InitializeConnectionForPrivate();
     }
 
     void Update()
@@ -76,6 +87,24 @@ public class UIManagerPFormulaire : MonoBehaviour
         {
             showRooms.SetActive(true);
         }*/
+    }
+
+    private async void CreateAndJoinPrivateParty()
+    {
+        await SignalRConnector.Instance.CreateJoinPrivateRoom();
+    }
+
+    private async void JoinParty()
+    {
+        if (this.PartyCode.text.Equals("", StringComparison.Ordinal))
+        {
+            Debug.LogError("Vous devez remplir avec un code");
+        }
+        else
+        {
+            // Essayer de join
+            SignalRConnector.Instance.JoinWithCodePrivate(this.PartyCode.text.ToUpper());
+        }
     }
 
     void onBackBtnClicked()
@@ -159,6 +188,5 @@ public class UIManagerPFormulaire : MonoBehaviour
     public void setActiveShowRooms()
     {
         Debug.Log("setActiveShowRooms");
-        showRooms.SetActive(true);
     }
 }

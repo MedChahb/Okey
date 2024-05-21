@@ -2,7 +2,6 @@
 //
 // /Path/To/Unity -quit -batchmode -executeMethod Builder.Build Android
 // /Path/To/Unity -quit -batchmode -executeMethod Builder.Build AndroidTest
-// /Path/To/Unity -quit -batchmode -executeMethod Builder.Build iOS
 //
 // See https://support.unity.com/hc/en-us/articles/115000368846-How-do-I-support-different-configurations-to-build-specific-players-by-command-line-or-auto-build-system
 
@@ -10,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEngine;
 
 public class Builder
@@ -37,6 +37,21 @@ public class Builder
         PlayerSettings.statusBarHidden = true;
         PlayerSettings.SetStackTraceLogType(LogType.Error, StackTraceLogType.Full);
         PlayerSettings.SetStackTraceLogType(LogType.Exception, StackTraceLogType.Full);
+        PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Standalone, "");
+        PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Unknown, "");
+        PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Android, "");
+
+        // Android settings
+        PlayerSettings.Android.androidIsGame = true;
+        PlayerSettings.Android.androidTargetDevices = AndroidTargetDevices.AllDevices;
+        PlayerSettings.Android.androidTVCompatibility = false;
+        PlayerSettings.Android.chromeosInputEmulation = false;
+        PlayerSettings.Android.defaultWindowWidth = 1920;
+        PlayerSettings.Android.defaultWindowHeight = 1080;
+        PlayerSettings.Android.forceInternetPermission = true;
+        // PlayerSettings.Android.fullscreenMode = FullScreenMode.FullScreenWindow;
+        // https://docs.unity3d.com/ScriptReference/AndroidArchitecture.html
+        PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
 
         var version = Environment.GetEnvironmentVariable("OKEY_BUILD_VERSION");
         if (!string.IsNullOrEmpty(version))
@@ -119,34 +134,70 @@ public class Builder
         );
     }
 
-    [MenuItem("MyTools/Test Build/iOS Test Build")]
-    public static void iOSTestBuild()
+    [MenuItem("MyTools/Test Build/Android Local Test Build")]
+    public static void AndroidLocalTestBuild()
     {
         SetBaseSettings();
         SetTestSettings();
+        PlayerSettings.SetScriptingBackend(
+            NamedBuildTarget.Android,
+            ScriptingImplementation.Mono2x
+        );
 
         // Save path for the build relative to the Unity project root
-        var RelativeSaveLocation = "Builds/iOS/OkeyTest";
+        var RelativeSaveLocation = "Builds/Android/OkeyTest.apk";
 
         // Build the player
         var buildPlayerOptions = new BuildPlayerOptions
         {
             scenes = GetEditorScenes().ToArray(),
             locationPathName = RelativeSaveLocation,
-            target = BuildTarget.iOS,
+            target = BuildTarget.Android,
+            targetGroup = BuildTargetGroup.Android,
             options =
                 BuildOptions.Development
                 | BuildOptions.AllowDebugging
                 | BuildOptions.EnableDeepProfilingSupport
                 | BuildOptions.DetailedBuildReport,
-            extraScriptingDefines = new[] { "DEBUG" }
+            extraScriptingDefines = new[] { "DEBUG", "LOCAL" }
         };
 
         BuildPipeline.BuildPlayer(buildPlayerOptions);
 
         EditorUtility.DisplayDialog(
             "Build Complete",
-            "iOS Test Build Complete\n\nSaved to: "
+            "Android Test Build Complete\n\nSaved to: "
+                + Path.Join(
+                    Directory.GetParent(Application.dataPath).ToString(),
+                    RelativeSaveLocation
+                ),
+            "OK"
+        );
+    }
+
+    [MenuItem("MyTools/Test Build/Android Release Build")]
+    public static void AndroidReleaseBuild()
+    {
+        SetBaseSettings();
+        SetReleaseSettings();
+
+        // Save path for the build relative to the Unity project root
+        var RelativeSaveLocation = "Builds/Android/Okey";
+
+        // Build the player
+        var buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = GetEditorScenes().ToArray(),
+            locationPathName = RelativeSaveLocation,
+            target = BuildTarget.Android,
+            options = BuildOptions.None
+        };
+
+        BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        EditorUtility.DisplayDialog(
+            "Build Complete",
+            "Android Release Build Complete\n\nSaved to: "
                 + Path.Join(
                     Directory.GetParent(Application.dataPath).ToString(),
                     RelativeSaveLocation

@@ -150,6 +150,8 @@ services:
       - okey-website
     ports:
       - '80:80' # Public HTTP Port
+      - '10000:10000' # OkeyServer port
+      - '10008:10008' # OkeyServer port
     profiles:
       - core
   nginx-extra:
@@ -170,5 +172,7 @@ services:
       - portainer
     ports:
       - '80:80' # Public HTTP Port
+      - '10000:10000' # OkeyServer port
+      - '10008:10008' # OkeyServer port
     profiles:
       - extra
