@@ -31,7 +31,8 @@ public sealed class OkeyHub : Hub
     private readonly IRoomManager _roomManager;
     private readonly IHubContext<OkeyHub> _hubContext;
     private static readonly char[] Separator = new char[] { ';' };
-    private readonly IServiceScopeFactory _scopeFactory;
+
+    //private readonly IServiceScopeFactory _scopeFactory;
     private readonly ServerDbContext _dbContext;
 
     private ConcurrentDictionary<string, bool> _isPlayerTurn;
@@ -47,14 +48,14 @@ public sealed class OkeyHub : Hub
     public OkeyHub(
         IHubContext<OkeyHub> hubContext,
         IRoomManager roomManager,
-        ServerDbContext dbContext,
-        IServiceScopeFactory scopeFactory
+        //IServiceScopeFactory scopeFactory,
+        ServerDbContext dbContext
     )
     {
         this._roomManager = roomManager;
         this._hubContext = hubContext;
         this._dbContext = dbContext;
-        this._scopeFactory = scopeFactory;
+        //this._scopeFactory = scopeFactory;
         this._isPlayerTurn = new ConcurrentDictionary<string, bool>();
     }
 
@@ -692,6 +693,7 @@ public sealed class OkeyHub : Hub
         if (completedTask == invokeTask) // TODO: if non optimal du tout, discussion nécessaire
         {
             var coordinates = await invokeTask;
+
             if (coordinates.gagner == true)
             {
                 Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
@@ -700,11 +702,13 @@ public sealed class OkeyHub : Hub
                     Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
                     // Le joueur gagne
 
+
                     if (pl != null)
                     {
-                        //  jeu.JeuTermine(pl);
-                        //  await this.PlayerWon(roomName, _connectedUsers[pl.getName()].GetUsername());
-
+                        jeu.JeuTermine(pl);
+                        await this
+                            .Clients.Group(roomName)
+                            .SendAsync("PlayerWon", _connectedUsers[pl.getName()].GetUsername());
                         Thread.Sleep(2000);
                         return "";
                     }
@@ -1794,7 +1798,7 @@ public sealed class OkeyHub : Hub
                 this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
             }
         }
-
+        /* TODO fix this
         using (var scope = this._scopeFactory.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ServerDbContext>();
@@ -1815,6 +1819,7 @@ public sealed class OkeyHub : Hub
                 }
             }
         }
+        */
     }
 
     /// <summary>
