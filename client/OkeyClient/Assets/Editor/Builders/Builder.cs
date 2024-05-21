@@ -38,10 +38,8 @@ public class Builder
         PlayerSettings.SetStackTraceLogType(LogType.Error, StackTraceLogType.Full);
         PlayerSettings.SetStackTraceLogType(LogType.Exception, StackTraceLogType.Full);
         PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Standalone, "");
-        PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Unknown, "");
         PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Android, "");
         PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "");
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Unknown, "");
         PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, "");
 
         // Android settings
