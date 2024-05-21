@@ -52,7 +52,12 @@ public class Builder
         PlayerSettings.Android.forceInternetPermission = true;
         // PlayerSettings.Android.fullscreenMode = FullScreenMode.FullScreenWindow;
         // https://docs.unity3d.com/ScriptReference/AndroidArchitecture.html
-        PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
+        PlayerSettings.Android.targetArchitectures =
+            AndroidArchitecture.ARM64 | AndroidArchitecture.ARMv7;
+        PlayerSettings.Android.buildApkPerCpuArchitecture = false;
+        // https://docs.unity3d.com/ScriptReference/AndroidSdkVersions.html
+        /* PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel24; */
+        /* PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel28; */
 
         var version = Environment.GetEnvironmentVariable("OKEY_BUILD_VERSION");
         if (!string.IsNullOrEmpty(version))
@@ -138,11 +143,25 @@ public class Builder
     [MenuItem("MyTools/Test Build/Android Local Test Build")]
     public static void AndroidLocalTestBuild()
     {
+        EditorUserBuildSettings.SwitchActiveBuildTarget(
+            BuildTargetGroup.Android,
+            BuildTarget.Android
+        );
+        EditorUserBuildSettings.selectedBuildTargetGroup = BuildTargetGroup.Android;
+        EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
+        /* EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.Generic; */
+        PlayerSettings.SetArchitecture(NamedBuildTarget.Android, 2);
+
         SetBaseSettings();
         SetTestSettings();
+
         PlayerSettings.SetScriptingBackend(
             NamedBuildTarget.Android,
             ScriptingImplementation.Mono2x
+        );
+        PlayerSettings.SetApiCompatibilityLevel(
+            NamedBuildTarget.Android,
+            ApiCompatibilityLevel.NET_Unity_4_8
         );
 
         // Save path for the build relative to the Unity project root
@@ -176,7 +195,7 @@ public class Builder
         );
     }
 
-    [MenuItem("MyTools/Test Build/Android Release Build")]
+    [MenuItem("MyTools/Release Build/Android Release Build")]
     public static void AndroidReleaseBuild()
     {
         SetBaseSettings();
