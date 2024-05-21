@@ -85,7 +85,9 @@ public class LogInScreen : MonoBehaviour
         }
         else
         {
-            erreurTxt.text = "Veuillez remplir tous les champs !";
+            erreurTxt.text = UIManager.singleton.language
+                ? "Please fill in all fields!"
+                : "Veuillez remplir tous les champs !";
             erreurTxt.gameObject.SetActive(true);
         }
     }
@@ -138,7 +140,10 @@ public class LogInScreen : MonoBehaviour
                 if (Code != null)
                 {
                     Debug.Log("Request error with response code " + Code);
-                    erreurTxt.text = "Identifiant ou mot de passe invalide";
+                    erreurTxt.text = UIManager.singleton.language
+                        ? "Invalid username or password"
+                        : "Identifiant ou mot de passe invalide";
+                    "Identifiant ou mot de passe invalide";
                     erreurTxt.gameObject.SetActive(true);
                     return;
                 }
@@ -166,7 +171,9 @@ public class LogInScreen : MonoBehaviour
                 return;
             }
         }
-        erreurTxt.text = "Erreur réseau, votre Internet marche bien ?";
+        erreurTxt.text = UIManager.singleton.language
+            ? "Network error, is your Internet working?"
+            : "Erreur réseau, votre Internet marche bien ?";
         erreurTxt.gameObject.SetActive(true);
     }
 

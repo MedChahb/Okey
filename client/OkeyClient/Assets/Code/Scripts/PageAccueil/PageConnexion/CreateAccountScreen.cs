@@ -185,8 +185,10 @@ public class CreatAccountScreen : MonoBehaviour
             || !int.TryParse(YearInput.text, out annee)
         )
         {
-            erreurTxt.text =
-                "Veuillez entrer des nombres valides pour le jour, le mois et l'année.";
+            erreurTxt.text = UIManager.singleton.language
+                ? "Please enter valid numbers for day, month and year."
+                : "Veuillez entrer des nombres valides pour le jour, le mois et l'année.";
+            "Veuillez entrer des nombres valides pour le jour, le mois et l'année.";
             erreurTxt.gameObject.SetActive(true);
             return;
         }
@@ -194,7 +196,9 @@ public class CreatAccountScreen : MonoBehaviour
         // Vérifier si le mois est entre 1 et 12
         if (mois < 1 || mois > 12)
         {
-            erreurTxt.text = "Le mois doit être compris entre 1 et 12.";
+            erreurTxt.text = UIManager.singleton.language
+                ? "The month must be between 1 and 12."
+                : "Le mois doit être compris entre 1 et 12.";
             erreurTxt.gameObject.SetActive(true);
             return;
         }
@@ -203,7 +207,9 @@ public class CreatAccountScreen : MonoBehaviour
         int joursDansMois = System.DateTime.DaysInMonth(annee, mois);
         if (jour < 1 || jour > joursDansMois)
         {
-            erreurTxt.text = "Le jour n'est pas valide.";
+            erreurTxt.text = UIManager.singleton.language
+                ? "The day is not valid."
+                : "Le jour n'est pas valide.";
             erreurTxt.gameObject.SetActive(true);
             return;
         }
@@ -211,7 +217,9 @@ public class CreatAccountScreen : MonoBehaviour
         // Vérifier si l'année est valide (facultatif)
         if (annee < 1900 || annee > 2023)
         {
-            erreurTxt.text = "Entrez une année valide.";
+            erreurTxt.text = UIManager.singleton.language
+                ? "Please enter a valid year."
+                : "Entrez une année valide.";
             erreurTxt.gameObject.SetActive(true);
             return;
         }
@@ -219,7 +227,9 @@ public class CreatAccountScreen : MonoBehaviour
         // Vérifier si les mots de passe sont identiques
         if (Password.text != PasswordValidation.text)
         {
-            erreurTxt.text = "Les mots de passe ne correspondent pas.";
+            erreurTxt.text = UIManager.singleton.language
+                ? "The passwords do not match."
+                : "Les mots de passe ne correspondent pas.";
             erreurTxt.gameObject.SetActive(true);
             return;
         }
@@ -237,7 +247,9 @@ public class CreatAccountScreen : MonoBehaviour
         }
         else
         {
-            erreurTxt.text = "Veuillez remplir tous les champs !";
+            erreurTxt.text = UIManager.singleton.language
+                ? "Please fill in all fields!"
+                : "Veuillez remplir tous les champs !";
             erreurTxt.gameObject.SetActive(true);
         }
     }
@@ -275,7 +287,9 @@ public class CreatAccountScreen : MonoBehaviour
                 if (Code != null)
                 {
                     Debug.Log("Request error with response code " + Code);
-                    erreurTxt.text = "La création de votre compte a échouée";
+                    erreurTxt.text = UIManager.singleton.language
+                        ? "Account creation failed"
+                        : "La création de votre compte a échouée";
                     erreurTxt.gameObject.SetActive(true);
                     return;
                 }
@@ -304,7 +318,9 @@ public class CreatAccountScreen : MonoBehaviour
                 return;
             }
         }
-        erreurTxt.text = "Erreur réseau, votre Internet marche bien ?";
+        erreurTxt.text = UIManager.singleton.language
+            ? "Network error, is your Internet working?"
+            : "Erreur réseau, votre Internet marche bien ?";
         erreurTxt.gameObject.SetActive(true);
     }
 
