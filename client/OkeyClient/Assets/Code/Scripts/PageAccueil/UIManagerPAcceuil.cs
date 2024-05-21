@@ -27,6 +27,16 @@ public class UIManagerPAcceuil : MonoBehaviour
     public TextMeshProUGUI classementTitleAfterLogin;
     public TextMeshProUGUI classementTitlePage;
 
+    public TextMeshProUGUI niveau;
+    public TextMeshProUGUI statistiques;
+    public TextMeshProUGUI tempsTotaldeJeu;
+    public TextMeshProUGUI partiePerdues;
+    public TextMeshProUGUI partieGagnees;
+    public TextMeshProUGUI classement;
+
+    public TextMeshProUGUI deconnexionBtnLabel;
+    public TextMeshProUGUI changerAvatarLabel;
+
     public TextMeshProUGUI createAccountTitle;
 
     public TextMeshProUGUI nom;
@@ -70,7 +80,6 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     public GameObject rankingNotConnected;
 
-    // Start is called before the first frame update
     void Start()
     {
         manager.SelfJoueurChangeEvent.AddListener(updateConnexion);
@@ -81,14 +90,13 @@ public class UIManagerPAcceuil : MonoBehaviour
         updateConnexion();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (UIManager.singleton.language)
         {
             connexionBtnTxt.text = "Log In";
             playBtnTxt.text = "Play";
-            parametreLabel.text = "Connect";
+            parametreLabel.text = "Settings";
             classementLabel.text = "Log in to your account to view";
             classementTitle.text = "Player Rankings";
             classementTitleAfterLogin.text = "Player Rankings";
@@ -110,6 +118,14 @@ public class UIManagerPAcceuil : MonoBehaviour
             seConnecter.text = "Log In";
             createAccountTitle.text = "Create an account";
             classementTitlePage.text = "Player Rankings";
+            niveau.text = "Level";
+            statistiques.text = "Statistics";
+            tempsTotaldeJeu.text = "Total play time";
+            partiePerdues.text = "Lost games";
+            partieGagnees.text = "Won games";
+            classement.text = "Ranking";
+            deconnexionBtnLabel.text = "Log Out";
+            changerAvatarLabel.text = "Change Avatar";
         }
         else
         {
@@ -137,6 +153,14 @@ public class UIManagerPAcceuil : MonoBehaviour
             seConnecter.text = "Se connecter";
             createAccountTitle.text = "Créer un compte";
             classementTitlePage.text = "Classement Des Joueurs";
+            niveau.text = "Niveau";
+            statistiques.text = "Statistiques";
+            tempsTotaldeJeu.text = "Temps total de jeu";
+            partiePerdues.text = "Parties perdues";
+            partieGagnees.text = "Parties gagnées";
+            classement.text = "Classement";
+            deconnexionBtnLabel.text = "Déconnexion";
+            changerAvatarLabel.text = "Changer d'avatar";
         }
     }
 
