@@ -40,6 +40,9 @@ public class Builder
         PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Standalone, "");
         PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Unknown, "");
         PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Android, "");
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "");
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Unknown, "");
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, "");
 
         // Android settings
         PlayerSettings.Android.androidIsGame = true;
