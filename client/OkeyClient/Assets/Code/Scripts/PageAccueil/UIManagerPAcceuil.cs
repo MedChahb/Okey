@@ -70,11 +70,12 @@ public class UIManagerPAcceuil : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        manager.SelfJoueurChangeEvent.AddListener(updateAvatar);
+        manager.SelfJoueurChangeEvent.AddListener(updateConnexion);
         manager.ConnexionChangeEvent.AddListener(updateConnexion);
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
         connexionBtn.onClick.AddListener(onLoginClicked);
+        updateConnexion();
     }
 
     // Update is called once per frame
