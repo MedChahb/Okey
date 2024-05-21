@@ -1696,7 +1696,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -140, y: 0}
+  m_AnchoredPosition: {x: -128.4, y: 4.1}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &60764916
@@ -24450,8 +24450,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -27146,6 +27146,22 @@ MonoBehaviour:
   parametreLabel: {fileID: 2021752838}
   classementLabel: {fileID: 1346930645}
   classementTitle: {fileID: 774249491}
+  classementTitleAfterLogin: {fileID: 984691935}
+  nom: {fileID: 564628255}
+  nomHintText: {fileID: 1242930401}
+  prenom: {fileID: 1272427915}
+  prenomHintText: {fileID: 1023827538}
+  password: {fileID: 1852184471}
+  passwordHintText: {fileID: 1852184471}
+  confirmPassword: {fileID: 1164780242}
+  confirmPasswordHintText: {fileID: 1489133667}
+  usernameHintText: {fileID: 2136536907}
+  dateNaissance: {fileID: 382176040}
+  JJ: {fileID: 1658959497}
+  MM: {fileID: 1804178407}
+  AAAA: {fileID: 1119051278}
+  creeUnCompte: {fileID: 2081594713}
+  seConnecter: {fileID: 122926181}
   sceneId: 1
   parametres: {fileID: 1518135836}
   login: {fileID: 790733547}
@@ -38468,7 +38484,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 30.600018, y: 4.099994}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2021752838
@@ -38526,7 +38542,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

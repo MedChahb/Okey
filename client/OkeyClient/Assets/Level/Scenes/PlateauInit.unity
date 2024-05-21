@@ -7938,6 +7938,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerAvatars: {fileID: 1770219148}
   FindPartiePanel: {fileID: 1897195813}
+  boonneChanceText: {fileID: 1493569798}
+  bienJoueText: {fileID: 1037487225}
+  superCombatText: {fileID: 239851046}
+  merciText: {fileID: 1650289216}
+  superText: {fileID: 635488628}
+  aieText: {fileID: 910398287}
 --- !u!1 &1513304766
 GameObject:
   m_ObjectHideFlags: 0

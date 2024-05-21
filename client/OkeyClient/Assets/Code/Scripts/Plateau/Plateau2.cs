@@ -30,6 +30,16 @@ public class Plateau2 : MonoBehaviour
         "Aie...."
     };
 
+    private string[] wordsEn =
+    {
+        "Good luck",
+        "Well done !",
+        "Great Game",
+        "Thank you !",
+        "Great !",
+        "Ouch...."
+    };
+
     // Fonction pour activer le Confirmation_Panel et désactiver le Plateau_Panel
     // Tableau des mots, assurez-vous que cela correspond à l'ordre des boutons
 
@@ -53,7 +63,9 @@ public class Plateau2 : MonoBehaviour
         if (buttonIndex >= 0 && buttonIndex < this.words.Length)
         {
             Debug.Log($"Displaying word: {this.words[buttonIndex]}");
-            gameDisplayText.text = this.words[buttonIndex];
+            gameDisplayText.text = UIManager.singleton.language
+                ? this.wordsEn[buttonIndex]
+                : this.words[buttonIndex];
             SignalRConnector.Instance.SendEmoji(4 + buttonIndex);
             Debug.LogWarning("On a bien envoyé le texte");
             StartCoroutine(ClearTextAfterDelay(gameDisplayText, 2f));
@@ -88,7 +100,9 @@ public class Plateau2 : MonoBehaviour
             {
                 var text = player.transform.GetChild(2);
                 var realText = text.GetComponent<TextMeshProUGUI>();
-                realText.text = this.words[emoteNumber - 4];
+                realText.text = UIManager.singleton.language
+                    ? this.wordsEn[emoteNumber - 4]
+                    : this.words[emoteNumber - 4];
                 this.StartCoroutine(this.ClearTextAfterDelay(realText, 2f));
             }
         }
@@ -109,7 +123,9 @@ public class Plateau2 : MonoBehaviour
             {
                 var text = player.transform.GetChild(2);
                 var realText = text.GetComponent<TextMeshProUGUI>();
-                realText.text = this.words[emoteNumber - 4];
+                realText.text = UIManager.singleton.language
+                    ? this.wordsEn[emoteNumber - 4]
+                    : this.words[emoteNumber - 4];
                 this.StartCoroutine(this.ClearTextAfterDelay(realText, 2f));
             }
         }
@@ -130,7 +146,9 @@ public class Plateau2 : MonoBehaviour
             {
                 var text = player.transform.GetChild(2);
                 var realText = text.GetComponent<TextMeshProUGUI>();
-                realText.text = this.words[emoteNumber - 4];
+                realText.text = UIManager.singleton.language
+                    ? this.wordsEn[emoteNumber - 4]
+                    : this.words[emoteNumber - 4];
                 this.StartCoroutine(this.ClearTextAfterDelay(realText, 2f));
             }
         }
