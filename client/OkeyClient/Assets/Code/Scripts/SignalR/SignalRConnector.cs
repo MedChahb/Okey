@@ -34,7 +34,7 @@ public class SignalRConnector : MonoBehaviour
 
     public async void InitializeConnection()
     {
-        _hubConnection = new HubConnectionBuilder().WithUrl(Constants.SIGNALR_HUB_URL).Build();
+        _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost/OkeyHub"/*Constants.SIGNALR_HUB_URL*/).Build();
 
         this.ConfigureHubEvents();
 
