@@ -138,30 +138,30 @@
       Un joueur peut déclarer sa main s'il a formé une combinaison valide (un mélange d'ensembles et de séries).
       La partie se termine immédiatement et le joueur est déclaré vainqueur.</p>
 
-    <h4 id="tuto-equip" class="text-3xl md:text-3xl font-bold pt-10">Objets du jeu</h4>
-    <p id="tuto-obj" class="text-justify">Le but du jeu est d'être le premier joueur à former une main complète,
+    <h4 id="obj-head" class="text-3xl md:text-3xl font-bold pt-10">Objets du jeu</h4>
+    <p id="obj-desc" class="text-justify">Le but du jeu est d'être le premier joueur à former une main complète,
       composée d'ensembles</p>
-    <ul id="tuto-list" class="list-disc px-10">
+    <ul class="list-disc px-10">
 
-      <ul id="tuto-list" class="list-disc px-10">
+      <ul class="list-disc px-10">
         <li class="flex items-center justify-between">
-          <p>104 tuiles numérotées de 1 à 13 dans quatre couleurs différentes (rouge, noir, bleu et jaune), chaque
+          <p id="obj-u1">104 tuiles numérotées de 1 à 13 dans quatre couleurs différentes (rouge, noir, bleu et jaune), chaque
             couleur comportant deux séries de chaque numéro.</p>
           <img src="./resources/imgs/img1.png" alt="image description" class="ml-1" />
         </li>
         <li class="flex items-center justify-between">
-          <p>2 jokers marqués d'une étoile.</p>
+          <p id="obj-u2">2 jokers marqués d'une étoile.</p>
           <img src="./resources/imgs/jokers.png" alt="image description" class="ml-1" />
         </li>
       </ul>
-      <li>104 tuiles numérotées de 1 à 13 dans quatre couleurs différentes (rouge, noir, bleu et jaune), chaque couleur
+      <li id="obj-u3">104 tuiles numérotées de 1 à 13 dans quatre couleurs différentes (rouge, noir, bleu et jaune), chaque couleur
         comportant deux séries de chaque chiffre.</li>
     </ul>
-    <p id="tuto-equip2" class="text-justify">Les joueurs utilisent également des casiers pour cacher leurs tuiles aux
+    <p id="obj-end" class="text-justify">Les joueurs utilisent également des casiers pour cacher leurs tuiles aux
       autres joueurs.</p>
 
     <h4 id="start-head" class="text-3xl md:text-3xl font-bold pt-10">Joueur qui débute la partie</h4>
-    <p id="start" class="text-justify">Le joueur dont l'indicateur de tour est vert commence la partie en se défaussant
+    <p id="start-p" class="text-justify">Le joueur dont l'indicateur de tour est vert commence la partie en se défaussant
       d'une tuile au centre de la table.</p>
     <img src="./resources/imgs/start.png" class="">
 
@@ -169,44 +169,44 @@
     <h4 id="turns-head" class="text-3xl md:text-3xl font-bold pt-10">Tours</h4>
     <p id="turns-desc" class="text-justify">Les joueurs se succèdent dans le sens inverse des aiguilles d'une montre.
     </p>
-    <p id="turns-desc" class="text-justify">Pendant son tour, un joueur peut:</p>
-    <ul id="tuto-list" class="list-disc px-10">
-      <li>Tirez une tuile du stock au centre de la table (la pile de tuiles face cachée).</li>
-      <li>Tirez la dernière tuile défaussée de la pile à gauche du joueur.</li>
+    <p id="turns-p" class="text-justify">Pendant son tour, un joueur peut:</p>
+    <ul class="list-disc px-10">
+      <li id="turn-u1">Tirez une tuile du stock au centre de la table (la pile de tuiles face cachée).</li>
+      <li id="turn-u2">Tirez la dernière tuile défaussée de la pile à gauche du joueur.</li>
     </ul>
 
     <img class="h-36" src="./resources/imgs/turns.png" alt="">
 
-    <h4 id="end-head" class="text-3xl md:text-3xl font-bold pt-10">Arrangement des tuiles</h4>
+    <h4 id="arr-head" class="text-3xl md:text-3xl font-bold pt-10">Arrangement des tuiles</h4>
 
-    <p>Le but est d'organiser les tuiles sur le support en ensembles et en séries :</p>
+    <p id="arr-p">Le but est d'organiser les tuiles sur le support en ensembles et en séries :</p>
 
     <ul id="tuto-list" class="list-disc px-10">
       <li class="flex items-center justify-between pb-10">
-        <span>Ensembles : Groupes de trois tuiles ou plus du même nombre mais de couleurs différentes.</span>
+        <p id="arr-u1">Ensembles : Groupes de trois tuiles ou plus du même nombre mais de couleurs différentes.</p>
         <img class="h-36" src="./resources/imgs/suite-1.png" alt="">
       </li>
       <li class="flex items-center justify-between pb-10">
-        <span>Série : Séquence de trois nombres consécutifs ou plus de la même couleur.</span>
+        <p id="arr-u2">Série : Séquence de trois nombres consécutifs ou plus de la même couleur.</p>
         <img class="h-36" src="./resources/imgs/suite-2.png" alt="">
       </li>
     </ul>
 
     <h4 id="joker-head" class="text-3xl md:text-3xl font-bold pt-10">Jokers</h4>
 
-    <p>Les jokers peuvent être utilisés pour remplacer n'importe quelle tuile.</p>
+    <p id="joker-p">Les jokers peuvent être utilisés pour remplacer n'importe quelle tuile.</p>
     <ul id="tuto-list" class="list-disc px-10">
 
 
       <li class="flex items-center justify-between pb-10">
-        <span>Dans une série</span>
+        <p id="joker-u1">Dans une série</p>
         <img class="h-36" src="./resources/imgs/jk-2.png" alt="">
       </li>
 
 
 
       <li class="flex items-center justify-between">
-        <span>Dans une suite</span>
+        <p id="joker-u2">Dans une suite</p>
         <img class="h-36" src="./resources/imgs/jk-1.png" alt="">
       </li>
 
@@ -343,7 +343,59 @@
           },
           legal: "OkeyBytes Studio tous droits réservés"
         },
-        tryon: "Essayer sur"
+        tryon: "Essayer sur",
+        tutoriel: {
+                    objectifs: {
+                        heading: "Objectif du jeu",
+                        desc: "Le but du jeu est d'être le premier joueur à former une main complète, composée d'ensembles (trois tuiles ou plus de même nombre mais de couleurs différentes, par exemple : rouge 7, noir 7, bleu 7) et/ou de suites (trois tuiles ou plus de la même couleur qui se suivent, par exemple : rouge 3, 4, 5). Le joker peut remplacer n'importe quelle tuile pour compléter une série ou une manche. Un joueur peut déclarer sa main s'il a formé une combinaison valide (un mélange d'ensembles et de séries). La partie se termine immédiatement et le joueur est déclaré vainqueur."
+                    },
+                    obj: {
+                        head: "Objets du jeu",
+                        list: {
+                            p: "Le but du jeu est d'être le premier joueur à former une main complète, composée d'ensembles",
+                            u1: "104 tuiles numérotées de 1 à 13 dans quatre couleurs différentes (rouge, noir, bleu et jaune), chaque couleur comportant deux séries de chaque numéro.",
+                            u2: "2 jokers marqués d'une étoile.",
+                            u3: "104 tuiles numérotées de 1 à 13 dans quatre couleurs différentes (rouge, noir, bleu et jaune), chaque couleur comportant deux séries de chaque chiffre."
+                        },
+                        p: "Les joueurs utilisent également des casiers pour cacher leurs tuiles aux autres joueurs."
+                    },
+                    gamestart: {
+                        head: "Joueur qui débute la partie",
+                        p: "Le joueur dont l'indicateur de tour est vert commence la partie en se défaussant d'une tuile au centre de la table."
+                    },
+                    tours: {
+                        head: "Tours",
+                        p: "Les joueurs se succèdent dans le sens inverse des aiguilles d'une montre.",
+                        list: {
+                            head: "Pendant son tour, un joueur peut:",
+                            u1: "Tirez une tuile du stock au centre de la table (la pile de tuiles face cachée).",
+                            u2: "Tirez la dernière tuile défaussée de la pile à gauche du joueur."
+                        }
+                    },
+                    arr: {
+                        head: "Arrangement des tuiles",
+                        p: "Le but est d'organiser les tuiles sur le support en ensembles et en séries :",
+                        list: {
+                            u1: "Ensembles : Groupes de trois tuiles ou plus du même nombre mais de couleurs différentes.",
+                            u2: "Série : Séquence de trois nombres consécutifs ou plus de la même couleur."
+                        }
+                    },
+                    jokers: {
+                        head: "Jokers",
+                        list: {
+                            u1: "Dans une série",
+                            u2: "Dans une suite"
+                        }
+                    },
+                    fintour: {
+                        head :"Finir un tour",
+                        p: "À la fin de son tour, le joueur doit défausser une tuile sur la pile située à sa droite."
+                    },
+                    win: {
+                        head: "Gagner",
+                        p: "Un joueur gagne en organisant les 14 tuiles de son rack en ensembles valides et en courses et en se débarrassant de sa dernière tuile."
+                    }
+                }
       },
       en: {
         nav: {
@@ -387,7 +439,59 @@
           },
           legal: "OkeyBytes Studio all rights reserved"
         },
-        tryon: "Try on"
+        tryon: "Try on",
+        tutorial: {
+    objectives: {
+        heading: "Objective of the Game",
+        desc: "The goal of the game is to be the first player to form a complete hand, consisting of sets (three or more tiles of the same number but different colors, for example: red 7, black 7, blue 7) and/or runs (three or more consecutive tiles of the same color, for example: red 3, 4, 5). The joker can replace any tile to complete a set or run. A player can declare their hand if they have formed a valid combination (a mix of sets and runs). The game ends immediately and the player is declared the winner."
+    },
+    obj: {
+        head: "Game Items",
+        list: {
+            p: "The goal of the game is to be the first player to form a complete hand, consisting of sets",
+            u1: "104 tiles numbered 1 to 13 in four different colors (red, black, blue, and yellow), each color having two sets of each number.",
+            u2: "2 jokers marked with a star.",
+            u3: "104 tiles numbered 1 to 13 in four different colors (red, black, blue, and yellow), each color having two sets of each number."
+        },
+        p: "Players also use racks to hide their tiles from other players."
+    },
+    gamestart: {
+        head: "Starting Player",
+        p: "The player with the green turn indicator starts the game by discarding a tile to the center of the table."
+    },
+    turns: {
+        head: "Turns",
+        p: "Players take turns in a counterclockwise direction.",
+        list: {
+            head: "During their turn, a player can:",
+            u1: "Draw a tile from the stock in the center of the table (the pile of face-down tiles).",
+            u2: "Draw the last discarded tile from the pile to the left of the player."
+        }
+    },
+    arr: {
+        head: "Tile Arrangement",
+        p: "The goal is to organize the tiles on the rack into sets and runs:",
+        list: {
+            u1: "Sets: Groups of three or more tiles of the same number but different colors.",
+            u2: "Runs: Sequences of three or more consecutive numbers of the same color."
+        }
+    },
+    jokers: {
+        head: "Jokers",
+        list: {
+            u1: "In a set",
+            u2: "In a run"
+        }
+    },
+    fintour: {
+        head: "Ending a Turn",
+        p: "At the end of their turn, the player must discard a tile onto the pile to their right."
+    },
+    win: {
+        head: "Winning",
+        p: "A player wins by arranging the 14 tiles on their rack into valid sets and runs and discarding their last tile."
+    }
+}
       },
       tr: {
         nav: {
@@ -431,7 +535,60 @@
           },
           legal: "OkeyBytes Studio tüm hakları saklıdır"
         },
-        tryon: "üzerinde deneyin"
+        tryon: "üzerinde deneyin",
+        tutorial: {
+          objectives: {
+        heading: "Oyunun Amacı",
+        desc: "Oyunun amacı, ilk olarak tam bir el oluşturan oyuncu olmaktır. Bu el, setlerden (aynı numaradan fakat farklı renklerde üç veya daha fazla taş, örneğin: kırmızı 7, siyah 7, mavi 7) ve/veya dizilerden (aynı renkte ardışık üç veya daha fazla taş, örneğin: kırmızı 3, 4, 5) oluşur. Joker, bir seti veya diziyi tamamlamak için herhangi bir taşı yerine geçebilir. Bir oyuncu geçerli bir kombinasyon (setler ve dizilerin karışımı) oluşturduğunda elini açabilir. Oyun hemen biter ve oyuncu kazanan olarak ilan edilir."
+    },
+    obj: {
+        head: "Oyunun Nesneleri",
+        list: {
+            p: "Oyunun amacı, ilk olarak tam bir el oluşturan oyuncu olmaktır. Bu el, setlerden",
+            u1: "1'den 13'e kadar numaralandırılmış 104 taş, dört farklı renkte (kırmızı, siyah, mavi ve sarı), her renkte her numaradan iki set.",
+            u2: "Yıldız işareti ile işaretlenmiş 2 joker.",
+            u3: "1'den 13'e kadar numaralandırılmış 104 taş, dört farklı renkte (kırmızı, siyah, mavi ve sarı), her renkte her numaradan iki set."
+        },
+        p: "Oyuncular ayrıca taşlarını diğer oyunculardan gizlemek için raflar kullanırlar."
+    },
+    gamestart: {
+        head: "Oyunu Başlatan Oyuncu",
+        p: "Yeşil tur göstergesine sahip oyuncu, oyuna bir taşı masanın ortasına atarak başlar."
+    },
+    turns: {
+        head: "Turlar",
+        p: "Oyuncular saat yönünün tersine sırayla oynarlar.",
+        list: {
+            head: "Turunda bir oyuncu şunları yapabilir:",
+            u1: "Masadaki stoğundan bir taş çekmek (yüzü aşağı dönük taş yığını).",
+            u2: "Oyuncunun solundaki yığından son atılan taşı çekmek."
+        }
+    },
+    arr: {
+        head: "Taşların Düzenlenmesi",
+        p: "Amaç, raf üzerindeki taşları setler ve diziler halinde düzenlemektir:",
+        list: {
+            u1: "Setler: Aynı numaradan fakat farklı renklerde üç veya daha fazla taş grubu.",
+            u2: "Diziler: Aynı renkte ardışık üç veya daha fazla sayı."
+        }
+    },
+    jokers: {
+        head: "Jokerler",
+        p: "",
+        list: {
+            u1: "Bir sette",
+            u2: "Bir dizide"
+        }
+    },
+    fintour: {
+        head: "Turun Bitirilmesi",
+        p: "Turunun sonunda, oyuncu sağındaki yığına bir taş atmalıdır."
+    },
+    win: {
+        head: "Kazanma",
+        p: "Bir oyuncu, rafındaki 14 taşı geçerli setler ve diziler halinde düzenleyip son taşını atarak kazanır."
+    }
+}
       }
     };
 
@@ -542,6 +699,45 @@
         document.getElementById("linux").textContent = translations.tr.download.btns.linux;
         document.getElementById("android").textContent = translations.tr.download.btns.android;
 
+        // Partie tutoriel (traduction necessaire)
+
+        document.getElementById("tuto-head").textContent = translations.tr.tutorial.objectives.heading;
+        document.getElementById("tuto-obj").textContent = translations.tr.tutorial.objectives.desc;
+
+        document.getElementById("obj-head").textContent = translations.tr.tutorial.obj.head;
+        document.getElementById("obj-desc").textContent = translations.tr.tutorial.obj.p;
+
+
+        document.getElementById("obj-u1").textContent = translations.tr.tutorial.obj.list.u1;
+        document.getElementById("obj-u2").textContent = translations.tr.tutorial.obj.list.u2;
+        document.getElementById("obj-u3").textContent = translations.tr.tutorial.obj.list.u3;
+        document.getElementById("obj-end").textContent = translations.tr.tutorial.obj.list.p;
+
+
+        document.getElementById("start-head").textContent = translations.tr.tutorial.gamestart.head;
+        document.getElementById("start-p").textContent = translations.tr.tutorial.gamestart.p;
+
+        document.getElementById("turns-head").textContent = translations.tr.tutorial.turns.head;
+        document.getElementById("turns-desc").textContent = translations.tr.tutorial.turns.p;
+        document.getElementById("turns-p").textContent = translations.tr.tutorial.turns.list.head;
+        document.getElementById("turn-u1").textContent = translations.tr.tutorial.turns.list.u1;
+        document.getElementById("turn-u2").textContent = translations.tr.tutorial.turns.list.u2;
+
+        document.getElementById("arr-head").textContent = translations.tr.tutorial.arr.head;
+        document.getElementById("arr-p").textContent = translations.tr.tutorial.arr.p;
+        document.getElementById("arr-u1").textContent = translations.tr.tutorial.arr.list.u1;
+        document.getElementById("arr-u2").textContent = translations.tr.tutorial.arr.list.u2;
+
+        document.getElementById("joker-head").textContent = translations.tr.tutorial.jokers.head;
+        document.getElementById("joker-p").textContent = translations.tr.tutorial.jokers.p;
+        document.getElementById("joker-u1").textContent = translations.tr.tutorial.jokers.list.u1;
+        document.getElementById("joker-u2").textContent = translations.tr.tutorial.jokers.list.u2;
+
+        document.getElementById("end-head").textContent = translations.tr.tutorial.fintour.head;
+        document.getElementById("end-desc").textContent = translations.tr.tutorial.fintour.p;
+
+        document.getElementById("win-head").textContent = translations.tr.tutorial.win.head;
+        document.getElementById("win-desc").textContent = translations.tr.tutorial.win.p;
 
         const platform = navigator.platform.toLowerCase();
         let osName;
@@ -591,6 +787,46 @@
         document.getElementById("linux").textContent = translations.en.download.btns.linux;
         document.getElementById("android").textContent = translations.en.download.btns.android;
 
+         // Partie tutoriel (traduction necessaire)
+
+        document.getElementById("tuto-head").textContent = translations.en.tutorial.objectives.heading;
+        document.getElementById("tuto-obj").textContent = translations.en.tutorial.objectives.desc;
+
+        document.getElementById("obj-head").textContent = translations.en.tutorial.obj.head;
+        document.getElementById("obj-desc").textContent = translations.en.tutorial.obj.p;
+
+
+        document.getElementById("obj-u1").textContent = translations.en.tutorial.obj.list.u1;
+        document.getElementById("obj-u2").textContent = translations.en.tutorial.obj.list.u2;
+        document.getElementById("obj-u3").textContent = translations.en.tutorial.obj.list.u3;
+        document.getElementById("obj-end").textContent = translations.en.tutorial.obj.list.p;
+
+
+        document.getElementById("start-head").textContent = translations.en.tutorial.gamestart.head;
+        document.getElementById("start-p").textContent = translations.en.tutorial.gamestart.p;
+
+        document.getElementById("turns-head").textContent = translations.en.tutorial.turns.head;
+        document.getElementById("turns-desc").textContent = translations.en.tutorial.turns.p;
+        document.getElementById("turns-p").textContent = translations.en.tutorial.turns.list.head;
+        document.getElementById("turn-u1").textContent = translations.en.tutorial.turns.list.u1;
+        document.getElementById("turn-u2").textContent = translations.en.tutorial.turns.list.u2;
+
+        document.getElementById("arr-head").textContent = translations.en.tutorial.arr.head;
+        document.getElementById("arr-p").textContent = translations.en.tutorial.arr.p;
+        document.getElementById("arr-u1").textContent = translations.en.tutorial.arr.list.u1;
+        document.getElementById("arr-u2").textContent = translations.en.tutorial.arr.list.u2;
+
+        document.getElementById("joker-head").textContent = translations.en.tutorial.jokers.head;
+        document.getElementById("joker-p").textContent = translations.en.tutorial.jokers.p;
+        document.getElementById("joker-u1").textContent = translations.en.tutorial.jokers.list.u1;
+        document.getElementById("joker-u2").textContent = translations.en.tutorial.jokers.list.u2;
+
+        document.getElementById("end-head").textContent = translations.en.tutorial.fintour.head;
+        document.getElementById("end-desc").textContent = translations.en.tutorial.fintour.p;
+
+        document.getElementById("win-head").textContent = translations.en.tutorial.win.head;
+        document.getElementById("win-desc").textContent = translations.en.tutorial.win.p;
+
         const platform = navigator.platform.toLowerCase();
         let osName;
 
@@ -638,6 +874,46 @@
         document.getElementById("mac").textContent = translations.fr.download.btns.macos;
         document.getElementById("linux").textContent = translations.fr.download.btns.linux;
         document.getElementById("android").textContent = translations.fr.download.btns.android;
+
+         // Partie tutoriel (traduction necessaire)
+
+         document.getElementById("tuto-head").textContent = translations.fr.tutorial.objectives.heading;
+        document.getElementById("tuto-obj").textContent = translations.fr.tutorial.objectives.desc;
+
+        document.getElementById("obj-head").textContent = translations.fr.tutorial.obj.head;
+        document.getElementById("obj-desc").textContent = translations.fr.tutorial.obj.p;
+
+
+        document.getElementById("obj-u1").textContent = translations.fr.tutorial.obj.list.u1;
+        document.getElementById("obj-u2").textContent = translations.fr.tutorial.obj.list.u2;
+        document.getElementById("obj-u3").textContent = translations.fr.tutorial.obj.list.u3;
+        document.getElementById("obj-end").textContent = translations.fr.tutorial.obj.list.p;
+
+
+        document.getElementById("start-head").textContent = translations.fr.tutorial.gamestart.head;
+        document.getElementById("start-p").textContent = translations.fr.tutorial.gamestart.p;
+
+        document.getElementById("turns-head").textContent = translations.fr.tutorial.turns.head;
+        document.getElementById("turns-desc").textContent = translations.fr.tutorial.turns.p;
+        document.getElementById("turns-p").textContent = translations.fr.tutorial.turns.list.head;
+        document.getElementById("turn-u1").textContent = translations.fr.tutorial.turns.list.u1;
+        document.getElementById("turn-u2").textContent = translations.fr.tutorial.turns.list.u2;
+
+        document.getElementById("arr-head").textContent = translations.fr.tutorial.arr.head;
+        document.getElementById("arr-p").textContent = translations.fr.tutorial.arr.p;
+        document.getElementById("arr-u1").textContent = translations.fr.tutorial.arr.list.u1;
+        document.getElementById("arr-u2").textContent = translations.fr.tutorial.arr.list.u2;
+
+        document.getElementById("joker-head").textContent = translations.fr.tutorial.jokers.head;
+        document.getElementById("joker-p").textContent = translations.fr.tutorial.jokers.p;
+        document.getElementById("joker-u1").textContent = translations.fr.tutorial.jokers.list.u1;
+        document.getElementById("joker-u2").textContent = translations.fr.tutorial.jokers.list.u2;
+
+        document.getElementById("end-head").textContent = translations.fr.tutorial.fintour.head;
+        document.getElementById("end-desc").textContent = translations.fr.tutorial.fintour.p;
+
+        document.getElementById("win-head").textContent = translations.fr.tutorial.win.head;
+        document.getElementById("win-desc").textContent = translations.fr.tutorial.win.p;
 
         const platform = navigator.platform.toLowerCase();
         let osName;
