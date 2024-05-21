@@ -88,7 +88,7 @@ public class UIManagerPAcceuil : MonoBehaviour
         {
             connexionBtnTxt.text = "Log In";
             playBtnTxt.text = "Play";
-            parametreLabel.text = "Settings";
+            parametreLabel.text = "Connect";
             classementLabel.text = "Log in to your account to view";
             classementTitle.text = "Player Rankings";
             classementTitleAfterLogin.text = "Player Rankings";

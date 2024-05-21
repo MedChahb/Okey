@@ -11,13 +11,6 @@ public class PlateauUIManager : MonoBehaviour
 
     public GameObject FindPartiePanel;
 
-    public TextMeshProUGUI boonneChanceText;
-    public TextMeshProUGUI bienJoueText;
-    public TextMeshProUGUI superCombatText;
-    public TextMeshProUGUI merciText;
-    public TextMeshProUGUI superText;
-    public TextMeshProUGUI aieText;
-
     // awake
     private void Awake()
     {
@@ -31,29 +24,6 @@ public class PlateauUIManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject);
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (UIManager.singleton.language)
-        {
-            boonneChanceText.text = "Good luck";
-            bienJoueText.text = "Well done !";
-            superCombatText.text = "Great Game";
-            merciText.text = "Thank you !";
-            superText.text = "Great !";
-            aieText.text = "Ouch....";
-        }
-        else
-        {
-            boonneChanceText.text = "Bonne chance";
-            bienJoueText.text = "Bien joué !";
-            superCombatText.text = "Super Combat";
-            merciText.text = "Merci !";
-            superText.text = "Super !";
-            aieText.text = "Aie....";
-        }
     }
 
     public void QuitterPartie()
