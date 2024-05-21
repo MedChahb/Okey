@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,17 +24,26 @@ public class UIManagerPFormulaire : MonoBehaviour
     private Button joinPublicLobbyBtn;
 
     [SerializeField]
-    private Button CreateAndJoinBtn;
-
-    [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
-
-    public GameObject showRooms;
+    public TextMeshProUGUI partiePriveeTxt;
+    public TextMeshProUGUI createPrivateLobbyTitle;
+    public TextMeshProUGUI joinPrivateLobbyTitle;
+    public TextMeshProUGUI createPrivateLbbyBtnLabel;
+    public TextMeshProUGUI joinLbbyPrivateLbl;
 
     [SerializeField]
     private GameObject lobbyPrivateConfig;
 
     public GameObject lobbyPlayerWaiting;
+
+    [SerializeField]
+    public Button CreatePrivateParty;
+
+    [SerializeField]
+    public TMP_InputField PartyCode;
+
+    [SerializeField]
+    public Button JoinPrivateParty;
 
     [SerializeField]
     private int SceneId;
@@ -52,18 +62,38 @@ public class UIManagerPFormulaire : MonoBehaviour
 
     void Start()
     {
+        if (UIManager.singleton.language)
+        {
+            partieSimpleTxt.text = "Public Lobby";
+            partiePriveeTxt.text = "Private Lobby";
+            createPrivateLobbyTitle.text = "Create a private lobby";
+            joinPrivateLobbyTitle.text = "Join a private lobby";
+            createPrivateLbbyBtnLabel.text = "Create";
+            joinLbbyPrivateLbl.text = "Join";
+        }
+        else
+        {
+            partieSimpleTxt.text = "Lobby public";
+            partiePriveeTxt.text = "Lobby Privée";
+            createPrivateLobbyTitle.text = "Créer un lobby privé";
+            joinPrivateLobbyTitle.text = "Rejoindre un lobby privé";
+            createPrivateLbbyBtnLabel.text = "Créer une partie privée";
+            joinLbbyPrivateLbl.text = "Rejoindre";
+        }
+
         backBtnPrivate.onClick.AddListener(onBackBtnPrivateClicked);
         backBtnPublic.onClick.AddListener(onBackBtnPrivateClicked);
         backBtn.onClick.AddListener(onBackBtnClicked);
         //joinLobbyBtn.onClick.AddListener(onJoinLobbyButtonPressed);
         joinPublicLobbyBtn.onClick.AddListener(onPublicLobbyClicked);
         joinPrivateLobbyBtn.onClick.AddListener(onPrivateLobbyClicked);
+        this.CreatePrivateParty.onClick.AddListener(CreateAndJoinPrivateParty);
+        this.JoinPrivateParty.onClick.AddListener(JoinParty);
 
-        this.CreateAndJoinBtn.onClick.AddListener(CreateJoinPrivateRoom);
-
-        showRooms.SetActive(false);
         lobbyPlayerWaiting.SetActive(false);
         lobbyPrivateConfig.SetActive(false);
+
+        SignalRConnector.Instance.InitializeConnectionForPrivate();
     }
 
     void Update()
@@ -83,14 +113,22 @@ public class UIManagerPFormulaire : MonoBehaviour
         }*/
     }
 
-    public async void CreateJoinPrivateRoom()
+    private async void CreateAndJoinPrivateParty()
     {
-        if (LobbyManager.Instance == null)
+        await SignalRConnector.Instance.CreateJoinPrivateRoom();
+    }
+
+    private async void JoinParty()
+    {
+        if (this.PartyCode.text.Equals("", StringComparison.Ordinal))
         {
-            Debug.LogError("LobbyManager instance is null.");
-            return;
+            Debug.LogError("Vous devez remplir avec un code");
         }
-        await LobbyManager.Instance.signalRConnector.CreateAndJoinPrivateRoom();
+        else
+        {
+            // Essayer de join
+            SignalRConnector.Instance.JoinWithCodePrivate(this.PartyCode.text.ToUpper());
+        }
     }
 
     void onBackBtnClicked()
@@ -114,7 +152,6 @@ public class UIManagerPFormulaire : MonoBehaviour
     public void onPrivateLobbyClicked()
     {
         lobbyPrivateConfig.SetActive(true);
-        LobbyManager.Instance.signalRConnector.InitializeConnectionPrivate();
     }
 
     public void onLoadBtnClicked()
@@ -175,6 +212,5 @@ public class UIManagerPFormulaire : MonoBehaviour
     public void setActiveShowRooms()
     {
         Debug.Log("setActiveShowRooms");
-        showRooms.SetActive(true);
     }
 }

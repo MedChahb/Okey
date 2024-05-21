@@ -21,6 +21,10 @@ public class UIManagerPAcceuil : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI playBtnTxt;
 
+    public TextMeshProUGUI parametreLabel;
+    public TextMeshProUGUI classementLabel;
+    public TextMeshProUGUI classementTitle;
+
     [SerializeField]
     private int sceneId;
 
@@ -48,6 +52,7 @@ public class UIManagerPAcceuil : MonoBehaviour
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
         connexionBtn.onClick.AddListener(onLoginClicked);
+        updateConnexion();
     }
 
     // Update is called once per frame
@@ -55,11 +60,19 @@ public class UIManagerPAcceuil : MonoBehaviour
     {
         if (UIManager.singleton.language)
         {
+            connexionBtnTxt.text = "Log In";
             playBtnTxt.text = "Play";
+            parametreLabel.text = "Connect";
+            classementLabel.text = "Log in to your account to view";
+            classementTitle.text = "Player Rankings";
         }
         else
         {
+            connexionBtnTxt.text = "Connexion";
             playBtnTxt.text = "Jouer";
+            parametreLabel.text = "Paramètres";
+            classementLabel.text = "Connectez vous à votre compte pour visualiser";
+            classementTitle.text = "Classement Des Joueurs";
         }
     }
 

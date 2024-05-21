@@ -91,4 +91,8 @@ public interface IRoomManager
     /// </summary>
     /// <returns>Le nom de la première salle disponible.</returns>
     public string GetFirstRoomAvailable();
+
+    public string? CreatePrivateRoom();
+
+    public bool TryJoinPrivateRoom(string roomId, string playerId);
 }

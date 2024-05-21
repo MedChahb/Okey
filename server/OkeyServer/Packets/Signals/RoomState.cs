@@ -9,4 +9,6 @@ public class RoomState
     /// Obtient ou définit les données des joueurs dans la salle.
     /// </summary>
     public List<string?>? playerDatas { get; set; }
+
+    public string? roomName { get; set; }
 }

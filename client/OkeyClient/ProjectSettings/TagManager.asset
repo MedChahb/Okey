@@ -41,6 +41,3 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: UI_Plateau
-    uniqueID: 416979855
-    locked: 0
