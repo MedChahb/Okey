@@ -702,9 +702,8 @@ public sealed class OkeyHub : Hub
 
                     if (pl != null)
                     {
-                        jeu.JeuTermine(pl);
-
-                        await this.PlayerWon(roomName, _connectedUsers[pl.getName()].GetUsername());
+                        //  jeu.JeuTermine(pl);
+                        //  await this.PlayerWon(roomName, _connectedUsers[pl.getName()].GetUsername());
 
                         Thread.Sleep(2000);
                         return "";
