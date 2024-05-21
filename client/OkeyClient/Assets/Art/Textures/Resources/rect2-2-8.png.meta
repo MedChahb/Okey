@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c412e83396d27a44aa6bda9049579ebc
+guid: adffd2a58608ea94aa2a580a26cacb56
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -108,7 +108,112 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: rect2-2-8_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2372
+        width: 399
+        height: 449
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d75c4e2e7d81084db7da0a26a0d08d1
+      internalID: -992142020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rect2-2-8_1
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 2820
+        width: 421
+        height: 449
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42680b7c885a544499ad43525a3ae885
+      internalID: 1179882900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rect2-2-8_2
+      rect:
+        serializedVersion: 2
+        x: 816
+        y: 2817
+        width: 425
+        height: 452
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 35de383f8a24c1f4891205f982cddc19
+      internalID: 1099186599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rect2-2-8_3
+      rect:
+        serializedVersion: 2
+        x: 1241
+        y: 2813
+        width: 470
+        height: 456
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e83050156448cf74e839e3b55bb96a3f
+      internalID: 1580704915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rect2-2-8_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2826
+        width: 397
+        height: 443
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 37385c3eed3030246b194a5311cefee8
+      internalID: 2082035062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +224,12 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      rect2-2-8_0: 1121376653
+      rect2-2-8_1: -1122036345
+      rect2-2-8_2: -992142020
+      rect2-2-8_3: 1179882900
+      rect2-2-8_4: -300554995
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
