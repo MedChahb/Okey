@@ -19527,10 +19527,10 @@ RectTransform:
   - {fileID: 504705385}
   m_Father: {fileID: 1992467007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1103114804
 MonoBehaviour:
@@ -26272,7 +26272,7 @@ GameObject:
   - component: {fileID: 1415792422}
   - component: {fileID: 1415792421}
   m_Layer: 5
-  m_Name: ConnectionText
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27147,6 +27147,8 @@ MonoBehaviour:
   classementLabel: {fileID: 1346930645}
   classementTitle: {fileID: 774249491}
   classementTitleAfterLogin: {fileID: 984691935}
+  classementTitlePage: {fileID: 1350827774}
+  createAccountTitle: {fileID: 1415792421}
   nom: {fileID: 564628255}
   nomHintText: {fileID: 1242930401}
   prenom: {fileID: 1272427915}

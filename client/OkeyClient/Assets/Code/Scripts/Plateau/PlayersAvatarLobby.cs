@@ -12,6 +12,20 @@ public class PlayerAvatarsLobby : MonoBehaviour
     public SpriteRenderer player3Renderer;
     public SpriteRenderer player4Renderer;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     public void LoadAndDisplayAvatars(List<Sprite> avatars)
     {
         if (avatars.Count > 0)

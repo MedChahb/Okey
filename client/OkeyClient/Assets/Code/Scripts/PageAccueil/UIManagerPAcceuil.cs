@@ -25,6 +25,9 @@ public class UIManagerPAcceuil : MonoBehaviour
     public TextMeshProUGUI classementLabel;
     public TextMeshProUGUI classementTitle;
     public TextMeshProUGUI classementTitleAfterLogin;
+    public TextMeshProUGUI classementTitlePage;
+
+    public TextMeshProUGUI createAccountTitle;
 
     public TextMeshProUGUI nom;
     public TextMeshProUGUI nomHintText;
@@ -105,6 +108,8 @@ public class UIManagerPAcceuil : MonoBehaviour
             AAAA.text = "YYYY";
             creeUnCompte.text = "Create Account";
             seConnecter.text = "Log In";
+            createAccountTitle.text = "Create an account";
+            classementTitlePage.text = "Player Rankings";
         }
         else
         {
@@ -130,6 +135,8 @@ public class UIManagerPAcceuil : MonoBehaviour
             AAAA.text = "AAAA";
             creeUnCompte.text = "Créer Compte";
             seConnecter.text = "Se connecter";
+            createAccountTitle.text = "Créer un compte";
+            classementTitlePage.text = "Classement Des Joueurs";
         }
     }
 
