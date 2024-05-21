@@ -314,7 +314,61 @@
                     },
                     legal: "OkeyBytes Studio tous droits réservés"
                 },
-                tryon: "Essayer sur"
+                tryon: "Essayer sur",
+
+                tutoriel: {
+                    objectifs: {
+                        heading: "Objectif du jeu",
+                        desc: "Le but du jeu est d'être le premier joueur à former une main complète, composée d'ensembles (trois tuiles ou plus de même nombre mais de couleurs différentes, par exemple : rouge 7, noir 7, bleu 7) et/ou de suites (trois tuiles ou plus de la même couleur qui se suivent, par exemple : rouge 3, 4, 5). Le joker peut remplacer n'importe quelle tuile pour compléter une série ou une manche. Un joueur peut déclarer sa main s'il a formé une combinaison valide (un mélange d'ensembles et de séries). La partie se termine immédiatement et le joueur est déclaré vainqueur."
+                    },
+                    obj: {
+                        head: "Objets du jeu",
+                        list: {
+                            p: "Le but du jeu est d'être le premier joueur à former une main complète, composée d'ensembles",
+                            u1: "104 tuiles numérotées de 1 à 13 dans quatre couleurs différentes (rouge, noir, bleu et jaune), chaque couleur comportant deux séries de chaque numéro.",
+                            u2: "2 jokers marqués d'une étoile.",
+                            u3: "104 tuiles numérotées de 1 à 13 dans quatre couleurs différentes (rouge, noir, bleu et jaune), chaque couleur comportant deux séries de chaque chiffre."
+                        },
+                        p: "Les joueurs utilisent également des casiers pour cacher leurs tuiles aux autres joueurs."
+                    },
+                    gamestart: {
+                        head: "Joueur qui débute la partie",
+                        p: "Le joueur dont l'indicateur de tour est vert commence la partie en se défaussant d'une tuile au centre de la table."
+                    },
+                    tours: {
+                        head: "Tours",
+                        p: "Les joueurs se succèdent dans le sens inverse des aiguilles d'une montre.",
+                        list: {
+                            head: "Pendant son tour, un joueur peut:",
+                            u1: "Tirez une tuile du stock au centre de la table (la pile de tuiles face cachée).",
+                            u2: "Tirez la dernière tuile défaussée de la pile à gauche du joueur."
+                        }
+                    },
+                    arr: {
+                        head: "Arrangement des tuiles",
+                        p: "Le but est d'organiser les tuiles sur le support en ensembles et en séries :",
+                        list: {
+                            u1: "Ensembles : Groupes de trois tuiles ou plus du même nombre mais de couleurs différentes.",
+                            u2: "Série : Séquence de trois nombres consécutifs ou plus de la même couleur."
+                        }
+                    },
+                    jokers: {
+                        head: "Jokers",
+                        list: {
+                            u1: "Dans une série",
+                            u2: "Dans une suite"
+                        }
+                    },
+                    fintour: {
+                        head :"Finir un tour",
+                        p: "À la fin de son tour, le joueur doit défausser une tuile sur la pile située à sa droite."
+                    },
+                    win: {
+                        head: "Gagner",
+                        p: "Un joueur gagne en organisant les 14 tuiles de son rack en ensembles valides et en courses et en se débarrassant de sa dernière tuile."
+                    }
+                }
+
             },
             en: {
                 nav: {
@@ -358,7 +412,8 @@
                     },
                     legal: "OkeyBytes Studio all rights reserved"
                 },
-                tryon: "Try on"
+                tryon: "Try on",
+                
             },
             tr: {
                 nav: {
@@ -512,6 +567,9 @@
                 document.getElementById("mac").textContent = translations.tr.download.btns.macos;
                 document.getElementById("linux").textContent = translations.tr.download.btns.linux;
                 document.getElementById("android").textContent = translations.tr.download.btns.android;
+
+                document.getElementById("tuto-head").textContent = translations.fr.tutoriel.objectifs.heading;
+                document.getElementById("tuto-obj").textContent = translations.fr.tutoriel.objectifs.desc;
 
 
                 const platform = navigator.platform.toLowerCase();
