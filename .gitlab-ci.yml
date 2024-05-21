@@ -420,6 +420,7 @@ unity-android-local-test:
   dependencies: []
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Android
+    ANDROID_NDK_HOME: /opt/unity/Editor/Data/PlaybackEngines/AndroidPlayer/NDK
   before_script:
     - /opt/unity/Editor/Unity -quit -batchmode -nographics -serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
     - git config --global --add safe.directory "$CI_PROJECT_DIR"
