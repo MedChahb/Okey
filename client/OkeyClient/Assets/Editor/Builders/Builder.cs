@@ -56,8 +56,8 @@ public class Builder
             AndroidArchitecture.ARM64 | AndroidArchitecture.ARMv7;
         PlayerSettings.Android.buildApkPerCpuArchitecture = false;
         // https://docs.unity3d.com/ScriptReference/AndroidSdkVersions.html
-        PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel24;
-        PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel28;
+        /* PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel24; */
+        /* PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel28; */
 
         var version = Environment.GetEnvironmentVariable("OKEY_BUILD_VERSION");
         if (!string.IsNullOrEmpty(version))
@@ -195,7 +195,7 @@ public class Builder
         );
     }
 
-    [MenuItem("MyTools/Test Build/Android Release Build")]
+    [MenuItem("MyTools/Release Build/Android Release Build")]
     public static void AndroidReleaseBuild()
     {
         SetBaseSettings();
