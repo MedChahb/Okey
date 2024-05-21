@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI; // This import might not be needed if you're only using SpriteRenderer
 
 public class PlayerAvatarsLobby : MonoBehaviour
 {
@@ -30,16 +29,28 @@ public class PlayerAvatarsLobby : MonoBehaviour
     {
         if (avatars.Count > 0)
         {
-            mainPlayerRenderer.sprite = avatars[0];
+            SetSpriteAndScale(mainPlayerRenderer, avatars[0]);
 
             if (avatars.Count > 1)
-                player2Renderer.sprite = avatars[1];
+                SetSpriteAndScale(player2Renderer, avatars[1]);
 
             if (avatars.Count > 2)
-                player3Renderer.sprite = avatars[2];
+                SetSpriteAndScale(player3Renderer, avatars[2]);
 
             if (avatars.Count > 3)
-                player4Renderer.sprite = avatars[3];
+                SetSpriteAndScale(player4Renderer, avatars[3]);
+        }
+    }
+
+    private void SetSpriteAndScale(SpriteRenderer renderer, Sprite sprite)
+    {
+        renderer.sprite = sprite;
+        if (sprite != null)
+        {
+            float widthScale = 150f / sprite.bounds.size.x;
+            float heightScale = 150f / sprite.bounds.size.y;
+            float scale = Mathf.Min(widthScale, heightScale);
+            renderer.transform.localScale = new Vector3(scale, scale, 1);
         }
     }
 }

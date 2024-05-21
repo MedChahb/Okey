@@ -1561,6 +1561,8 @@ public class SignalRConnector : MonoBehaviour
     //     Debug.Log("setActiveShowRooms");
     //     UIManagerPFormulaire.Instance.setActiveShowRooms();
     // }
+
+
     private async Task UpdatePlayerAvatars(List<string> playerUsernames)
     {
         List<Task<Sprite>> avatarTasks = new List<Task<Sprite>>();
@@ -1612,8 +1614,10 @@ public class SignalRConnector : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Failed to fetch avatar for user {username}: {ex.Message}");
-            return null;
+            //Debug.LogError($"Failed to fetch avatar for user {username}: {ex.Message}");
+            string avatarPath = $"Avatar/avatarn1";
+            Sprite avatarSprite = Resources.Load<Sprite>(avatarPath);
+            return avatarSprite;
         }
     }
 }
