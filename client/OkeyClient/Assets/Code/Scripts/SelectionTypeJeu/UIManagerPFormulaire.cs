@@ -125,7 +125,11 @@ public class UIManagerPFormulaire : MonoBehaviour
     {
         if (this.PartyCode.text.Equals("", StringComparison.Ordinal))
         {
-            Debug.LogError("Vous devez remplir avec un code");
+            Debug.LogError(
+                UIManager.singleton.language
+                    ? "A code should be entered"
+                    : "Vous devez remplir avec un code"
+            );
         }
         else
         {
