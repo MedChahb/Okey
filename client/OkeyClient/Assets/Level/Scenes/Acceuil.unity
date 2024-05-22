@@ -27148,14 +27148,14 @@ MonoBehaviour:
   classementTitle: {fileID: 774249491}
   classementTitleAfterLogin: {fileID: 984691935}
   classementTitlePage: {fileID: 1350827774}
-  niveau: {fileID: 0}
-  statistiques: {fileID: 0}
-  tempsTotaldeJeu: {fileID: 0}
-  partiePerdues: {fileID: 0}
-  partieGagnees: {fileID: 0}
-  classement: {fileID: 0}
-  deconnexionBtnLabel: {fileID: 0}
-  changerAvatarLabel: {fileID: 0}
+  niveau: {fileID: 1417919392}
+  statistiques: {fileID: 1622798313}
+  tempsTotaldeJeu: {fileID: 352805030}
+  partiePerdues: {fileID: 2116385640}
+  partieGagnees: {fileID: 691953573}
+  classement: {fileID: 385460622}
+  deconnexionBtnLabel: {fileID: 1736635021}
+  changerAvatarLabel: {fileID: 1408879194}
   createAccountTitle: {fileID: 1415792421}
   nom: {fileID: 564628255}
   nomHintText: {fileID: 1242930401}
