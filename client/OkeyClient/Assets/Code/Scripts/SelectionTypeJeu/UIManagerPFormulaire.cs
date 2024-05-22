@@ -26,7 +26,8 @@ public class UIManagerPFormulaire : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI partieSimpleTxt;
     public TextMeshProUGUI partiePriveeTxt;
-    public TextMeshProUGUI createPrivateLobbyTitle;
+    public TextMeshProUGUI enterCodeHintext;
+
     public TextMeshProUGUI joinPrivateLobbyTitle;
     public TextMeshProUGUI createPrivateLbbyBtnLabel;
     public TextMeshProUGUI joinLbbyPrivateLbl;
@@ -70,6 +71,7 @@ public class UIManagerPFormulaire : MonoBehaviour
             joinPrivateLobbyTitle.text = "Join a private lobby";
             createPrivateLbbyBtnLabel.text = "Create";
             joinLbbyPrivateLbl.text = "Join";
+            enterCodeHintext.text = "Enter code";
         }
         else
         {
@@ -79,6 +81,7 @@ public class UIManagerPFormulaire : MonoBehaviour
             joinPrivateLobbyTitle.text = "Rejoindre un lobby privé";
             createPrivateLbbyBtnLabel.text = "Créer une partie privée";
             joinLbbyPrivateLbl.text = "Rejoindre";
+            enterCodeHintext.text = "Entrer le code";
         }
 
         backBtnPrivate.onClick.AddListener(onBackBtnPrivateClicked);
