@@ -23,12 +23,12 @@ public class UIManagerPFormulaire : MonoBehaviour
     [SerializeField]
     private Button joinPublicLobbyBtn;
 
-    [SerializeField]
-    private TextMeshProUGUI partieSimpleTxt;
+    public TextMeshProUGUI partieSimpleTxt;
     public TextMeshProUGUI partiePriveeTxt;
     public TextMeshProUGUI enterCodeHintext;
 
     public TextMeshProUGUI joinPrivateLobbyTitle;
+    public TextMeshProUGUI createPrivateLobbyTitle;
     public TextMeshProUGUI createPrivateLbbyBtnLabel;
     public TextMeshProUGUI joinLbbyPrivateLbl;
 

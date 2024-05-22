@@ -2610,7 +2610,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter Code
+  m_text: Entrer le Code
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4638,8 +4638,9 @@ MonoBehaviour:
   joinPublicLobbyBtn: {fileID: 31012457}
   partieSimpleTxt: {fileID: 2056424586}
   partiePriveeTxt: {fileID: 2031828338}
-  createPrivateLobbyTitle: {fileID: 472982983}
+  enterCodeHintext: {fileID: 800380391}
   joinPrivateLobbyTitle: {fileID: 569468406}
+  createPrivateLobbyTitle: {fileID: 472982983}
   createPrivateLbbyBtnLabel: {fileID: 717366902}
   joinLbbyPrivateLbl: {fileID: 899119114}
   lobbyPrivateConfig: {fileID: 845544427}
