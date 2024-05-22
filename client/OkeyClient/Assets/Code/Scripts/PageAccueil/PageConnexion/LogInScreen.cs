@@ -143,7 +143,6 @@ public class LogInScreen : MonoBehaviour
                     erreurTxt.text = UIManager.singleton.language
                         ? "Invalid username or password"
                         : "Identifiant ou mot de passe invalide";
-                    "Identifiant ou mot de passe invalide";
                     erreurTxt.gameObject.SetActive(true);
                     return;
                 }

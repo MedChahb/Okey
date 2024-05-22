@@ -75,6 +75,7 @@ public class PageProfile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         if (Input.GetMouseButtonDown(0))
         {
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -108,6 +109,7 @@ public class PageProfile : MonoBehaviour
                 }
             }
         }
+        */
     }
 
     void OnAvatarButtonClick()

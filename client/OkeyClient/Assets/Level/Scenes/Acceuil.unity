@@ -2358,7 +2358,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 13973aab95d9340cf976f9320b34f437, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.29803923, g: 0.29803923, b: 0.29803923, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -8960,7 +8960,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: adc23bf3c2bb540e48dca0972262b611, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.29803923, g: 0.29803923, b: 0.29803923, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -24613,7 +24613,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: bcec3a627513145a08cac6098d2b0043, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.29803923, g: 0.29803923, b: 0.29803923, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -26192,8 +26192,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4283190348
+  m_fontColor: {r: 0.29803923, g: 0.29803923, b: 0.29803923, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -27148,14 +27148,14 @@ MonoBehaviour:
   classementTitle: {fileID: 774249491}
   classementTitleAfterLogin: {fileID: 984691935}
   classementTitlePage: {fileID: 1350827774}
-  niveau: {fileID: 1417919392}
-  statistiques: {fileID: 1622798313}
-  tempsTotaldeJeu: {fileID: 352805030}
-  partiePerdues: {fileID: 2116385640}
-  partieGagnees: {fileID: 691953573}
-  classement: {fileID: 385460622}
-  deconnexionBtnLabel: {fileID: 1736635021}
-  changerAvatarLabel: {fileID: 1408879194}
+  niveau: {fileID: 0}
+  statistiques: {fileID: 0}
+  tempsTotaldeJeu: {fileID: 0}
+  partiePerdues: {fileID: 0}
+  partieGagnees: {fileID: 0}
+  classement: {fileID: 0}
+  deconnexionBtnLabel: {fileID: 0}
+  changerAvatarLabel: {fileID: 0}
   createAccountTitle: {fileID: 1415792421}
   nom: {fileID: 564628255}
   nomHintText: {fileID: 1242930401}
@@ -31051,7 +31051,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 2212cb4e0806b4beb8908ee49f79feb6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.29803923, g: 0.29803923, b: 0.29803923, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
