@@ -21,6 +21,36 @@ public class UIManagerPAcceuil : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI playBtnTxt;
 
+    public TextMeshProUGUI parametreLabel;
+    public TextMeshProUGUI classementLabel;
+    public TextMeshProUGUI classementTitle;
+    public TextMeshProUGUI classementTitleAfterLogin;
+    public TextMeshProUGUI classementTitlePage;
+
+    public TextMeshProUGUI createAccountTitle;
+
+    public TextMeshProUGUI nom;
+    public TextMeshProUGUI nomHintText;
+
+    public TextMeshProUGUI prenom;
+    public TextMeshProUGUI prenomHintText;
+
+    public TextMeshProUGUI password;
+    public TextMeshProUGUI passwordHintText;
+
+    public TextMeshProUGUI confirmPassword;
+    public TextMeshProUGUI confirmPasswordHintText;
+
+    public TextMeshProUGUI usernameHintText;
+
+    public TextMeshProUGUI dateNaissance;
+    public TextMeshProUGUI JJ;
+    public TextMeshProUGUI MM;
+    public TextMeshProUGUI AAAA;
+
+    public TextMeshProUGUI creeUnCompte;
+    public TextMeshProUGUI seConnecter;
+
     [SerializeField]
     private int sceneId;
 
@@ -43,11 +73,12 @@ public class UIManagerPAcceuil : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        manager.SelfJoueurChangeEvent.AddListener(updateAvatar);
+        manager.SelfJoueurChangeEvent.AddListener(updateConnexion);
         manager.ConnexionChangeEvent.AddListener(updateConnexion);
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
         connexionBtn.onClick.AddListener(onLoginClicked);
+        updateConnexion();
     }
 
     // Update is called once per frame
@@ -55,11 +86,57 @@ public class UIManagerPAcceuil : MonoBehaviour
     {
         if (UIManager.singleton.language)
         {
+            connexionBtnTxt.text = "Log In";
             playBtnTxt.text = "Play";
+            parametreLabel.text = "Settings";
+            classementLabel.text = "Log in to your account to view";
+            classementTitle.text = "Player Rankings";
+            classementTitleAfterLogin.text = "Player Rankings";
+            classementTitleAfterLogin.text = "Player Rankings";
+            nom.text = "Last Name";
+            nomHintText.text = "Enter your last name";
+            prenom.text = "First Name";
+            prenomHintText.text = "Enter your first name";
+            password.text = "Password";
+            passwordHintText.text = "Enter your password";
+            confirmPassword.text = "Confirm Password";
+            confirmPasswordHintText.text = "Confirm your password";
+            usernameHintText.text = "Enter your username";
+            dateNaissance.text = "Date of Birth";
+            JJ.text = "DD";
+            MM.text = "MM";
+            AAAA.text = "YYYY";
+            creeUnCompte.text = "Create Account";
+            seConnecter.text = "Log In";
+            createAccountTitle.text = "Create an account";
+            classementTitlePage.text = "Player Rankings";
         }
         else
         {
+            connexionBtnTxt.text = "Connexion";
             playBtnTxt.text = "Jouer";
+            parametreLabel.text = "Paramètres";
+            classementLabel.text = "Connectez vous à votre compte pour visualiser";
+            classementTitle.text = "Classement Des Joueurs";
+            classementTitleAfterLogin.text = "Classement Des Joueurs";
+            classementTitleAfterLogin.text = "Classement Des Joueurs";
+            nom.text = "Nom";
+            nomHintText.text = "Entrez votre nom";
+            prenom.text = "Prénom";
+            prenomHintText.text = "Entrez votre prénom";
+            password.text = "Mot de passe";
+            passwordHintText.text = "Entrez votre mot de passe";
+            confirmPassword.text = "Confirmer le mot de passe";
+            confirmPasswordHintText.text = "Confirmez votre mot de passe";
+            usernameHintText.text = "Entrez votre nom d'utilisateur";
+            dateNaissance.text = "Date de naissance";
+            JJ.text = "JJ";
+            MM.text = "MM";
+            AAAA.text = "AAAA";
+            creeUnCompte.text = "Créer Compte";
+            seConnecter.text = "Se connecter";
+            createAccountTitle.text = "Créer un compte";
+            classementTitlePage.text = "Classement Des Joueurs";
         }
     }
 

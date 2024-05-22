@@ -37,6 +37,12 @@ public class LogInScreen : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI erreurTxt;
 
+    public TextMeshProUGUI Title;
+    public TextMeshProUGUI nomUtilisateurLabel;
+    public TextMeshProUGUI motPasseLabel;
+    public TextMeshProUGUI connectionBtnLabel;
+    public TextMeshProUGUI creeCompteLabel;
+
     [SerializeField]
     private GameObject createAccountView;
 
@@ -98,8 +104,22 @@ public class LogInScreen : MonoBehaviour
 
     void Update()
     {
-        if (UIManager.singleton.language) { }
-        else { }
+        if (UIManager.singleton.language)
+        {
+            Title.text = "Log In";
+            nomUtilisateurLabel.text = "Username";
+            motPasseLabel.text = "Password";
+            connectionBtnLabel.text = "Log In";
+            creeCompteLabel.text = "Create Account";
+        }
+        else
+        {
+            Title.text = "Connexion";
+            nomUtilisateurLabel.text = "Nom d'utilisateur";
+            motPasseLabel.text = "Mot de passe";
+            connectionBtnLabel.text = "Connexion";
+            creeCompteLabel.text = "Créer un compte";
+        }
     }
 
     public async Task UpdateWithConnection(string username, string password)

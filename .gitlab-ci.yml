@@ -92,6 +92,7 @@ docker-api:
     - if: $CI_COMMIT_BRANCH == "back-end"
       changes:
         - docker/OkeyApi.Dockerfile
+        - docker/OkeyApi.Dockerfile.dockerignore
         - server/OkeyApi/**/*.cs
         - server/OkeyApi/appsettings*.json
         - server/OkeyApi/**/launchSettings.json
@@ -124,6 +125,7 @@ docker-server:
     - if: $CI_COMMIT_BRANCH == "back-end"
       changes:
         - docker/OkeyServer.Dockerfile
+        - docker/OkeyServer.Dockerfile.dockerignore
         - server/OkeyServer/**/*.cs
         - server/OkeyServer/*.csproj
         - server/OkeyServer/*.sln
@@ -154,11 +156,40 @@ docker-db-init:
     - if: $CI_COMMIT_BRANCH == "back-end"
       changes:
         - docker/DB-Init.Dockerfile
+        - docker/DB-Init.Dockerfile.dockerignore
         - server/OkeyApi/**/*.cs
         - server/OkeyApi/appsettings*.json
         - server/OkeyApi/**/launchSettings.json
         - server/OkeyApi/*.csproj
         - server/OkeyApi/*.sln
+      when: always
+    - if: '$CI_COMMIT_TAG =~ $RELEASE_TAG'
+      when: always
+  tags:
+    - kubernetes
+docker-website:
+  # Docker, Docker in Docker (dind) and Buildah don't work
+  # with Unistra GitLab's kubernetes shared runners due to
+  # various permission and runner configuration issues (user space/kernel space)
+  image:
+    name: gcr.io/kaniko-project/executor:v1.21.1-debug
+    entrypoint: [""]
+  stage: build
+  variables:
+    IMAGE_NAME: okeywebsite
+  before_script:
+    # Store registry auth credentials for Kaniko to read during push
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - IMAGE_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev-${CI_COMMIT_SHORT_SHA}"; else echo ${CI_COMMIT_TAG}; fi)
+    - IMAGE_SLIDING_TAG=$(if [ "${CI_COMMIT_BRANCH}" ]; then echo "dev"; else echo "latest"; fi)
+  script:
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker/OkeyWebsite.Dockerfile" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_TAG}" --destination "${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${IMAGE_SLIDING_TAG}"
+  after_script: ""
+  rules:
+    - if: $CI_COMMIT_BRANCH == "back-end"
+      changes:
+        - docker/OkeyWebsite.Dockerfile
+        - server/okeywebsite/new_app/**/*
       when: always
     - if: '$CI_COMMIT_TAG =~ $RELEASE_TAG'
       when: always
@@ -174,6 +205,8 @@ unity-linux-test:
     - job: unity-mac-local-test
       artifacts: false
     - job: unity-windows-local-test
+      artifacts: false
+    - job: unity-android-local-test
       artifacts: false
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Linux
@@ -213,6 +246,8 @@ unity-mac-test:
       artifacts: false
     - job: unity-windows-local-test
       artifacts: false
+    - job: unity-android-local-test
+      artifacts: false
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Mac
   before_script:
@@ -251,6 +286,8 @@ unity-windows-test:
     - job: unity-mac-local-test
       artifacts: false
     - job: unity-windows-local-test
+      artifacts: false
+    - job: unity-android-local-test
       artifacts: false
   variables:
     BUILD_PATH: client/OkeyClient/Builds/Windows
@@ -371,6 +408,44 @@ unity-windows-local-test:
       when: always
   artifacts:
     name: "unity-windows-local-test-build"
+    paths:
+      - public
+    expire_in: 30 days
+  tags:
+    - kubernetes
+unity-android-local-test:
+  image:
+    name: unityci/editor:ubuntu-2022.3.19f1-android-3.1.0
+  stage: build
+  dependencies: []
+  variables:
+    BUILD_PATH: client/OkeyClient/Builds/Android
+    ANDROID_NDK_HOME: /opt/unity/Editor/Data/PlaybackEngines/AndroidPlayer/NDK
+  before_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -serial "$UNITY_SERIAL" -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+  script:
+    # - ls -lahFGR /opt/
+    # - exit 1
+    - export OKEY_BUILD_VERSION=$(scripts/generate_unity_build_version.sh)
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -logFile - -projectPath client/OkeyClient -timestamps -executeMethod Builder.AndroidLocalTestBuild
+    # - tar cJf "OkeyTest_Android_ARM64_${OKEY_BUILD_VERSION}_Local.tar.xz" ${BUILD_PATH}/OkeyTest.app
+    # - tar cJf "OkeyTest_Android_ARM64_${OKEY_BUILD_VERSION}_Local.tar.xz" ${BUILD_PATH}/OkeyTest/
+    - ls -lahFGR client/OkeyClient/Builds
+    - tar cJf "OkeyTest_Android_ARM64_${OKEY_BUILD_VERSION}_Local.tar.xz" ${BUILD_PATH}/
+    - mkdir -p public/
+    - mv "OkeyTest_Android_ARM64_${OKEY_BUILD_VERSION}_Local.tar.xz" public/
+  after_script:
+    - /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username "$UNITY_EMAIL" -password "$UNITY_PASSWORD"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "front-end"
+      # changes:
+      #   - client/OkeyClient/**/*
+      when: always
+    - if: $CI_COMMIT_TAG =~ $RELEASE_TAG
+      when: always
+  artifacts:
+    name: "unity-android-local-test-build"
     paths:
       - public
     expire_in: 30 days

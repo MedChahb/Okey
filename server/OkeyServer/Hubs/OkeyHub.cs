@@ -20,7 +20,7 @@ using Security;
 /// </summary>
 public sealed class OkeyHub : Hub
 {
-    private static readonly int time = 20000;
+    private static readonly int time = 59000;
 
     private static ConcurrentDictionary<string, PlayerDatas> _connectedUsers =
         new ConcurrentDictionary<string, PlayerDatas>();
@@ -297,6 +297,73 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    public async Task CreatePrivateRoom()
+    {
+        await this.GetUserNameFromClient(this.Context.ConnectionId);
+
+        var roomId = this._roomManager.CreatePrivateRoom();
+
+        if (roomId == null)
+        {
+            await this
+                ._hubContext.Clients.Client(this.Context.ConnectionId)
+                .SendAsync(
+                    "JoinRoomFail",
+                    new PacketSignal { message = "Impossible de créer une room priveée l'instant." }
+                );
+        }
+        else
+        {
+            //Thread.Sleep(1000);
+            Console.WriteLine(
+                $"Nouvelle room: {roomId} {this._roomManager.GetRoomById(roomId).Name}"
+            );
+
+            var success = this._roomManager.TryJoinPrivateRoom(roomId, this.Context.ConnectionId);
+            if (success)
+            {
+                await this._hubContext.Groups.RemoveFromGroupAsync(
+                    this.Context.ConnectionId,
+                    "Hub"
+                );
+
+                await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, roomId);
+                UsersInRooms.TryUpdate(this.Context.ConnectionId, roomId, "Hub");
+
+                var packet = new RoomState();
+                packet.playerDatas = new List<string?>();
+                packet.roomName = roomId;
+
+                foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
+                {
+                    Console.WriteLine(player);
+                    packet.playerDatas.Add(
+                        $"{_connectedUsers[player].GetUsername()};{_connectedUsers[player].GetPhoto()};{_connectedUsers[player].GetElo()};{_connectedUsers[player].GetExperience()}"
+                    );
+                }
+
+                await this._hubContext.Clients.Group(roomId).SendAsync("SendRoomState", packet);
+                await this.SendRoomListUpdate();
+                if (this._roomManager.IsRoomFull(roomId))
+                {
+                    this.OnGameStarted(roomId);
+                }
+            }
+            else
+            {
+                await this
+                    ._hubContext.Clients.Client(this.Context.ConnectionId)
+                    .SendAsync(
+                        "JoinRoomFail",
+                        new PacketSignal
+                        {
+                            message = "Impossible de rejoindre une room, réessayer plus tard"
+                        }
+                    );
+            }
+        }
+    }
+
     /// <summary>
     /// Effectue la connexion au lobby si ce lobby est joignable.
     /// </summary>
@@ -331,6 +398,7 @@ public sealed class OkeyHub : Hub
 
                 var packet = new RoomState();
                 packet.playerDatas = new List<string?>();
+                packet.roomName = roomId;
 
                 foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
                 {
@@ -607,131 +675,109 @@ public sealed class OkeyHub : Hub
     /// <param name="jeu">Instance de jeu.</param>
     /// <param name="token">Jeton d'annulation.</param>
     /// <returns>Coordonnées de la tuile jetée.</returns>
-    private async Task<string> JeterRequest(
-        Joueur pl,
-        string roomName,
-        Jeu jeu,
-        CancellationTokenSource token
-    )
+    private async Task<string> JeterRequest(Joueur pl, string roomName, Jeu jeu)
     {
-        try
+        var invokeTask = this
+            ._hubContext.Clients.Client(pl.getName())
+            .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: CancellationToken.None);
+        // attend soit la saisie du client, soit les 20sec
+        // si le client saisie alors    completedTask <- invokeTask
+        // sinon                        completedTask <- Task.Delay()
+
+        var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
+
+        if (completedTask == invokeTask) // TODO: if non optimal du tout, discussion nécessaire
         {
-            if (this._cts != null)
+            var coordinates = await invokeTask;
+            if (coordinates.gagner == true)
             {
-                var invokeTask = this
-                    ._hubContext.Clients.Client(pl.getName())
-                    .InvokeAsync<TuilePacket>("JeterRequest", cancellationToken: this._cts.Token);
-                token.Token.ThrowIfCancellationRequested();
-                // attend soit la saisie du client, soit les 20sec
-                // si le client saisie alors    completedTask <- invokeTask
-                // sinon                        completedTask <- Task.Delay()
-
-                if (!token.IsCancellationRequested)
+                Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
+                if (pl?.VerifSerieChevalet() == true)
                 {
-                    var completedTask = await Task.WhenAny(invokeTask, Task.Delay(time));
+                    Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
+                    // Le joueur gagne
+                    //jeu.PushPiocheCentre();
+                    //await this.PlayerWon(roomName, winner);
 
-                    if (completedTask == invokeTask) // TODO: if non optimal du tout, discussion nécessaire
+
+
+                    if (pl != null)
                     {
-                        var coordinates = await invokeTask;
-                        if (coordinates.gagner == true)
-                        {
-                            if (
-                                pl?.JeteTuilePourTerminer(
-                                    this.ReadCoords(coordinates.Y + ";" + coordinates.X),
-                                    jeu
-                                ) == true
-                            )
-                            {
-                                // Le joueur gagne
-                                await this.PlayerWon(roomName, pl.getName());
-                            }
+                        await this
+                            ._hubContext.Clients.Group(roomName)
+                            .SendAsync("WinInfos", _connectedUsers[pl.getName()].GetUsername());
 
-                            if (pl != null)
-                            {
-                                await this.SendMpToPlayer(
-                                    pl.getName(),
-                                    "Vous n'avez pas de serie dans votre chevalet !"
-                                );
-                                var randTuileCoord = pl.GetRandomTuileCoords();
-                                var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
+                        Thread.Sleep(2000);
 
-                                await this.SendTuileJeteeToPlayer(
-                                    pl.getName(),
-                                    new TuilePacket
-                                    {
-                                        X = randTuileCoord
-                                            .getY()
-                                            .ToString(CultureInfo.InvariantCulture),
-                                        Y = randTuileCoord
-                                            .getX()
-                                            .ToString(CultureInfo.InvariantCulture),
-                                        gagner = null
-                                    }
-                                );
+                        jeu.JeuTermine(pl);
 
-                                pl?.JeterTuile(
-                                    this.ReadCoords(
-                                        randTuileCoord.getY() + ";" + randTuileCoord.getX()
-                                    ),
-                                    jeu
-                                );
-                                return "";
-                            }
-                        }
-                        else
-                        {
-                            pl?.JeterTuile(
-                                this.ReadCoords(coordinates.Y + ";" + coordinates.X),
-                                jeu
-                            );
-                            return "";
-                        }
-                    }
-
-                    if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
-                    {
-                        if (pl != null)
-                        {
-                            var RandTuileCoord = pl.GetRandomTuileCoords();
-                            var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
-
-                            await this.SendTuileJeteeToPlayer(
-                                pl.getName(),
-                                new TuilePacket
-                                {
-                                    X = RandTuileCoord
-                                        .getY()
-                                        .ToString(CultureInfo.InvariantCulture),
-                                    Y = RandTuileCoord
-                                        .getX()
-                                        .ToString(CultureInfo.InvariantCulture),
-                                    gagner = null
-                                }
-                            );
-                            pl?.JeterTuile(
-                                this.ReadCoords(
-                                    RandTuileCoord.getY() + ";" + RandTuileCoord.getX()
-                                ),
-                                jeu
-                            );
-                            if (pl != null)
-                            {
-                                await this.SendChevalet(pl.getName(), pl);
-                            }
-                            return "";
-                        }
+                        return "";
                     }
                 }
-                return "FIN";
-            }
+                else
+                {
+                    if (pl != null)
+                    {
+                        await this.SendMpToPlayer(
+                            pl.getName(),
+                            "Vous n'avez pas de serie dans votre chevalet !"
+                        );
+                        var randTuileCoord = pl.GetRandomTuileCoords();
+                        var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
 
-            return "FIN";
+                        await this.SendTuileJeteeToPlayer(
+                            pl.getName(),
+                            new TuilePacket
+                            {
+                                X = randTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
+                                Y = randTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
+                                gagner = null
+                            }
+                        );
+
+                        pl?.JeterTuile(
+                            this.ReadCoords(randTuileCoord.getY() + ";" + randTuileCoord.getX()),
+                            jeu
+                        );
+                        return "";
+                    }
+                }
+            }
+            else
+            {
+                pl?.JeterTuile(this.ReadCoords(coordinates.Y + ";" + coordinates.X), jeu);
+                return "";
+            }
         }
-        catch (Exception e)
+
+        if (completedTask != invokeTask) // c a d le client n'a pas donné les coordonnées pendant les 20sec
         {
-            Console.WriteLine($"Ok jeterrequest annulé {e.Message}");
-            return "FIN";
+            if (pl != null)
+            {
+                var RandTuileCoord = pl.GetRandomTuileCoords();
+                var coord = RandTuileCoord.getY() + ";" + RandTuileCoord.getX();
+
+                await this.SendTuileJeteeToPlayer(
+                    pl.getName(),
+                    new TuilePacket
+                    {
+                        X = RandTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
+                        Y = RandTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
+                        gagner = null
+                    }
+                );
+                pl?.JeterTuile(
+                    this.ReadCoords(RandTuileCoord.getY() + ";" + RandTuileCoord.getX()),
+                    jeu
+                );
+                if (pl != null)
+                {
+                    await this.SendChevalet(pl.getName(), pl);
+                }
+                return "";
+            }
         }
+        return "FIN";
     }
 
     /// <summary>
@@ -1086,7 +1132,7 @@ public sealed class OkeyHub : Hub
             {
                 var ListeDefausseSend = new List<string>();
 
-                foreach (var tuile in jeu.ListeDefausse)
+                foreach (var tuile in jeu.GetListeDefausse())
                 {
                     // Construire la chaîne de caractères représentant la tuile( pas besoin d'envoyer defausse est DansPioche mais je fais qd meme)
                     var tuileString =
@@ -1110,6 +1156,52 @@ public sealed class OkeyHub : Hub
                     $"Erreur lors de l'envoi de la liste de défaites au client {connectionId}: {ex.Message}"
                 );
             }
+        }
+    }
+
+    public async Task TryJoinPrivateRoom(string roomId)
+    {
+        await this.GetUserNameFromClient(this.Context.ConnectionId);
+        Console.WriteLine($"Nouvelle room: {roomId} {this._roomManager.GetRoomById(roomId).Name}");
+
+        var success = this._roomManager.TryJoinPrivateRoom(roomId, this.Context.ConnectionId);
+        if (success)
+        {
+            await this._hubContext.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, "Hub");
+
+            await this._hubContext.Groups.AddToGroupAsync(this.Context.ConnectionId, roomId);
+            UsersInRooms.TryUpdate(this.Context.ConnectionId, roomId, "Hub");
+
+            var packet = new RoomState();
+            packet.playerDatas = new List<string?>();
+            packet.roomName = roomId;
+
+            foreach (var player in this._roomManager.GetRoomById(roomId).GetPlayerIds())
+            {
+                Console.WriteLine(player);
+                packet.playerDatas.Add(
+                    $"{_connectedUsers[player].GetUsername()};{_connectedUsers[player].GetPhoto()};{_connectedUsers[player].GetElo()};{_connectedUsers[player].GetExperience()}"
+                );
+            }
+
+            await this._hubContext.Clients.Group(roomId).SendAsync("SendRoomState", packet);
+            await this.SendRoomListUpdate();
+            if (this._roomManager.IsRoomFull(roomId))
+            {
+                this.OnGameStarted(roomId);
+            }
+        }
+        else
+        {
+            await this
+                ._hubContext.Clients.Client(this.Context.ConnectionId)
+                .SendAsync(
+                    "JoinRoomFail",
+                    new PacketSignal
+                    {
+                        message = "Impossible de rejoindre une room, réessayer plus tard"
+                    }
+                );
         }
     }
 
@@ -1410,6 +1502,30 @@ public sealed class OkeyHub : Hub
         }
     }
 
+    private async Task SendPlayerOrder(Jeu j, string roomName)
+    {
+        var packet = new OrderPacket();
+
+        packet.playerConnectionIds = new List<string>();
+        packet.playerUsernames = new List<string>();
+
+        packet.playerConnectionIds.Add(j.getJoueurActuel()!.getName());
+        packet.playerConnectionIds.Add(j.getNextJoueur(j.getJoueurActuel()!).getName());
+        packet.playerConnectionIds.Add(
+            j.getNextJoueur(j.getNextJoueur(j.getJoueurActuel()!)).getName()
+        );
+        packet.playerConnectionIds.Add(
+            j.getNextJoueur(j.getNextJoueur(j.getNextJoueur(j.getJoueurActuel()!))).getName()
+        );
+
+        packet.playerUsernames.Add(_connectedUsers[packet.playerConnectionIds[0]].GetUsername());
+        packet.playerUsernames.Add(_connectedUsers[packet.playerConnectionIds[1]].GetUsername());
+        packet.playerUsernames.Add(_connectedUsers[packet.playerConnectionIds[2]].GetUsername());
+        packet.playerUsernames.Add(_connectedUsers[packet.playerConnectionIds[3]].GetUsername());
+
+        await this._hubContext.Clients.Group(roomName).SendAsync("PlayerOrdered", packet);
+    }
+
     /// <summary>
     /// Convertit une couleur de tuile énumérée en chaîne.
     /// </summary>
@@ -1487,7 +1603,7 @@ public sealed class OkeyHub : Hub
     /// </summary>
     /// <param name="roomName">Nom de la salle.</param>
     /// <param name="winner">Nom du joueur gagnant.</param>
-    private async Task PlayerWon(string roomName, string winner)
+    private async Task PlayerWon(string roomName, string? winner)
     {
         await this.Clients.Group(roomName).SendAsync("PlayerWon", winner); //TODO: Faire la distinction entre le gagnant et les autres
     }
@@ -1519,6 +1635,8 @@ public sealed class OkeyHub : Hub
         jeu.DistibuerTuile();
 
         Thread.Sleep(5000);
+
+        await this.SendPlayerOrder(jeu, roomName);
 
         await this.TuilesDistribueesSignal(roomName);
 
@@ -1579,6 +1697,7 @@ public sealed class OkeyHub : Hub
             jeu.getJoueurActuel()?.getName() ?? throw new InvalidOperationException(),
             true
         );
+
         while (!jeu.isTermine())
         {
             var currentPlayer = jeu.getJoueurActuel();
@@ -1644,7 +1763,7 @@ public sealed class OkeyHub : Hub
 
                     await this.SendChevalet(currentPlayer.getName(), currentPlayer);
 
-                    var res = await this.JeterRequest(currentPlayer, roomName, jeu, this._cts);
+                    var res = await this.JeterRequest(currentPlayer, roomName, jeu);
                     if (res.Equals("FIN", StringComparison.Ordinal))
                     {
                         await this.BroadCastInRoom(
@@ -1680,28 +1799,25 @@ public sealed class OkeyHub : Hub
                 this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
             }
         }
-
-        // on met à jour les informations des différents joueurs
-        if (jeu.isTermine())
+        /* TODO dbContext is disposed of and can't be used
+        // modification des elos des joueurs
+        for (var i = 0; i < 4; i++)
         {
-            for (var i = 0; i < 4; i++)
+            var joueur = jeu.GetJoueurs()[i];
+
+            if (jeu.GetJoueurs()[i].isGagnant())
             {
-                // TODO appliquer des valeurs de score et de elo a l'aide de calculs
-                if (joueurs[i].isGagnant())
-                {
-                    await this
-                        ._hubContext.Clients.Group(roomName)
-                        .SendAsync("WinInfos", joueurs[i].getName());
-                    await _connectedUsers[playerIds[i]]
-                        .UpdateStats(this._dbContext, 10, 5, true, true);
-                }
-                else
-                {
-                    await _connectedUsers[playerIds[i]]
-                        .UpdateStats(this._dbContext, -5, 3, true, false);
-                }
+                Console.WriteLine("est-ce qu'on arrive ici ?");
+                await _connectedUsers[joueur.getName()]
+                    .UpdateStats(this._dbContext, ((Humain)joueur).GetElo(), 5, true, true);
+            }
+            else
+            {
+                await _connectedUsers[joueur.getName()]
+                    .UpdateStats(this._dbContext, ((Humain)joueur).GetElo(), 3, true, false);
             }
         }
+        */
     }
 
     /// <summary>

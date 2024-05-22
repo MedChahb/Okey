@@ -5,36 +5,41 @@ using UnityEngine.UI; // This import might not be needed if you're only using Sp
 
 public class PlayerAvatarsLobby : MonoBehaviour
 {
+    public static PlayerAvatarsLobby Instance { get; private set; }
+
     public SpriteRenderer mainPlayerRenderer;
     public SpriteRenderer player2Renderer;
     public SpriteRenderer player3Renderer;
     public SpriteRenderer player4Renderer;
 
-    public void LoadAndDisplayAvatars(List<string> playerUsernames)
+    private void Awake()
     {
-        if (playerUsernames.Count > 0)
+        if (Instance != null && Instance != this)
         {
-            mainPlayerRenderer.sprite = LoadAvatarForUser(playerUsernames[0]);
-
-            if (playerUsernames.Count > 1)
-                player2Renderer.sprite = LoadAvatarForUser(playerUsernames[1]);
-
-            if (playerUsernames.Count > 2)
-                player3Renderer.sprite = LoadAvatarForUser(playerUsernames[2]);
-
-            if (playerUsernames.Count > 3)
-                player4Renderer.sprite = LoadAvatarForUser(playerUsernames[3]);
+            Destroy(this);
         }
+        else
+        {
+            Instance = this;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
     }
 
-    Sprite LoadAvatarForUser(string username)
+    public void LoadAndDisplayAvatars(List<Sprite> avatars)
     {
-        string path = "Avatars/" + username.ToLower();
-        Sprite avatar = Resources.Load<Sprite>(path);
-        if (avatar == null)
+        if (avatars.Count > 0)
         {
-            Debug.LogError("Failed to load avatar for user: " + username);
+            mainPlayerRenderer.sprite = avatars[0];
+
+            if (avatars.Count > 1)
+                player2Renderer.sprite = avatars[1];
+
+            if (avatars.Count > 2)
+                player3Renderer.sprite = avatars[2];
+
+            if (avatars.Count > 3)
+                player4Renderer.sprite = avatars[3];
         }
-        return avatar;
     }
 }
