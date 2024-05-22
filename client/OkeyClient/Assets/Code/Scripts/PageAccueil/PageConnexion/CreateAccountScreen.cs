@@ -188,7 +188,6 @@ public class CreatAccountScreen : MonoBehaviour
             erreurTxt.text = UIManager.singleton.language
                 ? "Please enter valid numbers for day, month and year."
                 : "Veuillez entrer des nombres valides pour le jour, le mois et l'année.";
-            "Veuillez entrer des nombres valides pour le jour, le mois et l'année.";
             erreurTxt.gameObject.SetActive(true);
             return;
         }
