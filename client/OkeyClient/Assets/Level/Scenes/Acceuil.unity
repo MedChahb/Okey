@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -19510,7 +19509,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1103114803
 RectTransform:
   m_ObjectHideFlags: 0
@@ -27148,6 +27147,8 @@ MonoBehaviour:
   classementTitle: {fileID: 774249491}
   classementTitleAfterLogin: {fileID: 984691935}
   classementTitlePage: {fileID: 1350827774}
+  nomUtilisateurLoginHint: {fileID: 355388384}
+  motDePasseLoginHint: {fileID: 1777035296}
   niveau: {fileID: 1417919392}
   statistiques: {fileID: 1622798313}
   tempsTotaldeJeu: {fileID: 352805030}
@@ -37653,7 +37654,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1992467007
 RectTransform:
   m_ObjectHideFlags: 0

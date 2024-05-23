@@ -27,6 +27,9 @@ public class UIManagerPAcceuil : MonoBehaviour
     public TextMeshProUGUI classementTitleAfterLogin;
     public TextMeshProUGUI classementTitlePage;
 
+    public TextMeshProUGUI nomUtilisateurLoginHint;
+    public TextMeshProUGUI motDePasseLoginHint;
+
     public TextMeshProUGUI niveau;
     public TextMeshProUGUI statistiques;
     public TextMeshProUGUI tempsTotaldeJeu;
@@ -126,6 +129,8 @@ public class UIManagerPAcceuil : MonoBehaviour
             classement.text = "Ranking";
             deconnexionBtnLabel.text = "Log Out";
             changerAvatarLabel.text = "Change Avatar";
+            nomUtilisateurLoginHint.text = "Enter your username";
+            motDePasseLoginHint.text = "Enter your password";
         }
         else
         {
@@ -161,6 +166,8 @@ public class UIManagerPAcceuil : MonoBehaviour
             classement.text = "Classement";
             deconnexionBtnLabel.text = "Déconnexion";
             changerAvatarLabel.text = "Changer d'avatar";
+            nomUtilisateurLoginHint.text = "Entrez votre nom d'utilisateur";
+            motDePasseLoginHint.text = "Entrez votre mot de passe";
         }
     }
 
