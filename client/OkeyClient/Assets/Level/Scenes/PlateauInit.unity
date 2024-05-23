@@ -1852,10 +1852,10 @@ PrefabInstance:
     - target: {fileID: 5063206262413569196, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 312998043, guid: 6219041b4e8d72e4bb547f09ef3c65d1, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 5063206262413569196, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_WasSpriteAssigned
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5063206262413569196, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -1960,14 +1960,14 @@ PrefabInstance:
     - target: {fileID: 7551420676400957587, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 312998043, guid: 6219041b4e8d72e4bb547f09ef3c65d1, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 7551420676400957587, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7551420676400957587, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_WasSpriteAssigned
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7551420676400957587, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -1984,8 +1984,6 @@ PrefabInstance:
     - {fileID: 4067675633672195811, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
     - {fileID: 7365348500370832534, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
     - {fileID: 8942026251536078143, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
-    - {fileID: 7551420676400957587, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
-    - {fileID: 5063206262413569196, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
     - {fileID: 9062300983399757587, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2998,7 +2996,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60, y: 83}
+  m_AnchoredPosition: {x: 60, y: 33}
   m_SizeDelta: {x: 45, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &500712418
@@ -3597,7 +3595,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -473, y: -74}
+  m_AnchoredPosition: {x: -473, y: -124}
   m_SizeDelta: {x: 45, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &639636885
@@ -4382,7 +4380,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468, y: -74}
+  m_AnchoredPosition: {x: 468, y: -124}
   m_SizeDelta: {x: 45, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &819635294
@@ -9998,7 +9996,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Salut
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
