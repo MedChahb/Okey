@@ -78,7 +78,7 @@ public class Plateau2 : MonoBehaviour
             if (emoteNumber < 4)
             {
                 var image = player.transform.Find("EmojiSelected");
-                Debug.Log($"{image.name}");
+                //Debug.Log($"{image.name}");
                 var noneSprite = image.GetComponent<SpriteRenderer>().sprite;
                 var sprite = image.GetComponent<SpriteRenderer>();
                 sprite.sprite = this.emojiSprites[emoteNumber];
@@ -99,7 +99,7 @@ public class Plateau2 : MonoBehaviour
             if (emoteNumber < 4)
             {
                 var image = player.transform.Find("EmojiSelected");
-                Debug.Log($"{image.name}");
+                //Debug.Log($"{image.name}");
                 var noneSprite = image.GetComponent<SpriteRenderer>().sprite;
                 var sprite = image.GetComponent<SpriteRenderer>();
                 sprite.sprite = this.emojiSprites[emoteNumber];
@@ -120,7 +120,7 @@ public class Plateau2 : MonoBehaviour
             if (emoteNumber < 4)
             {
                 var image = player.transform.Find("EmojiSelected");
-                Debug.Log($"{image.name}");
+                //Debug.Log($"{image.name}");
                 var noneSprite = image.GetComponent<SpriteRenderer>().sprite;
                 var sprite = image.GetComponent<SpriteRenderer>();
                 sprite.sprite = this.emojiSprites[emoteNumber];
