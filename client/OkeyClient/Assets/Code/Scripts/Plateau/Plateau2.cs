@@ -14,9 +14,12 @@ public class Plateau2 : MonoBehaviour
     public GameObject EmojiPanel; //Panneau d'emoji
 
     public Sprite[] emojiSprites;
-    public Image EmojiDisplay;
+    //public Image EmojiDisplay;
     public Button[] wordButtons; // Boutons pour les mots
     public TextMeshProUGUI gameDisplayText; // Texte affiché sur le plateau de jeu
+    public Button sendEmoteButton;
+    public Button leaveGame;
+    public Button parameters;
 
     public static Plateau2 Instance { get; private set; }
 
@@ -32,7 +35,15 @@ public class Plateau2 : MonoBehaviour
 
     // Fonction pour activer le Confirmation_Panel et désactiver le Plateau_Panel
     // Tableau des mots, assurez-vous que cela correspond à l'ordre des boutons
+    
 
+    //Ajouter le start pour initialiser les écouteurs
+    public void Start()
+    {
+        parameters.onClick.AddListener(ShowParamPanel);
+        sendEmoteButton.onClick.AddListener(ShowEmojiPanel);
+        leaveGame.onClick.AddListener(ShowConfirmationPanel);
+    }
 
     public void Awake()
     {
@@ -179,13 +190,13 @@ public class Plateau2 : MonoBehaviour
             return;
 
         // Change le sprite de l'objet Image pour correspondre à l'émoji sélectionné
-        EmojiDisplay.sprite = emojiSprites[emojiIndex];
+        //EmojiDisplay.sprite = emojiSprites[emojiIndex];
         SignalRConnector.Instance.SendEmoji(emojiIndex);
         Debug.LogWarning("On a bien envoyé l'emoji");
 
         // Active l'objet Image pour afficher l'émoji et le désactive après 2 secondes
-        EmojiDisplay.gameObject.SetActive(true);
-        StartCoroutine(DisableAfterDelay(EmojiDisplay.gameObject, 2f));
+        //EmojiDisplay.gameObject.SetActive(true);
+        //StartCoroutine(DisableAfterDelay(EmojiDisplay.gameObject, 2f));
 
         // Cache le panneau d'emojis après sélection
         EmojiPanel.SetActive(false);
