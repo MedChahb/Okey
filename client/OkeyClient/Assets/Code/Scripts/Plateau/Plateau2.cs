@@ -69,12 +69,12 @@ public class Plateau2 : MonoBehaviour
 
     public void DisplayEmote(int playerNumber, int emoteNumber)
     {
-        var playerSignals = this.PlateauPanel.transform.Find("PlayerSignals");
+        var playerSignals = this.PlateauPanel.transform.Find("EmotesPlaceHolders");
 
         if (playerNumber == 2)
         {
             Debug.Log("Joueur de droite");
-            var player = playerSignals.transform.Find("TurnSignal2");
+            var player = playerSignals.transform.Find("RightPlayer");
             if (emoteNumber < 4)
             {
                 var image = player.transform.Find("EmojiSelected");
@@ -95,7 +95,7 @@ public class Plateau2 : MonoBehaviour
         else if (playerNumber == 3)
         {
             Debug.Log("Joueur en face");
-            var player = playerSignals.transform.Find("TurnSignal3");
+            var player = playerSignals.transform.Find("InFrontPlayer");
             if (emoteNumber < 4)
             {
                 var image = player.transform.Find("EmojiSelected");
@@ -116,7 +116,7 @@ public class Plateau2 : MonoBehaviour
         else if (playerNumber == 4)
         {
             Debug.Log("Joueur de gauche");
-            var player = playerSignals.transform.Find("TurnSignal4");
+            var player = playerSignals.transform.Find("LeftPlayer");
             if (emoteNumber < 4)
             {
                 var image = player.transform.Find("EmojiSelected");
