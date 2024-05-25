@@ -613,7 +613,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
         m_MethodName: OnEmojiSelected
         m_Mode: 3
@@ -1496,9 +1496,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
-        m_MethodName: OnWordButtonClicked
+        m_MethodName: OnEmojiSelected
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1988,7 +1988,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
         m_MethodName: toggleEmojiPanel
         m_Mode: 1
@@ -2317,15 +2317,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 645618680930743428, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.07
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 645618680930743428, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.97
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 645618680930743428, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 645618680930743428, guid: 3543214dd1b76e64dbba1035964ce77a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2950,7 +2950,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
         m_MethodName: QuitterPartie
         m_Mode: 1
@@ -5151,9 +5151,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
-        m_MethodName: OnWordButtonClicked
+        m_MethodName: OnEmojiSelected
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5493,9 +5493,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
-        m_MethodName: OnWordButtonClicked
+        m_MethodName: OnEmojiSelected
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5949,7 +5949,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
         m_MethodName: OnEmojiSelected
         m_Mode: 3
@@ -6398,7 +6398,6 @@ GameObject:
   - component: {fileID: 1076391079}
   - component: {fileID: 1076391078}
   - component: {fileID: 1076391077}
-  - component: {fileID: 1076391080}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -6480,38 +6479,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1076391080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1076391076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cf0d97beeea946519ffd7be79c8e8db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlateauPanel: {fileID: 480997738}
-  ConfirmationPanel: {fileID: 1979797653}
-  ParamPanel: {fileID: 1779463988}
-  EmojiPanel: {fileID: 1659042649}
-  emojiSprites:
-  - {fileID: 21300000, guid: 9b462fac2c4d048468f8033b11c269ef, type: 3}
-  - {fileID: 21300000, guid: 2a6bb113166fa43e8b737f0163f4c535, type: 3}
-  - {fileID: 21300000, guid: d5472cbde9db34de6b41ab6ddda6999a, type: 3}
-  - {fileID: 21300000, guid: 4f01b38fbea3647ecb707d56c37d946f, type: 3}
-  wordButtons:
-  - {fileID: 1998139371}
-  - {fileID: 153885941}
-  - {fileID: 877878363}
-  - {fileID: 767766969}
-  - {fileID: 1210995087}
-  - {fileID: 1986471622}
-  gameDisplayText: {fileID: 2091376650}
-  sendEmoteButton: {fileID: 266770623}
-  leaveGame: {fileID: 7055060598491923204}
-  parameters: {fileID: 7055060598491923203}
 --- !u!114 &1101884193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7026,9 +6993,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
-        m_MethodName: OnWordButtonClicked
+        m_MethodName: OnEmojiSelected
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8035,9 +8002,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1484461131}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.001602847, w: 0.99999875}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.07, y: 0.97, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 305066218}
@@ -8369,7 +8336,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
         m_MethodName: OnEmojiSelected
         m_Mode: 3
@@ -8429,6 +8396,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1512583200}
   - component: {fileID: 1512583201}
+  - component: {fileID: 1512583202}
   m_Layer: 5
   m_Name: PlateauUIManager
   m_TagString: Untagged
@@ -8475,6 +8443,38 @@ MonoBehaviour:
   gameWinningLabel: {fileID: 1985540376}
   ambienceLabel: {fileID: 1750640136}
   effetSonoreLabel: {fileID: 950850942}
+--- !u!114 &1512583202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512583199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cf0d97beeea946519ffd7be79c8e8db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlateauPanel: {fileID: 480997738}
+  ConfirmationPanel: {fileID: 1979797653}
+  ParamPanel: {fileID: 1779463988}
+  EmojiPanel: {fileID: 1659042649}
+  emojiSprites:
+  - {fileID: 21300000, guid: 9b462fac2c4d048468f8033b11c269ef, type: 3}
+  - {fileID: 21300000, guid: 2a6bb113166fa43e8b737f0163f4c535, type: 3}
+  - {fileID: 21300000, guid: d5472cbde9db34de6b41ab6ddda6999a, type: 3}
+  - {fileID: 21300000, guid: 4f01b38fbea3647ecb707d56c37d946f, type: 3}
+  wordButtons:
+  - {fileID: 1998139371}
+  - {fileID: 153885941}
+  - {fileID: 877878363}
+  - {fileID: 767766969}
+  - {fileID: 1210995087}
+  - {fileID: 1986471622}
+  gameDisplayText: {fileID: 2091376650}
+  sendEmoteButton: {fileID: 266770623}
+  leaveGame: {fileID: 7055060598491923204}
+  parameters: {fileID: 7055060598491923203}
 --- !u!1 &1513304766
 GameObject:
   m_ObjectHideFlags: 0
@@ -9524,7 +9524,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
         m_MethodName: ShowPlateauPanel
         m_Mode: 1
@@ -10729,7 +10729,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
         m_MethodName: ShowPlateauPanel
         m_Mode: 1
@@ -11008,9 +11008,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
-        m_MethodName: OnWordButtonClicked
+        m_MethodName: OnEmojiSelected
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11141,9 +11141,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
-        m_MethodName: OnWordButtonClicked
+        m_MethodName: OnEmojiSelected
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11341,7 +11341,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1076391080}
+      - m_Target: {fileID: 1512583202}
         m_TargetAssemblyTypeName: Plateau2, Assembly-CSharp
         m_MethodName: OnEmojiSelected
         m_Mode: 3
@@ -11745,7 +11745,7 @@ PrefabInstance:
     - target: {fileID: 4238320662315594016, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1076391080}
+      objectReference: {fileID: 0}
     - target: {fileID: 4238320662315594016, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -11753,6 +11753,10 @@ PrefabInstance:
     - target: {fileID: 4238320662315594016, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4238320662315594016, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ShowParamPanel
       objectReference: {fileID: 0}
     - target: {fileID: 4238320662315594016, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -11917,7 +11921,7 @@ PrefabInstance:
     - target: {fileID: 8632887948432449561, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1076391080}
+      objectReference: {fileID: 0}
     - target: {fileID: 8632887948432449561, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -11925,6 +11929,10 @@ PrefabInstance:
     - target: {fileID: 8632887948432449561, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8632887948432449561, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ShowConfirmationPanel
       objectReference: {fileID: 0}
     - target: {fileID: 8632887948432449561, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
