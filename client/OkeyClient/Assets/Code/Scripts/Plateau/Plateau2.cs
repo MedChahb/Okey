@@ -41,7 +41,7 @@ public class Plateau2 : MonoBehaviour
     public void Start()
     {
         parameters.onClick.AddListener(ShowParamPanel);
-        sendEmoteButton.onClick.AddListener(ShowEmojiPanel);
+        sendEmoteButton.onClick.AddListener(toggleEmojiPanel);
         leaveGame.onClick.AddListener(ShowConfirmationPanel);
     }
 
@@ -162,6 +162,8 @@ public class Plateau2 : MonoBehaviour
     public void ShowConfirmationPanel()
     {
         ConfirmationPanel.SetActive(true);
+        ParamPanel.SetActive(false);
+        EmojiPanel.SetActive(false);
         PlateauPanel.SetActive(false);
     }
 
@@ -220,6 +222,7 @@ public class Plateau2 : MonoBehaviour
     {
         ParamPanel.SetActive(true);
         ConfirmationPanel.SetActive(false);
+        EmojiPanel.SetActive(false);
         PlateauPanel.SetActive(false);
     }
 
