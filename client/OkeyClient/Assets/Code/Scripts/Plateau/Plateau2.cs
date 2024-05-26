@@ -14,9 +14,12 @@ public class Plateau2 : MonoBehaviour
     public GameObject EmojiPanel; //Panneau d'emoji
 
     public Sprite[] emojiSprites;
-    public Image EmojiDisplay;
+    //public Image EmojiDisplay;
     public Button[] wordButtons; // Boutons pour les mots
     public TextMeshProUGUI gameDisplayText; // Texte affiché sur le plateau de jeu
+    public Button sendEmoteButton;
+    public Button leaveGame;
+    public Button parameters;
 
     public static Plateau2 Instance { get; private set; }
 
@@ -42,7 +45,15 @@ public class Plateau2 : MonoBehaviour
 
     // Fonction pour activer le Confirmation_Panel et désactiver le Plateau_Panel
     // Tableau des mots, assurez-vous que cela correspond à l'ordre des boutons
+    
 
+    //Ajouter le start pour initialiser les écouteurs
+    public void Start()
+    {
+        parameters.onClick.AddListener(ShowParamPanel);
+        sendEmoteButton.onClick.AddListener(toggleEmojiPanel);
+        leaveGame.onClick.AddListener(ShowConfirmationPanel);
+    }
 
     public void Awake()
     {
@@ -81,16 +92,16 @@ public class Plateau2 : MonoBehaviour
 
     public void DisplayEmote(int playerNumber, int emoteNumber)
     {
-        var playerSignals = this.PlateauPanel.transform.GetChild(7);
+        var playerSignals = this.PlateauPanel.transform.Find("EmotesPlaceHolders");
 
         if (playerNumber == 2)
         {
             Debug.Log("Joueur de droite");
-            var player = playerSignals.transform.GetChild(1);
+            var player = playerSignals.transform.Find("RightPlayer");
             if (emoteNumber < 4)
             {
-                var image = player.transform.GetChild(1);
-                Debug.Log($"{image.name}");
+                var image = player.transform.Find("EmojiSelected");
+                //Debug.Log($"{image.name}");
                 var noneSprite = image.GetComponent<SpriteRenderer>().sprite;
                 var sprite = image.GetComponent<SpriteRenderer>();
                 sprite.sprite = this.emojiSprites[emoteNumber];
@@ -98,7 +109,7 @@ public class Plateau2 : MonoBehaviour
             }
             else
             {
-                var text = player.transform.GetChild(2);
+                var text = player.transform.Find("TextSelected");
                 var realText = text.GetComponent<TextMeshProUGUI>();
                 realText.text = UIManager.singleton.language
                     ? this.wordsEn[emoteNumber - 4]
@@ -109,11 +120,11 @@ public class Plateau2 : MonoBehaviour
         else if (playerNumber == 3)
         {
             Debug.Log("Joueur en face");
-            var player = playerSignals.transform.GetChild(2);
+            var player = playerSignals.transform.Find("InFrontPlayer");
             if (emoteNumber < 4)
             {
-                var image = player.transform.GetChild(1);
-                Debug.Log($"{image.name}");
+                var image = player.transform.Find("EmojiSelected");
+                //Debug.Log($"{image.name}");
                 var noneSprite = image.GetComponent<SpriteRenderer>().sprite;
                 var sprite = image.GetComponent<SpriteRenderer>();
                 sprite.sprite = this.emojiSprites[emoteNumber];
@@ -121,7 +132,7 @@ public class Plateau2 : MonoBehaviour
             }
             else
             {
-                var text = player.transform.GetChild(2);
+                var text = player.transform.Find("TextSelected");
                 var realText = text.GetComponent<TextMeshProUGUI>();
                 realText.text = UIManager.singleton.language
                     ? this.wordsEn[emoteNumber - 4]
@@ -132,11 +143,11 @@ public class Plateau2 : MonoBehaviour
         else if (playerNumber == 4)
         {
             Debug.Log("Joueur de gauche");
-            var player = playerSignals.transform.GetChild(3);
+            var player = playerSignals.transform.Find("LeftPlayer");
             if (emoteNumber < 4)
             {
-                var image = player.transform.GetChild(1);
-                Debug.Log($"{image.name}");
+                var image = player.transform.Find("EmojiSelected");
+                //Debug.Log($"{image.name}");
                 var noneSprite = image.GetComponent<SpriteRenderer>().sprite;
                 var sprite = image.GetComponent<SpriteRenderer>();
                 sprite.sprite = this.emojiSprites[emoteNumber];
@@ -144,7 +155,7 @@ public class Plateau2 : MonoBehaviour
             }
             else
             {
-                var text = player.transform.GetChild(2);
+                var text = player.transform.Find("TextSelected");
                 var realText = text.GetComponent<TextMeshProUGUI>();
                 realText.text = UIManager.singleton.language
                     ? this.wordsEn[emoteNumber - 4]
@@ -169,6 +180,8 @@ public class Plateau2 : MonoBehaviour
     public void ShowConfirmationPanel()
     {
         ConfirmationPanel.SetActive(true);
+        ParamPanel.SetActive(false);
+        EmojiPanel.SetActive(false);
         PlateauPanel.SetActive(false);
     }
 
@@ -197,13 +210,13 @@ public class Plateau2 : MonoBehaviour
             return;
 
         // Change le sprite de l'objet Image pour correspondre à l'émoji sélectionné
-        EmojiDisplay.sprite = emojiSprites[emojiIndex];
+        //EmojiDisplay.sprite = emojiSprites[emojiIndex];
         SignalRConnector.Instance.SendEmoji(emojiIndex);
         Debug.LogWarning("On a bien envoyé l'emoji");
 
         // Active l'objet Image pour afficher l'émoji et le désactive après 2 secondes
-        EmojiDisplay.gameObject.SetActive(true);
-        StartCoroutine(DisableAfterDelay(EmojiDisplay.gameObject, 2f));
+        //EmojiDisplay.gameObject.SetActive(true);
+        //StartCoroutine(DisableAfterDelay(EmojiDisplay.gameObject, 2f));
 
         // Cache le panneau d'emojis après sélection
         EmojiPanel.SetActive(false);
@@ -227,6 +240,7 @@ public class Plateau2 : MonoBehaviour
     {
         ParamPanel.SetActive(true);
         ConfirmationPanel.SetActive(false);
+        EmojiPanel.SetActive(false);
         PlateauPanel.SetActive(false);
     }
 
