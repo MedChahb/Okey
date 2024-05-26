@@ -14,6 +14,7 @@ public class Plateau2 : MonoBehaviour
     public GameObject EmojiPanel; //Panneau d'emoji
 
     public Sprite[] emojiSprites;
+
     //public Image EmojiDisplay;
     public Button[] wordButtons; // Boutons pour les mots
     public TextMeshProUGUI gameDisplayText; // Texte affiché sur le plateau de jeu
@@ -45,7 +46,7 @@ public class Plateau2 : MonoBehaviour
 
     // Fonction pour activer le Confirmation_Panel et désactiver le Plateau_Panel
     // Tableau des mots, assurez-vous que cela correspond à l'ordre des boutons
-    
+
 
     //Ajouter le start pour initialiser les écouteurs
     public void Start()
