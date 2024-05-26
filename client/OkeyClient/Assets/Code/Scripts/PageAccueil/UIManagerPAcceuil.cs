@@ -84,7 +84,7 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     public GameObject rankingNotConnected;
 
-    private float updateInterval = 5.0f;
+    private float updateInterval = 1.0f;
 
     void Start()
     {
