@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 
 public class UIManagerPAcceuil : MonoBehaviour
 {
@@ -83,6 +84,8 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     public GameObject rankingNotConnected;
 
+    private float updateInterval = 5.0f;
+
     void Start()
     {
         manager.SelfJoueurChangeEvent.AddListener(updateConnexion);
@@ -91,6 +94,16 @@ public class UIManagerPAcceuil : MonoBehaviour
         paramBtn.onClick.AddListener(onSettingsClicked);
         connexionBtn.onClick.AddListener(onLoginClicked);
         updateConnexion();
+        StartCoroutine(UpdateConnexionRoutine());
+    }
+
+    private IEnumerator UpdateConnexionRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(updateInterval);
+            updateConnexion();
+        }
     }
 
     void Update()
