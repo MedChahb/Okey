@@ -697,50 +697,47 @@ public sealed class OkeyHub : Hub
             if (coordinates.gagner == true)
             {
                 Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
-                if (pl?.VerifSerieChevalet() == true)
+
+                Console.WriteLine($"{pl?.getName()} gagne");
+                // Le joueur gagne
+                if (pl != null)
                 {
-                    Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
-                    // Le joueur gagne
-
-
-                    if (pl != null)
-                    {
-                        jeu.JeuTermine(pl);
-                        await this
-                            .Clients.Group(roomName)
-                            .SendAsync("PlayerWon", _connectedUsers[pl.getName()].GetUsername());
-                        Thread.Sleep(2000);
-                        return "";
-                    }
+                    jeu.JeuTermine(pl);
+                    await this
+                        .Clients.Group(roomName)
+                        .SendAsync("PlayerWon", _connectedUsers[pl.getName()].GetUsername());
+                    Thread.Sleep(2000);
+                    return "";
                 }
-                else
+                /*
+            else
+            {
+                if (pl != null)
                 {
-                    if (pl != null)
-                    {
-                        await this.SendMpToPlayer(
-                            pl.getName(),
-                            "Vous n'avez pas de serie dans votre chevalet !"
-                        );
-                        var randTuileCoord = pl.GetRandomTuileCoords();
-                        var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
+                    await this.SendMpToPlayer(
+                        pl.getName(),
+                        "Vous n'avez pas de serie dans votre chevalet !"
+                    );
+                    var randTuileCoord = pl.GetRandomTuileCoords();
+                    var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
 
-                        await this.SendTuileJeteeToPlayer(
-                            pl.getName(),
-                            new TuilePacket
-                            {
-                                X = randTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
-                                Y = randTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
-                                gagner = null
-                            }
-                        );
+                    await this.SendTuileJeteeToPlayer(
+                        pl.getName(),
+                        new TuilePacket
+                        {
+                            X = randTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
+                            Y = randTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
+                            gagner = null
+                        }
+                    );
 
-                        pl?.JeterTuile(
-                            this.ReadCoords(randTuileCoord.getY() + ";" + randTuileCoord.getX()),
-                            jeu
-                        );
-                        return "";
-                    }
+                    pl?.JeterTuile(
+                        this.ReadCoords(randTuileCoord.getY() + ";" + randTuileCoord.getX()),
+                        jeu
+                    );
+                    return "";
                 }
+            }*/
             }
             else
             {
