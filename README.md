@@ -26,24 +26,28 @@ Les dernières versions des builds du client Unity sont disponibles ici :
 * [Team log](https://docs.google.com/spreadsheets/d/1c_RrIB0kDTPiEfFVfjjMwCOlqc8TLVP4LDvLlRVz5Ng/edit?usp=sharing) (ancien)
 * [Team log](https://docs.google.com/spreadsheets/d/1Lx6XSw-6TPpPX6M-f2ByZmqWlIIDPr0a4ye2qn6C0Tg/edit?usp=sharing)
 * [Seafile partagé](https://seafile.unistra.fr/smart-link/33f285ba-d099-4a13-bcc1-9ae342a50738/)
+* [Script soutenance](https://docs.google.com/document/d/1dcf-DAPE9ju-SHx6evOSr9K2YSWnlne6sjMzSkyFZ7s/edit?usp=sharing)
+* [Diapos soutenance](https://docs.google.com/presentation/d/19mgM01ZURhDGJl81f8MHVt6UU1db8-487tTLIpPWtBc/edit?usp=sharing)
 
 ### Documents backend
 
 * [Tâches backend](https://docs.google.com/document/d/1tw6rdk8RJixN4Gf4Xx8rJSAIJKp01h6838isS8QlBjY/edit?usp=sharing)
-* [Spécifications](https://docs.google.com/document/d/138RZhz9YMOilw_RB4Bq7qBsjzFfuHsJlgB5n1W3kzYc/edit?usp=sharing)
+* [Spécifications backend](https://docs.google.com/document/d/138RZhz9YMOilw_RB4Bq7qBsjzFfuHsJlgB5n1W3kzYc/edit?usp=sharing)
+* [Rapport technique](https://docs.google.com/document/d/12PFIv5N8iHm3TcOJX7up0-gKUvviqe0G5S7GpY8_zbI/edit?usp=sharing)
 
 ### Documents frontend
 
 * [Tâches frontend](https://docs.google.com/document/d/1juRMyaspqpbGG-6astmrf9sYpfhF4I-d_2sC1IXX4jM/edit?usp=sharing)
 * [UML](https://drive.google.com/file/d/1YIBEHZWpCWMH5IgFtIi-53_cFjVEIpYE/view?usp=sharing_eip_m&ts=65d4c787)
 * [Diagramme d'activités](https://drive.google.com/file/d/1TDauPSD0wWvksGSJn-EX9Y7hbyhopGBx/view?ts=65de1e74)
+* [Rapport technique](https://docs.google.com/document/d/16N5q4015hDVWRH9vUR-TfgCvBFdHKntR0P10c8L0xJs/edit?usp=sharing)
 
 #### Documents liés à l'IHM
 
 * [Figma](https://www.figma.com/file/ZTVmviAU1qUqfNIfh04j1V/Untitled?type=design&node-id=0%3A1&mode=design&t=2wq9oDEamRp9MzS5-1)
 * [Wireframes](https://drive.google.com/file/d/1QMwPXv768F97Ix5pabN3Do9hoXsxo5LF/view?usp=sharing)
 * [Tests utilisateur](https://docs.google.com/document/d/1pJDbbH8KoasmX3JDQduUXqLfxRmnVAhrXfWyx_RvB9Q/edit?usp=sharing)
-* [Rapport](https://docs.google.com/document/d/1x1iIONVdpiXbn-6ELFCDypHQmns6L7V6RnVef9CDmJQ/edit?usp=sharing)
+* [Rapport IHM](https://docs.google.com/document/d/1x1iIONVdpiXbn-6ELFCDypHQmns6L7V6RnVef9CDmJQ/edit?usp=sharing)
 * [Diapos présentation](https://docs.google.com/presentation/d/1MKXBnuf_UoWBcwFtAfpA_6QPDyTrWNaL0IsEf4Jm96U/edit?usp=sharing)
 
 ### Documents communs entre backend et frontend
