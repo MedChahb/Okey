@@ -14,6 +14,7 @@ public class Plateau2 : MonoBehaviour
     public GameObject EmojiPanel; //Panneau d'emoji
 
     public Sprite[] emojiSprites;
+
     //public Image EmojiDisplay;
     public Button[] wordButtons; // Boutons pour les mots
     public TextMeshProUGUI gameDisplayText; // Texte affiché sur le plateau de jeu
@@ -33,9 +34,19 @@ public class Plateau2 : MonoBehaviour
         "Aie...."
     };
 
+    private string[] wordsEn =
+    {
+        "Good luck",
+        "Well done !",
+        "Great Fight",
+        "Thank you !",
+        "Great !",
+        "Ouch...."
+    };
+
     // Fonction pour activer le Confirmation_Panel et désactiver le Plateau_Panel
     // Tableau des mots, assurez-vous que cela correspond à l'ordre des boutons
-    
+
 
     //Ajouter le start pour initialiser les écouteurs
     public void Start()
@@ -64,7 +75,9 @@ public class Plateau2 : MonoBehaviour
         if (buttonIndex >= 0 && buttonIndex < this.words.Length)
         {
             Debug.Log($"Displaying word: {this.words[buttonIndex]}");
-            gameDisplayText.text = this.words[buttonIndex];
+            gameDisplayText.text = UIManager.singleton.language
+                ? this.wordsEn[buttonIndex]
+                : this.words[buttonIndex];
             SignalRConnector.Instance.SendEmoji(4 + buttonIndex);
             Debug.LogWarning("On a bien envoyé le texte");
             StartCoroutine(ClearTextAfterDelay(gameDisplayText, 2f));
@@ -99,7 +112,9 @@ public class Plateau2 : MonoBehaviour
             {
                 var text = player.transform.Find("TextSelected");
                 var realText = text.GetComponent<TextMeshProUGUI>();
-                realText.text = this.words[emoteNumber - 4];
+                realText.text = UIManager.singleton.language
+                    ? this.wordsEn[emoteNumber - 4]
+                    : this.words[emoteNumber - 4];
                 this.StartCoroutine(this.ClearTextAfterDelay(realText, 2f));
             }
         }
@@ -120,7 +135,9 @@ public class Plateau2 : MonoBehaviour
             {
                 var text = player.transform.Find("TextSelected");
                 var realText = text.GetComponent<TextMeshProUGUI>();
-                realText.text = this.words[emoteNumber - 4];
+                realText.text = UIManager.singleton.language
+                    ? this.wordsEn[emoteNumber - 4]
+                    : this.words[emoteNumber - 4];
                 this.StartCoroutine(this.ClearTextAfterDelay(realText, 2f));
             }
         }
@@ -141,7 +158,9 @@ public class Plateau2 : MonoBehaviour
             {
                 var text = player.transform.Find("TextSelected");
                 var realText = text.GetComponent<TextMeshProUGUI>();
-                realText.text = this.words[emoteNumber - 4];
+                realText.text = UIManager.singleton.language
+                    ? this.wordsEn[emoteNumber - 4]
+                    : this.words[emoteNumber - 4];
                 this.StartCoroutine(this.ClearTextAfterDelay(realText, 2f));
             }
         }

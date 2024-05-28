@@ -32,6 +32,12 @@ public class UIManagerPFormulaire : MonoBehaviour
     public TextMeshProUGUI createPrivateLbbyBtnLabel;
     public TextMeshProUGUI joinLbbyPrivateLbl;
 
+    public TextMeshProUGUI waitingForPlayersTitle;
+    public TextMeshProUGUI waitingForPlayer1;
+    public TextMeshProUGUI waitingForPlayer2;
+    public TextMeshProUGUI waitingForPlayer3;
+    public TextMeshProUGUI waitingForPlayer4;
+
     [SerializeField]
     private GameObject lobbyPrivateConfig;
 
@@ -72,6 +78,11 @@ public class UIManagerPFormulaire : MonoBehaviour
             createPrivateLbbyBtnLabel.text = "Create";
             joinLbbyPrivateLbl.text = "Join";
             enterCodeHintext.text = "Enter code";
+            waitingForPlayersTitle.text = "Waiting for players";
+            waitingForPlayer1.text = "waiting for player";
+            waitingForPlayer2.text = "waiting for player";
+            waitingForPlayer3.text = "waiting for player";
+            waitingForPlayer4.text = "waiting for player";
         }
         else
         {
@@ -82,6 +93,11 @@ public class UIManagerPFormulaire : MonoBehaviour
             createPrivateLbbyBtnLabel.text = "Créer une partie privée";
             joinLbbyPrivateLbl.text = "Rejoindre";
             enterCodeHintext.text = "Entrer le code";
+            waitingForPlayersTitle.text = "En attente de joueurs";
+            waitingForPlayer1.text = "Attente de joueur";
+            waitingForPlayer2.text = "Attente de joueur";
+            waitingForPlayer3.text = "Attente de joueur";
+            waitingForPlayer4.text = "Attente de joueur";
         }
 
         backBtnPrivate.onClick.AddListener(onBackBtnPrivateClicked);

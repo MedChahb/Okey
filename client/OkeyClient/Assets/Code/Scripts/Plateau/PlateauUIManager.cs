@@ -15,6 +15,12 @@ public class PlateauUIManager : MonoBehaviour
     public TextMeshProUGUI quiteLabel;
     public TextMeshProUGUI cancelLabel;
 
+    public TextMeshProUGUI bonneChanceLabel;
+    public TextMeshProUGUI bienJouerLabel;
+    public TextMeshProUGUI superCombatLabel;
+    public TextMeshProUGUI merciLabel;
+    public TextMeshProUGUI aieLabel;
+
     public TextMeshProUGUI gameWinningLabel;
 
     public TextMeshProUGUI ambienceLabel;
@@ -45,6 +51,11 @@ public class PlateauUIManager : MonoBehaviour
             ambienceLabel.text = "Ambient Music";
             effetSonoreLabel.text = "Sound effect";
             quitPopupTitle.text = "Quit game?";
+            bonneChanceLabel.text = "Good luck";
+            bienJouerLabel.text = "Well done";
+            superCombatLabel.text = "Great fight";
+            merciLabel.text = "Thank you";
+            aieLabel.text = "Ouch";
         }
         else
         {
@@ -54,6 +65,11 @@ public class PlateauUIManager : MonoBehaviour
             ambienceLabel.text = "Ambiance Musique";
             effetSonoreLabel.text = "Effet sonore";
             quitPopupTitle.text = "Quitter la partie?";
+            bonneChanceLabel.text = "Bonne chance";
+            bienJouerLabel.text = "Bien joué";
+            superCombatLabel.text = "Super combat";
+            merciLabel.text = "Merci";
+            aieLabel.text = "Aïe";
         }
     }
 
