@@ -8440,6 +8440,11 @@ MonoBehaviour:
   quitPopupTitle: {fileID: 454581266}
   quiteLabel: {fileID: 1437835581}
   cancelLabel: {fileID: 550843545}
+  bonneChanceLabel: {fileID: 0}
+  bienJouerLabel: {fileID: 0}
+  superCombatLabel: {fileID: 0}
+  merciLabel: {fileID: 0}
+  aieLabel: {fileID: 0}
   gameWinningLabel: {fileID: 1985540376}
   ambienceLabel: {fileID: 1750640136}
   effetSonoreLabel: {fileID: 950850942}
@@ -10063,6 +10068,7 @@ GameObject:
   - component: {fileID: 1779463989}
   - component: {fileID: 1779463991}
   - component: {fileID: 1779463990}
+  - component: {fileID: 1779463992}
   m_Layer: 5
   m_Name: ParamPanel
   m_TagString: Untagged
@@ -10132,6 +10138,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1779463988}
   m_CullTransparentMesh: 1
+--- !u!114 &1779463992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779463988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 608cb464a4e3f4a298751e37e95b06ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeSlider: {fileID: 1024647542}
+  audioSource: {fileID: 1526602880}
 --- !u!1 &1790921709
 GameObject:
   m_ObjectHideFlags: 0
