@@ -8,36 +8,23 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private JoueurManager JoueurManager;
 
-    // Start is called before the first frame update
-    void Start()
+    public float backgroundMusic = 1f;
+    public float soundEffects = 1f;
+
+    private void Awake()
     {
-        // Check if an instance already exists
         Debug.Log("[UIManager] Awake called.");
 
         if (singleton == null)
         {
-            // If not, set the singleton to this instance and make sure it persists across scene loads
             singleton = this;
             DontDestroyOnLoad(gameObject);
         }
         else if (singleton != this)
         {
-            // If a different instance exists, destroy this one to avoid duplicates
             Destroy(gameObject);
         }
     }
 
-    void Update()
-    { //Principal gameloop
-        /* mise en place Etc
-        ..
-        ..
-        lancement du tour d'un joueur
-        */
-        /*
-        just in case :
-        Tuile[] TilesArray = Chevalet.GetTilesPlacementInChevaletTab();
-        Chevalet.PrintTilesArrayForTest();
-        */
-    }
+    private void Start() { }
 }

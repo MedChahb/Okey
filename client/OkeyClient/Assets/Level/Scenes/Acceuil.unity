@@ -10836,6 +10836,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   language: 0
   JoueurManager: {fileID: 279409712}
+  backgroundAudioSource: {fileID: 0}
+  backgroundMusic: 1
+  soundEffects: 1
 --- !u!4 &970465726
 Transform:
   m_ObjectHideFlags: 0
@@ -18523,6 +18526,8 @@ MonoBehaviour:
   PanelConnected: {fileID: 1718247711}
   manager: {fileID: 279409712}
   rankingNotConnected: {fileID: 1275471236}
+  audioSourceAmbience: {fileID: 1561981356}
+  audioSourceSoundEffects: {fileID: 1580382913}
 --- !u!1 &1487514794
 GameObject:
   m_ObjectHideFlags: 0
@@ -18898,11 +18903,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parametresImage: {fileID: 1861587382}
-  titleCard: {fileID: 0}
   BackBtn: {fileID: 465199814}
   soundEffects: {fileID: 275666276}
   music: {fileID: 713923733}
   language: {fileID: 1790535646}
+  volumeSliderAmbience: {fileID: 956331518}
+  volumeSliderEffects: {fileID: 3181489}
+  audioSourceAmbience: {fileID: 1561981356}
+  audioSourceSoundEffects: {fileID: 1580382913}
 --- !u!1 &1558790639
 GameObject:
   m_ObjectHideFlags: 0

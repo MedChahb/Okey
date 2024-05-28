@@ -7,9 +7,6 @@ public class ParametreScreen : MonoBehaviour
     public Image parametresImage; // Reference to the image object
 
     [SerializeField]
-    private TextMeshProUGUI titleCard;
-
-    [SerializeField]
     private Button BackBtn;
 
     [SerializeField]
@@ -21,9 +18,20 @@ public class ParametreScreen : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI language;
 
+    public Slider volumeSliderAmbience;
+    public Slider volumeSliderEffects;
+
+    public AudioSource audioSourceAmbience;
+    public AudioSource audioSourceSoundEffects;
+
     public void Start()
     {
+        volumeSliderAmbience.value = UIManager.singleton.backgroundMusic;
+        volumeSliderEffects.value = UIManager.singleton.soundEffects;
+
         BackBtn.onClick.AddListener(onBackBtnClicked);
+        volumeSliderAmbience.onValueChanged.AddListener(OnVolumeSliderValueChangedAmbience);
+        volumeSliderEffects.onValueChanged.AddListener(OnVolumeSliderValueChangedEffects);
     }
 
     private void onFrBtnClicked()
@@ -55,5 +63,17 @@ public class ParametreScreen : MonoBehaviour
             music.text = "Ambiance Musique";
             language.text = "Langue";
         }
+    }
+
+    private void OnVolumeSliderValueChangedAmbience(float value)
+    {
+        audioSourceAmbience.volume = value;
+        UIManager.singleton.backgroundMusic = value;
+    }
+
+    private void OnVolumeSliderValueChangedEffects(float value)
+    {
+        audioSourceSoundEffects.volume = value;
+        UIManager.singleton.soundEffects = value;
     }
 }

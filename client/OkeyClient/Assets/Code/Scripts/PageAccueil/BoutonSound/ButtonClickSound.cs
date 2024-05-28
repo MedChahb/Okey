@@ -12,6 +12,7 @@ public class ButtonClickSound : MonoBehaviour
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.volume = UIManager.singleton.soundEffects;
         }
         audioSource.playOnAwake = false;
     }
@@ -19,5 +20,6 @@ public class ButtonClickSound : MonoBehaviour
     public void PlayClickSound()
     {
         audioSource.PlayOneShot(clickSound);
+        audioSource.volume = UIManager.singleton.soundEffects;
     }
 }

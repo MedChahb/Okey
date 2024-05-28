@@ -1,9 +1,9 @@
+using System.Collections;
 using LogiqueJeu.Joueur;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Collections;
 
 public class UIManagerPAcceuil : MonoBehaviour
 {
@@ -86,8 +86,13 @@ public class UIManagerPAcceuil : MonoBehaviour
 
     private float updateInterval = 1.0f;
 
+    public AudioSource audioSourceAmbience;
+    public AudioSource audioSourceSoundEffects;
+
     void Start()
     {
+        audioSourceAmbience.volume = UIManager.singleton.backgroundMusic;
+        audioSourceSoundEffects.volume = UIManager.singleton.soundEffects;
         manager.SelfJoueurChangeEvent.AddListener(updateConnexion);
         manager.ConnexionChangeEvent.AddListener(updateConnexion);
         playBtn.onClick.AddListener(onPlayBtnClicked);
