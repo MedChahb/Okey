@@ -18484,6 +18484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playBtn: {fileID: 560258899}
+  tutorialBtn: {fileID: 2124301844}
   paramBtn: {fileID: 1153417119}
   connexionBtn: {fileID: 765713452}
   connexionBtnTxt: {fileID: 1967579652}
@@ -23329,6 +23330,7 @@ GameObject:
   - component: {fileID: 1861587381}
   - component: {fileID: 1861587383}
   - component: {fileID: 1861587382}
+  - component: {fileID: 1861587384}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -23401,6 +23403,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1861587380}
   m_CullTransparentMesh: 1
+--- !u!114 &1861587384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861587380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 608cb464a4e3f4a298751e37e95b06ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeSlider: {fileID: 3181489}
+  backgroundAudioSource: {fileID: 1561981356}
+  buttonAudioSource: {fileID: 1580382913}
 --- !u!1 &1866852366
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ public class Timer : MonoBehaviour
     private TextMeshProUGUI TimerTxt;
 
     [SerializeField]
-    private float TimerValue = 40;
+    private float TimerValue = 120; // Set to 120 seconds (2 minutes)
     private float RemainingTime;
     private bool TimerOn;
 

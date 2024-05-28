@@ -11,6 +11,9 @@ public class UIManagerPAcceuil : MonoBehaviour
     private Button playBtn;
 
     [SerializeField]
+    private Button tutorialBtn;
+
+    [SerializeField]
     private Button paramBtn;
 
     [SerializeField]
@@ -98,6 +101,7 @@ public class UIManagerPAcceuil : MonoBehaviour
         playBtn.onClick.AddListener(onPlayBtnClicked);
         paramBtn.onClick.AddListener(onSettingsClicked);
         connexionBtn.onClick.AddListener(onLoginClicked);
+        tutorialBtn.onClick.AddListener(onTutoClicked);
         updateConnexion();
         StartCoroutine(UpdateConnexionRoutine());
     }
@@ -193,6 +197,13 @@ public class UIManagerPAcceuil : MonoBehaviour
     {
         SceneManager.LoadScene(sceneId);
         Debug.Log("Scene changed to " + sceneId);
+    }
+
+    void onTutoClicked()
+    {
+        Application.OpenURL(
+            "https://mai-projet-integrateur.u-strasbg.fr/vmProjetIntegrateurgrp0-1/#tutoriel"
+        );
     }
 
     void onSettingsClicked()
