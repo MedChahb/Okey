@@ -18481,6 +18481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playBtn: {fileID: 560258899}
+  tutorialBtn: {fileID: 2124301844}
   paramBtn: {fileID: 1153417119}
   connexionBtn: {fileID: 765713452}
   connexionBtnTxt: {fileID: 1967579652}
