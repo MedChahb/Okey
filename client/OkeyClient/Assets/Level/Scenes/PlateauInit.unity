@@ -8448,6 +8448,8 @@ MonoBehaviour:
   gameWinningLabel: {fileID: 1985540376}
   ambienceLabel: {fileID: 1750640136}
   effetSonoreLabel: {fileID: 950850942}
+  audioSourceAmbience: {fileID: 0}
+  audioSourceSoundEffects: {fileID: 0}
 --- !u!114 &1512583202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10068,6 +10070,7 @@ GameObject:
   - component: {fileID: 1779463989}
   - component: {fileID: 1779463991}
   - component: {fileID: 1779463990}
+  - component: {fileID: 1779463992}
   m_Layer: 5
   m_Name: ParamPanel
   m_TagString: Untagged
@@ -10137,6 +10140,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1779463988}
   m_CullTransparentMesh: 1
+--- !u!114 &1779463992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779463988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e110a2219827049ac9e58573569943ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeSliderAmbience: {fileID: 131777553}
+  volumeSliderEffects: {fileID: 1024647542}
+  audioSourceAmbience: {fileID: 1526602880}
+  audioSourceSoundEffects: {fileID: 0}
 --- !u!1 &1790921709
 GameObject:
   m_ObjectHideFlags: 0
@@ -10561,6 +10580,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   language: 1
   JoueurManager: {fileID: 0}
+  backgroundMusic: 1
+  soundEffects: 1
 --- !u!4 &1903293900
 Transform:
   m_ObjectHideFlags: 0
