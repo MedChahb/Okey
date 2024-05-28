@@ -4643,6 +4643,11 @@ MonoBehaviour:
   createPrivateLobbyTitle: {fileID: 472982983}
   createPrivateLbbyBtnLabel: {fileID: 717366902}
   joinLbbyPrivateLbl: {fileID: 899119114}
+  waitingForPlayersTitle: {fileID: 1748158928}
+  waitingForPlayer1: {fileID: 1022509046}
+  waitingForPlayer2: {fileID: 411543185}
+  waitingForPlayer3: {fileID: 88387185}
+  waitingForPlayer4: {fileID: 491237507}
   lobbyPrivateConfig: {fileID: 845544427}
   lobbyPlayerWaiting: {fileID: 23177965}
   CreatePrivateParty: {fileID: 1033405242}
