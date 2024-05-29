@@ -1796,6 +1796,21 @@ public sealed class OkeyHub : Hub
                 this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
             }
         }
+
+        for (var i = 0; i < 4; i++)
+        {
+            var joueur = jeu.GetJoueurs()[i];
+
+            if (jeu.GetJoueurs()[i].isGagnant())
+            {
+                await this
+                    ._hubContext.Clients.Group(roomName)
+                    .SendAsync(
+                        "WinInfos",
+                        _connectedUsers[jeu.GetJoueurs()[i].getName()].GetUsername()
+                    );
+            }
+        }
     }
 
     /// <summary>
