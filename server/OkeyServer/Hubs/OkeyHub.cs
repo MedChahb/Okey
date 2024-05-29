@@ -702,11 +702,11 @@ public sealed class OkeyHub : Hub
                 // Le joueur gagne
                 if (pl != null)
                 {
-                    jeu.JeuTermine(pl);
                     await this
                         .Clients.Group(roomName)
                         .SendAsync("PlayerWon", _connectedUsers[pl.getName()].GetUsername());
                     Thread.Sleep(2000);
+                    jeu.JeuTermine(pl);
                     return "";
                 }
                 /*
