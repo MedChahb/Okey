@@ -696,7 +696,7 @@ public sealed class OkeyHub : Hub
             if (coordinates.gagner == true)
             {
                 Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
-                if (wincounter >= 4)
+                if (wincounter >= 3)
                 {
                     // Le joueur gagne
                     if (pl != null)
