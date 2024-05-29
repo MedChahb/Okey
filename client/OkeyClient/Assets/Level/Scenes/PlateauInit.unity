@@ -8495,8 +8495,8 @@ MonoBehaviour:
   - {fileID: 1210995087}
   - {fileID: 1986471622}
   gameDisplayText: {fileID: 2091376650}
-  sendEmoteButton: {fileID: 0}
-  leaveGame: {fileID: 0}
+  sendEmoteButton: {fileID: 266770623}
+  leaveGame: {fileID: 464152452}
   parameters: {fileID: 7055060598491923203}
 --- !u!1 &1513304766
 GameObject:
