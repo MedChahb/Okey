@@ -702,6 +702,7 @@ public sealed class OkeyHub : Hub
                     if (pl != null)
                     {
                         jeu.JeuTermine(pl);
+                        wincounter = 0;
                         for (var i = 0; i < 4; i++)
                         {
                             var joueur = jeu.GetJoueurs()[i];
