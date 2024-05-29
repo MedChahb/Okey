@@ -32,7 +32,6 @@ public sealed class OkeyHub : Hub
     private readonly IHubContext<OkeyHub> _hubContext;
     private static readonly char[] Separator = new char[] { ';' };
 
-    //private readonly IServiceScopeFactory _scopeFactory;
     private readonly ServerDbContext _dbContext;
 
     private ConcurrentDictionary<string, bool> _isPlayerTurn;
@@ -48,14 +47,12 @@ public sealed class OkeyHub : Hub
     public OkeyHub(
         IHubContext<OkeyHub> hubContext,
         IRoomManager roomManager,
-        //IServiceScopeFactory scopeFactory,
         ServerDbContext dbContext
     )
     {
         this._roomManager = roomManager;
         this._hubContext = hubContext;
         this._dbContext = dbContext;
-        //this._scopeFactory = scopeFactory;
         this._isPlayerTurn = new ConcurrentDictionary<string, bool>();
     }
 
@@ -1714,6 +1711,7 @@ public sealed class OkeyHub : Hub
                         //await this.MoveInLoop(currentPlayer, jeu);
                         continue;
                     }
+
                     if (pioche.Equals("FIN", StringComparison.Ordinal))
                     {
                         await this.BroadCastInRoom(
@@ -1795,28 +1793,6 @@ public sealed class OkeyHub : Hub
                 this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
             }
         }
-        /* TODO fix this
-        using (var scope = this._scopeFactory.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<ServerDbContext>();
-            for (var i = 0; i < 4; i++)
-            {
-                var joueur = jeu.GetJoueurs()[i];
-
-                if (jeu.GetJoueurs()[i].isGagnant())
-                {
-                    Console.WriteLine("est-ce qu'on arrive ici ?");
-                    await _connectedUsers[joueur.getName()]
-                        .UpdateStats(dbContext, ((Humain)joueur).GetElo(), 5, true, true);
-                }
-                else
-                {
-                    await _connectedUsers[joueur.getName()]
-                        .UpdateStats(dbContext, ((Humain)joueur).GetElo(), 3, true, false);
-                }
-            }
-        }
-        */
     }
 
     /// <summary>
