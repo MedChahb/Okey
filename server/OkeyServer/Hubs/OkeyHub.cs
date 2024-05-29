@@ -694,47 +694,28 @@ public sealed class OkeyHub : Hub
             if (coordinates.gagner == true)
             {
                 Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
-                if (pl?.VerifSerieChevalet() == true)
+                if (true)
                 {
                     Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
                     // Le joueur gagne
-
-
                     if (pl != null)
                     {
                         jeu.JeuTermine(pl);
-                        await this
-                            .Clients.Group(roomName)
-                            .SendAsync("PlayerWon", _connectedUsers[pl.getName()].GetUsername());
-                        Thread.Sleep(2000);
-                        return "";
-                    }
-                }
-                else
-                {
-                    if (pl != null)
-                    {
-                        await this.SendMpToPlayer(
-                            pl.getName(),
-                            "Vous n'avez pas de serie dans votre chevalet !"
-                        );
-                        var randTuileCoord = pl.GetRandomTuileCoords();
-                        var coord = randTuileCoord.getY() + ";" + randTuileCoord.getX();
+                        for (var i = 0; i < 4; i++)
+                        {
+                            var joueur = jeu.GetJoueurs()[i];
 
-                        await this.SendTuileJeteeToPlayer(
-                            pl.getName(),
-                            new TuilePacket
+                            if (jeu.GetJoueurs()[i].isGagnant())
                             {
-                                X = randTuileCoord.getY().ToString(CultureInfo.InvariantCulture),
-                                Y = randTuileCoord.getX().ToString(CultureInfo.InvariantCulture),
-                                gagner = null
+                                await this
+                                    ._hubContext.Clients.Group(roomName)
+                                    .SendAsync(
+                                        "WinInfos",
+                                        _connectedUsers[jeu.GetJoueurs()[i].getName()].GetUsername()
+                                    );
                             }
-                        );
-
-                        pl?.JeterTuile(
-                            this.ReadCoords(randTuileCoord.getY() + ";" + randTuileCoord.getX()),
-                            jeu
-                        );
+                        }
+                        Thread.Sleep(2000);
                         return "";
                     }
                 }
@@ -1794,21 +1775,6 @@ public sealed class OkeyHub : Hub
 
                 await this.SendResetTimer(roomName);
                 this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
-            }
-        }
-
-        for (var i = 0; i < 4; i++)
-        {
-            var joueur = jeu.GetJoueurs()[i];
-
-            if (jeu.GetJoueurs()[i].isGagnant())
-            {
-                await this
-                    ._hubContext.Clients.Group(roomName)
-                    .SendAsync(
-                        "WinInfos",
-                        _connectedUsers[jeu.GetJoueurs()[i].getName()].GetUsername()
-                    );
             }
         }
     }
