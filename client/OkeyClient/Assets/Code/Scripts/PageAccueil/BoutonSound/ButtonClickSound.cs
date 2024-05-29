@@ -19,7 +19,7 @@ public class ButtonClickSound : MonoBehaviour
 
     public void PlayClickSound()
     {
-        audioSource.PlayOneShot(clickSound);
         audioSource.volume = UIManager.singleton.soundEffects;
+        audioSource.PlayOneShot(clickSound);
     }
 }

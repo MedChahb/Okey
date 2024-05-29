@@ -20,18 +20,19 @@ public class ParametreScreen : MonoBehaviour
 
     public Slider volumeSliderAmbience;
     public Slider volumeSliderEffects;
+    public Slider volumeSliderEffects2;
 
     public AudioSource audioSourceAmbience;
-    public AudioSource audioSourceSoundEffects;
 
     public void Start()
     {
         volumeSliderAmbience.value = UIManager.singleton.backgroundMusic;
         volumeSliderEffects.value = UIManager.singleton.soundEffects;
+        volumeSliderEffects2.value = UIManager.singleton.soundEffects;
 
         BackBtn.onClick.AddListener(onBackBtnClicked);
         volumeSliderAmbience.onValueChanged.AddListener(OnVolumeSliderValueChangedAmbience);
-        volumeSliderEffects.onValueChanged.AddListener(OnVolumeSliderValueChangedEffects);
+        volumeSliderEffects2.onValueChanged.AddListener(OnVolumeSliderValueChangedEffects);
     }
 
     private void onFrBtnClicked()
@@ -73,7 +74,6 @@ public class ParametreScreen : MonoBehaviour
 
     private void OnVolumeSliderValueChangedEffects(float value)
     {
-        audioSourceSoundEffects.volume = value;
         UIManager.singleton.soundEffects = value;
     }
 }
