@@ -27,7 +27,6 @@ public class PlateauUIManager : MonoBehaviour
     public TextMeshProUGUI effetSonoreLabel;
 
     public AudioSource audioSourceAmbience;
-    public AudioSource audioSourceSoundEffects;
 
     // awake
     private void Awake()
@@ -47,7 +46,6 @@ public class PlateauUIManager : MonoBehaviour
     void Start()
     {
         audioSourceAmbience.volume = UIManager.singleton.backgroundMusic;
-        audioSourceSoundEffects.volume = UIManager.singleton.soundEffects;
         if (UIManager.singleton.language)
         {
             quiteLabel.text = "Quit the game";

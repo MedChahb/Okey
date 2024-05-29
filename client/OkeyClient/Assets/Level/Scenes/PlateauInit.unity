@@ -4852,7 +4852,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TimerTxt: {fileID: 754014285}
-  TimerValue: 40
+  TimerValue: 120
 --- !u!114 &754014285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8465,7 +8465,6 @@ MonoBehaviour:
   ambienceLabel: {fileID: 1750640136}
   effetSonoreLabel: {fileID: 950850942}
   audioSourceAmbience: {fileID: 1526602880}
-  audioSourceSoundEffects: {fileID: 0}
 --- !u!114 &1512583202
 MonoBehaviour:
   m_ObjectHideFlags: 0

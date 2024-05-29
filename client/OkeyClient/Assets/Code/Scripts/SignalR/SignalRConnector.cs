@@ -733,7 +733,6 @@ public class SignalRConnector : MonoBehaviour
             (playerId) =>
             {
                 //Histoire que l'on remarque bien...
-                Debug.LogError($"Le gagnant est {playerId}");
                 MainThreadDispatcher.Enqueue(() =>
                 {
                     GameObject.Find("PlateauPanel").SetActive(false);
@@ -742,7 +741,7 @@ public class SignalRConnector : MonoBehaviour
                     PlateauUIManager
                         .Instance.FindPartiePanel.transform.GetChild(2)
                         .GetComponent<TextMeshProUGUI>()
-                        .text = $"{playerId} \n à gagné !";
+                        .text = playerId;
                 });
             }
         );
