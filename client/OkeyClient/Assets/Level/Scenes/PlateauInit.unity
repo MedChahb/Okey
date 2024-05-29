@@ -10169,7 +10169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volumeSliderAmbience: {fileID: 131777553}
   volumeSliderEffects: {fileID: 1024647542}
-  audioSourceAmbience: {fileID: 0}
+  audioSourceAmbience: {fileID: 1526602880}
 --- !u!1 &1790921709
 GameObject:
   m_ObjectHideFlags: 0
