@@ -8456,15 +8456,15 @@ MonoBehaviour:
   quitPopupTitle: {fileID: 454581266}
   quiteLabel: {fileID: 1437835581}
   cancelLabel: {fileID: 550843545}
-  bonneChanceLabel: {fileID: 0}
-  bienJouerLabel: {fileID: 0}
-  superCombatLabel: {fileID: 0}
-  merciLabel: {fileID: 0}
-  aieLabel: {fileID: 0}
+  bonneChanceLabel: {fileID: 1493569798}
+  bienJouerLabel: {fileID: 1037487225}
+  superCombatLabel: {fileID: 239851046}
+  merciLabel: {fileID: 1650289216}
+  aieLabel: {fileID: 910398287}
   gameWinningLabel: {fileID: 1985540376}
   ambienceLabel: {fileID: 1750640136}
   effetSonoreLabel: {fileID: 950850942}
-  audioSourceAmbience: {fileID: 0}
+  audioSourceAmbience: {fileID: 1526602880}
   audioSourceSoundEffects: {fileID: 0}
 --- !u!114 &1512583202
 MonoBehaviour:
