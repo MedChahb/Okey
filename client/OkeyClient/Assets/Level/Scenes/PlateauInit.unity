@@ -8497,7 +8497,7 @@ MonoBehaviour:
   gameDisplayText: {fileID: 2091376650}
   sendEmoteButton: {fileID: 0}
   leaveGame: {fileID: 0}
-  parameters: {fileID: 0}
+  parameters: {fileID: 7055060598491923203}
 --- !u!1 &1513304766
 GameObject:
   m_ObjectHideFlags: 0
@@ -11992,6 +11992,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
+--- !u!114 &7055060598491923203 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4238320662315594016, guid: 9352f517ac90546cba670e405c1637b2, type: 3}
+  m_PrefabInstance: {fileID: 7055060598491923202}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
