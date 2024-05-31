@@ -60,9 +60,7 @@ public class PlayerDatas
         if (Username == "Guest")
         {
             this.Elo = 400;
-            var random = new Random();
-            var randomNumber = random.Next(1, 5);
-            this.Photo = randomNumber;
+            this.Photo = 1;
             this.Experience = 0;
             this.NombreParties = 0;
             this.NombrePartiesGagnees = 0;

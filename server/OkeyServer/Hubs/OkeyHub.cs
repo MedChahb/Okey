@@ -22,6 +22,8 @@ public sealed class OkeyHub : Hub
 {
     private static readonly int time = 59000;
 
+    private static int wincounter = 0;
+
     private static ConcurrentDictionary<string, PlayerDatas> _connectedUsers =
         new ConcurrentDictionary<string, PlayerDatas>();
 
@@ -32,7 +34,6 @@ public sealed class OkeyHub : Hub
     private readonly IHubContext<OkeyHub> _hubContext;
     private static readonly char[] Separator = new char[] { ';' };
 
-    //private readonly IServiceScopeFactory _scopeFactory;
     private readonly ServerDbContext _dbContext;
 
     private ConcurrentDictionary<string, bool> _isPlayerTurn;
@@ -48,14 +49,12 @@ public sealed class OkeyHub : Hub
     public OkeyHub(
         IHubContext<OkeyHub> hubContext,
         IRoomManager roomManager,
-        //IServiceScopeFactory scopeFactory,
         ServerDbContext dbContext
     )
     {
         this._roomManager = roomManager;
         this._hubContext = hubContext;
         this._dbContext = dbContext;
-        //this._scopeFactory = scopeFactory;
         this._isPlayerTurn = new ConcurrentDictionary<string, bool>();
     }
 
@@ -697,24 +696,34 @@ public sealed class OkeyHub : Hub
             if (coordinates.gagner == true)
             {
                 Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
-                if (pl?.VerifSerieChevalet() == true)
+                if (wincounter >= 3)
                 {
-                    Console.WriteLine($"Vous essayez de gagner {pl?.getName()}");
                     // Le joueur gagne
-
-
                     if (pl != null)
                     {
                         jeu.JeuTermine(pl);
-                        await this
-                            .Clients.Group(roomName)
-                            .SendAsync("PlayerWon", _connectedUsers[pl.getName()].GetUsername());
+                        wincounter = 0;
+                        for (var i = 0; i < 4; i++)
+                        {
+                            var joueur = jeu.GetJoueurs()[i];
+
+                            if (jeu.GetJoueurs()[i].isGagnant())
+                            {
+                                await this
+                                    ._hubContext.Clients.Group(roomName)
+                                    .SendAsync(
+                                        "WinInfos",
+                                        _connectedUsers[jeu.GetJoueurs()[i].getName()].GetUsername()
+                                    );
+                            }
+                        }
                         Thread.Sleep(2000);
                         return "";
                     }
                 }
                 else
                 {
+                    wincounter++;
                     if (pl != null)
                     {
                         await this.SendMpToPlayer(
@@ -1717,6 +1726,7 @@ public sealed class OkeyHub : Hub
                         //await this.MoveInLoop(currentPlayer, jeu);
                         continue;
                     }
+
                     if (pioche.Equals("FIN", StringComparison.Ordinal))
                     {
                         await this.BroadCastInRoom(
@@ -1798,28 +1808,6 @@ public sealed class OkeyHub : Hub
                 this.SetPlayerTurn(jeu.getJoueurActuel()?.getName() ?? playerName, true);
             }
         }
-        /* TODO fix this
-        using (var scope = this._scopeFactory.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<ServerDbContext>();
-            for (var i = 0; i < 4; i++)
-            {
-                var joueur = jeu.GetJoueurs()[i];
-
-                if (jeu.GetJoueurs()[i].isGagnant())
-                {
-                    Console.WriteLine("est-ce qu'on arrive ici ?");
-                    await _connectedUsers[joueur.getName()]
-                        .UpdateStats(dbContext, ((Humain)joueur).GetElo(), 5, true, true);
-                }
-                else
-                {
-                    await _connectedUsers[joueur.getName()]
-                        .UpdateStats(dbContext, ((Humain)joueur).GetElo(), 3, true, false);
-                }
-            }
-        }
-        */
     }
 
     /// <summary>
